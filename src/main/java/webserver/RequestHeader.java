@@ -1,14 +1,18 @@
 
 package webserver;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestHeader {
-    List<String> headers = new ArrayList<>();
-    public RequestHeader() throws IOException {
+    private String requestLine;
+    private final List<String> headers = new ArrayList<>();
+    public RequestHeader() {
+    }
+
+    public void addRequestLine(String requestLine) {
+        this.requestLine = requestLine;
     }
 
     public void appendHeader(String header) {
@@ -16,8 +20,7 @@ public class RequestHeader {
     }
 
     public String parseRequestUrl() throws IOException {
-        String line =  headers.get(0);
-        String[] tokens = line.split(" ");
+        String[] tokens = requestLine.split(" ");
         return tokens[1];
     }
 }

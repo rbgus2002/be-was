@@ -29,7 +29,9 @@ class RequestHeaderTest {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         RequestHeader requestHeader = new RequestHeader();
         String line = br.readLine();
-        while(!line.equals("")){
+        requestHeader.addRequestLine(line);
+        line = br.readLine();
+        while(!"".equals(line)){
             requestHeader.appendHeader(line);
             line = br.readLine();
         }

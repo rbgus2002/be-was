@@ -11,7 +11,7 @@ import java.nio.file.Files;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -23,26 +23,28 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            RequestHeader requestHeader = new RequestHeader();
-            String line = br.readLine();
-            while(line != null && !line.equals("")){
-                logger.debug("Request-Headers : {}", line);
-                requestHeader.appendHeader(line);
-                line = br.readLine();
-            }
-
+            RequestHeader requestHeader = buildRequestHeader(in);
             String url = requestHeader.parseRequestUrl();
-            logger.debug("Request-Url: {}", url);
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + url).toPath());
-
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private static RequestHeader buildRequestHeader(InputStream in) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        RequestHeader requestHeader = new RequestHeader();
+        String line = br.readLine();
+        requestHeader.addRequestLine(line);
+        while(!"".equals((line = br.readLine()))){
+            logger.debug("Request-Headers : {}", line);
+            requestHeader.appendHeader(line);
+        }
+        return requestHeader;
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
