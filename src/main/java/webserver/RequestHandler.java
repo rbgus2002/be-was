@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final String STATIC_FILEPATH = "./src/main/resources/static";
+    private static final String TEMPLATE_FILEPATH = "./src/main/resources/templates";
 
     private Socket connection;
 
@@ -42,7 +44,15 @@ public class RequestHandler implements Runnable {
             // Response
             DataOutputStream dos = new DataOutputStream(out);
             // 요청 경로의 파일을 반환
-            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + route).toPath());
+            File f;
+            byte[] body;
+            // 두 가지의 경로 모두를 조회해야 합니다.
+            if((f = new File(STATIC_FILEPATH + route)).exists()) {
+                body = Files.readAllBytes(f.toPath());
+            } else {
+                f = new File(TEMPLATE_FILEPATH + route);
+                body = Files.readAllBytes(f.toPath());
+            }
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
