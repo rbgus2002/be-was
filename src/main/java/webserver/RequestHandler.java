@@ -29,16 +29,8 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             //request 분석
-            String input;
-            String url = "";
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            while ((input = br.readLine()) != null && !input.isEmpty()) {
-                String[] tokens = input.split(" ");
-                if (tokens[0].startsWith("GET")) {
-                    url = tokens[1];
-                }
-                logger.debug(input);
-            }
+            RequestParser requestParser = new RequestParser(in);
+            String url = requestParser.getUrl();
             // response 생성 후 반환
             DataOutputStream dos = new DataOutputStream(out);
 
