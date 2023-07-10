@@ -1,11 +1,15 @@
 package webserver;
 
+import http.CustomHttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Objects;
+import java.net.URISyntaxException;
+import java.net.http.HttpRequest;
+
+import static util.FileUtils.getResourceAsStream;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -23,16 +27,15 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream();
              BufferedReader reader = new BufferedReader(new InputStreamReader(in));
              OutputStream out = connection.getOutputStream()) {
+
             // 요청 읽기
             String requestLine = reader.readLine();
-            String[] requestParts = requestLine.split(" ");
-            String requestUrl = requestParts[1];
-            String[] split = requestUrl.split("\\.");
-            String ext = split[split.length - 1];
+            HttpRequest request = new CustomHttpRequest(requestLine);
+
+            logger.debug("HttpMethod : {}, URI : {}, Version : {}", request.method(), request.uri(), request.version());
 
             // 요청한 파일 읽기
-            InputStream fileInputStream = getClass().getResourceAsStream((Objects.equals(ext, "html") ? "/templates/" : "/static/") + requestUrl);
-            assert fileInputStream != null;
+            InputStream fileInputStream = getResourceAsStream(request.uri());
             byte[] body = fileInputStream.readAllBytes();
 
             DataOutputStream dos = new DataOutputStream(out);
@@ -40,6 +43,8 @@ public class RequestHandler implements Runnable {
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
