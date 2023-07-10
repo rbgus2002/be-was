@@ -29,8 +29,7 @@ public class RequestHandler implements Runnable {
              OutputStream out = connection.getOutputStream()) {
 
             // 요청 읽기
-            String requestLine = reader.readLine();
-            HttpRequest request = new CustomHttpRequest(requestLine);
+            HttpRequest request = new CustomHttpRequest(reader);
 
             logger.debug("HttpMethod : {}, URI : {}, Version : {}", request.method(), request.uri(), request.version());
 
