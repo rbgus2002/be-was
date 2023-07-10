@@ -2,6 +2,7 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class RequestHandler implements Runnable {
             String line = br.readLine();
             logger.debug("request: {}", line);
             // 경로 parsing
-            String route = line.split(" ")[1].substring(1);
+            String route = line.split(" ")[1];
             logger.debug("route: {}", route);
             // 나머지 확인
             while(!line.equals("")) {
@@ -40,7 +41,8 @@ public class RequestHandler implements Runnable {
 
             // Response
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = sb.toString().getBytes("UTF-8");
+            // 요청 경로의 파일을 반환
+            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + route).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
