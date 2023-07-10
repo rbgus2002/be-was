@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.StringUtils.appendNewLine;
 
-class RequestUtilTest {
+class RequestHeaderTest {
     String requestLine = "GET /index.html HTTP/1.1";
     String headers = appendNewLine("Host: localhost:8080", "Connection: keep-alive");
     String body = ""; // 본문 내용을 추가할 수 있습니다.
@@ -26,10 +26,15 @@ class RequestUtilTest {
     @DisplayName("Request Line에서 정상적으로 요청 Url을 분리하는지 검증한다.")
     void parseRequestUrl() throws IOException {
         //given
-        RequestUtils requestUtil = new RequestUtils(in);
-
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        RequestHeader requestHeader = new RequestHeader();
+        String line = br.readLine();
+        while(!line.equals("")){
+            requestHeader.appendHeader(line);
+            line = br.readLine();
+        }
         //when
-        String requestUrl = requestUtil.parseRequestUrl();
+        String requestUrl = requestHeader.parseRequestUrl();
 
         //then
         assertEquals("/index.html", requestUrl);
