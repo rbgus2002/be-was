@@ -8,8 +8,10 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
+import java.util.ArrayList;
+import java.util.List;
 
-import static util.Utils.getResourceAsStream;
+import static util.Utils.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,9 +31,10 @@ public class RequestHandler implements Runnable {
              OutputStream out = connection.getOutputStream()) {
 
             // 요청 읽기
-            HttpRequest request = new CustomHttpRequest(reader);
+            List<String> strings = convertbufferedReaderToList(reader);
+            HttpRequest request = new CustomHttpRequest(strings);
 
-            logger.debug("HttpMethod : {}, URI : {}, Version : {}", request.method(), request.uri(), request.version());
+            printLog(logger, strings);
 
             // 요청한 파일 읽기
             InputStream fileInputStream = getResourceAsStream(request.uri());

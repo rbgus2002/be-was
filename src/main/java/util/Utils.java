@@ -1,8 +1,14 @@
 package util;
 
+import org.slf4j.Logger;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -23,5 +29,20 @@ public class Utils {
             return Optional.of(HttpClient.Version.HTTP_2);
         }
         return Optional.empty();
+    }
+
+    public static void printLog(Logger logger, List<String> strings) {
+        for (String str : strings) {
+            logger.debug(str);
+        }
+    }
+
+    public static List<String> convertbufferedReaderToList(BufferedReader reader) throws IOException {
+        String line;
+        List<String> strings = new ArrayList<>();
+        while ((line = reader.readLine()) != null && !line.isEmpty()) {
+            strings.add(line);
+        }
+        return strings;
     }
 }

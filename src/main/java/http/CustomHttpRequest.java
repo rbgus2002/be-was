@@ -1,6 +1,5 @@
 package http;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -8,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 import static util.Utils.getHttpVersion;
@@ -17,14 +17,12 @@ public class CustomHttpRequest extends HttpRequest {
     private final HttpMethod method;
     private final URI uri;
     private final Optional<HttpClient.Version> version;
-    private final HttpHeaders httpHeaders;
 
-    public CustomHttpRequest(BufferedReader reader) throws URISyntaxException, IOException {
-        String[] split = reader.readLine().split(" ");
+    public CustomHttpRequest(List<String> strings) throws URISyntaxException, IOException {
+        String[] split = strings.get(0).split(" ");
         this.method = HttpMethod.of(split[0]);
         this.uri = new URI(split[1]);
         this.version = getHttpVersion(split[2]);
-        this.httpHeaders = null;
     }
 
     @Override
@@ -59,6 +57,6 @@ public class CustomHttpRequest extends HttpRequest {
 
     @Override
     public HttpHeaders headers() {
-        return this.httpHeaders;
+        return null;
     }
 }
