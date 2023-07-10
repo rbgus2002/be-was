@@ -26,32 +26,28 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestHeader requestHeader = buildRequestHeader(in);
             String url = requestHeader.parseRequestUrl();
+            byte[] body = readByPath(url);
+            String contentType = makeContentType(url);
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = readByPath(url);
-
-            String extension = url.substring(url.lastIndexOf("."));
-
-            // 파일 확장자에 따라 다른 contentType 처리
-            String contentType;
-            switch (extension) {
-                case ".html":
-                    contentType = "text/html";
-                    break;
-                case ".css":
-                    contentType = "text/css";
-                    break;
-                case ".js":
-                    contentType = "text/javascript";
-                    break;
-                default:
-                    contentType = "text/plain";
-                    break;
-            }
             response200Header(dos, body.length, contentType);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private static String makeContentType(String url) {
+        String extension = url.substring(url.lastIndexOf("."));
+        switch (extension) {
+            case ".html":
+                return "text/html";
+            case ".css":
+                return "text/css";
+            case ".js":
+                return "text/javascript";
+            default:
+                return "text/plain";
         }
     }
 
