@@ -12,4 +12,3 @@ Java Web Application Server 2023
 
 - [스레드](https://github.com/ShinHeeEul/be-was/wiki/%EC%8A%A4%EB%A0%88%EB%93%9C(Thread))
 - [Concurrent 패키지](https://github.com/ShinHeeEul/be-was/wiki/Concurrent-Package)
-- OOP와 클린 코딩
