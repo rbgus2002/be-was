@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 
-import static util.FileUtils.getResourceAsStream;
+import static util.Utils.getResourceAsStream;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

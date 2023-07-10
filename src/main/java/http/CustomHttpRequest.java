@@ -10,6 +10,8 @@ import java.net.http.HttpRequest;
 import java.time.Duration;
 import java.util.Optional;
 
+import static util.Utils.getHttpVersion;
+
 public class CustomHttpRequest extends HttpRequest {
 
     private final HttpMethod method;
@@ -23,15 +25,6 @@ public class CustomHttpRequest extends HttpRequest {
         this.uri = new URI(split[1]);
         this.version = getHttpVersion(split[2]);
         this.httpHeaders = null;
-    }
-
-    private Optional<HttpClient.Version> getHttpVersion(String version) {
-        if (version.equals("HTTP/1.1")) {
-            return Optional.of(HttpClient.Version.HTTP_1_1);
-        } else if (version.equals("HTTP/2.0")) {
-            return Optional.of(HttpClient.Version.HTTP_2);
-        }
-        return Optional.empty();
     }
 
     @Override
