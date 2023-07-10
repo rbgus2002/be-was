@@ -28,8 +28,8 @@ public class WebServer {
 
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
+            ExecutorService executor = Executors.newWorkStealingPool();
             while ((connection = listenSocket.accept()) != null) {
-                ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.submit(new RequestHandler(connection));
             }
         }
