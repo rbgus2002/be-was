@@ -22,6 +22,7 @@ public class RequestHandler implements Runnable {
         this.connection = connectionSocket;
     }
 
+    @Override
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
@@ -41,6 +42,7 @@ public class RequestHandler implements Runnable {
             // response 생성 후 반환
             DataOutputStream dos = new DataOutputStream(out);
 
+            logger.debug(url);
             byte[] body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
             response200Header(dos, body.length);
             responseBody(dos, body);
