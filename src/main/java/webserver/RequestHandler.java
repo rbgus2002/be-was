@@ -2,13 +2,19 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.StringUtils;
+import utils.WebPageReader;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class RequestHandler implements Runnable {
+import static utils.WebPageReader.readByPath;
+
+public class RequestHandler  implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final Socket connection;
@@ -27,8 +33,25 @@ public class RequestHandler implements Runnable {
             String url = requestHeader.parseRequestUrl();
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + url).toPath());
-            response200Header(dos, body.length);
+            byte[] body = readByPath(url);
+
+            String extension = url.substring(url.lastIndexOf("."));
+
+            switch (extension) {
+                case ".html":
+                    response200Header(dos, body.length, "text/html");
+                    break;
+                case ".css":
+                    response200Header(dos, body.length, "text/css");
+                    break;
+                case ".js":
+                    response200Header(dos, body.length, "text/javascript");
+                    break;
+                default:
+                    response200Header(dos, body.length, "text/plain");
+                    break;
+            }
+
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -47,10 +70,10 @@ public class RequestHandler implements Runnable {
         return requestHeader;
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String type) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + type + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
