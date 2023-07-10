@@ -2,19 +2,14 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.StringUtils;
-import utils.WebPageReader;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static utils.WebPageReader.readByPath;
 
-public class RequestHandler  implements Runnable {
+public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final Socket connection;
@@ -37,21 +32,23 @@ public class RequestHandler  implements Runnable {
 
             String extension = url.substring(url.lastIndexOf("."));
 
+            // 파일 확장자에 따라 다른 contentType 처리
+            String contentType;
             switch (extension) {
                 case ".html":
-                    response200Header(dos, body.length, "text/html");
+                    contentType = "text/html";
                     break;
                 case ".css":
-                    response200Header(dos, body.length, "text/css");
+                    contentType = "text/css";
                     break;
                 case ".js":
-                    response200Header(dos, body.length, "text/javascript");
+                    contentType = "text/javascript";
                     break;
                 default:
-                    response200Header(dos, body.length, "text/plain");
+                    contentType = "text/plain";
                     break;
             }
-
+            response200Header(dos, body.length, contentType);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -70,10 +67,10 @@ public class RequestHandler  implements Runnable {
         return requestHeader;
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String type) {
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + type + ";charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
