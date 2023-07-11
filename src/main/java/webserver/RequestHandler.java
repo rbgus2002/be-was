@@ -27,8 +27,7 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-             OutputStream out = connection.getOutputStream()) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
             // 요청 읽기
             List<String> strings = convertBufferedReaderToList(reader);
@@ -40,13 +39,27 @@ public class RequestHandler implements Runnable {
             InputStream fileInputStream = getResourceAsStream(request.uri());
             byte[] body = fileInputStream.readAllBytes();
 
+            response(body);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void printLogs(List<String> strings) {
+        for (String str : strings) {
+            logger.debug(str);
+        }
+    }
+
+    private void response(byte[] body) {
+        try (OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -67,12 +80,6 @@ public class RequestHandler implements Runnable {
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
-        }
-    }
-
-    private void printLogs(List<String> strings) {
-        for (String str : strings) {
-            logger.debug(str);
         }
     }
 }
