@@ -51,7 +51,7 @@ public class RequestHandler implements Runnable {
     }
 
     private void routeRequest(String route, DataOutputStream dos) throws Exception {
-        if (route.endsWith(".html")) {
+        if (route.contains(".")) {
             serveStaticFile(route, dos);
         }
         else if(route.startsWith("/user/create")) {
