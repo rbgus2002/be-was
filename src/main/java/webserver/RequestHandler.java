@@ -36,15 +36,15 @@ public class RequestHandler implements Runnable {
             // Request
             // http 메세지를 저장하기 위한 StringBuilder 생성
             StringBuilder sb = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line = URLDecoder.decode(br.readLine(), "UTF-8");
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            String line = URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
             logger.debug("request: {}", line);
             // 경로 parsing
             String route = line.split(" ")[1];
             logger.debug("route: {}", route);
             // 나머지 확인
             while(!line.equals("")) {
-                line = URLDecoder.decode(br.readLine(), "UTF-8");
+                line = URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
                 sb.append(line);
                 sb.append("\r\n");
                 logger.debug("header: {}", line);
