@@ -1,16 +1,13 @@
 package util;
 
-import org.slf4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class Utils {
     private Utils() {
@@ -38,5 +35,27 @@ public class Utils {
             strings.add(line);
         }
         return strings;
+    }
+
+    public static <T> T createUserFromQueryParameters(Class<T> clazz, Map<String, String> queryParameters) {
+        try {
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T object = constructor.newInstance();
+
+            for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
+                String fieldName = entry.getKey();
+                String fieldValue = entry.getValue();
+
+                Field field = clazz.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(object, fieldValue);
+            }
+
+            return object;
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("객체를 생성하지 못했습니다.");
+        }
     }
 }

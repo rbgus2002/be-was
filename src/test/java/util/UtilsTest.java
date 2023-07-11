@@ -1,14 +1,18 @@
 package util;
 
+import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.net.http.HttpClient;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UtilsTest {
 
@@ -65,5 +69,54 @@ public class UtilsTest {
         //then
         List<String> expected = List.of("a", "bb", "ccc");
         assertThat(strings).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("리플렉션을 이용해 쿼리값을 User 생성자의 인자로 넣는다.")
+    void makeUserWithReflection() {
+        //given
+        Map<String, String> queries = new HashMap<>();
+        queries.put("name", "han");
+        queries.put("email", "a@a.com");
+        queries.put("userId", "1");
+        queries.put("password", "1q2w3e4r");
+
+        //when
+        User user = Utils.createUserFromQueryParameters(User.class, queries);
+
+        //then
+        assertThat(user.getName()).isEqualTo(queries.get("name"));
+        assertThat(user.getEmail()).isEqualTo(queries.get("email"));
+        assertThat(user.getUserId()).isEqualTo(queries.get("userId"));
+        assertThat(user.getPassword()).isEqualTo(queries.get("password"));
+    }
+
+    @Test
+    @DisplayName("map 사이즈가 더 크면 생성자 리플렉션에 실패한다.")
+    void failMapLengthLarger() {
+        //given
+        Map<String, String> queries = new HashMap<>();
+        queries.put("name", "han");
+        queries.put("email", "a@a.com");
+        queries.put("userId", "1");
+        queries.put("password", "1q2w3e4r");
+        queries.put("a", "b");
+
+        //when, then
+        assertThrows(IllegalArgumentException.class, () -> Utils.createUserFromQueryParameters(User.class, queries));
+    }
+
+    @Test
+    @DisplayName("필드 변수 일치하지 않으면 생성자 리플렉션에 실패한다.")
+    void parameterNotMath() {
+        //given
+        Map<String, String> queries = new HashMap<>();
+        queries.put("name", "han");
+        queries.put("email", "a@a.com");
+        queries.put("userId", "1");
+        queries.put("a", "1q2w3e4r");
+
+        //when, then
+        assertThrows(IllegalArgumentException.class, () -> Utils.createUserFromQueryParameters(User.class, queries));
     }
 }
