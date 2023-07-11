@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 import static util.Utils.*;
@@ -31,7 +30,7 @@ public class RequestHandler implements Runnable {
              OutputStream out = connection.getOutputStream()) {
 
             // 요청 읽기
-            List<String> strings = convertbufferedReaderToList(reader);
+            List<String> strings = convertBufferedReaderToList(reader);
             HttpRequest request = new CustomHttpRequest(strings);
 
             printLog(logger, strings);

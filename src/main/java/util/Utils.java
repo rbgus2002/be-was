@@ -37,7 +37,7 @@ public class Utils {
         }
     }
 
-    public static List<String> convertbufferedReaderToList(BufferedReader reader) throws IOException {
+    public static List<String> convertBufferedReaderToList(BufferedReader reader) throws IOException {
         String line;
         List<String> strings = new ArrayList<>();
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
