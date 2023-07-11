@@ -16,13 +16,13 @@ public class CustomHttpRequest extends HttpRequest {
 
     private final HttpMethod method;
     private final URI uri;
-    private final Optional<HttpClient.Version> version;
+    private final HttpClient.Version version;
 
     public CustomHttpRequest(List<String> strings) throws URISyntaxException, IOException {
         String[] split = strings.get(0).split(" ");
         this.method = HttpMethod.of(split[0]);
         this.uri = new URI(split[1]);
-        this.version = getHttpVersion(split[2]);
+        this.version = getHttpVersion(split[2]).orElse(null);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class CustomHttpRequest extends HttpRequest {
 
     @Override
     public Optional<HttpClient.Version> version() {
-        return this.version;
+        return Optional.of(this.version);
     }
 
     @Override
