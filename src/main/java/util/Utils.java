@@ -31,12 +31,6 @@ public class Utils {
         return Optional.empty();
     }
 
-    public static void printLog(Logger logger, List<String> strings) {
-        for (String str : strings) {
-            logger.debug(str);
-        }
-    }
-
     public static List<String> convertBufferedReaderToList(BufferedReader reader) throws IOException {
         String line;
         List<String> strings = new ArrayList<>();

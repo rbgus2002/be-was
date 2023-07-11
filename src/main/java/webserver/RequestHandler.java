@@ -10,7 +10,8 @@ import java.net.URISyntaxException;
 import java.net.http.HttpRequest;
 import java.util.List;
 
-import static util.Utils.*;
+import static util.Utils.convertBufferedReaderToList;
+import static util.Utils.getResourceAsStream;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -33,7 +34,7 @@ public class RequestHandler implements Runnable {
             List<String> strings = convertBufferedReaderToList(reader);
             HttpRequest request = new CustomHttpRequest(strings);
 
-            printLog(logger, strings);
+            printLogs(strings);
 
             // 요청한 파일 읽기
             InputStream fileInputStream = getResourceAsStream(request.uri());
@@ -66,6 +67,12 @@ public class RequestHandler implements Runnable {
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private void printLogs(List<String> strings) {
+        for (String str : strings) {
+            logger.debug(str);
         }
     }
 }
