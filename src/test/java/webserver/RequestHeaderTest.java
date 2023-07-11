@@ -27,16 +27,18 @@ class RequestHeaderTest {
     void parseRequestUrl() throws IOException {
         //given
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        RequestHeader requestHeader = new RequestHeader();
+        RequestHeader.RequestHeaderBuilder requestHeaderBuilder = new RequestHeader.RequestHeaderBuilder();
         String line = br.readLine();
-        requestHeader.addRequestLine(line);
+        requestHeaderBuilder = requestHeaderBuilder.requestLine(line);
         line = br.readLine();
         while(!"".equals(line)){
-            requestHeader.appendHeader(line);
+            requestHeaderBuilder.header(line);
             line = br.readLine();
         }
+        RequestHeader requestHeader = requestHeaderBuilder.build();
+
         //when
-        String requestUrl = requestHeader.parseRequestUrl();
+        String requestUrl = requestHeader.getRequestUrl();
 
         //then
         assertEquals("/index.html", requestUrl);

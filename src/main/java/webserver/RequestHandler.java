@@ -25,7 +25,8 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestHeader requestHeader = buildRequestHeader(in);
-            String url = requestHeader.parseRequestUrl();
+            String url = requestHeader.getRequestUrl();
+            logger.error(requestHeader.getRequestUrl());
             byte[] body = readByPath(url);
             String contentType = makeContentType(url);
 
@@ -53,15 +54,18 @@ public class RequestHandler implements Runnable {
 
     private static RequestHeader buildRequestHeader(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        RequestHeader requestHeader = new RequestHeader();
-        String line = br.readLine();
-        logger.debug("Request_Url : {}", line);
-        requestHeader.addRequestLine(line);
-        while(!"".equals((line = br.readLine()))){
-            logger.debug("Request-Headers : {}", line);
-            requestHeader.appendHeader(line);
+
+        RequestHeader.RequestHeaderBuilder requestHeaderBuilder = new RequestHeader.RequestHeaderBuilder();
+        String requestLine = br.readLine();
+        requestHeaderBuilder = requestHeaderBuilder.requestLine(requestLine);
+        logger.debug("Request_Url : {}", requestLine);
+
+        String header;
+        while(!"".equals((header = br.readLine()))){
+            logger.debug("Request-Headers : {}", header);
+            requestHeaderBuilder.header(header);
         }
-        return requestHeader;
+        return requestHeaderBuilder.build();
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
