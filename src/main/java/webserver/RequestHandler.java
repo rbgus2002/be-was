@@ -27,7 +27,6 @@ public class RequestHandler implements Runnable {
             String line = br.readLine();
             logger.debug("line = {}", line);
             String[] tokens = line.split(" ");
-            logger.debug("tokens[1] = {}", tokens[1]);
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File("/Users/dydwo0740/Desktop/develop/be-was/src/main/resources/templates" + tokens[1]).toPath());
