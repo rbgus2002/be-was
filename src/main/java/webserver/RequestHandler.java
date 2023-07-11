@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,9 @@ public class RequestHandler implements Runnable {
                 queryParameterMap.get(PASSWORD),
                 queryParameterMap.get(NAME),
                 queryParameterMap.get(EMAIL));
+
+        Database.addUser(user);
+        System.out.println();
     }
 
     private void serveStaticFile(String route, DataOutputStream dos) throws IOException {
