@@ -61,7 +61,7 @@ public class RequestHandler implements Runnable {
         requestHeaderBuilder = requestHeaderBuilder.requestLine(requestLine);
 
         String header;
-        while(!"".equals((header = br.readLine()))){
+        while (!"".equals((header = br.readLine()))) {
             requestHeaderBuilder.header(header);
         }
         return requestHeaderBuilder.build();

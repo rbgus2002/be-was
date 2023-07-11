@@ -23,7 +23,7 @@ public class WebPageReader {
     public static byte[] readByPath(String url) throws IOException {
         for (String path : WEB_PATH) {
             File file = new File(path + url);
-            if(file.exists() && file.isFile()){
+            if (file.exists() && file.isFile()) {
                 return Files.readAllBytes(file.toPath());
             }
         }

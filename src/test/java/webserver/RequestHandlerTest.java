@@ -12,6 +12,7 @@ import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
 
+@DisplayName("RequestHandler 테스트")
 class RequestHandlerTest {
 
     @Test

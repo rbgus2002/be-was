@@ -3,6 +3,7 @@ package webserver;
 import utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RequestHeader {
@@ -13,7 +14,7 @@ public class RequestHeader {
         private String requestLine;
         private final List<String> headers = new ArrayList<>();
 
-        public RequestHeaderBuilder requestLine(String requestLine){
+        public RequestHeaderBuilder requestLine(String requestLine) {
             this.requestLine = requestLine;
             return this;
         }
@@ -43,5 +44,23 @@ public class RequestHeader {
         return tokens[1];
     }
 
+    public String getRequestPath() {
+        String[] pathAndQuery = getRequestUrl().split("\\?");
+        return pathAndQuery[0];
+    }
+
+    public Query getRequestQuery() {
+        String[] pathAndQuery = getRequestUrl().split("\\?");
+        String queryString = pathAndQuery[1];
+
+        Query query = new Query();
+        String[] queries = queryString.split("&");
+        Arrays.stream(queries)
+                .forEach(queryComponent -> {
+                    String[] keyAndValue = queryComponent.split("=");
+                    query.appendQuery(keyAndValue[0], keyAndValue[1]);
+                });
+        return query;
+    }
 
 }
