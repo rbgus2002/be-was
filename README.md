@@ -7,6 +7,12 @@ Java Web Application Server 2023
 이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was 
 를 참고하여 작성되었습니다.
 
+### 프로젝트 원리
+  - 사용한 기술에 대한 정리는 [WAS-Wiki](https://github.com/ijehyunpark/be-was/wiki/Web-Application-Server-Wiki)에 있습니다.
+  - WAS는 다음과 같이 동작합니다.
+    1. 클라이언트로부터 요청이 수신되었을 경우 새로운 스레드를 할당하여 해당 요청을 RequestHandler에게 전달합니다. 
+    2. RequestHandler는 전달받은 메세지를 해석하여 요청에 맞는 페이지를 불러와 적절한 헤더와 함께 클라이언트에 전달합니다. 
+
 ## 프로젝트 구조
 
 ### webserver package
