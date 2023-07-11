@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static utils.StringUtils.appendNewLine;
 
 class RequestHeaderTest {
@@ -39,8 +40,10 @@ class RequestHeaderTest {
 
         //when
         String requestUrl = requestHeader.getRequestUrl();
+        String requestHeaders = requestHeader.getHeaders();
 
         //then
         assertEquals("/index.html", requestUrl);
+        assertNotEquals(0, requestHeaders.length());
     }
 }
