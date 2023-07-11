@@ -55,6 +55,7 @@ public class RequestHandler implements Runnable {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         RequestHeader requestHeader = new RequestHeader();
         String line = br.readLine();
+        logger.debug("Request_Url : {}", line);
         requestHeader.addRequestLine(line);
         while(!"".equals((line = br.readLine()))){
             logger.debug("Request-Headers : {}", line);
