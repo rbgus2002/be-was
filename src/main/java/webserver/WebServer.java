@@ -31,7 +31,6 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 executor.execute(new RequestHandler(connection));
-                executor.shutdown();
             }
         } catch (IOException e) {
             logger.error("서버가 동작하는 중 에러가 발생했습니다: {}", e.getMessage());
