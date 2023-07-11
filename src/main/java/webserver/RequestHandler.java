@@ -43,19 +43,37 @@ public class RequestHandler implements Runnable {
 
             // Response
             DataOutputStream dos = new DataOutputStream(out);
-            // 요청 경로의 파일을 반환
-            File f;
-            byte[] body;
-            // 두 가지의 경로 모두를 조회해야 합니다.
-            if (!(f = new File(STATIC_FILEPATH + route)).exists()) {
-                f = new File(TEMPLATE_FILEPATH + route);
-            }
-            body = Files.readAllBytes(f.toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
+            routeRequest(route, dos);
+
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private void routeRequest(String route, DataOutputStream dos) throws Exception {
+        if (route.endsWith(".html")) {
+            serveStaticFile(route, dos);
+        }
+        else if(route.startsWith("/user/create")) {
+            // TODO 회원가입 구현
+        }
+    }
+
+    private void userSingUp(String route, DataOutputStream dos) {
+
+    }
+
+    private void serveStaticFile(String route, DataOutputStream dos) throws IOException {
+        // 요청 경로의 파일을 반환
+        File f;
+        byte[] body;
+        // 두 가지의 경로 모두를 조회해야 합니다.
+        if (!(f = new File(STATIC_FILEPATH + route)).exists()) {
+            f = new File(TEMPLATE_FILEPATH + route);
+        }
+        body = Files.readAllBytes(f.toPath());
+        response200Header(dos, body.length);
+        responseBody(dos, body);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
