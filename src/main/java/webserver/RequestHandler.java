@@ -10,6 +10,7 @@ import webserver.utils.HttpUtil;
 import webserver.utils.view.FileUtil;
 
 public class RequestHandler implements Runnable {
+
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
@@ -22,12 +23,15 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            String content = HttpUtil.getContent(in);
+        try (InputStream in = connection.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+             BufferedOutputStream bufferedOut = new BufferedOutputStream(connection.getOutputStream());
+             DataOutputStream dos = new DataOutputStream(bufferedOut)) {
+
+            String content = HttpUtil.getContent(reader);
             String url = HttpUtil.getUrl(content);
             byte[] body = getBytes(url);
 
-            DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
