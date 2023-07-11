@@ -25,8 +25,9 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             RequestHeader requestHeader = buildRequestHeader(in);
+            logger.debug("Request Headers: \n{}", requestHeader.getHeaders());
+            logger.debug("Request Headers End");
             String url = requestHeader.getRequestUrl();
-            logger.error(requestHeader.getRequestUrl());
             byte[] body = readByPath(url);
             String contentType = makeContentType(url);
 
@@ -58,11 +59,9 @@ public class RequestHandler implements Runnable {
         RequestHeader.RequestHeaderBuilder requestHeaderBuilder = new RequestHeader.RequestHeaderBuilder();
         String requestLine = br.readLine();
         requestHeaderBuilder = requestHeaderBuilder.requestLine(requestLine);
-        logger.debug("Request_Url : {}", requestLine);
 
         String header;
         while(!"".equals((header = br.readLine()))){
-            logger.debug("Request-Headers : {}", header);
             requestHeaderBuilder.header(header);
         }
         return requestHeaderBuilder.build();

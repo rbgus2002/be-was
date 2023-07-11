@@ -1,10 +1,12 @@
 package webserver;
 
+import utils.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestHeader {
-    private String url;
+    private final String requestLine;
     private final List<String> headers;
 
     public static class RequestHeaderBuilder {
@@ -27,14 +29,18 @@ public class RequestHeader {
     }
 
     private RequestHeader(String requestLine, List<String> headers) {
-        String[] tokens = requestLine.split(" ");
-        this.url = tokens[1];
-
+        this.requestLine = requestLine;
         this.headers = headers;
     }
 
+    public String getHeaders() {
+        return requestLine + headers.stream()
+                .reduce("", StringUtils::appendNewLine);
+    }
+
     public String getRequestUrl() {
-        return url;
+        String[] tokens = requestLine.split(" ");
+        return tokens[1];
     }
 
 
