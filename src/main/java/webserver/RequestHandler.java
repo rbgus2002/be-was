@@ -30,20 +30,26 @@ public class RequestHandler implements Runnable {
             logger.debug("Request Headers: \n{}", requestHeader.getHeaders());
             logger.debug("Request Headers End");
 
+
+            String url = requestHeader.getRequestUrl();
+            DataOutputStream dos = new DataOutputStream(out);
+
+            // 회원 가입
             String path = requestHeader.getRequestPath();
             if (path.equals("/user/create")) {
-                createUserRequest(requestHeader);
-                return;
+                User user = createUserRequest(requestHeader);
+                Database.addUser(user);
+                logger.debug("새로운 유저 생성: {}", user.getUserId());
+                url = "/index.html";
+                response302Header(dos, url);
             }
 
 
             // 페이지 읽기
-            String url = requestHeader.getRequestUrl();
             byte[] body = readByPath(url);
             String contentType = makeContentType(url);
 
             // 페이지 반환
-            DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length, contentType);
             responseBody(dos, body);
         } catch (IOException e) {
@@ -51,13 +57,12 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private static void createUserRequest(RequestHeader requestHeader) {
+    private static User createUserRequest(RequestHeader requestHeader) {
         Query requestQuery = requestHeader.getRequestQuery();
-        User user = new User(requestQuery.getValue("userId"),
+        return new User(requestQuery.getValue("userId"),
                 requestQuery.getValue("password"),
                 requestQuery.getValue("name"),
                 requestQuery.getValue("email"));
-        Database.addUser(user);
     }
 
     private static String makeContentType(String url) {
@@ -93,6 +98,16 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos, String redirection) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: " + redirection + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
