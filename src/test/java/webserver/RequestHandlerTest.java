@@ -115,6 +115,10 @@ class RequestHandlerTest {
         assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", user.getName());
         assertEquals("javajigi%40slipp.net", user.getEmail());
 
+        String[] result = outputStream.toString().split("\r\n");
+        assertTrue("HTTP/1.1 302 Found".equals(result[0]));
+        assertEquals("Location: /index.html", result[1]);
+
     }
 
 }

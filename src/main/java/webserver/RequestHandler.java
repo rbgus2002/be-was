@@ -106,7 +106,7 @@ public class RequestHandler implements Runnable {
 
     private void response302Header(DataOutputStream dos, String redirection) {
         try {
-            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("HTTP/1.1 302 Found\r\n");
             dos.writeBytes("Location: " + redirection + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
