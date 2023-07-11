@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import static utils.WebPageReader.readByPath;
+import static webserver.WebPageReader.readByPath;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

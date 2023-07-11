@@ -1,7 +1,8 @@
-package utils;
+package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.WebPageReader;
 
 import java.io.IOException;
 
