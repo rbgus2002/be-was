@@ -1,5 +1,7 @@
 package webserver;
 
+import db.Database;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,20 +25,39 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+            // 요청 해석
             RequestHeader requestHeader = buildRequestHeader(in);
             logger.debug("Request Headers: \n{}", requestHeader.getHeaders());
             logger.debug("Request Headers End");
+
+            String path = requestHeader.getRequestPath();
+            if (path.equals("/user/create")) {
+                createUserRequest(requestHeader);
+                return;
+            }
+
+
+            // 페이지 읽기
             String url = requestHeader.getRequestUrl();
             byte[] body = readByPath(url);
             String contentType = makeContentType(url);
 
+            // 페이지 반환
             DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length, contentType);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private static void createUserRequest(RequestHeader requestHeader) {
+        Query requestQuery = requestHeader.getRequestQuery();
+        User user = new User(requestQuery.getValue("userId"),
+                requestQuery.getValue("password"),
+                requestQuery.getValue("name"),
+                requestQuery.getValue("email"));
+        Database.addUser(user);
     }
 
     private static String makeContentType(String url) {
