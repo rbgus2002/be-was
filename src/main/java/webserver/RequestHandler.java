@@ -2,11 +2,19 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static model.User.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -28,14 +36,14 @@ public class RequestHandler implements Runnable {
             // http 메세지를 저장하기 위한 StringBuilder 생성
             StringBuilder sb = new StringBuilder();
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line = br.readLine();
+            String line = URLDecoder.decode(br.readLine(), "UTF-8");
             logger.debug("request: {}", line);
             // 경로 parsing
             String route = line.split(" ")[1];
             logger.debug("route: {}", route);
             // 나머지 확인
             while(!line.equals("")) {
-                line = br.readLine();
+                line = URLDecoder.decode(br.readLine(), "UTF-8");
                 sb.append(line);
                 sb.append("\r\n");
                 logger.debug("header: {}", line);
@@ -51,16 +59,30 @@ public class RequestHandler implements Runnable {
     }
 
     private void routeRequest(String route, DataOutputStream dos) throws Exception {
-        if (route.contains(".")) {
+        if (route.endsWith(".html")) {
             serveStaticFile(route, dos);
         }
         else if(route.startsWith("/user/create")) {
-            // TODO 회원가입 구현
+            userSingUp(route, dos);
         }
     }
 
     private void userSingUp(String route, DataOutputStream dos) {
-
+        // ?를 기준으로 쿼리 스트링 분할
+        String queryString = route.split("\\?")[1];
+        // &를 기준으로 파라미터 분할
+        String[] queryParameterList = queryString.split("&");
+        // Map에 key-value 저장
+        Map<String, String> queryParameterMap = new HashMap<>();
+        for(String queryParameter: queryParameterList) {
+            queryParameterMap.put(queryParameter.split("=")[0],
+                    queryParameter.split("=")[1]);
+        }
+        // User 객체 생성
+        User user = new User(queryParameterMap.get(USERID),
+                queryParameterMap.get(PASSWORD),
+                queryParameterMap.get(NAME),
+                queryParameterMap.get(EMAIL));
     }
 
     private void serveStaticFile(String route, DataOutputStream dos) throws IOException {
