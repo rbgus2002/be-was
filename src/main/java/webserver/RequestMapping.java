@@ -12,7 +12,6 @@ public class RequestMapping {
     public RequestMapping() {
         map.put("/", new HomeController());
         map.put("/index.html", new HomeController());
-
     }
 
     public Controller getController(HttpRequest req) {

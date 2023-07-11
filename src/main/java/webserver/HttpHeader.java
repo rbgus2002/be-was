@@ -1,0 +1,54 @@
+package webserver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+
+public class HttpHeader {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpHeader.class);
+    private String contextType = "text/plain";
+    private final HashMap<String, String> extension = new HashMap<>();
+    private String header = "";
+
+    public HttpHeader() {
+        logger.info("HttpHeader Create");
+
+        extension.put(".html", "text/html");
+        extension.put(".css", "text/css");
+        extension.put(".js", "text/javascript");
+        extension.put(".woff", "application/x-font-woff");
+        extension.put(".ttf", "application/x-font-ttf");
+    }
+    public String response200Header(int bodyOfLength) {
+            header += "HTTP/1.1 200 OK \r\n";
+            header += "Content-Type: " + contextType + ";charset=utf-8\r\n";
+            header += "Content-Length: " + bodyOfLength + "\r\n";
+            header += "\r\n";
+
+            return header;
+
+    }
+
+    public String response404Header() {
+            header += "HTTP/1.1 404 Not Found \r\n";
+
+            return header;
+    }
+
+
+    public String getResourceUrl(String url) {
+
+        final String TEMPLATE_URL = "./src/main/resources/templates";
+        final String STATIC_URL = "./src/main/resources/static";
+
+        logger.info("resourceUrl : " + url);
+        String urlExtension = url.substring(url.lastIndexOf("."));
+        contextType = extension.get(urlExtension);
+        if(urlExtension.equals(".html")) {
+            return TEMPLATE_URL + url;
+        }
+        return STATIC_URL + url;
+    }
+}

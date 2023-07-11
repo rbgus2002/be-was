@@ -1,6 +1,7 @@
 package webserver;
 
 import controller.Controller;
+import controller.ForwardController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,7 @@ public class DispatcherServlet  {
         Controller controller = requestMapping.getController(req);
         String toUrl;
         if(controller == null) {
-            return;
+            controller = new ForwardController(req.getUrl());
         }
         toUrl = controller.execute(req, resp);
 
