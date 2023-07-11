@@ -14,6 +14,7 @@ public class HttpResponse {
     final String DEFAULT_URL = "./src/main/resources/templates";
     private final DataOutputStream dos;
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
+    private String contextType = "text/plain";
 
     public HttpResponse() {
         logger.info("HttpServletResponse Create");
@@ -32,8 +33,15 @@ public class HttpResponse {
     }
 
     private byte[] getContent(String url) {
-
         byte[] body;
+        if(url.endsWith(".html")) {
+            contextType = "text/html";
+        } else if(url.endsWith(".css")) {
+            contextType = "text/css";
+        } else if(url.endsWith(".text/javascript")) {
+            contextType = "text/javascript";
+        }
+
         try {
             body = Files.readAllBytes(new File(DEFAULT_URL + url).toPath());
         } catch (IOException e) {
@@ -43,8 +51,8 @@ public class HttpResponse {
 
     }
 
-    public void forward(String path) {
-        byte[] body = getContent(path);
+    public void forward(String url) {
+        byte[] body = getContent(url);
         logger.info("HttpResponse forward");
         response200Header(body.length);
         responseBody(body);
