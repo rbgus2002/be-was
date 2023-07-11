@@ -86,7 +86,6 @@ public class RequestHandler implements Runnable {
                 queryParameterMap.get(EMAIL));
 
         Database.addUser(user);
-        System.out.println();
     }
 
     private void serveStaticFile(String route, DataOutputStream dos) throws IOException {
