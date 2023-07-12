@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 import com.google.common.io.CharStreams;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,8 @@ public class RequestHandler implements Runnable {
             switch (url) {
                 case "/user/create":
                     body = Files.readAllBytes(Paths.get("src/main/resources/templates/index.html"));
+                    User user = new User(requestParser.getParams());
+                    logger.debug(user.toString());
                     break;
                 default:
                      body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
