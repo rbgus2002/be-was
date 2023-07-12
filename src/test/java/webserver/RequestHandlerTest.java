@@ -2,6 +2,7 @@ package webserver;
 
 import db.Database;
 import model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import static exception.ExceptionName.WRONG_ARGUMENT;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
 
@@ -40,6 +42,11 @@ class RequestHandlerTest {
         public OutputStream getOutputStream() {
             return outputStream;
         }
+    }
+
+    @BeforeEach
+    void setUp() {
+        Database.clear();
     }
 
     RequestHandler buildRequestHandler(String requestLine) {
@@ -118,7 +125,25 @@ class RequestHandlerTest {
         String[] result = outputStream.toString().split("\r\n");
         assertEquals("HTTP/1.1 302 Found", result[0]);
         assertEquals("Location: /index.html", result[1]);
+    }
 
+    @Test
+    @DisplayName("이상한 요청 등록 요청 처리 테스트")
+    void registerUserDiff() {
+        //given
+        String request = "GET /user/create?userId=javajigi&pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+        RequestHandler requestHandler = buildRequestHandler(request);
+
+        //when
+        RuntimeException runtimeException = assertThrows(
+                RuntimeException.class,
+                requestHandler::run
+        );
+        User user = Database.findUserById("javajigi");
+
+        //then
+        assertEquals(WRONG_ARGUMENT, runtimeException.getMessage());
+        assertNull(user);
     }
 
 }
