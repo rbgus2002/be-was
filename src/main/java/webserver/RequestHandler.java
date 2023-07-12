@@ -1,16 +1,16 @@
 package webserver;
 
+import annotation.RequestMappingHandler;
 import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import static util.Utils.convertBufferedReaderToList;
-import static util.Utils.getResourceAsStream;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -34,14 +34,11 @@ public class RequestHandler implements Runnable {
 
             printLogs(strings);
 
-            // 요청한 파일 읽기
-            InputStream fileInputStream = getResourceAsStream(request.uri());
-            byte[] body = fileInputStream.readAllBytes();
-
-            response(body);
+            HttpResponse response = RequestMappingHandler.invokeMethod(request);
+            response.response(connection);
         } catch (IOException e) {
             logger.error(e.getMessage());
-        } catch (URISyntaxException e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
@@ -49,36 +46,6 @@ public class RequestHandler implements Runnable {
     private void printLogs(List<String> strings) {
         for (String str : strings) {
             logger.debug(str);
-        }
-    }
-
-    private void response(byte[] body) {
-        try (OutputStream out = connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
         }
     }
 }
