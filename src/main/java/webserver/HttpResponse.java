@@ -18,19 +18,23 @@ public class HttpResponse {
 
     public HttpResponse(DataOutputStream dos) {
         logger.info("HttpServletResponse Create with dos");
+        httpHeader = new HttpHeader();
         this.dos = dos;
     }
 
     public void sendRedirect(String redirectUrl) {
 
         logger.info("HttpResponse redirect");
-        //response302Header();
+        try {
+            dos.writeBytes(httpHeader.response302Header(redirectUrl));
+        } catch(IOException e) {
+            logger.error(e.getMessage());
+        }
         //responseBody();
     }
 
     private byte[] getContent(String url) {
         byte[] body;
-        httpHeader = new HttpHeader();
 
         String resourceUrl = httpHeader.getResourceUrl(url);
 

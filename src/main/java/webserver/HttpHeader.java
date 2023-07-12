@@ -22,13 +22,26 @@ public class HttpHeader {
         extension.put(".ttf", "application/x-font-ttf");
     }
     public String response200Header(int bodyOfLength) {
-            header += "HTTP/1.1 200 OK \r\n";
-            header += "Content-Type: " + contextType + ";charset=utf-8\r\n";
-            header += "Content-Length: " + bodyOfLength + "\r\n";
-            header += "\r\n";
+
+        logger.info("response200Header");
+        header += "HTTP/1.1 200 OK \r\n";
+        header += "Content-Type: " + contextType + ";charset=utf-8\r\n";
+        header += "Content-Length: " + bodyOfLength + "\r\n";
+        header += "\r\n";
 
             return header;
 
+    }
+
+    public String response302Header(String redirectUrl) {
+        logger.info("response302Header");
+        header += "HTTP/1.1 302 \r\n";
+        header += "Location: http://localhost:8080" + redirectUrl + "\r\n";
+        header += "Content-Type: text/html;charset=UTF-8\r\n";
+        header += "Content-Length: 0 \r\n";
+        header += "\r\n";
+
+        return header;
     }
 
     public String response404Header() {

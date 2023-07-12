@@ -2,7 +2,7 @@ package webserver;
 
 import controller.Controller;
 import controller.HomeController;
-import controller.LoginController;
+import controller.SignupController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ public class RequestMapping {
         logger.info("RequestMapping Create");
         map.put("/", new HomeController());
         map.put("/index.html", new HomeController());
-        map.put("/create", new LoginController());
+        map.put("/user/create", new SignupController());
     }
 
     public Controller getController(HttpRequest req) {
