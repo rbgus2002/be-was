@@ -1,18 +1,22 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
+import http.CustomHttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.Socket;
+import java.net.URISyntaxException;
+import java.net.http.HttpRequest;
+import java.util.List;
+
+import static util.Utils.convertBufferedReaderToList;
+import static util.Utils.getResourceAsStream;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -22,10 +26,36 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+        try (InputStream in = connection.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+
+            // 요청 읽기
+            List<String> strings = convertBufferedReaderToList(reader);
+            HttpRequest request = new CustomHttpRequest(strings);
+
+            printLogs(strings);
+
+            // 요청한 파일 읽기
+            InputStream fileInputStream = getResourceAsStream(request.uri());
+            byte[] body = fileInputStream.readAllBytes();
+
+            response(body);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void printLogs(List<String> strings) {
+        for (String str : strings) {
+            logger.debug(str);
+        }
+    }
+
+    private void response(byte[] body) {
+        try (OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
