@@ -52,4 +52,21 @@ class HttpRequestTest {
         assertThat(parameters.get("name")).isEqualTo("박재성");
         assertThat(parameters.get("email")).isEqualTo("javajigi@slipp.net");
     }
+
+    @Test
+    @DisplayName("쿼리스트링이 없으면 빈 맵을 반환한다.")
+    void returnEmptyMapIfQueryNotExist() throws URISyntaxException, IOException {
+        //given
+        List<String> strings = List.of("GET /index.html HTTP/1.1",
+                "Host: localhost:8080",
+                "Connection: keep-alive",
+                "Accept: */*");
+        HttpRequest httpRequest = new HttpRequest(strings);
+
+        //when
+        Map<String, String> parameters = httpRequest.parameters();
+
+        //then
+        assertThat(parameters).isEmpty();
+    }
 }

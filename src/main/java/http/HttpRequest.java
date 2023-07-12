@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class HttpRequest {
     private final HttpMethod method;
     private final URI uri;
     private final HttpClient.Version version;
+    private final Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
 
     public HttpRequest(List<String> requestLines) throws URISyntaxException, IOException {
         String[] requestParts = requestLines.get(0).split(" ");
@@ -29,8 +31,10 @@ public class HttpRequest {
     }
 
     public Map<String, String> parameters() {
-        Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
-        Matcher matcher = pat.matcher(uri.getQuery());
+        if (this.uri.getQuery() == null) {
+            return Collections.emptyMap();
+        }
+        Matcher matcher = pat.matcher(this.uri.getQuery());
         Map<String, String> map = new HashMap<>();
         while (matcher.find()) {
             map.put(matcher.group(1), matcher.group(2));
