@@ -42,6 +42,10 @@ public class DataModelWrapper {
         return dataModel;
     }
 
+    public Class<?> getDataModelClass() {
+        return this.dataModelClass;
+    }
+
     public boolean equalsClass(Class<?> clazz) {
         return this.dataModelClass == clazz;
     }

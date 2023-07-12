@@ -42,10 +42,11 @@ public class RequestHandler implements Runnable {
             Optional<DataModelWrapper> resolve = DataModelResolver.resolve(path);
             if (resolve.isPresent()) {
                 Query requestQuery = requestHeader.getRequestQuery();
-                Object o = resolve.get().constructClass(requestQuery);
+                Object dataModel = resolve.get().constructClass(requestQuery);
 
                 //TODO: 현재 오직 유저 생성 요청만 받으므로 이를 개선할 필요성이 있다.
-                url = createUser(dos, (User) o);
+                if (dataModel instanceof User)
+                    url = createUser(dos, (User) dataModel);
             }
 
 
