@@ -3,13 +3,13 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpHeader {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpHeader.class);
     private String contextType = "text/plain";
-    private final HashMap<String, String> extension = new HashMap<>();
+    private final ConcurrentHashMap<String, String> extension = new ConcurrentHashMap<>();
     private String header = "";
 
     public HttpHeader() {
@@ -42,8 +42,12 @@ public class HttpHeader {
 
         final String TEMPLATE_URL = "./src/main/resources/templates";
         final String STATIC_URL = "./src/main/resources/static";
+        final String NOT_FOUND = "";
 
         logger.info("resourceUrl : " + url);
+        if(!url.contains(".")) {
+            return NOT_FOUND;
+        }
         String urlExtension = url.substring(url.lastIndexOf("."));
         contextType = extension.get(urlExtension);
         if(urlExtension.equals(".html")) {
