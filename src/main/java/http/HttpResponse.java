@@ -2,25 +2,26 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 import static util.FileUtils.getResourceAsStream;
 
 public class HttpResponse {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
     private final byte[] body;
 
-    public HttpResponse(String path) throws IOException {
+    public HttpResponse(String path) throws FileNotFoundException {
         InputStream fileInputStream = getResourceAsStream(path);
-        this.body = fileInputStream.readAllBytes();
+
+        try {
+            this.body = fileInputStream.readAllBytes();
+        } catch (Exception e) {
+            throw new FileNotFoundException("파일을 찾을 수 없습니다.");
+        }
     }
 
     public void response(Socket connection) {
