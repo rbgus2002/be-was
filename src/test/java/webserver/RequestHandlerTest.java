@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.DataOutputStream;
-
 class RequestHandlerTest {
     @BeforeAll
     public void setup() throws Exception {

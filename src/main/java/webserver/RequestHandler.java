@@ -64,11 +64,12 @@ public class RequestHandler implements Runnable {
             serveStaticFile(route, dos);
         }
         else if(route.startsWith("/user/create")) {
-            userSingUp(route, dos);
+            Map<String, String> queryParameterMap = parseQueryParameter(route);
+            userSingUp(queryParameterMap);
         }
     }
 
-    private void userSingUp(String route, DataOutputStream dos) {
+    private Map<String, String> parseQueryParameter(String route) {
         // ?를 기준으로 쿼리 스트링 분할
         String queryString = route.split("\\?")[1];
         // &를 기준으로 파라미터 분할
@@ -79,12 +80,17 @@ public class RequestHandler implements Runnable {
             queryParameterMap.put(queryParameter.split("=")[0],
                     queryParameter.split("=")[1]);
         }
+
+        return queryParameterMap;
+    }
+
+    private void userSingUp(Map<String, String> queryParameterMap) {
         // User 객체 생성
         User user = new User(queryParameterMap.get(USERID),
                 queryParameterMap.get(PASSWORD),
                 queryParameterMap.get(NAME),
                 queryParameterMap.get(EMAIL));
-
+        // DB 저장
         Database.addUser(user);
     }
 
