@@ -34,6 +34,10 @@ public class HttpResponse {
         }
     }
 
+    public byte[] getBody() {
+        return this.body.clone();
+    }
+
     private void response200Header(DataOutputStream dos) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
