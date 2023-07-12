@@ -1,13 +1,12 @@
 package webserver;
 
-import http.CustomHttpRequest;
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.URISyntaxException;
-import java.net.http.HttpRequest;
 import java.util.List;
 
 import static util.Utils.convertBufferedReaderToList;
@@ -31,7 +30,7 @@ public class RequestHandler implements Runnable {
 
             // 요청 읽기
             List<String> strings = convertBufferedReaderToList(reader);
-            HttpRequest request = new CustomHttpRequest(strings);
+            HttpRequest request = new HttpRequest(strings);
 
             printLogs(strings);
 
