@@ -55,7 +55,7 @@ class WebPageReaderTest {
 
     @Test
     @DisplayName("없는 파일은 예외를 발생하며 실패하여야 한다.")
-    void readNoFile() throws IOException {
+    void readNoFile() {
         //given
         String url = "/NO_FILE";
 

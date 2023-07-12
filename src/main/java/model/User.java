@@ -1,5 +1,8 @@
 package model;
 
+import annotation.DataModel;
+
+@DataModel(path = "/user/create")
 public class User {
     private String userId;
     private String password;

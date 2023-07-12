@@ -19,7 +19,7 @@ class RequestHandlerTest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
 
-    class IoSocket extends Socket {
+    static class IoSocket extends Socket {
         private InputStream inputStream;
         private OutputStream outputStream;
 
@@ -116,7 +116,7 @@ class RequestHandlerTest {
         assertEquals("javajigi%40slipp.net", user.getEmail());
 
         String[] result = outputStream.toString().split("\r\n");
-        assertTrue("HTTP/1.1 302 Found".equals(result[0]));
+        assertEquals("HTTP/1.1 302 Found", result[0]);
         assertEquals("Location: /index.html", result[1]);
 
     }

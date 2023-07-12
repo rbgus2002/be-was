@@ -6,9 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
+import static webserver.ResponseHeader.response200Header;
+import static webserver.ResponseHeader.response302Header;
 import static webserver.WebPageReader.readByPath;
 
 public class RequestHandler implements Runnable {
@@ -36,10 +41,16 @@ public class RequestHandler implements Runnable {
 
             // 회원 가입
             String path = requestHeader.getRequestPath();
-            if (path.equals("/user/create")) {
-                User user = createUserRequest(requestHeader);
-                Database.addUser(user);
-                logger.debug("새로운 유저 생성: {}", user.getUserId());
+            Optional<Class<?>> resolve = ModelResolver.resolve(path);
+            if (resolve.isPresent()) {
+                Query requestQuery = requestHeader.getRequestQuery();
+                Constructor<?> constructor = resolve.get().getConstructors()[0];
+                Object o = constructor.newInstance(requestQuery.getValue("userId"),
+                        requestQuery.getValue("password"),
+                        requestQuery.getValue("name"),
+                        requestQuery.getValue("email"));
+                Database.addUser((User) o);
+                logger.debug("새로운 유저 생성: {}", ((User) o).getUserId());
                 url = "/index.html";
                 response302Header(dos, url);
             }
@@ -52,17 +63,10 @@ public class RequestHandler implements Runnable {
             // 페이지 반환
             response200Header(dos, body.length, contentType);
             responseBody(dos, body);
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException | InvocationTargetException | InstantiationException |
+                IllegalAccessException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private static User createUserRequest(RequestHeader requestHeader) {
-        Query requestQuery = requestHeader.getRequestQuery();
-        return new User(requestQuery.getValue("userId"),
-                requestQuery.getValue("password"),
-                requestQuery.getValue("name"),
-                requestQuery.getValue("email"));
     }
 
     private static String makeContentType(String url) {
@@ -91,27 +95,6 @@ public class RequestHandler implements Runnable {
             requestHeaderBuilder.header(header);
         }
         return requestHeaderBuilder.build();
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response302Header(DataOutputStream dos, String redirection) {
-        try {
-            dos.writeBytes("HTTP/1.1 302 Found\r\n");
-            dos.writeBytes("Location: " + redirection + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
     }
 
     private void responseBody(DataOutputStream dos, byte[] body) {
