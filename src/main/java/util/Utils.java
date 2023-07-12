@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.util.*;
 
@@ -13,10 +12,10 @@ public class Utils {
     private Utils() {
     }
 
-    public static InputStream getResourceAsStream(URI requestUrl) {
-        String[] split = requestUrl.toString().split("\\.");
+    public static InputStream getResourceAsStream(String path) {
+        String[] split = path.split("\\.");
         String ext = split[split.length - 1];
-        return Utils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates/" : "/static/") + requestUrl);
+        return Utils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
     }
 
     public static Optional<HttpClient.Version> getHttpVersion(String version) {
