@@ -4,10 +4,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static utils.Util.getPathFromRequestLine;
+import static utils.Parser.getPathFromRequestLine;
 
-class UtilTest {
+class ParserTest {
 
     @Test
     @DisplayName("Request line 으로부터 path 를 분리한다")

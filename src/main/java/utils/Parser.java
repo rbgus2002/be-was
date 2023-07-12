@@ -1,8 +1,8 @@
 package utils;
 
-public class Util {
+public class Parser {
 
-    private Util() {}
+    private Parser() {}
 
     public static String getPathFromRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
