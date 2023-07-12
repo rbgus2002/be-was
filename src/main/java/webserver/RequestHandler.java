@@ -2,9 +2,12 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static utils.Parser.getPathFromRequestLine;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -22,15 +25,16 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line = br.readLine();
+            String path = getPathFromRequestLine(line);
             logger.debug("request line : {}", line);
 
             while (!"".equals(line)) {
                 line = br.readLine();
                 logger.debug("header : {}", line);
             }
-            
+
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
