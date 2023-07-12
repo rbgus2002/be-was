@@ -1,19 +1,20 @@
-package webserver;
+package webserver.server;
 
 import controller.Controller;
 import controller.HomeController;
 import controller.SignupController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.HttpRequest;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class RequestMapping {
+public class RequestMapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestMapping.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestMapper.class);
     private final ConcurrentHashMap<String, Controller> map = new ConcurrentHashMap<>();
 
-    public RequestMapping() {
+    public RequestMapper() {
         logger.info("RequestMapping Create");
         map.put("/", new HomeController());
         map.put("/index.html", new HomeController());
