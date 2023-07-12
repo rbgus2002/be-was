@@ -3,9 +3,11 @@ package annotation;
 import controller.Controller;
 import http.HttpMethod;
 import http.HttpRequest;
+import http.HttpResponse;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +27,17 @@ public class RequestMappingHandler {
             String path = annotation.path();
             HttpMethod httpMethod = annotation.method();
             try {
-                map.get(httpMethod.name()).put(path, MethodHandles.lookup().unreflect(method).bindTo(Controller.getInstance()));
-            } catch (IllegalAccessException e) {
+                MethodType methodType;
+                if (method.getParameterCount() > 0) {
+                    methodType = MethodType.methodType(HttpResponse.class, method.getParameterTypes());
+                } else {
+                    methodType = MethodType.methodType(HttpResponse.class);
+                }
+                MethodHandle methodHandle = MethodHandles.lookup()
+                        .findVirtual(Controller.class, method.getName(), methodType)
+                        .bindTo(Controller.getInstance());
+                map.get(httpMethod.name()).put(path, methodHandle);
+            } catch (NoSuchMethodException | IllegalAccessException e) {
                 throw new IllegalArgumentException(e);
             }
         }
@@ -35,7 +46,7 @@ public class RequestMappingHandler {
     private RequestMappingHandler() {
     }
 
-    public static void invokeMethod(HttpRequest httpRequest) throws Throwable {
+    public static HttpResponse invokeMethod(HttpRequest httpRequest) throws Throwable {
         String path = httpRequest.uri().getPath();
         HttpMethod httpMethod = httpRequest.method();
         MethodHandle method = map.get(HttpMethod.GET.name()).get(path);
@@ -43,7 +54,14 @@ public class RequestMappingHandler {
             throw new IllegalAccessException("잘못된 메소드입니다.");
         }
         if (httpMethod.equals(HttpMethod.GET)) {
-            method.invoke(httpRequest.parameters());
+            MethodType methodType = method.type();
+            if (methodType.parameterCount() == 0) {
+                return (HttpResponse) method.invoke();
+            }
+            if (methodType.parameterCount() > 1 || !(methodType.parameterType(0) == Map.class)) {
+                throw new IllegalArgumentException("GET method는 하나의 Map을 인자로 받을 수 있습니다.");
+            }
         }
+        return new HttpResponse("");
     }
 }
