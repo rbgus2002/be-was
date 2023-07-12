@@ -28,6 +28,16 @@ public class HttpRequest {
         this.version = getHttpVersion(requestParts[2]).orElse(null);
     }
 
+    public Map<String, String> parameters() {
+        Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
+        Matcher matcher = pat.matcher(uri.getQuery());
+        Map<String, String> map = new HashMap<>();
+        while (matcher.find()) {
+            map.put(matcher.group(1), matcher.group(2));
+        }
+        return map;
+    }
+
     private Map<String, String> parseHeaders(List<String> requestLines) {
         Map<String, String> headers = new HashMap<>();
         for (int i = 1; i < requestLines.size(); i++) {
