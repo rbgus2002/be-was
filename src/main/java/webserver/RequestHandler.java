@@ -39,7 +39,7 @@ public class RequestHandler implements Runnable {
             byte[] body;
             switch (url) {
                 case "/user/create":
-                    body = Files.readAllBytes(Paths.get("src/main/resources/templates/index.html"));
+                    body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
                     User user = new User(requestParser.getParams());
                     logger.debug(user.toString());
                     break;
