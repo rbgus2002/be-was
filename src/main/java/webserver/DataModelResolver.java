@@ -27,7 +27,7 @@ public abstract class DataModelResolver {
         });
     }
 
-    public static Optional<DataModelWrapper> resolve(String path) throws ClassNotFoundException {
-        return Optional.ofNullable(dataModelClasses.get(path));
+    public static DataModelWrapper resolve(String path) throws ClassNotFoundException {
+        return dataModelClasses.get(path);
     }
 }

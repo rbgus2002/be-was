@@ -4,8 +4,7 @@ import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("DataModel Resolver 테스트")
@@ -18,10 +17,10 @@ class DataModelResolverTest {
         String path = "/user/create";
 
         //when
-        Optional<DataModelWrapper> resolve = DataModelResolver.resolve(path);
+        DataModelWrapper resolve = DataModelResolver.resolve(path);
 
         //then
-        assertTrue(resolve.isPresent());
-        assertTrue(resolve.get().equalsClass(User.class));
+        assertNotNull(resolve);
+        assertTrue(resolve.equalsClass(User.class));
     }
 }

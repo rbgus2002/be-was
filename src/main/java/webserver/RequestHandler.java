@@ -9,7 +9,6 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 import static webserver.ResponseHeader.response200Header;
 import static webserver.ResponseHeader.response302Header;
@@ -39,10 +38,10 @@ public class RequestHandler implements Runnable {
 
             // 요청 수립
             String path = requestHeader.getRequestPath();
-            Optional<DataModelWrapper> resolve = DataModelResolver.resolve(path);
-            if (resolve.isPresent()) {
+            DataModelWrapper resolve = DataModelResolver.resolve(path);
+            if (resolve != null) {
                 Query requestQuery = requestHeader.getRequestQuery();
-                Object dataModel = resolve.get().constructClass(requestQuery);
+                Object dataModel = resolve.constructClass(requestQuery);
 
                 //TODO: 현재 오직 유저 생성 요청만 받으므로 이를 개선할 필요성이 있다.
                 if (dataModel instanceof User)
