@@ -1,5 +1,7 @@
 package http;
 
+import util.HttpUtils;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,11 +15,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static util.Utils.getHttpVersion;
-
 public class HttpRequest {
 
-    private final HttpMethod method;
+    private final HttpUtils.Method method;
     private final URI uri;
     private final HttpClient.Version version;
     private final Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
@@ -25,9 +25,9 @@ public class HttpRequest {
     public HttpRequest(List<String> requestLines) throws URISyntaxException, IOException {
         String[] requestParts = requestLines.get(0).split(" ");
         Map<String, String> headers = parseHeaders(requestLines);
-        this.method = HttpMethod.of(requestParts[0]);
+        this.method = HttpUtils.Method.of(requestParts[0]);
         this.uri = constructUri(requestParts[1], headers);
-        this.version = getHttpVersion(requestParts[2]).orElse(null);
+        this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
     }
 
     public Map<String, String> parameters() {
@@ -61,7 +61,7 @@ public class HttpRequest {
         return new URI("http://" + host + URLDecoder.decode(file, StandardCharsets.UTF_8));
     }
 
-    public HttpMethod method() {
+    public HttpUtils.Method method() {
         return this.method;
     }
 

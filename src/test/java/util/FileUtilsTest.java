@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UtilsTest {
+public class FileUtilsTest {
 
     @Test
     @DisplayName("Http version이 1.1이다.")
@@ -23,7 +23,7 @@ public class UtilsTest {
         String version = "HTTP/1.1";
 
         //when
-        HttpClient.Version httpVersion = Utils.getHttpVersion(version).orElseThrow();
+        HttpClient.Version httpVersion = HttpUtils.getHttpVersion(version).orElseThrow();
 
         //then
         assertThat(httpVersion).isEqualTo(HttpClient.Version.HTTP_1_1);
@@ -36,7 +36,7 @@ public class UtilsTest {
         String version = "HTTP/2.0";
 
         //when
-        HttpClient.Version httpVersion = Utils.getHttpVersion(version).orElseThrow();
+        HttpClient.Version httpVersion = HttpUtils.getHttpVersion(version).orElseThrow();
 
         //then
         assertThat(httpVersion).isEqualTo(HttpClient.Version.HTTP_2);
@@ -49,7 +49,7 @@ public class UtilsTest {
         String version = "HTTP/1.0";
 
         //when
-        Optional<HttpClient.Version> httpVersion = Utils.getHttpVersion(version);
+        Optional<HttpClient.Version> httpVersion = HttpUtils.getHttpVersion(version);
 
         //then
         assertThat(httpVersion).isEqualTo(Optional.empty());
@@ -64,7 +64,7 @@ public class UtilsTest {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         //when
-        List<String> strings = Utils.convertBufferedReaderToList(bufferedReader);
+        List<String> strings = FileUtils.convertBufferedReaderToList(bufferedReader);
 
         //then
         List<String> expected = List.of("a", "bb", "ccc");
@@ -82,7 +82,7 @@ public class UtilsTest {
         queries.put("password", "1q2w3e4r");
 
         //when
-        User user = Utils.createUserFromQueryParameters(User.class, queries);
+        User user = FileUtils.createUserFromQueryParameters(User.class, queries);
 
         //then
         assertThat(user.getName()).isEqualTo(queries.get("name"));
@@ -103,7 +103,7 @@ public class UtilsTest {
         queries.put("a", "b");
 
         //when, then
-        assertThrows(IllegalArgumentException.class, () -> Utils.createUserFromQueryParameters(User.class, queries));
+        assertThrows(IllegalArgumentException.class, () -> FileUtils.createUserFromQueryParameters(User.class, queries));
     }
 
     @Test
@@ -117,6 +117,6 @@ public class UtilsTest {
         queries.put("a", "1q2w3e4r");
 
         //when, then
-        assertThrows(IllegalArgumentException.class, () -> Utils.createUserFromQueryParameters(User.class, queries));
+        assertThrows(IllegalArgumentException.class, () -> FileUtils.createUserFromQueryParameters(User.class, queries));
     }
 }

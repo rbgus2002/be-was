@@ -1,9 +1,9 @@
 package annotation;
 
 import controller.Controller;
-import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
+import util.HttpUtils;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -17,15 +17,15 @@ public class RequestMappingHandler {
     private static final Map<String, Map<String, MethodHandle>> map = new HashMap<>();
 
     static {
-        map.put(HttpMethod.GET.name(), new HashMap<>());
-        map.put(HttpMethod.POST.name(), new HashMap<>());
+        map.put(HttpUtils.Method.GET.name(), new HashMap<>());
+        map.put(HttpUtils.Method.POST.name(), new HashMap<>());
 
         Method[] methods = Controller.class.getDeclaredMethods();
         for (Method method : methods) {
             if (!method.isAnnotationPresent(RequestMapping.class)) continue;
             RequestMapping annotation = method.getAnnotation(RequestMapping.class);
             String path = annotation.path();
-            HttpMethod httpMethod = annotation.method();
+            HttpUtils.Method httpMethod = annotation.method();
             try {
                 MethodType methodType;
                 if (method.getParameterCount() > 0) {
@@ -48,12 +48,12 @@ public class RequestMappingHandler {
 
     public static HttpResponse invokeMethod(HttpRequest httpRequest) throws Throwable {
         String path = httpRequest.uri().getPath();
-        HttpMethod httpMethod = httpRequest.method();
-        MethodHandle method = map.get(HttpMethod.GET.name()).get(path);
+        HttpUtils.Method httpMethod = httpRequest.method();
+        MethodHandle method = map.get(HttpUtils.Method.GET.name()).get(path);
         if (method == null) {
             throw new IllegalAccessException("잘못된 메소드입니다.");
         }
-        if (httpMethod.equals(HttpMethod.GET)) {
+        if (httpMethod.equals(HttpUtils.Method.GET)) {
             MethodType methodType = method.type();
             if (methodType.parameterCount() == 0) {
                 return (HttpResponse) method.invoke();

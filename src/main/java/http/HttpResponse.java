@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import static util.Utils.getResourceAsStream;
+import static util.FileUtils.getResourceAsStream;
 
 public class HttpResponse {
 

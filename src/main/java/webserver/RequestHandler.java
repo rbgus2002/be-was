@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
-import static util.Utils.convertBufferedReaderToList;
+import static util.FileUtils.convertBufferedReaderToList;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

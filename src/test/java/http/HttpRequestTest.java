@@ -2,6 +2,7 @@ package http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import util.HttpUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,7 +30,7 @@ class HttpRequestTest {
         //then
         URI expectedUri = new URI("http://localhost:8080/user/create?userId=javajigi&password=password&name=박재성&email=javajigi@slipp.net");
         assertThat(httpRequest.uri()).isEqualTo(expectedUri);
-        assertThat(httpRequest.method()).isEqualTo(HttpMethod.GET);
+        assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
         assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
     }
 

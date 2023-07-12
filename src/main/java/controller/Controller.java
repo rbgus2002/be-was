@@ -1,7 +1,7 @@
 package controller;
 
 import annotation.RequestMapping;
-import http.HttpMethod;
+import util.HttpUtils;
 import http.HttpResponse;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class Controller {
         return SingletonHelper.INSTANCE;
     }
 
-    @RequestMapping(path = "/index.html", method = HttpMethod.GET)
+    @RequestMapping(path = "/index.html", method = HttpUtils.Method.GET)
     public HttpResponse index() throws IOException {
         return new HttpResponse("/index.html");
     }

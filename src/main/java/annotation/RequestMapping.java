@@ -1,6 +1,6 @@
 package annotation;
 
-import http.HttpMethod;
+import util.HttpUtils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,5 +12,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequestMapping {
     String path() default "/";
-    HttpMethod method();
+
+    HttpUtils.Method method();
 }
