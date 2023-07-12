@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -30,29 +29,23 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+            DataOutputStream dos = new DataOutputStream(out);
+
             // 요청 해석
             RequestHeader requestHeader = buildRequestHeader(in);
             logger.debug("Request Headers: \n{}", requestHeader.getHeaders());
             logger.debug("Request Headers End");
-
-
             String url = requestHeader.getRequestUrl();
-            DataOutputStream dos = new DataOutputStream(out);
 
-            // 회원 가입
+            // 요청 수립
             String path = requestHeader.getRequestPath();
-            Optional<Class<?>> resolve = ModelResolver.resolve(path);
+            Optional<DataModelWrapper> resolve = DataModelResolver.resolve(path);
             if (resolve.isPresent()) {
                 Query requestQuery = requestHeader.getRequestQuery();
-                Constructor<?> constructor = resolve.get().getConstructors()[0];
-                Object o = constructor.newInstance(requestQuery.getValue("userId"),
-                        requestQuery.getValue("password"),
-                        requestQuery.getValue("name"),
-                        requestQuery.getValue("email"));
-                Database.addUser((User) o);
-                logger.debug("새로운 유저 생성: {}", ((User) o).getUserId());
-                url = "/index.html";
-                response302Header(dos, url);
+                Object o = resolve.get().constructClass(requestQuery);
+
+                //TODO: 현재 오직 유저 생성 요청만 받으므로 이를 개선할 필요성이 있다.
+                url = createUser(dos, (User) o);
             }
 
 
@@ -63,10 +56,18 @@ public class RequestHandler implements Runnable {
             // 페이지 반환
             response200Header(dos, body.length, contentType);
             responseBody(dos, body);
-        } catch (IOException | ClassNotFoundException | InvocationTargetException | InstantiationException |
-                IllegalAccessException e) {
+        } catch (IOException | ClassNotFoundException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException | InstantiationException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private static String createUser(DataOutputStream dos, User o) {
+        String url = "/index.html";
+        Database.addUser(o);
+        logger.debug("새로운 유저 생성: {}", o.getUserId());
+        response302Header(dos, url);
+        return url;
     }
 
     private static String makeContentType(String url) {

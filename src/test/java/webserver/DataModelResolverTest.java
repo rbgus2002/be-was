@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("Model Resolver 테스트")
-class ModelResolverTest {
+@DisplayName("DataModel Resolver 테스트")
+class DataModelResolverTest {
 
     @Test
     @DisplayName("경로가 입력됬을 경우 해당 경로에 맞는 Class를 반환해야 한다.")
@@ -19,11 +18,10 @@ class ModelResolverTest {
         String path = "/user/create";
 
         //when
-        Optional<Class<?>> resolve = ModelResolver.resolve(path);
+        Optional<DataModelWrapper> resolve = DataModelResolver.resolve(path);
 
         //then
         assertTrue(resolve.isPresent());
-        Class<?> user = resolve.get();
-        assertSame(User.class, user);
+        assertTrue(resolve.get().equalsClass(User.class));
     }
 }
