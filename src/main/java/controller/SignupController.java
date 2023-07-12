@@ -17,8 +17,8 @@ public class SignupController implements Controller{
 
         logger.info("execute");
 
-        Map<String, String> querys = request.getQuerys();
-        User user = new User(querys.get("userId"), querys.get("password"), querys.get("name"), querys.get("email"));
+        Map<String, String> queries = request.getQuerys();
+        User user = new User(queries.get("userId"), queries.get("password"), queries.get("name"), queries.get("email"));
         Database.addUser(user);
         logger.info("signup ok");
         return "redirect:/";

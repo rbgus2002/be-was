@@ -29,7 +29,7 @@ public class HttpHeader {
         header += "Content-Length: " + bodyOfLength + "\r\n";
         header += "\r\n";
 
-            return header;
+        return header;
 
     }
 
@@ -45,9 +45,9 @@ public class HttpHeader {
     }
 
     public String response404Header() {
-            header += "HTTP/1.1 404 Not Found \r\n";
+        header += "HTTP/1.1 404 Not Found \r\n";
 
-            return header;
+        return header;
     }
 
 
