@@ -35,7 +35,14 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
 
             logger.debug(url);
-            byte[] body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
+            byte[] body;
+            switch (url) {
+                case "/user/create":
+                    body = Files.readAllBytes(Paths.get("src/main/resources/templates/index.html"));
+                    break;
+                default:
+                     body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
+            }
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
