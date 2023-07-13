@@ -15,6 +15,9 @@ public class HttpContentType {
     }
 
     public String getContentType(String s) {
+        if(s == null) {
+            return null;
+        }
         return extension.get(s);
     }
 

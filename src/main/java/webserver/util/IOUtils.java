@@ -7,9 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class IOutils {
+public class IOUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(IOutils.class);
+    private static final Logger logger = LoggerFactory.getLogger(IOUtils.class);
 
     public static byte[] getContent(String url, String extension) {
         byte[] body;

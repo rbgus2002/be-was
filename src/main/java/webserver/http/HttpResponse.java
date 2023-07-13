@@ -2,7 +2,7 @@ package webserver.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.util.IOutils;
+import webserver.util.IOUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class HttpResponse {
         HttpContentType httpContentType = new HttpContentType();
         String extension = getUrlExtension(url);
         String contentType = httpContentType.getContentType(extension);
-        byte[] body = IOutils.getContent(url, extension);
+        byte[] body = IOUtils.getContent(url, extension);
         try {
             if (body != null) {
                 dos.writeBytes(HttpHeader.response200Header(body.length, contentType));
@@ -47,7 +47,7 @@ public class HttpResponse {
     }
 
     private String getUrlExtension(String url) {
-        return url.substring(url.lastIndexOf("."));
+        return url.contains(".")?url.substring(url.lastIndexOf(".")):null;
     }
 
     private void responseBody(byte[] body) {
