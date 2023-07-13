@@ -32,9 +32,10 @@ public class Controller {
     public HttpResponse creatUser(Map<String, String> parameters) throws FileNotFoundException {
         User newUser = ModelConverter.toUser(parameters);
         User findUser = Database.findUserById(newUser.getUserId());
-        if (findUser == null) {
-            Database.addUser(newUser);
+        if (findUser != null) {
+            return new HttpResponse("/error.html");
         }
+        Database.addUser(newUser);
         return new HttpResponse("/index.html");
     }
 }
