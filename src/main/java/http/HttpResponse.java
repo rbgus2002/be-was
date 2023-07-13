@@ -35,18 +35,25 @@ public class HttpResponse {
             DataOutputStream dos = new DataOutputStream(out);
 
             if (this.httpStatus == 200) {
-                InputStream fileInputStream = getResourceAsStream(this.path);
-                byte[] body = fileInputStream.readAllBytes();
-                response200Header(dos, body);
-                responseBody(dos, body);
+                try {
+                    response200(dos, this.path);
+                } catch (IOException e) {
+                    response200(dos, "/error.html");
+                }
             }
             if (this.httpStatus == 302) {
                 response302Header(dos);
             }
-
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private void response200(DataOutputStream dos, String path) throws IOException {
+        InputStream fileInputStream = getResourceAsStream(path);
+        byte[] body = fileInputStream.readAllBytes();
+        response200Header(dos, body);
+        responseBody(dos, body);
     }
 
     private void response200Header(DataOutputStream dos, byte[] body) {

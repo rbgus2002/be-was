@@ -37,15 +37,7 @@ public class RequestHandler implements Runnable {
 
             printLogs(strings);
 
-            String path = httpRequest.uri().getPath();
-            String extension = FileUtils.getExtension(path);
-            HttpResponse httpResponse;
-            if (extension.equals("html")) {
-                httpResponse = HttpResponse.ok(path);
-            } else {
-                httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
-            }
-            httpResponse.response(connection);
+            response(httpRequest);
         } catch (Throwable e) {
             logger.error(e.getMessage());
         }
@@ -55,5 +47,22 @@ public class RequestHandler implements Runnable {
         for (String str : strings) {
             logger.debug(str);
         }
+    }
+
+    private void response(HttpRequest httpRequest) {
+        String path = httpRequest.uri().getPath();
+        String extension = FileUtils.getExtension(path);
+        HttpResponse httpResponse;
+        if (extension.equals("html")) {
+            httpResponse = HttpResponse.ok(path);
+        } else {
+            // 잘못된 http request이면 /error.html response 생성
+            try {
+                httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
+            } catch (Throwable e) {
+                httpResponse = HttpResponse.ok("/error.html");
+            }
+        }
+        httpResponse.response(connection);
     }
 }
