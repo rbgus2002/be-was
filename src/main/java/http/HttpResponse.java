@@ -2,14 +2,13 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.FileUtils;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 
-import static util.FileUtils.getResourceAsStream;
+import static util.FileUtils.getExtension;
 
 public class HttpResponse {
 
@@ -81,5 +80,14 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private InputStream getResourceAsStream(String path) throws FileNotFoundException {
+        String ext = getExtension(path);
+        InputStream fileInputStream = FileUtils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
+        if (fileInputStream == null) {
+            throw new FileNotFoundException(path + "에 파일이 존재하지 않습니다.");
+        }
+        return fileInputStream;
     }
 }

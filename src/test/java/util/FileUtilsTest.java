@@ -4,12 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
-import java.net.http.HttpClient;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileUtilsTest {
 
@@ -30,12 +27,28 @@ public class FileUtilsTest {
     }
 
     @Test
-    @DisplayName("경로에 파일이 존재하지 않으면 예외가 발생한다.")
-    void fileNotExist() {
+    @DisplayName("html 확장자를 추출한다.")
+    void extractHtmlString() {
         //given
-        String path = "/wrong.html";
+        String file = "aa.html";
 
-        //when then
-        assertThrows(FileNotFoundException.class, () -> FileUtils.getResourceAsStream(path));
+        //when
+        String extension = FileUtils.getExtension(file);
+
+        //then
+        assertThat(extension).isEqualTo("html");
+    }
+
+    @Test
+    @DisplayName("js 확장자를 추출한다.")
+    void extractJsString() {
+        //given
+        String file = "afjknlk/aslkd.js";
+
+        //when
+        String extension = FileUtils.getExtension(file);
+
+        //then
+        assertThat(extension).isEqualTo("js");
     }
 }

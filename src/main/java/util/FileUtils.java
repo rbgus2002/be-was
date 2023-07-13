@@ -12,14 +12,9 @@ public class FileUtils {
     private FileUtils() {
     }
 
-    public static InputStream getResourceAsStream(String path) throws FileNotFoundException {
+    public static String getExtension(String path) {
         String[] split = path.split("\\.");
-        String ext = split[split.length - 1];
-        InputStream fileInputStream = FileUtils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
-        if (fileInputStream == null) {
-            throw new FileNotFoundException(path + "에 파일이 존재하지 않습니다.");
-        }
-        return fileInputStream;
+        return split[split.length - 1];
     }
 
     public static List<String> convertBufferedReaderToList(BufferedReader reader) throws IOException {
