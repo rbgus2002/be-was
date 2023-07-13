@@ -14,11 +14,11 @@ import java.util.Map;
 
 public class RequestMappingHandler {
 
-    private static final Map<String, Map<String, MethodHandle>> map = new HashMap<>();
+    private static final Map<HttpUtils.Method, Map<String, MethodHandle>> map = new HashMap<>();
 
     static {
-        map.put(HttpUtils.Method.GET.name(), new HashMap<>());
-        map.put(HttpUtils.Method.POST.name(), new HashMap<>());
+        map.put(HttpUtils.Method.GET, new HashMap<>());
+        map.put(HttpUtils.Method.POST, new HashMap<>());
 
         Method[] methods = Controller.class.getDeclaredMethods();
         for (Method method : methods) {
@@ -33,7 +33,7 @@ public class RequestMappingHandler {
         HttpUtils.Method httpMethod = annotation.method();
         try {
             MethodHandle methodHandle = createMethodHandle(method);
-            map.get(httpMethod.name()).put(path, methodHandle);
+            map.get(httpMethod).put(path, methodHandle);
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
@@ -57,7 +57,7 @@ public class RequestMappingHandler {
     public static HttpResponse invokeMethod(HttpRequest httpRequest) throws Throwable {
         String path = httpRequest.uri().getPath();
         HttpUtils.Method httpMethod = httpRequest.method();
-        MethodHandle method = map.get(HttpUtils.Method.GET.name()).get(path);
+        MethodHandle method = map.get(HttpUtils.Method.GET).get(path);
         if (method == null) {
             throw new IllegalAccessException("잘못된 메소드입니다.");
         }
