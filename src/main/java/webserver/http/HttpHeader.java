@@ -1,13 +1,10 @@
 package webserver.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webserver.server.WebServer;
 
 import static webserver.http.HttpConstant.*;
 
 public class HttpHeader {
-    private static final Logger logger = LoggerFactory.getLogger(HttpHeader.class);
 
     public static String response200Header(int bodyOfLength, String contentType) {
         String header = "";
@@ -15,7 +12,6 @@ public class HttpHeader {
         header += getContentTypeHeader(contentType);
         header += CONTENT_LENGTH.getConstant() + ": " + bodyOfLength + NEW_LINE.getConstant();
         header += NEW_LINE.getConstant();
-        logger.info(header);
 
         return header;
 
@@ -28,7 +24,6 @@ public class HttpHeader {
         header += LOCATION.getConstant() + ": " + WebServer.HOME_URL + redirectUrl + NEW_LINE.getConstant();
         header += CONTENT_LENGTH.getConstant() + ": 0" + NEW_LINE.getConstant();
         header += NEW_LINE.getConstant();
-        logger.info(header);
 
         return header;
     }

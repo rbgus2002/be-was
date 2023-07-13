@@ -21,8 +21,6 @@ public class SignupController implements Controller {
     @Override
     public String execute(HttpRequest request, HttpResponse response) {
 
-        logger.info("execute");
-
         Map<String, String> queries = request.getQueries();
         User user = new User(queries.get(USERID_KEY),
                 queries.get(PASSWORD_KEY),
