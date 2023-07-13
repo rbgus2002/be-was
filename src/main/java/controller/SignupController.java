@@ -9,7 +9,7 @@ import webserver.http.HttpResponse;
 
 import java.util.Map;
 
-public class SignupController implements Controller{
+public class SignupController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(SignupController.class);
 
@@ -17,6 +17,7 @@ public class SignupController implements Controller{
     public static final String PASSWORD_KEY = "password";
     public static final String NAME_KEY = "name";
     public static final String EMAIL_KEY = "email";
+
     @Override
     public String execute(HttpRequest request, HttpResponse response) {
 

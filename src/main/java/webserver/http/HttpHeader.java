@@ -1,52 +1,50 @@
 package webserver.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.server.WebServer;
 
+import static webserver.http.HttpConstant.*;
+
 public class HttpHeader {
-
-    private static final String LOCATION = "Location";
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String CONTENT_LENGTH = "Content-Length";
-    private static final String HTTP_VERSION = "HTTP/1.1 ";
-    private static final String CHARSET = "charset";
-    private static final String UTF_8 = "UTF-8";
-
-    private static final int RESPONSE_200 = 200;
-    private static final int RESPONSE_302 = 302;
-    private static final int RESPONSE_404 = 404;
-
-    private static final String NEW_LINE = "\r\n";
+    private static final Logger logger = LoggerFactory.getLogger(HttpHeader.class);
 
     public static String response200Header(int bodyOfLength, String contentType) {
         String header = "";
-        header += getFirstHeader(RESPONSE_200);
-        header += "Content-Type: " + contentType + ";charset=utf-8\r\n";
-        header += "Content-Length: " + bodyOfLength + "\r\n";
-        header += "\r\n";
+        header += getFirstHeader(RESPONSE_200.getConstant());
+        header += getContentTypeHeader(contentType);
+        header += CONTENT_LENGTH.getConstant() + ": " + bodyOfLength + NEW_LINE.getConstant();
+        header += NEW_LINE.getConstant();
+        logger.info(header);
 
         return header;
 
     }
 
+
     public static String response302Header(String redirectUrl, String contentType) {
         String header = "";
-        header += getFirstHeader(RESPONSE_302);
-        header += LOCATION + ": " + WebServer.HOME_URL + redirectUrl + NEW_LINE;
-        header += CONTENT_TYPE + ": " + contentType + ";" + CHARSET + "=" + UTF_8 + NEW_LINE;
-        header += CONTENT_LENGTH + ": 0" + NEW_LINE;
-        header += NEW_LINE;
+        header += getFirstHeader(RESPONSE_302.getConstant());
+        header += LOCATION.getConstant() + ": " + WebServer.HOME_URL + redirectUrl + NEW_LINE.getConstant();
+        header += getContentTypeHeader(contentType);
+        header += CONTENT_LENGTH.getConstant() + ": 0" + NEW_LINE.getConstant();
+        header += NEW_LINE.getConstant();
+        logger.info(header);
 
         return header;
     }
 
     public static String response404Header() {
-        return getFirstHeader(RESPONSE_404);
+        return getFirstHeader(RESPONSE_404.getConstant());
     }
 
-    private static String getFirstHeader(int code) {
-        return HTTP_VERSION + code + NEW_LINE;
+    private static String getFirstHeader(String code) {
+        return HTTP_VERSION.getConstant() + code + NEW_LINE.getConstant();
     }
 
+    private static String getContentTypeHeader(String contentType) {
+        return CONTENT_TYPE.getConstant() + ": " + contentType + ";" + CHARSET.getConstant() + "=" + UTF_8.getConstant() + NEW_LINE.getConstant();
+    }
 
 
 }

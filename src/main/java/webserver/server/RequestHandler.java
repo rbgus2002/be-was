@@ -23,18 +23,18 @@ public class RequestHandler implements Runnable {
 
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            DataOutputStream dataOutputStream = new DataOutputStream(out);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-            String requestFirstLine = br.readLine();
+            String requestFirstLine = bufferedReader.readLine();
             HttpRequest httpRequest = new HttpRequest(requestFirstLine);
             logger.info("First Header : " + requestFirstLine);
-            while(br.ready()) {
-                String requestHeader = br.readLine();
+            while (bufferedReader.ready()) {
+                String requestHeader = bufferedReader.readLine();
                 logger.info("Remain Header : " + requestHeader);
             }
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
-            dispatcherServlet.service(httpRequest, new HttpResponse(dos));
+            dispatcherServlet.service(httpRequest, new HttpResponse(dataOutputStream));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

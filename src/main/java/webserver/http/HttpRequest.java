@@ -7,7 +7,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static exception.ExceptionPhrase.URL_NOT_CORRECT;
+import static exception.ExceptionMessage.URL_NOT_CORRECT;
 
 public class HttpRequest {
 
@@ -29,7 +29,7 @@ public class HttpRequest {
     }
 
     private void ValidRequest(String[] req) {
-        if(req.length != 3) {
+        if (req.length != 3) {
             throw new RuntimeException(URL_NOT_CORRECT);
         }
     }
@@ -47,7 +47,7 @@ public class HttpRequest {
         return version;
     }
 
-    private void parseQuery(String  url) {
+    private void parseQuery(String url) {
         logger.info("parseQuery : " + url);
         String[] urlQuery = url.split("\\?");
         if (urlQuery.length == 1) {
@@ -55,8 +55,8 @@ public class HttpRequest {
             return;
         }
         this.url = urlQuery[0];
-        String[] querys = urlQuery[1].split("&");
-        for (String query : querys) {
+        String[] queries = urlQuery[1].split("&");
+        for (String query : queries) {
             query = URLDecoder.decode(query, StandardCharsets.UTF_8);
             String[] parse = query.split("=");
             this.queries.put(parse[0], parse[1]);

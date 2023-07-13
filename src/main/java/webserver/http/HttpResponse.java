@@ -10,7 +10,6 @@ import java.io.IOException;
 public class HttpResponse {
 
 
-
     private final DataOutputStream dos;
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
@@ -24,7 +23,7 @@ public class HttpResponse {
         logger.info("HttpResponse redirect");
         try {
             dos.writeBytes(HttpHeader.response302Header(redirectUrl, "text/html"));
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
@@ -36,13 +35,13 @@ public class HttpResponse {
         String contentType = httpContentType.getContentType(extension);
         byte[] body = IOutils.getContent(url, extension);
         try {
-            if(body != null) {
+            if (body != null) {
                 dos.writeBytes(HttpHeader.response200Header(body.length, contentType));
                 responseBody(body);
                 return;
             }
             dos.writeBytes(HttpHeader.response404Header());
-        }catch(IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
