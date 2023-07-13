@@ -21,7 +21,8 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // 요구사항 : 서버로 들어오는 요청을 log.debug를 이용해 출력한다
-            printRequestOfClient(in);
+            HttpHeader header = HttpHeader.from(in);
+            logger.debug("{}", header);
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = "Hello World".getBytes();
@@ -32,6 +33,7 @@ public class RequestHandler implements Runnable {
         }
     }
 
+    @Deprecated
     private void printRequestOfClient(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String line = br.readLine();

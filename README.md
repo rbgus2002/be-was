@@ -14,8 +14,9 @@ Java Web Application Server 2023
 #### Web Server step-1
 - [ ] 클라이언트의 요청에 맞게 'src/main/resources/templates' 디렉토리의 파일을 읽어 응답한다
 - [x] 서버로 들어오는 요청을 log.debug를 이용해 출력한다
-- [ ] Java Thread 기반에서 Concurrent 패키지 사용하도록 수정
 - [ ] 유지보수에 좋은 구조에 대해 고민하고 코드 개선하기
+  - http 헤더 구조 학습 후 객체 생성 (HttpHeader)
+- [ ] Java Thread 기반에서 Concurrent 패키지 사용하도록 수정t
 - [ ] Github 위키에 학습 내용 기록
 
 ## To Study List
