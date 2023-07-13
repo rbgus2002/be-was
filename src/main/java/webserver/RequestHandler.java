@@ -60,7 +60,7 @@ public class RequestHandler implements Runnable {
             try {
                 httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
             } catch (Throwable e) {
-                httpResponse = HttpResponse.ok("/error.html");
+                httpResponse = HttpResponse.redirect("/error.html");
             }
         }
         httpResponse.response(connection);
