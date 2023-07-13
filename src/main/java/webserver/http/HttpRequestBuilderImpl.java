@@ -4,7 +4,7 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     private HttpMethod method;
     private String uri;
     private String version;
-    private HttpHeaders headers;
+    private final HttpHeaders headers;
 
     public HttpRequestBuilderImpl() {
         this.headers = new HttpHeaders();

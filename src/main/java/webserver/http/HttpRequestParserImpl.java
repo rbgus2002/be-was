@@ -25,7 +25,7 @@ public class HttpRequestParserImpl implements HttpRequestParser {
     }
 
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
-        String line = null;
+        String line;
         while(!(line = bufferedReader.readLine()).isBlank()) {
             String[] header = line.split(": ");
             builder.addHeader(header[0].trim(), header[1].trim());
