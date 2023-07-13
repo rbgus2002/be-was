@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileUtilsTest {
 
@@ -65,5 +66,15 @@ public class FileUtilsTest {
         //then
         List<String> expected = List.of("a", "bb", "ccc");
         assertThat(strings).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("경로에 파일이 존재하지 않으면 예외가 발생한다.")
+    void fileNotExist() {
+        //given
+        String path = "/wrong.html";
+
+        //when then
+        assertThrows(FileNotFoundException.class, () -> FileUtils.getResourceAsStream(path));
     }
 }
