@@ -5,9 +5,9 @@ import http.HttpRequest;
 import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.FileUtils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -33,16 +33,22 @@ public class RequestHandler implements Runnable {
 
             // 요청 읽기
             List<String> strings = convertBufferedReaderToList(reader);
-            HttpRequest request = new HttpRequest(strings);
+            HttpRequest httpRequest = new HttpRequest(strings);
 
             printLogs(strings);
 
-            HttpResponse response = RequestMappingHandler.invokeMethod(request);
-            response.response(connection);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+            String path = httpRequest.uri().getPath();
+            String extension = FileUtils.getExtension(path);
+            HttpResponse httpResponse;
+            if (extension.equals("html")) {
+                httpResponse = HttpResponse.ok(path);
+            } else {
+                httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
+            }
+            httpResponse.response(connection);
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            logger.error(e.getMessage());
+            HttpResponse.redirect("/error.html").response(connection);
         }
     }
 
