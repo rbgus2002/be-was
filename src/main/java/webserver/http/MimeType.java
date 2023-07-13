@@ -6,8 +6,11 @@ public enum MimeType {
     CSS(".css", "text/css"),
     JS(".js", "text/javascript"),
     WOFF(".woff","application/x-font-woff"),
-    TTF(".ttf","application/x-font-ttf");
+    TTF(".ttf","application/x-font-ttf"),
 
+    ICO(".ico", "image/x-ico"),
+    PNG(".png", "image/x-png"),
+    JPG(".jpg", "image/jpeg");
     private final String extension;
     private final String mimeType;
     MimeType(String extension, String mimeType) {
