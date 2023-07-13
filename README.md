@@ -6,3 +6,7 @@ Java Web Application Server 2023
 
 이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was 
 를 참고하여 작성되었습니다.
+
+## 학습 정리
+- Java Thread Model: https://github.com/SyuA0529/be-was/wiki/Java-Thread
+- Java Concurrent Package: https://github.com/SyuA0529/be-was/wiki/Java-Concurrent-Package
