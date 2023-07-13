@@ -23,24 +23,32 @@ public class RequestMappingHandler {
         Method[] methods = Controller.class.getDeclaredMethods();
         for (Method method : methods) {
             if (!method.isAnnotationPresent(RequestMapping.class)) continue;
-            RequestMapping annotation = method.getAnnotation(RequestMapping.class);
-            String path = annotation.path();
-            HttpUtils.Method httpMethod = annotation.method();
-            try {
-                MethodType methodType;
-                if (method.getParameterCount() > 0) {
-                    methodType = MethodType.methodType(HttpResponse.class, method.getParameterTypes());
-                } else {
-                    methodType = MethodType.methodType(HttpResponse.class);
-                }
-                MethodHandle methodHandle = MethodHandles.lookup()
-                        .findVirtual(Controller.class, method.getName(), methodType)
-                        .bindTo(Controller.getInstance());
-                map.get(httpMethod.name()).put(path, methodHandle);
-            } catch (NoSuchMethodException | IllegalAccessException e) {
-                throw new IllegalArgumentException(e);
-            }
+            processRequestMappingAnnotation(method);
         }
+    }
+
+    private static void processRequestMappingAnnotation(Method method) {
+        RequestMapping annotation = method.getAnnotation(RequestMapping.class);
+        String path = annotation.path();
+        HttpUtils.Method httpMethod = annotation.method();
+        try {
+            MethodHandle methodHandle = createMethodHandle(method);
+            map.get(httpMethod.name()).put(path, methodHandle);
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static MethodHandle createMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException {
+        MethodType methodType;
+        if (method.getParameterCount() > 0) {
+            methodType = MethodType.methodType(HttpResponse.class, method.getParameterTypes());
+        } else {
+            methodType = MethodType.methodType(HttpResponse.class);
+        }
+        return MethodHandles.lookup()
+                .findVirtual(Controller.class, method.getName(), methodType)
+                .bindTo(Controller.getInstance());
     }
 
     private RequestMappingHandler() {
@@ -54,14 +62,19 @@ public class RequestMappingHandler {
             throw new IllegalAccessException("잘못된 메소드입니다.");
         }
         if (httpMethod.equals(HttpUtils.Method.GET)) {
-            MethodType methodType = method.type();
-            if (methodType.parameterCount() == 0) {
-                return (HttpResponse) method.invoke();
-            }
-            if (methodType.parameterCount() > 1 || !(methodType.parameterType(0) == Map.class)) {
-                throw new IllegalArgumentException("GET method는 하나의 Map을 인자로 받을 수 있습니다.");
-            }
+            return invokeGet(method, httpRequest);
         }
         return new HttpResponse("");
+    }
+
+    private static HttpResponse invokeGet(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
+        MethodType methodType = methodHandle.type();
+        if (methodType.parameterCount() == 0) {
+            return (HttpResponse) methodHandle.invoke();
+        }
+        if (methodType.parameterCount() > 1 || !(methodType.parameterType(0) == Map.class)) {
+            throw new IllegalArgumentException("GET method는 하나의 Map을 인자로 받을 수 있습니다.");
+        }
+        return (HttpResponse) methodHandle.invoke(httpRequest.parameters());
     }
 }
