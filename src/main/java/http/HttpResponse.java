@@ -3,7 +3,10 @@ package http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import static util.FileUtils.getResourceAsStream;
@@ -15,15 +18,15 @@ public class HttpResponse {
     private final String path;
     private final int httpStatus;
 
-    public static HttpResponse ok(String path) throws FileNotFoundException {
+    public static HttpResponse ok(String path) {
         return new HttpResponse(path, 200);
     }
 
-    public static HttpResponse redirect(String path) throws FileNotFoundException {
+    public static HttpResponse redirect(String path) {
         return new HttpResponse(path, 302);
     }
 
-    private HttpResponse(String path, int httpStatus) throws FileNotFoundException {
+    private HttpResponse(String path, int httpStatus) {
         this.path = path;
         this.httpStatus = httpStatus;
     }

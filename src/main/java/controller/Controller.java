@@ -7,7 +7,6 @@ import http.HttpResponse;
 import model.User;
 import util.HttpUtils;
 
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 public class Controller {
@@ -24,17 +23,17 @@ public class Controller {
     }
 
     @RequestMapping(path = "/index.html", method = HttpUtils.Method.GET)
-    public HttpResponse index() throws FileNotFoundException {
+    public HttpResponse index() {
         return HttpResponse.ok("/index.html");
     }
 
     @RequestMapping(path = "/user/form.html", method = HttpUtils.Method.GET)
-    public HttpResponse userForm() throws FileNotFoundException {
+    public HttpResponse userForm() {
         return HttpResponse.ok("/user/form.html");
     }
 
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
-    public HttpResponse creatUser(Map<String, String> parameters) throws FileNotFoundException {
+    public HttpResponse creatUser(Map<String, String> parameters) {
         User newUser = ModelConverter.toUser(parameters);
         User findUser = Database.findUserById(newUser.getUserId());
         if (findUser != null) {
