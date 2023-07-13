@@ -14,7 +14,6 @@ class HttpContentTypeTest {
     @Test
     @DisplayName("맵이 잘 되는지?")
     void do_right() throws NoSuchFieldException, IllegalAccessException {
-
         HttpContentType httpContentType = new HttpContentType();
         Class<HttpContentType> clazz = HttpContentType.class;
         Field field = clazz.getDeclaredField("extension");

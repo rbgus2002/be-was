@@ -17,7 +17,7 @@ public class DispatcherServlet {
 
     protected void service(HttpRequest req, HttpResponse resp) throws IOException {
         logger.info("DispatcherServlet service");
-        Controller controller = requestMapper.getController(req);
+        Controller controller = requestMapper.getController(req.getUrl());
         String toUrl;
         if (controller == null) {
             controller = new ForwardController();
