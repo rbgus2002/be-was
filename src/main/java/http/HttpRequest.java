@@ -2,7 +2,6 @@ package http;
 
 import util.HttpUtils;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
@@ -22,7 +21,7 @@ public class HttpRequest {
     private final HttpClient.Version version;
     private final Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
 
-    public HttpRequest(List<String> requestLines) throws URISyntaxException, IOException {
+    public HttpRequest(List<String> requestLines) throws URISyntaxException {
         String[] requestParts = requestLines.get(0).split(" ");
         Map<String, String> headers = parseHeaders(requestLines);
         this.method = HttpUtils.Method.of(requestParts[0]);

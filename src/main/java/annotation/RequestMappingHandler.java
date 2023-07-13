@@ -64,7 +64,7 @@ public class RequestMappingHandler {
         if (httpMethod.equals(HttpUtils.Method.GET)) {
             return invokeGet(method, httpRequest);
         }
-        return HttpResponse.ok("");
+        throw new IllegalArgumentException("잘못된 HTTP 요청입니다.");
     }
 
     private static HttpResponse invokeGet(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
