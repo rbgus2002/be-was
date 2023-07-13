@@ -27,7 +27,7 @@ public class Controller {
         User newUser = ModelConverter.toUser(parameters);
         User findUser = Database.findUserById(newUser.getUserId());
         if (findUser != null) {
-            return HttpResponse.redirect("/error.html");
+            throw new IllegalArgumentException("중복된 userId입니다.");
         }
         Database.addUser(newUser);
         return HttpResponse.redirect("/index.html");

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ControllerTest {
 
@@ -59,7 +60,7 @@ class ControllerTest {
         }
 
         @Test
-        @DisplayName("이미 존재하는 userId면 error.html의 HttpResponse를 반환한다.")
+        @DisplayName("이미 존재하는 userId면 예외가 발생한다.")
         void createDuplicatedUserId() {
             //given
             String existPassword = "123456";
@@ -67,12 +68,9 @@ class ControllerTest {
             String existEmail = "b@b.com";
             Database.addUser(new User(userId, existPassword, existName, existEmail));
 
-            //when
-            HttpResponse httpResponse = controller.creatUser(userParameters);
-
-            //then
+            //when, then
+            assertThrows(IllegalArgumentException.class, () -> controller.creatUser(userParameters));
             verifyUser(userId, existPassword, existName, existEmail);
-            assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.redirect("/error.html"));
         }
     }
 
