@@ -35,6 +35,7 @@ public class HttpResponse {
             DataOutputStream dos = new DataOutputStream(out);
 
             if (this.httpStatus == 200) {
+                // 정적 파일을 읽는데 문제가 발생하면 /error.html 반환
                 try {
                     response200(dos, this.path);
                 } catch (IOException e) {
