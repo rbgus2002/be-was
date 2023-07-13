@@ -64,7 +64,7 @@ public class RequestMappingHandler {
         if (httpMethod.equals(HttpUtils.Method.GET)) {
             return invokeGet(method, httpRequest);
         }
-        return new HttpResponse("");
+        return HttpResponse.ok("");
     }
 
     private static HttpResponse invokeGet(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {

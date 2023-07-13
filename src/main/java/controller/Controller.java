@@ -25,12 +25,12 @@ public class Controller {
 
     @RequestMapping(path = "/index.html", method = HttpUtils.Method.GET)
     public HttpResponse index() throws FileNotFoundException {
-        return new HttpResponse("/index.html");
+        return HttpResponse.ok("/index.html");
     }
 
     @RequestMapping(path = "/user/form.html", method = HttpUtils.Method.GET)
     public HttpResponse userForm() throws FileNotFoundException {
-        return new HttpResponse("/user/form.html");
+        return HttpResponse.ok("/user/form.html");
     }
 
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
@@ -38,9 +38,9 @@ public class Controller {
         User newUser = ModelConverter.toUser(parameters);
         User findUser = Database.findUserById(newUser.getUserId());
         if (findUser != null) {
-            return new HttpResponse("/error.html");
+            return HttpResponse.redirect("/error.html");
         }
         Database.addUser(newUser);
-        return new HttpResponse("/index.html");
+        return HttpResponse.redirect("/index.html");
     }
 }

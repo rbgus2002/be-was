@@ -12,46 +12,68 @@ public class HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
-    private final byte[] body;
+    private final String path;
+    private final int httpStatus;
 
-    public HttpResponse(String path) throws FileNotFoundException {
-        InputStream fileInputStream = getResourceAsStream(path);
+    public static HttpResponse ok(String path) throws FileNotFoundException {
+        return new HttpResponse(path, 200);
+    }
 
-        try {
-            this.body = fileInputStream.readAllBytes();
-        } catch (Exception e) {
-            throw new FileNotFoundException("파일을 찾을 수 없습니다.");
-        }
+    public static HttpResponse redirect(String path) throws FileNotFoundException {
+        return new HttpResponse(path, 302);
+    }
+
+    private HttpResponse(String path, int httpStatus) throws FileNotFoundException {
+        this.path = path;
+        this.httpStatus = httpStatus;
     }
 
     public void response(Socket connection) {
         try (OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos);
-            responseBody(dos);
+
+            if (this.httpStatus == 200) {
+                InputStream fileInputStream = getResourceAsStream(this.path);
+                byte[] body = fileInputStream.readAllBytes();
+                response200Header(dos, body);
+                responseBody(dos, body);
+            }
+            if (this.httpStatus == 302) {
+                response302Header(dos);
+            }
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    public byte[] getBody() {
-        return this.body.clone();
-    }
-
-    private void response200Header(DataOutputStream dos) {
+    private void response200Header(DataOutputStream dos, byte[] body) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + this.body.length + "\r\n");
+            dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void responseBody(DataOutputStream dos) {
+    private void response302Header(DataOutputStream dos) {
         try {
-            dos.write(this.body, 0, this.body.length);
+            dos.writeBytes("HTTP/1.1 301 Moved Temporarily\r\n");
+            dos.writeBytes("Location: " + path + "\r\n");
+            dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
+            dos.writeBytes("Pragma: no-cache\r\n");
+            dos.writeBytes("Expires: 0\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void responseBody(DataOutputStream dos, byte[] body) {
+        try {
+            dos.write(body, 0, body.length);
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
