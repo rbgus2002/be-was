@@ -21,14 +21,18 @@ public class HttpHeader {
         String line = br.readLine();
         this.uri = line;
 
-        while (!line.equals("")){
+        while (!isNullOrBlank(line)){
             line = br.readLine();
-            if(line == null || line.equals("")){
+            if(isNullOrBlank(line)){
                 break;
             }
             StringTokenizer st = new StringTokenizer(line, ": ");
             header.put(st.nextToken(), st.nextToken());
         }
+    }
+
+    private static boolean isNullOrBlank(String line) {
+        return line == null || line.isBlank();
     }
 
     public static HttpHeader from(InputStream in) throws IOException {
