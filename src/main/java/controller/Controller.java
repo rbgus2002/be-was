@@ -28,6 +28,11 @@ public class Controller {
         return new HttpResponse("/index.html");
     }
 
+    @RequestMapping(path = "/user/form.html", method = HttpUtils.Method.GET)
+    public HttpResponse userForm() throws FileNotFoundException {
+        return new HttpResponse("/user/form.html");
+    }
+
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
     public HttpResponse creatUser(Map<String, String> parameters) throws FileNotFoundException {
         User newUser = ModelConverter.toUser(parameters);

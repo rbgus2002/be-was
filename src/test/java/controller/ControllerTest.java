@@ -46,6 +46,19 @@ class ControllerTest {
         assertThat(httpResponse.getBody()).isEqualTo(expectedByte);
     }
 
+    @Test
+    @DisplayName("userForm()를 실행하면 HttpResponse를 반환한다.")
+    void userFormHttpResponse() throws IOException {
+        //given
+        //when
+        HttpResponse httpResponse = controller.userForm();
+
+        //then
+        InputStream fileInputStream = FileUtils.class.getResourceAsStream("/templates/user/form.html");
+        byte[] expectedByte = fileInputStream.readAllBytes();
+        assertThat(httpResponse.getBody()).isEqualTo(expectedByte);
+    }
+
     @Nested
     class CreateMethod {
         final String userId = "abc";
