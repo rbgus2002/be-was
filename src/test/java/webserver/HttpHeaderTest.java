@@ -1,12 +1,14 @@
 package webserver;
 
 import org.junit.jupiter.api.*;
+import utils.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.StringUtils.*;
 
 class HttpHeaderTest {
     private final String GET = "GET";
@@ -16,10 +18,10 @@ class HttpHeaderTest {
 
     @BeforeEach
     void setRequestStr() {
-        requestStr = GET + " " + URI + " " + "HTTP/1.1\n" +
-                "Host: localhost:8080\n" +
-                "Connection: keep-alive\n" +
-                "Cache-Control: max-age=0\n" +
+        requestStr = GET + " " + URI + " " + appendNewLine("HTTP/1.1") +
+                appendNewLine("Host: localhost:8080") +
+                appendNewLine("Connection: keep-alive") +
+                appendNewLine("Cache-Control: max-age=0") +
                 "";
         in = new ByteArrayInputStream(requestStr.getBytes());
     }
