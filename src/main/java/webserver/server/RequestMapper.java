@@ -15,14 +15,14 @@ public class RequestMapper {
     private final ConcurrentHashMap<String, Controller> map = new ConcurrentHashMap<>();
 
     public RequestMapper() {
-        logger.info("RequestMapping Create");
+        logger.info("RequestMapper Create");
         map.put("/", new HomeController());
         map.put("/index.html", new HomeController());
         map.put("/user/create", new SignupController());
     }
 
     public Controller getController(HttpRequest req) {
-        logger.info("RequestMapping GetController");
+        logger.info("GetController");
         return map.get(req.getUrl());
     }
 }

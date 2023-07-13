@@ -20,7 +20,7 @@ public class DispatcherServlet {
         Controller controller = requestMapper.getController(req);
         String toUrl;
         if (controller == null) {
-            controller = new ForwardController(req.getUrl());
+            controller = new ForwardController();
         }
         toUrl = controller.execute(req, resp);
 

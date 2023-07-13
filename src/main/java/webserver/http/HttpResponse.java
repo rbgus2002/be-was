@@ -22,7 +22,7 @@ public class HttpResponse {
 
         logger.info("HttpResponse redirect");
         try {
-            dos.writeBytes(HttpHeader.response302Header(redirectUrl, "text/html"));
+            dos.writeBytes(HttpHeader.response302Header(redirectUrl));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

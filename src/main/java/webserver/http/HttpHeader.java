@@ -22,11 +22,10 @@ public class HttpHeader {
     }
 
 
-    public static String response302Header(String redirectUrl, String contentType) {
+    public static String response302Header(String redirectUrl) {
         String header = "";
         header += getFirstHeader(RESPONSE_302.getConstant());
         header += LOCATION.getConstant() + ": " + WebServer.HOME_URL + redirectUrl + NEW_LINE.getConstant();
-        header += getContentTypeHeader(contentType);
         header += CONTENT_LENGTH.getConstant() + ": 0" + NEW_LINE.getConstant();
         header += NEW_LINE.getConstant();
         logger.info(header);

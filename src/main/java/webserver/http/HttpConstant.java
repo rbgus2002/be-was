@@ -5,7 +5,7 @@ public enum HttpConstant {
     LOCATION("Location"),
     CONTENT_TYPE("Content-Type"),
     CONTENT_LENGTH("Content-Length"),
-    HTTP_VERSION("HTTP/1.1"),
+    HTTP_VERSION("HTTP/1.1 "),
     CHARSET("charset"),
     UTF_8("utf-8"),
     RESPONSE_200("200"),
