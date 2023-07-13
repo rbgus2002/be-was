@@ -2,11 +2,10 @@ package webserver.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.util.IOutils;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 public class HttpResponse {
 
@@ -14,11 +13,9 @@ public class HttpResponse {
 
     private final DataOutputStream dos;
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-    HttpHeader httpHeader;
 
     public HttpResponse(DataOutputStream dos) {
         logger.info("HttpServletResponse Create with dos");
-        httpHeader = new HttpHeader();
         this.dos = dos;
     }
 
@@ -26,44 +23,33 @@ public class HttpResponse {
 
         logger.info("HttpResponse redirect");
         try {
-            dos.writeBytes(httpHeader.response302Header(redirectUrl));
+            dos.writeBytes(HttpHeader.response302Header(redirectUrl, "text/html"));
         } catch(IOException e) {
             logger.error(e.getMessage());
         }
-        //responseBody();
-    }
-
-    private byte[] getContent(String url) {
-        byte[] body;
-
-        String resourceUrl = httpHeader.getResourceUrl(url);
-
-        try {
-            File file = new File(resourceUrl);
-            if(file.isFile()) {
-                body = Files.readAllBytes(file.toPath());
-                return body;
-            }
-            dos.writeBytes(httpHeader.response404Header());
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        return null;
     }
 
     public void forward(String url) {
         logger.info("HttpResponse forward");
-        byte[] body = getContent(url);
-        if(body != null) {
-            try {
-                dos.writeBytes(httpHeader.response200Header(body.length));
+        HttpContentType httpContentType = new HttpContentType();
+        String extension = getUrlExtension(url);
+        String contentType = httpContentType.getContentType(extension);
+        byte[] body = IOutils.getContent(url, extension);
+        try {
+            if(body != null) {
+                dos.writeBytes(HttpHeader.response200Header(body.length, contentType));
                 responseBody(body);
-            } catch(IOException e) {
-                logger.error(e.getMessage());
+                return;
             }
+            dos.writeBytes(HttpHeader.response404Header());
+        }catch(IOException e) {
+            logger.error(e.getMessage());
         }
     }
 
+    private String getUrlExtension(String url) {
+        return url.substring(url.lastIndexOf("."));
+    }
 
     private void responseBody(byte[] body) {
         try {

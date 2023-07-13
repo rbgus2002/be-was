@@ -7,22 +7,31 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static exception.ExceptionPhrase.URL_NOT_CORRECT;
+
 public class HttpRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private final String method;
     private String url;
     private final String version;
-    private final ConcurrentHashMap<String, String> querys = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> queries = new ConcurrentHashMap<>();
 
     public HttpRequest(String request) {
         logger.info("HttpRequest Create with request");
         String[] req = request.split(" ");
+        ValidRequest(req);
         this.method = req[0];
         this.url = null;
         parseQuery(req[1]);
         this.version = req[2];
         logger.info("HttpRequest Create end url = " + url);
+    }
+
+    private void ValidRequest(String[] req) {
+        if(req.length != 3) {
+            throw new RuntimeException(URL_NOT_CORRECT);
+        }
     }
 
 
@@ -31,11 +40,14 @@ public class HttpRequest {
     }
 
     public String getUrl() {
-        logger.info("getUrl : " + url);
         return url;
     }
 
-    private void parseQuery(String url) {
+    public String getVersion() {
+        return version;
+    }
+
+    private void parseQuery(String  url) {
         logger.info("parseQuery : " + url);
         String[] urlQuery = url.split("\\?");
         if (urlQuery.length == 1) {
@@ -47,12 +59,12 @@ public class HttpRequest {
         for (String query : querys) {
             query = URLDecoder.decode(query, StandardCharsets.UTF_8);
             String[] parse = query.split("=");
-            this.querys.put(parse[0], parse[1]);
+            this.queries.put(parse[0], parse[1]);
         }
     }
 
-    public ConcurrentHashMap<String, String> getQuerys() {
-        logger.info("getQuerys");
-        return querys;
+    public ConcurrentHashMap<String, String> getQueries() {
+        logger.info("getQueries");
+        return queries;
     }
 }
