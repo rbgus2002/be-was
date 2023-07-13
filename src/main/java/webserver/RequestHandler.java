@@ -48,7 +48,6 @@ public class RequestHandler implements Runnable {
             httpResponse.response(connection);
         } catch (Throwable e) {
             logger.error(e.getMessage());
-            HttpResponse.redirect("/error.html").response(connection);
         }
     }
 
