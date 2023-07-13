@@ -22,21 +22,6 @@ public class Controller {
         return SingletonHelper.INSTANCE;
     }
 
-    @RequestMapping(path = "/index.html", method = HttpUtils.Method.GET)
-    public HttpResponse index() {
-        return HttpResponse.ok("/index.html");
-    }
-
-    @RequestMapping(path = "/user/form.html", method = HttpUtils.Method.GET)
-    public HttpResponse userForm() {
-        return HttpResponse.ok("/user/form.html");
-    }
-
-    @RequestMapping(path = "/error.html", method = HttpUtils.Method.GET)
-    public HttpResponse error() {
-        return HttpResponse.ok("/error.html");
-    }
-
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
     public HttpResponse creatUser(Map<String, String> parameters) {
         User newUser = ModelConverter.toUser(parameters);

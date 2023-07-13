@@ -30,39 +30,6 @@ class ControllerTest {
         assertThat(c1).isEqualTo(c2);
     }
 
-    @Test
-    @DisplayName("index()를 실행하면 HttpResponse를 반환한다.")
-    void indexHttpResponse() {
-        //given
-        //when
-        HttpResponse httpResponse = controller.index();
-
-        //then
-        assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.ok("/index.html"));
-    }
-
-    @Test
-    @DisplayName("error()를 실행하면 HttpResponse를 반환한다.")
-    void errorHttpResponse() {
-        //given
-        //when
-        HttpResponse httpResponse = controller.error();
-
-        //then
-        assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.ok("/error.html"));
-    }
-
-    @Test
-    @DisplayName("userForm()를 실행하면 HttpResponse를 반환한다.")
-    void userFormHttpResponse() {
-        //given
-        //when
-        HttpResponse httpResponse = controller.userForm();
-
-        //then
-        assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.ok("/user/form.html"));
-    }
-
     @Nested
     class CreateMethod {
         final String userId = "abc";
