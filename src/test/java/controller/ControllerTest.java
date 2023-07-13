@@ -42,6 +42,17 @@ class ControllerTest {
     }
 
     @Test
+    @DisplayName("error()를 실행하면 HttpResponse를 반환한다.")
+    void errorHttpResponse() {
+        //given
+        //when
+        HttpResponse httpResponse = controller.error();
+
+        //then
+        assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.ok("/error.html"));
+    }
+
+    @Test
     @DisplayName("userForm()를 실행하면 HttpResponse를 반환한다.")
     void userFormHttpResponse() {
         //given

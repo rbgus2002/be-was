@@ -32,6 +32,11 @@ public class Controller {
         return HttpResponse.ok("/user/form.html");
     }
 
+    @RequestMapping(path = "/error.html", method = HttpUtils.Method.GET)
+    public HttpResponse error() {
+        return HttpResponse.ok("/error.html");
+    }
+
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
     public HttpResponse creatUser(Map<String, String> parameters) {
         User newUser = ModelConverter.toUser(parameters);
