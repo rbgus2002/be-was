@@ -1,10 +1,10 @@
 package controller;
 
 import annotation.RequestMapping;
-import util.HttpUtils;
 import http.HttpResponse;
+import util.HttpUtils;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 public class Controller {
 
@@ -20,7 +20,7 @@ public class Controller {
     }
 
     @RequestMapping(path = "/index.html", method = HttpUtils.Method.GET)
-    public HttpResponse index() throws IOException {
+    public HttpResponse index() throws FileNotFoundException {
         return new HttpResponse("/index.html");
     }
 }
