@@ -1,7 +1,6 @@
 package webserver;
 
 import org.junit.jupiter.api.*;
-import utils.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -26,16 +25,6 @@ class HttpHeaderTest {
         in = new ByteArrayInputStream(requestStr.getBytes());
     }
 
-    @Test
-    @DisplayName("http 헤더를 생성한다")
-    void createHttpHeader() throws IOException {
-        // given, when
-        HttpHeader request = HttpHeader.from(in);
-
-        // then
-        assertNotNull(request);
-    }
-
     @Nested
     class HttpRequestLine {
         @Test
@@ -45,6 +34,7 @@ class HttpHeaderTest {
             HttpHeader request = HttpHeader.from(in);
 
             // then
+            assertNotNull(request);
             assertEquals(GET, request.getMethod());
         }
 
@@ -55,7 +45,7 @@ class HttpHeaderTest {
             HttpHeader request = HttpHeader.from(in);
 
             // then
-            assertEquals(URI, request.getUri());
+            assertEquals(URI, request.getRequestLine());
         }
     }
 }

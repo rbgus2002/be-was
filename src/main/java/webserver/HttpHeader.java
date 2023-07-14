@@ -11,17 +11,17 @@ import java.util.StringTokenizer;
 import static utils.StringUtils.*;
 
 public class HttpHeader {
-    private HttpRequestLine uri;
-    private Map<String, String> header = new HashMap<>();
+    private final HttpRequestLine requestLine;
+    private final Map<String, String> header = new HashMap<>();
 
     private HttpHeader(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String line = br.readLine();
-        this.uri = HttpRequestLine.from(line);
+        this.requestLine = HttpRequestLine.from(line);
 
-        while (!isNullOrBlank(line)){
+        while (!isNullOrBlank(line)) {
             line = br.readLine();
-            if(isNullOrBlank(line)){
+            if (isNullOrBlank(line)) {
                 break;
             }
             StringTokenizer st = new StringTokenizer(line, ": ");
@@ -33,25 +33,25 @@ public class HttpHeader {
         return new HttpHeader(in);
     }
 
-    private static boolean isNullOrBlank(String line) {
+    private boolean isNullOrBlank(String line) {
         return line == null || line.isBlank();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[URI] ").append(appendNewLine(uri.toString()));
-        for(String key : header.keySet()){
+        sb.append("[URI] ").append(appendNewLine(requestLine.toString()));
+        for (String key : header.keySet()) {
             sb.append(key + ": ").append(appendNewLine(header.get(key)));
         }
         return sb.toString();
     }
 
     public String getMethod() {
-        return uri.getMethod();
+        return requestLine.getMethod();
     }
 
-    public String getUri(){
-        return uri.getUri();
+    public String getRequestLine() {
+        return requestLine.getUri();
     }
 }
