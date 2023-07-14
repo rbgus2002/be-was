@@ -15,7 +15,7 @@ public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
-    private final RestController restController ;
+    private final RestController restController;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -31,7 +31,7 @@ public class RequestHandler implements Runnable {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             HttpRequest httpRequest = Parser.getHttpRequest(bufferedReader);
 
-            HttpResponse httpResponse = restController.render(httpRequest);
+            HttpResponse httpResponse = restController.route(httpRequest);
             String responseHeader = httpResponse.getHttpHeaderFormat();
             logger.debug("Response Header : {}", responseHeader);
 
