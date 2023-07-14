@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.util.Objects;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -27,13 +29,17 @@ public class RequestHandler implements Runnable {
             String line = br.readLine();
             logger.debug("request line : {}", line);
 
+            String[] parts = line.split("\\s");
+            String url = parts[1];
+
             while (!line.equals("")) {
                 line = br.readLine();
                 logger.debug("header : {}", line);
             }
 
+            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + url).toPath());
+
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
