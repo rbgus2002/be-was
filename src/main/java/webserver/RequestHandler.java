@@ -1,18 +1,16 @@
 package webserver;
 
-import java.io.*;
-import java.net.Socket;
-import java.nio.Buffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
-
-import com.google.common.io.CharStreams;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,10 +27,10 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            //request 분석
-            RequestParser requestParser = new RequestParser(in);
-            String url = requestParser.getUrl();
-            // response 생성 후 반환
+            //request
+            HttpRequest httpRequest = new HttpRequest(in);
+            String url = httpRequest.getUrl();
+            // response
             DataOutputStream dos = new DataOutputStream(out);
 
             logger.debug(url);
@@ -40,11 +38,11 @@ public class RequestHandler implements Runnable {
             switch (url) {
                 case "/user/create":
                     body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
-                    User user = new User(requestParser.getParams());
+                    User user = new User(httpRequest.getParams());
                     logger.debug(user.toString());
                     break;
                 default:
-                     body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
+                    body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
             }
             response200Header(dos, body.length);
             responseBody(dos, body);
