@@ -27,8 +27,7 @@ public class RequestHandler implements Runnable {
             logger.debug("{}", header);
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
-//            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + header.getUri()).toPath());
+            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + header.getUri()).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {

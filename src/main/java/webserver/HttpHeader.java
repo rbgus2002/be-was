@@ -51,7 +51,7 @@ public class HttpHeader {
         return requestLine.getMethod();
     }
 
-    public String getRequestLine() {
+    public String getUri() {
         return requestLine.getUri();
     }
 }

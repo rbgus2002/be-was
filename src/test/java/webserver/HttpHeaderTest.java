@@ -45,7 +45,7 @@ class HttpHeaderTest {
             HttpHeader request = HttpHeader.from(in);
 
             // then
-            assertEquals(URI, request.getRequestLine());
+            assertEquals(URI, request.getUri());
         }
     }
 }
