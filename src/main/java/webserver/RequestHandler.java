@@ -25,21 +25,19 @@ public class RequestHandler implements Runnable {
     }
 
     public void run() {
-        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
-                connection.getPort());
+        logger.debug("New Client Connect! Connected IP : {}, Port : {}",
+                connection.getInetAddress(), connection.getPort());
 
-        try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+        try (InputStream in = connection.getInputStream();
+             OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = httpRequestParser.parse(in);
             logAllHeader(httpRequest);
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
 
-            if(httpRequest.getUri().equals("/index.html")) {
-                View view = viewResolver.resolveView(httpRequest.getUri());
-                body = view.render(dos);
-            }
+            View view = viewResolver.resolve(httpRequest.getUri());
+            byte[] body = view.render(dos);
 
             response200Header(dos, body.length);
             responseBody(dos, body);

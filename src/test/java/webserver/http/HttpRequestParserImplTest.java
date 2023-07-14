@@ -14,7 +14,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 
 
-@DisplayName("Http 요청 파서 테스트")
+@DisplayName("HttpRequestParserImpl 테스트")
 class HttpRequestParserImplTest {
     HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
     static String httpMessage =

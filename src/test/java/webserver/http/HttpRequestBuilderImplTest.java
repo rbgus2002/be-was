@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("HTTP 요청 객체 빌더 테스트")
+@DisplayName("HttpRequestBuilderImpl 테스트")
 class HttpRequestBuilderImplTest {
     HttpRequest.Builder builder;
 
