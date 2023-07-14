@@ -36,11 +36,7 @@ public class HttpResponse {
 
             if (this.httpStatus == 200) {
                 // 정적 파일을 읽는데 문제가 발생하면 /error.html 반환
-                try {
-                    response200(dos, this.path);
-                } catch (IOException e) {
-                    response200(dos, "/error.html");
-                }
+                response200(dos);
             }
             if (this.httpStatus == 302) {
                 response302Header(dos);
@@ -50,9 +46,16 @@ public class HttpResponse {
         }
     }
 
-    private void response200(DataOutputStream dos, String path) throws IOException {
-        InputStream fileInputStream = getResourceAsStream(path);
-        byte[] body = fileInputStream.readAllBytes();
+    private void response200(DataOutputStream dos) throws IOException {
+        byte[] body;
+        try {
+            InputStream fileInputStream = getResourceAsStream(this.path);
+            body = fileInputStream.readAllBytes();
+
+        } catch (IOException e) {
+            InputStream fileInputStream = getResourceAsStream("/error.html");
+            body = fileInputStream.readAllBytes();
+        }
         response200Header(dos, body);
         responseBody(dos, body);
     }
