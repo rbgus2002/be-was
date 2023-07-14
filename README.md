@@ -16,7 +16,7 @@ Java Web Application Server 2023
 - [x] 서버로 들어오는 요청을 log.debug를 이용해 출력한다
 - 유지보수에 좋은 구조에 대해 고민하고 코드 개선하기
   - [x] http 헤더 구조 객체 생성 (HttpHeader)
-- [ ] Java Thread 기반에서 Concurrent 패키지 사용하도록 수정
+- [x] Java Thread 기반에서 Concurrent 패키지 사용하도록 수정
 - [ ] Github 위키에 학습 내용 기록
 
 ## To Study List
