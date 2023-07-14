@@ -1,7 +1,5 @@
 package webserver;
 
-import utils.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +44,6 @@ public class HttpHeader {
         for(String key : header.keySet()){
             sb.append(key + ": ").append(appendNewLine(header.get(key)));
         }
-
         return sb.toString();
     }
 
