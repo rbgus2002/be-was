@@ -19,11 +19,11 @@ public class HttpRequest {
         String input;
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String startLine = br.readLine();
-        String[] startLineTokens = startLine.split(" ");
+        String[] statusLineTokens = startLine.split(" ");
         try {
-            method = startLineTokens[0];
-            parseTarget(startLineTokens[1]);
-            version = startLineTokens[2];
+            method = statusLineTokens[0];
+            parseTarget(statusLineTokens[1]);
+            version = statusLineTokens[2];
         } catch (Exception ignored) {
         }
         while ((input = br.readLine()) != null && !input.isEmpty()) {
