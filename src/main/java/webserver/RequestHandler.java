@@ -48,6 +48,9 @@ public class RequestHandler implements Runnable {
         finally {
             try {
                 connection.close();
+                logger.debug("Client disconnected : IP: {}, PORT:{}",
+                        connection.getInetAddress(),
+                        connection.getPort());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -125,7 +128,7 @@ public class RequestHandler implements Runnable {
             serveStaticFile(targetUri, dos);
         }
         else if(targetUri.startsWith("/user/create")) {
-            userSingUp(request.getQueryParameterMap());
+            userSignUp(request.getQueryParameterMap());
         }
     }
 
@@ -141,7 +144,7 @@ public class RequestHandler implements Runnable {
         response200Header(dos, body.length);
         responseBody(dos, body);
     }
-    public void userSingUp(Map<String, String> queryParameterMap) throws NullPointerException {
+    public void userSignUp(Map<String, String> queryParameterMap) throws NullPointerException {
         // User 객체 생성
         User user = new User(queryParameterMap.get(USERID),
                 queryParameterMap.get(PASSWORD),
