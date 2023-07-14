@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.FileIOUtils;
+
+import static http.Body.createBody;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -25,8 +26,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             String line = br.readLine();
             logger.debug("request line: {}", line);
-            FileIOUtils fileIOUtils = new FileIOUtils();
-            byte[] body = fileIOUtils.loadTemplatesFromPath(line);
+            byte[] body = createBody(line);
             while (!line.equals("")) {
                 line = br.readLine();
                 logger.debug("header: {}", line);
