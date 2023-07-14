@@ -1,17 +1,19 @@
 package webserver;
 
-import http.CustomHttpRequest;
+import annotation.RequestMappingHandler;
+import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.FileUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.URISyntaxException;
-import java.net.http.HttpRequest;
 import java.util.List;
 
-import static util.Utils.convertBufferedReaderToList;
-import static util.Utils.getResourceAsStream;
+import static util.FileUtils.convertBufferedReaderToList;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -31,19 +33,13 @@ public class RequestHandler implements Runnable {
 
             // 요청 읽기
             List<String> strings = convertBufferedReaderToList(reader);
-            HttpRequest request = new CustomHttpRequest(strings);
+            HttpRequest httpRequest = new HttpRequest(strings);
 
             printLogs(strings);
 
-            // 요청한 파일 읽기
-            InputStream fileInputStream = getResourceAsStream(request.uri());
-            byte[] body = fileInputStream.readAllBytes();
-
-            response(body);
-        } catch (IOException e) {
+            response(httpRequest);
+        } catch (Throwable e) {
             logger.error(e.getMessage());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -53,33 +49,20 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void response(byte[] body) {
-        try (OutputStream out = connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+    private void response(HttpRequest httpRequest) {
+        String path = httpRequest.uri().getPath();
+        String extension = FileUtils.getExtension(path);
+        HttpResponse httpResponse;
+        if (extension.equals("html")) {
+            httpResponse = HttpResponse.ok(path);
+        } else {
+            // 잘못된 http request이면 /error.html response 생성
+            try {
+                httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
+            } catch (Throwable e) {
+                httpResponse = HttpResponse.redirect("/error.html");
+            }
         }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+        httpResponse.response(connection);
     }
 }
