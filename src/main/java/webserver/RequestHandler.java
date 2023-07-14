@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private     Socket connection;
+    private Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -28,7 +28,7 @@ public class RequestHandler implements Runnable {
             String line = br.readLine();
             logger.debug("line = {}", line);
             String[] tokens = line.split(" ");
-            if(tokens[1].startsWith("/user/create")){
+            if (tokens[1].startsWith("/user/create")) {
                 String[] info = tokens[1].split("\\?");
                 String[] userInfo = info[1].split("&");
                 String userId = userInfo[0].substring(userInfo[0].indexOf('=') + 1, userInfo[0].length());
@@ -38,7 +38,7 @@ public class RequestHandler implements Runnable {
                 User user = new User(userId, password, name, email);
             }
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("/Users/dydwo0740/Desktop/develop/be-was/src/main/resources/templates" + tokens[1]).toPath());
+            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + tokens[1]).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
