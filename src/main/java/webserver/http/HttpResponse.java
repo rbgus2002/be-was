@@ -14,22 +14,20 @@ public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
     public HttpResponse(DataOutputStream dos) {
-        logger.info("HttpServletResponse Create with dos");
         this.dos = dos;
     }
 
     public void sendRedirect(String redirectUrl) {
 
-        logger.info("HttpResponse redirect");
         try {
             dos.writeBytes(HttpHeader.response302Header(redirectUrl));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+        logger.info("HttpResponse redirect end");
     }
 
     public void forward(String url) {
-        logger.info("HttpResponse forward");
         HttpContentType httpContentType = new HttpContentType();
         String extension = getUrlExtension(url);
         String contentType = httpContentType.getContentType(extension);
@@ -44,6 +42,7 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+        logger.info("HttpResponse forward end");
     }
 
     private String getUrlExtension(String url) {

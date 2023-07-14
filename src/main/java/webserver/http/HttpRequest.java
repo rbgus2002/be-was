@@ -18,7 +18,6 @@ public class HttpRequest {
     private final ConcurrentHashMap<String, String> queries = new ConcurrentHashMap<>();
 
     public HttpRequest(String request) {
-        logger.info("HttpRequest Create with request");
         String[] req = request.split(" ");
         ValidRequest(req);
         this.method = req[0];
@@ -48,7 +47,6 @@ public class HttpRequest {
     }
 
     private void parseQuery(String url) {
-        logger.info("parseQuery : " + url);
         String[] urlQuery = url.split("\\?");
         if (urlQuery.length == 1) {
             this.url = url;
@@ -64,7 +62,6 @@ public class HttpRequest {
     }
 
     public ConcurrentHashMap<String, String> getQueries() {
-        logger.info("getQueries");
         return queries;
     }
 }
