@@ -12,6 +12,6 @@ Java Web Application Server 2023
 
 ## 구현 목록
 ### Step-1 
-- [ ] Thread를 고수준 API로 변환
+- [X] Thread를 고수준 API로 변환
 - [ ] HTTP Request, Response 파싱
 - [ ] HTTP Response 응답하기 작성
