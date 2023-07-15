@@ -2,12 +2,14 @@ package webserver;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.Buffer;
+import java.nio.file.Files;
 
 import javax.xml.crypto.Data;
 
@@ -29,11 +31,10 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             final HttpWasRequest httpWasRequest = new HttpWasRequest(in);
-            logger.info("Resource Path is : {}",httpWasRequest.getResourcePath());
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            final HttpWasResponse httpWasResponse = new HttpWasResponse(out);
+
+            final String resourcePath = httpWasRequest.getResourcePath();
+            httpWasResponse.responseResource(resourcePath);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
