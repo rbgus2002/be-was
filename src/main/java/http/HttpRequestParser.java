@@ -21,8 +21,7 @@ public class HttpRequestParser {
         return requestLine.substring(firstSpaceIndex + 1, secondSpaceIndex);
     }
 
-    public static String parsePathFromRequestLine(String requestLine) {
-        String url = parseUrlFromRequestLine(requestLine);
+    public static String parsePathFromUrl(String url) {
         int queryIndex = url.indexOf("?");
         if(queryIndex == -1) {
             return url;
@@ -37,10 +36,9 @@ public class HttpRequestParser {
         return requestLine.substring(secondSpaceIndex + 1);
     }
 
-    public static Map<String, String> parseParamsFromRequestLine(String requestLine) {
+    public static Map<String, String> parseParamsFromUrl(String url) {
         Map<String, String> params = new HashMap<>();
 
-        String url = parseUrlFromRequestLine(requestLine);
         int queryIndex = url.indexOf("?");
         if(queryIndex == -1) {
             return params;
