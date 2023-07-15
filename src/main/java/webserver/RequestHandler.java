@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.StringUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,6 +28,9 @@ public class RequestHandler implements Runnable {
             String startLine = bufferedReader.readLine();
             logger.debug("request start header line : {}", startLine);
 
+            String requestHeader = readRequestHeader(bufferedReader);
+            logger.debug("request header : {}", requestHeader);
+
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File(RESOURCE_PATH + findRequestPath(startLine)).toPath());
 
@@ -35,6 +39,16 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private String readRequestHeader(BufferedReader bufferedReader) throws IOException {
+        String line = bufferedReader.readLine();
+        StringBuilder stringBuilder = new StringBuilder(line);
+        while (!line.equals("")) {
+            stringBuilder.append(StringUtils.NEWLINE).append(line);
+            line = bufferedReader.readLine();
+        }
+        return stringBuilder.toString();
     }
 
     private String findRequestPath(String startHeaderLine) {
