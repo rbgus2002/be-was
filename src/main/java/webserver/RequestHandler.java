@@ -1,16 +1,15 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.net.Socket;
+import java.nio.file.Files;
+
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    public static final String RESOURCE_PATH = "src/main/resources/templates";
 
     private Socket connection;
 
@@ -24,13 +23,24 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String startLine = bufferedReader.readLine();
+            logger.debug("request start header line : {}", startLine);
+
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+            byte[] body = Files.readAllBytes(new File(RESOURCE_PATH + findRequestPath(startLine)).toPath());
+
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private String findRequestPath(String startHeaderLine) {
+        String[] tokens = startHeaderLine.split(" ");
+
+        return tokens[1];
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
