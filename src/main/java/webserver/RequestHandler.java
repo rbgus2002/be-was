@@ -2,13 +2,11 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.HttpRequest;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.util.Objects;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -24,27 +22,25 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
+            // HTTP Request Message 읽기
+            HttpRequest httpRequest = HttpRequest.create(in);
+            logger.debug(httpRequest.toString());
 
-            String line = br.readLine();
-            logger.debug("request line : {}", line);
+            // HTTP 응답 body
+            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + httpRequest.getUrl()).toPath());
 
-            String[] parts = line.split("\\s");
-            String url = parts[1];
-
-            while (!line.equals("")) {
-                line = br.readLine();
-                logger.debug("header : {}", line);
-            }
-
-            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates" + url).toPath());
-
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            // HTTP Response Message 보내기
+            sendHttpResponseMessage(out, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
+    }
+
+    private void sendHttpResponseMessage(OutputStream out, byte[] body) throws IOException {
+        DataOutputStream dos = new DataOutputStream(out);
+        response200Header(dos, body.length);
+        responseBody(dos, body);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
@@ -54,7 +50,7 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
