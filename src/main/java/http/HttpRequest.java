@@ -11,10 +11,11 @@ public class HttpRequest {
     private String httpVersion;
 
     public HttpRequest(String requestLine){
-        this.method = parseMethodFromRequestLine(requestLine);
-        this.path = parsePathFromRequestLine(requestLine);
-        this.params = parseParamsFromRequestLine(requestLine);
-        this.httpVersion = parseVersionFromRequestLine(requestLine);
+        String[] tokens = requestLine.split(" ");
+        this.method = tokens[0];
+        this.path = parsePathFromUrl(tokens[1]);
+        this.params = parseParamsFromUrl(tokens[1]);
+        this.httpVersion = tokens[2];
     }
 
     public String getMethod(){
