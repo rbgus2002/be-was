@@ -104,6 +104,7 @@ class RequestHandlerResolverImplTest {
 
     @Controller
     static class TestRequestResolver {
+        @SuppressWarnings("unused")
         @RequestMapping(value = "/test")
         public String handlerMethod(HttpRequest httpRequest) {
             return "handlerMethod";

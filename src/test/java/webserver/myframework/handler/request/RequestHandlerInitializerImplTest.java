@@ -147,6 +147,7 @@ class RequestHandlerInitializerImplTest {
 
     @Controller(value = "/class")
     static class TestController {
+        @SuppressWarnings("unused")
         @RequestMapping(value = "/correctMethod", method = HttpMethod.POST)
         public String correctMethod(HttpRequest httpRequest) {
             return "correctMethod";
@@ -154,11 +155,13 @@ class RequestHandlerInitializerImplTest {
     }
 
     static class ErrorController {
+        @SuppressWarnings("unused")
         @RequestMapping(value = "/returnTypeError", method = HttpMethod.DELETE)
         public void returnTypeError(HttpRequest httpRequest) {
 
         }
 
+        @SuppressWarnings("unused")
         @RequestMapping(value = "/parameterTypeError", method = HttpMethod.DELETE)
         public String parameterTypeError(String error) {
             return "parameterTypeError";
