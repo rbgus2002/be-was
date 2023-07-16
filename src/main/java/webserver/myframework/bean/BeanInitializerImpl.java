@@ -1,7 +1,7 @@
 package webserver.myframework.bean;
 
 
-import utils.ReflectionUtils;
+import webserver.myframework.utils.ReflectionUtils;
 import webserver.myframework.bean.annotation.Autowired;
 import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.bean.exception.BeanConstructorException;
@@ -13,8 +13,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BeanInitializerImpl implements BeanInitializer {
+    private final BeanContainer beanContainer;
+
+    public BeanInitializerImpl(BeanContainer beanContainer) {
+        this.beanContainer = beanContainer;
+    }
+
     @Override
-    public void initialize(String packageName, BeanContainer beanContainer) throws BeanConstructorException, ReflectiveOperationException, FileNotFoundException {
+    public void initialize(String packageName) throws BeanConstructorException, ReflectiveOperationException, FileNotFoundException {
         List<Class<?>> beanClasses = ReflectionUtils.getClassesInPackage(packageName).stream()
                 .filter(clazz -> ReflectionUtils.isClassHasAnnotation(clazz, Component.class))
                 .collect(Collectors.toList());
@@ -57,7 +63,7 @@ public class BeanInitializerImpl implements BeanInitializer {
         List<Class<?>> parameterClasses = new ArrayList<>();
         beanConstructors.forEach(constructor -> parameterClasses.addAll(List.of(constructor.getParameterTypes())));
         for (Class<?> parameterClass : parameterClasses) {
-            if(!parameterClasses.contains(parameterClass)) {
+            if(!parameterClass.isAnnotationPresent(Component.class)) {
                 throw new BeanConstructorException();
             }
         }
