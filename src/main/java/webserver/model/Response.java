@@ -22,7 +22,7 @@ public class Response {
             return this.mime;
         }
 
-        public MIME getMimeByExtension(String extension) {
+        public static MIME getMimeByExtension(String extension) {
             return Arrays.stream(MIME.values())
                     .filter(mime -> extension.equalsIgnoreCase(mime.toString()))
                     .collect(Collectors.toList())

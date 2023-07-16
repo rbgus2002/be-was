@@ -128,10 +128,12 @@ public class RequestHandler implements Runnable {
         String targetUri = request.getTargetUri();
 
         if (isStaticFile(targetUri)) {
+            String[] tokens = targetUri.split("\\.");
+            String extension = tokens[tokens.length-1];
             byte[] body = loadStaticFile(targetUri);
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", MIME.HTML.getMime() + ";charset=utf-8");
+            headerMap.put("Content-Type", MIME.getMimeByExtension(extension).getMime() + ";charset=utf-8");
             headerMap.put("Content-Length", String.valueOf(body.length));
 
             return new Response(STATUS.OK, "1.1", headerMap, body);
