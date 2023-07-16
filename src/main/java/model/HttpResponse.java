@@ -29,7 +29,6 @@ public class HttpResponse {
         // TODO 수정하기
         header.put("Content-Type", "text/html;charset=utf-8");
         header.put("Content-Length", String.valueOf(lengthOfBody));
-        header.put("URLEncoding", "UTF-8");
         HttpHeader httpHeader = HttpHeader.of(header);
 
         return new HttpResponse(

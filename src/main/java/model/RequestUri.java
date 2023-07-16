@@ -8,8 +8,12 @@ import static util.StringUtils.*;
 public class RequestUri {
     private static final int KEY_INDEX = 0;
     private static final int VALUE_INDEX = 1;
-    private String uri;
-    private Map<String, Object> params;
+    private static final int URI_INDEX = 0;
+    private static final int PARAMETERS_INDEX = 1;
+    private static final int LENGTH_WHEN_HAS_NO_VALUE = 1;
+
+    private final String uri;
+    private final Map<String, Object> params;
 
     public RequestUri(String uri, Map<String, Object> params) {
         this.uri = uri;
@@ -17,12 +21,18 @@ public class RequestUri {
     }
 
     public static RequestUri of(String text) {
-        String[] splitByAmpersand = splitBy(text, AMPERSAND_MARK);
-        String uri = splitByAmpersand[0];
+        String[] splitByAmpersand = splitBy(text, QUESTION_MARK); // /uri?a=a&b=2&c=
+        String uri = splitByAmpersand[URI_INDEX];
+
+        String[] paramArray = splitBy(splitByAmpersand[PARAMETERS_INDEX], AMPERSAND_MARK);
 
         HashMap<String, Object> params = new HashMap<>();
-        for (int i = 1; i < splitByAmpersand.length; i++) {
-            String[] splitByEqualMark = splitBy(splitByAmpersand[i], EQUAL_MARK);
+        for (int i = 0; i < paramArray.length; i++) {
+            String[] splitByEqualMark = splitBy(paramArray[i], EQUAL_MARK);
+
+            if (splitByEqualMark.length == LENGTH_WHEN_HAS_NO_VALUE) {
+                continue;
+            }
             String key = splitByEqualMark[KEY_INDEX];
             String value = splitByEqualMark[VALUE_INDEX];
             params.put(key, value);
