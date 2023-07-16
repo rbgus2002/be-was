@@ -63,4 +63,19 @@ public class Response {
         this.body = body;
     }
 
+    public STATUS getStatus() {
+        return status;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public Map<String, String> getHeaderMap() {
+        return headerMap;
+    }
+
+    public byte[] getBody() {
+        return body;
+    }
 }
