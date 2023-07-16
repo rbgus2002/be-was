@@ -63,7 +63,7 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    public Request parseRequest(Socket connection) throws IOException, IllegalArgumentException {
+    private Request parseRequest(Socket connection) throws IOException, IllegalArgumentException {
         InputStream in = connection.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         /*
@@ -102,7 +102,7 @@ public class RequestHandler implements Runnable {
 
         return new Request(method, version, targetUri, queryParameterMap, headerMap, body);
     }
-    public String readSingleHTTPLine(BufferedReader br) throws IOException {
+    private String readSingleHTTPLine(BufferedReader br) throws IOException {
         return URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
     }
     private Map<String, String> parseQueryParameter(String route) {
@@ -124,7 +124,7 @@ public class RequestHandler implements Runnable {
         return queryParameterMap;
     }
 
-    public Response generateResponse(Request request) throws Exception {
+    private Response generateResponse(Request request) throws Exception {
         String targetUri = request.getTargetUri();
 
         if (isStaticFile(targetUri)) {
@@ -153,7 +153,7 @@ public class RequestHandler implements Runnable {
                 .anyMatch(mime -> targetUri.endsWith("." + mime.toString()));
     }
 
-    private byte[] loadStaticFile(String route) throws IOException {
+    public byte[] loadStaticFile(String route) throws IOException {
         // 요청 경로의 파일을 반환
         File f;
         byte[] body;
@@ -174,9 +174,24 @@ public class RequestHandler implements Runnable {
         Database.addUser(user);
     }
 
-    public void sendResponse(Response response, Socket connection) throws IOException {
+    private void sendResponse(Response response, Socket connection) throws IOException {
         OutputStream out = connection.getOutputStream();
         DataOutputStream dos = new DataOutputStream(out);
+
+        // StatusLine
+        STATUS status = response.getStatus();
+        dos.writeBytes("HTTP/" + response.getVersion() + " " +
+                status.getStatusCode() + " " + status.getStatusMessage() + "\r\n");
+        // Headers
+        for (Map.Entry<String, String> entry : response.getHeaderMap().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            dos.writeBytes(key + ": " + value + "\r\n");
+        }
+        dos.writeBytes("\r\n");
+        // Body
+        byte[] body = response.getBody();
+        dos.write(body, 0, body.length);
     }
 
 
