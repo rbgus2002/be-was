@@ -1,4 +1,7 @@
-package webserver.http;
+package webserver.http.request;
+
+import webserver.http.HttpHeaders;
+import webserver.http.HttpMethod;
 
 public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     private HttpMethod method = HttpMethod.GET;

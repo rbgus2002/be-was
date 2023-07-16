@@ -1,4 +1,4 @@
-package webserver.http;
+package webserver.http.request;
 
 import java.io.IOException;
 import java.io.InputStream;

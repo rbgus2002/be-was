@@ -5,7 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.myframework.bean.BeanContainer;
 import webserver.myframework.bean.BeanInitializer;
 import webserver.myframework.bean.BeanInitializerImpl;
@@ -54,7 +55,7 @@ class RequestHandlerInitializerImplTest {
             requestHandlerInitializer.initialize();
 
             //then
-            RequestHandler handler = requestHandlerResolver.getHandler("/class/correctMethod", HttpMethod.POST);
+            RequestHandler handler = requestHandlerResolver.resolveHandler("/class/correctMethod", HttpMethod.POST);
             assertThat(handler).isNotNull();
             assertThat(handler).isInstanceOf(RequestHandlerImpl.class);
 
@@ -62,7 +63,7 @@ class RequestHandlerInitializerImplTest {
             assertThat(resultController).isInstanceOf(TestController.class);
 
             Object resultMethod = getFieldVariable(handler, "method");
-            Method testMethod = TestController.class.getMethod("correctMethod", HttpRequest.class);
+            Method testMethod = TestController.class.getMethod("correctMethod", HttpRequest.class, HttpResponse.class);
             assertThat(resultMethod).isEqualTo(testMethod);
         }
     }
@@ -85,8 +86,9 @@ class RequestHandlerInitializerImplTest {
             @DisplayName("IllegalHandlerReturnTypeException 예외를 발생시킨다")
             void throwIllegalHandlerReturnTypeException() throws ReflectiveOperationException {
                 //given
+                @SuppressWarnings("JavaReflectionMemberAccess")
                 Method parameterTypeError = ErrorController.class
-                        .getDeclaredMethod("returnTypeError", HttpRequest.class);
+                        .getDeclaredMethod("returnTypeError", HttpRequest.class, HttpResponse.class);
 
                 //when
                 //then
@@ -100,7 +102,7 @@ class RequestHandlerInitializerImplTest {
         }
 
         @Nested
-        @DisplayName("메소드의 파라미터가 HttpRequest만 있지 않다면")
+        @DisplayName("메소드의 파라미터가 HttpRequest, HttpResponse가 아니라면")
         class MethodParameterIsNotOnlyHttpRequest {
             @Test
             @DisplayName("IllegalHandlerParameterTypeException 예외를 발생시킨다")
@@ -121,14 +123,14 @@ class RequestHandlerInitializerImplTest {
         }
 
         @Nested
-        @DisplayName("메소드의 리턴 타입이 String이고 메소드의 파라미터가 HttpRequest만 있다면")
+        @DisplayName("메소드의 리턴 타입이 String이고 메소드의 파라미터가 HttpRequest, HttpResponse라면")
         class MethodCanHandler {
             @Test
             @DisplayName("아무 일도 하지 않는다")
             void doNothing() throws ReflectiveOperationException {
                 //given
                 Method correctMethod = TestController.class
-                        .getDeclaredMethod("correctMethod", HttpRequest.class);
+                        .getDeclaredMethod("correctMethod", HttpRequest.class, HttpResponse.class);
 
                 //when
                 Object result = verifyHandlerCondition.invoke(requestHandlerInitializer, correctMethod);
@@ -145,19 +147,21 @@ class RequestHandlerInitializerImplTest {
         return controllerField.get(handler);
     }
 
+    @SuppressWarnings("SameReturnValue")
     @Controller(value = "/class")
     static class TestController {
         @SuppressWarnings("unused")
         @RequestMapping(value = "/correctMethod", method = HttpMethod.POST)
-        public String correctMethod(HttpRequest httpRequest) {
+        public String correctMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
             return "correctMethod";
         }
     }
 
+    @SuppressWarnings("SameReturnValue")
     static class ErrorController {
         @SuppressWarnings("unused")
         @RequestMapping(value = "/returnTypeError", method = HttpMethod.DELETE)
-        public void returnTypeError(HttpRequest httpRequest) {
+        public void returnTypeError(HttpRequest httpRequest, HttpResponse httpResponse) {
 
         }
 

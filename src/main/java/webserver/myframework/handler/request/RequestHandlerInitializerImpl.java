@@ -1,6 +1,7 @@
 package webserver.myframework.handler.request;
 
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.myframework.bean.BeanContainer;
 import webserver.myframework.bean.exception.BeanNotFoundException;
 import webserver.myframework.handler.request.annotation.Controller;
@@ -18,9 +19,9 @@ public class RequestHandlerInitializerImpl implements RequestHandlerInitializer 
     private final RequestHandlerResolver resolver;
 
     public RequestHandlerInitializerImpl(BeanContainer beanContainer,
-                                         RequestHandlerResolver resolver) {
+                                         RequestHandlerResolver requestHandlerResolver) {
         this.beanContainer = beanContainer;
-        this.resolver = resolver;
+        this.resolver = requestHandlerResolver;
     }
 
     @Override
@@ -39,12 +40,14 @@ public class RequestHandlerInitializerImpl implements RequestHandlerInitializer 
         }
     }
 
-    private static void verifyHandlerCondition(Method method) throws IllegalHandlerReturnTypeException, IllegalHandlerParameterTypeException {
+    private static void verifyHandlerCondition(Method method)
+            throws IllegalHandlerReturnTypeException, IllegalHandlerParameterTypeException {
         if(method.getReturnType() != String.class) {
             throw new IllegalHandlerReturnTypeException();
         }
         List<Class<?>> parameterTypes = List.of(method.getParameterTypes());
-        if(parameterTypes.size() > 1 || !parameterTypes.contains(HttpRequest.class)) {
+        if(parameterTypes.size() != 2 ||
+           !parameterTypes.containsAll(List.of(HttpRequest.class, HttpResponse.class))) {
             throw new IllegalHandlerParameterTypeException();
         }
     }

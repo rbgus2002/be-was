@@ -1,7 +1,10 @@
 package webserver.myframework.view;
 
+import webserver.myframework.bean.annotation.Component;
+
 import java.io.File;
 
+@Component
 public class HtmlViewResolverImpl implements ViewResolver {
     private static final String HTML_PREFIX = "src/main/resources/templates";
     private static final String HTML_SUFFIX = ".html";

@@ -1,4 +1,7 @@
-package webserver.http;
+package webserver.http.request;
+
+import webserver.http.HttpHeaders;
+import webserver.http.HttpMethod;
 
 import java.util.Set;
 

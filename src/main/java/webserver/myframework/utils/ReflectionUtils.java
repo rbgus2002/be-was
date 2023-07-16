@@ -80,7 +80,8 @@ public class ReflectionUtils {
         }
         for (File file : files) {
             if (file.isDirectory()) {
-                processDirectory(file, packageName + "." + file.getName(), classes);
+                String temp = packageName.isBlank() ? file.getName() : packageName + "." + file.getName();
+                processDirectory(file, temp, classes);
                 continue;
             }
 
@@ -95,6 +96,7 @@ public class ReflectionUtils {
         if (!fileName.endsWith(".class")) {
             return;
         }
+
         String className = packageName + "." + fileName.substring(0, fileName.length() - 6);
         Class<?> clazz = Class.forName(className);
         classes.add(clazz);

@@ -1,7 +1,6 @@
 package webserver.myframework.bean;
 
 
-import webserver.myframework.utils.ReflectionUtils;
 import webserver.myframework.bean.annotation.Autowired;
 import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.bean.exception.BeanConstructorException;
@@ -12,6 +11,8 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static webserver.myframework.utils.ReflectionUtils.*;
+
 public class BeanInitializerImpl implements BeanInitializer {
     private final BeanContainer beanContainer;
 
@@ -21,20 +22,13 @@ public class BeanInitializerImpl implements BeanInitializer {
 
     @Override
     public void initialize(String packageName) throws BeanConstructorException, ReflectiveOperationException, FileNotFoundException {
-        List<Class<?>> beanClasses = ReflectionUtils.getClassesInPackage(packageName).stream()
-                .filter(clazz -> ReflectionUtils.isClassHasAnnotation(clazz, Component.class))
+        List<Class<?>> beanClasses = getClassesInPackage(packageName).stream()
+                .filter(clazz -> isClassHasAnnotation(clazz, Component.class) && !clazz.isAnnotation())
                 .collect(Collectors.toList());
 
-        // @Autowired가 붙은 모든 생성자 가져오기
         List<Constructor<?>> beanConstructors = getBeanConstructors(beanClasses);
-
-        // 생성자의 파라미터 중 주입이 불가능한 생성자가 존재하는지 확인
-        checkBeanConstructorParameters(beanConstructors);
-
-        // 생성자 파라미터 수를 기준으로 정렬
+        checkBeanConstructorParameters(beanClasses, beanConstructors);
         beanConstructors.sort(Comparator.comparingInt(Constructor::getParameterCount));
-
-        // 생성자 주입
         createBeans(beanContainer, beanConstructors);
     }
 
@@ -59,11 +53,12 @@ public class BeanInitializerImpl implements BeanInitializer {
         }
     }
 
-    private static void checkBeanConstructorParameters(List<Constructor<?>> beanConstructors) throws BeanConstructorException {
+    private static void checkBeanConstructorParameters(List<Class<?>> beanClasses,
+                                                       List<Constructor<?>> beanConstructors) throws BeanConstructorException {
         List<Class<?>> parameterClasses = new ArrayList<>();
         beanConstructors.forEach(constructor -> parameterClasses.addAll(List.of(constructor.getParameterTypes())));
         for (Class<?> parameterClass : parameterClasses) {
-            if(!parameterClass.isAnnotationPresent(Component.class)) {
+            if(beanClasses.stream().noneMatch(parameterClass::isAssignableFrom)) {
                 throw new BeanConstructorException();
             }
         }
@@ -86,7 +81,7 @@ public class BeanInitializerImpl implements BeanInitializer {
         List<Constructor<?>> constructorList = Arrays.stream(constructors)
                 .filter(constructor -> constructor.isAnnotationPresent(Autowired.class))
                 .collect(Collectors.toList());
-        if(constructorList.size() > 1) {
+        if(constructorList.size() != 1) {
             throw new BeanConstructorException();
         }
         return constructorList.get(0);

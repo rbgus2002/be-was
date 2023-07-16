@@ -6,7 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.myframework.handler.request.annotation.Controller;
 import webserver.myframework.handler.request.annotation.RequestMapping;
 import webserver.myframework.handler.request.exception.CannotResolveHandlerException;
@@ -64,8 +65,8 @@ class RequestHandlerResolverImplTest {
     }
 
     @Nested
-    @DisplayName("getHandler method")
-    class GetHandler {
+    @DisplayName("resolveHandler method")
+    class ResolveHandler {
         @Nested
         @DisplayName("요청을 처리할 핸들러가 없는 경우")
         class IsMatchedHandlerNotExist {
@@ -75,7 +76,7 @@ class RequestHandlerResolverImplTest {
                 //given
                 //when
                 //then
-                assertThatThrownBy(() -> requestHandlerResolver.getHandler("/test", HttpMethod.DELETE))
+                assertThatThrownBy(() -> requestHandlerResolver.resolveHandler("/test", HttpMethod.DELETE))
                         .isInstanceOf(CannotResolveHandlerException.class);
             }
         }
@@ -90,30 +91,32 @@ class RequestHandlerResolverImplTest {
                 requestHandlerResolver.registerHandler(getRequestInfo(), getHandler());
 
                 //when
-                RequestHandler handler = requestHandlerResolver.getHandler("/test", HttpMethod.GET);
+                RequestHandler handler = requestHandlerResolver.resolveHandler("/test", HttpMethod.GET);
 
                 //then
                 assertThat(getField(handler, "controller"))
                         .isInstanceOf(TestRequestResolver.class);
 
-                assertThat(getField(handler, "method"))
-                        .isEqualTo(TestRequestResolver.class.getMethod("handlerMethod", HttpRequest.class));
+                assertThat(getField(handler, "method")).isEqualTo(
+                        TestRequestResolver.class.getMethod("handlerMethod", HttpRequest.class, HttpResponse.class));
             }
         }
     }
 
+    @SuppressWarnings("SameReturnValue")
     @Controller
     static class TestRequestResolver {
         @SuppressWarnings("unused")
         @RequestMapping(value = "/test")
-        public String handlerMethod(HttpRequest httpRequest) {
+        public String handlerMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
             return "handlerMethod";
         }
     }
 
     private static RequestHandlerImpl getHandler() throws NoSuchMethodException {
         TestRequestResolver controller = new TestRequestResolver();
-        return new RequestHandlerImpl(controller, controller.getClass().getMethod("handlerMethod", HttpRequest.class));
+        return new RequestHandlerImpl(controller,
+                controller.getClass().getMethod("handlerMethod", HttpRequest.class, HttpResponse.class));
     }
 
     private static RequestInfo getRequestInfo() {

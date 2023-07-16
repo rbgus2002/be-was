@@ -42,12 +42,12 @@ class BeanInitializerImplTest {
                 //when
                 //then
                 Method checkBeanConstructorParametersMethod = beanInitializer.getClass()
-                        .getDeclaredMethod("checkBeanConstructorParameters", List.class);
+                        .getDeclaredMethod("checkBeanConstructorParameters", List.class, List.class);
                 checkBeanConstructorParametersMethod.setAccessible(true);
                 Constructor<?>[] constructors = ErrorBean.class.getConstructors();
 
                 try {
-                    checkBeanConstructorParametersMethod.invoke(beanInitializer, List.of(constructors));
+                    checkBeanConstructorParametersMethod.invoke(beanInitializer, List.of(ErrorBean.class), List.of(constructors));
                 } catch (InvocationTargetException e) {
                     Throwable targetException = e.getTargetException();
                     assertThat(targetException).isInstanceOf(BeanConstructorException.class);

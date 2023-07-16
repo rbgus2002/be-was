@@ -7,5 +7,5 @@ import webserver.myframework.handler.request.exception.DuplicateRequestHandlerEx
 public interface RequestHandlerResolver {
     void registerHandler(RequestInfo requestInfo, RequestHandler handler) throws DuplicateRequestHandlerException;
 
-    RequestHandler getHandler(String uri, HttpMethod httpMethod) throws CannotResolveHandlerException;
+    RequestHandler resolveHandler(String uri, HttpMethod httpMethod) throws CannotResolveHandlerException;
 }

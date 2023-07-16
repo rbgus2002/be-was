@@ -1,12 +1,14 @@
 package webserver.myframework.handler.request;
 
 import webserver.http.HttpMethod;
+import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.handler.request.exception.CannotResolveHandlerException;
 import webserver.myframework.handler.request.exception.DuplicateRequestHandlerException;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class RequestHandlerResolverImpl implements RequestHandlerResolver {
     private final Map<RequestInfo, RequestHandler> handlerMap = new HashMap<>();
 
@@ -20,7 +22,7 @@ public class RequestHandlerResolverImpl implements RequestHandlerResolver {
     }
 
     @Override
-    public RequestHandler getHandler(String uri, HttpMethod httpMethod) throws CannotResolveHandlerException {
+    public RequestHandler resolveHandler(String uri, HttpMethod httpMethod) throws CannotResolveHandlerException {
         RequestInfo matchedRequestInfo = handlerMap.keySet().stream()
                 .filter(info -> info.isUri(uri) && info.isHttpMethod(httpMethod))
                 .findFirst()
