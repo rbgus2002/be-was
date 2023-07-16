@@ -23,10 +23,12 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+        try (InputStream in = connection.getInputStream();
+             OutputStream out = connection.getOutputStream();
+             InputStreamReader reader = new InputStreamReader(in);
+             BufferedReader bufferedReader = new BufferedReader(reader);
+        ) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-
             StringBuilder sb = new StringBuilder();
             String line = bufferedReader.readLine();
 
