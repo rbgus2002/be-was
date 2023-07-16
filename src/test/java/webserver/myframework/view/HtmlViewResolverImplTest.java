@@ -1,4 +1,4 @@
-package webserver.view;
+package webserver.myframework.view;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("HtmlViewResolverImpl 테스트")
 class HtmlViewResolverImplTest {
-    ViewResolver viewResolver = new HtmlViewResolverImpl();
+    final ViewResolver viewResolver = new HtmlViewResolverImpl();
 
     @Nested
     @DisplayName("resolve method")

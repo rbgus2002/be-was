@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class ReflectionUtils {
 
     public static boolean isClassHasAnnotation(Class<?> clazz, Class<? extends Annotation> targetAnnotation) {
         List<? extends Class<? extends Annotation>> annotations =
-                getCustomAnnotationClasses(clazz);
+                getClassesHasCustomAnnotation(clazz);
         if(annotations.contains(targetAnnotation)) {
             return true;
         }
@@ -33,7 +34,7 @@ public class ReflectionUtils {
                 .anyMatch(annotation -> isClassHasAnnotation(annotation, targetAnnotation));
     }
 
-    private static List<? extends Class<? extends Annotation>> getCustomAnnotationClasses(Class<?> clazz) {
+    private static List<? extends Class<? extends Annotation>> getClassesHasCustomAnnotation(Class<?> clazz) {
         return Arrays.stream(clazz.getAnnotations())
                 .map(Annotation::annotationType)
                 .filter(ReflectionUtils::isCustomAnnotation)
@@ -43,6 +44,12 @@ public class ReflectionUtils {
     public static List<Field> getFieldsHaveAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         return Arrays.stream(clazz.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(annotationClass))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Method> getMethodsHaveAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        return Arrays.stream(clazz.getMethods())
+                .filter(method -> method.isAnnotationPresent(annotationClass))
                 .collect(Collectors.toList());
     }
 

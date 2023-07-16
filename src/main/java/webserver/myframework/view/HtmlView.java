@@ -1,6 +1,5 @@
-package webserver.view;
+package webserver.myframework.view;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,7 @@ public class HtmlView implements View {
     }
 
     @Override
-    public byte[] render(DataOutputStream dataOutputStream) throws IOException {
+    public byte[] render() throws IOException {
         return Files.readAllBytes(html.toPath());
     }
 }

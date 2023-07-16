@@ -1,14 +1,10 @@
 package webserver.http;
 
 public class HttpRequestBuilderImpl implements HttpRequest.Builder {
-    private HttpMethod method;
-    private String uri;
-    private String version;
-    private final HttpHeaders headers;
-
-    public HttpRequestBuilderImpl() {
-        this.headers = new HttpHeaders();
-    }
+    private HttpMethod method = HttpMethod.GET;
+    private String uri = "/";
+    private String version = "1.1";
+    private final HttpHeaders headers = new HttpHeaders();
 
     @Override
     public HttpRequest.Builder method(HttpMethod method) {

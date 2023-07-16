@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("HttpRequestParserImpl 테스트")
 class HttpRequestParserImplTest {
-    HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
-    static String httpMessage =
+    final HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
+    static final String httpMessage =
             "GET /index.html HTTP/1.1\r\n" +
             "Host: localhost:8080\r\n" +
             "Connection: keep-alive\r\n" +

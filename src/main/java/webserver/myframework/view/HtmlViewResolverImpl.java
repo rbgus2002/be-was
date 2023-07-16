@@ -1,4 +1,4 @@
-package webserver.view;
+package webserver.myframework.view;
 
 import java.io.File;
 

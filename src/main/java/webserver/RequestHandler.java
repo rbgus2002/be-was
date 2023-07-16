@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 import webserver.http.HttpRequest;
 import webserver.http.HttpRequestParser;
 import webserver.http.HttpRequestParserImpl;
-import webserver.view.View;
-import webserver.view.ViewResolver;
-import webserver.view.HtmlViewResolverImpl;
+import webserver.myframework.view.View;
+import webserver.myframework.view.ViewResolver;
+import webserver.myframework.view.HtmlViewResolverImpl;
 
+//TODO: 이름 변경
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
@@ -37,7 +38,7 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
 
             View view = viewResolver.resolve(httpRequest.getUri());
-            byte[] body = view.render(dos);
+            byte[] body = view.render();
 
             response200Header(dos, body.length);
             responseBody(dos, body);

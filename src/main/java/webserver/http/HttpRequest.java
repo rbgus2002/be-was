@@ -16,15 +16,10 @@ public abstract class HttpRequest {
     }
 
     public interface Builder {
-
         Builder method(HttpMethod httpMethod);
-
         Builder uri(String uri);
-
         Builder version(String version);
-
         Builder addHeader(String headerName, String value);
-
         HttpRequest build();
     }
 }

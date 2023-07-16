@@ -19,9 +19,9 @@ public class HttpRequestParserImpl implements HttpRequestParser {
 
     private static void parseStartLine(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
         String[] startLine = bufferedReader.readLine().split(" ");
-        builder.method(HttpMethod.valueOf(startLine[0].trim()));
-        builder.uri(startLine[1].trim());
-        builder.version(startLine[2].substring(startLine[2].indexOf('/') + 1));
+        builder.method(HttpMethod.valueOf(startLine[0].trim()))
+                .uri(startLine[1].trim())
+                .version(startLine[2].substring(startLine[2].indexOf('/') + 1).trim());
     }
 
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
