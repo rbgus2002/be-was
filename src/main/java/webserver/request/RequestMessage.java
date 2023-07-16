@@ -7,7 +7,7 @@ public class RequestMessage {
     private final String method;
     private final String path;
     private final String version;
-    private Map<String, String> metaDatas = new HashMap<>();
+    private final Map<String, String> metaData = new HashMap<>();
 
     public RequestMessage(String header) {
         String[] lines = header.split("\\n");
@@ -19,7 +19,7 @@ public class RequestMessage {
 
         for (int i = 1; i < lines.length; i++) {
             tokens = lines[i].split(":");
-            metaDatas.put(tokens[0].trim(), tokens[1].trim());
+            metaData.put(tokens[0].trim(), tokens[1].trim());
         }
     }
 
@@ -36,6 +36,6 @@ public class RequestMessage {
     }
 
     public String getMetaData(String key) {
-        return metaDatas.get(key);
+        return metaData.get(key);
     }
 }

@@ -26,7 +26,7 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
             StringBuilder sb = new StringBuilder();
             String line = bufferedReader.readLine();
@@ -47,19 +47,6 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private String readRequestHeader(BufferedReader bufferedReader) throws IOException {
-        long lineNumber = 1;
-        String line = bufferedReader.readLine();
-        StringBuilder stringBuilder = new StringBuilder(line);
-
-        while (!line.equals("")) {
-            logger.debug("request header line {} : {}", lineNumber++, line);
-            stringBuilder.append(NEWLINE).append(line);
-            line = bufferedReader.readLine();
-        }
-        return stringBuilder.toString();
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
