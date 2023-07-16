@@ -53,10 +53,10 @@ public class Response {
     private final STATUS status;
     private final String version;
     private final Map<String, String> headerMap;
-    private final String body;
+    private final byte[] body;
 
     public Response(STATUS status, String version,
-                    Map<String, String> headerMap, String body) {
+                    Map<String, String> headerMap, byte[] body) {
         this.status = status;
         this.version = version;
         this.headerMap = headerMap;
