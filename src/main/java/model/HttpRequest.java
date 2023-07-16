@@ -21,6 +21,10 @@ public class HttpRequest {
         return this.method == method && this.requestUri.match(uri);
     }
 
+    public boolean match(Method method) {
+        return this.method == method;
+    }
+
     public HttpHeader getHeader() {
         return httpHeader.newInstance();
     }
@@ -28,4 +32,9 @@ public class HttpRequest {
     public String getProtocol() {
         return this.protocol;
     }
+
+    public boolean endsWithHtml() {
+        return requestUri.uriEndsWith(HTML_FILE_FORMAT);
+    }
+
 }

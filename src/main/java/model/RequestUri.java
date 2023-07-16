@@ -45,4 +45,9 @@ public class RequestUri {
     public boolean match(String uri) {
         return this.uri.equals(uri);
     }
+
+    public boolean uriEndsWith(String s) {
+        return uri.endsWith(s);
+    }
+
 }

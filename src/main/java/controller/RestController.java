@@ -25,9 +25,8 @@ public class RestController {
 
     public HttpResponse route(HttpRequest httpRequest) throws FileNotFoundException {
         HttpResponse response = responseService.createNotFoundResponse(httpRequest);
-        if (httpRequest.match(Method.GET, BASIC_INDEX_URI)) {
-            // TODO *.html static 한 것들은 그냥 넘겨주게
-            response = getHttpResponse(httpRequest, BASIC_INDEX_PATH);
+        if(httpRequest.match(Method.GET) && httpRequest.endsWithHtml()){
+            response = sendStaticFileResponse(httpRequest);
         }
         // TODO
         if (httpRequest.match(Method.GET, USER_FORM_URI)) {
