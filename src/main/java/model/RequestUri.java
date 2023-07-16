@@ -1,5 +1,7 @@
 package model;
 
+import dto.UserFormRequestDto;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +27,7 @@ public class RequestUri {
         String uri = splitByQuestionMark[URI_INDEX];
 
         HashMap<String, Object> params = new HashMap<>();
-        if(splitByQuestionMark.length == LENGTH_WHEN_HAS_NO_VALUE) return new RequestUri(uri, params);
+        if (splitByQuestionMark.length == LENGTH_WHEN_HAS_NO_VALUE) return new RequestUri(uri, params);
 
         String[] paramArray = splitBy(splitByQuestionMark[PARAMETERS_INDEX], AMPERSAND_MARK);
         for (int i = 0; i < paramArray.length; i++) {
@@ -50,4 +52,12 @@ public class RequestUri {
         return uri.endsWith(s);
     }
 
+    public String getUri() {
+        return this.uri;
+    }
+
+    // 지워질 예정
+    public UserFormRequestDto paramsToDto() {
+        return new UserFormRequestDto(this.params);
+    }
 }

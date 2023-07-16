@@ -1,8 +1,10 @@
 package model;
 
+import dto.UserFormRequestDto;
 import model.enums.Method;
 
 public class HttpRequest {
+    public static final String HTML_FILE_FORMAT = ".html";
     private final RequestUri requestUri;
     private final String protocol;
     private final Method method;
@@ -37,4 +39,12 @@ public class HttpRequest {
         return requestUri.uriEndsWith(HTML_FILE_FORMAT);
     }
 
+    public String getUri() {
+        return requestUri.getUri();
+    }
+
+    //지워질 예정
+    public UserFormRequestDto paramsToDto() {
+        return this.requestUri.paramsToDto();
+    }
 }

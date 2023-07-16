@@ -4,6 +4,8 @@ import java.util.Map;
 
 public class StringUtils {
     public static final String NEXTLINE = "\r\n";
+    public static final String NO_CONTENT = "";
+
     public static final String SPACE = " ";
 
     public static final String QUESTION_MARK = "\\?"; // 정규표현식 예약어
