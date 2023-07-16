@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -19,6 +20,9 @@ import static model.User.*;
 
 import webserver.model.Request;
 import webserver.model.Request.Method;
+import webserver.model.Response;
+import webserver.model.Response.STATUS;
+import webserver.model.Response.MIME;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -41,10 +45,8 @@ public class RequestHandler implements Runnable {
             Request request = parseRequest(connection);
 
             // Response
-            routeRequest(request, connection);
-            // Response response = generateResponse(request, connection);
-            
-            // sendResponse(response);
+            Response response = generateResponse(request);
+            sendResponse(response, connection);
 
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -122,21 +124,36 @@ public class RequestHandler implements Runnable {
         return queryParameterMap;
     }
 
-    public void routeRequest(Request request, Socket connection) throws Exception {
+    public Response generateResponse(Request request) throws Exception {
         String targetUri = request.getTargetUri();
 
-        OutputStream out = connection.getOutputStream();
-        DataOutputStream dos = new DataOutputStream(out);
+        if (isStaticFile(targetUri)) {
+            byte[] body = loadStaticFile(targetUri);
 
-        if (targetUri.endsWith(".html")) {
-            serveStaticFile(targetUri, dos);
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put("Content-Type", MIME.HTML.getMime() + ";charset=utf-8");
+            headerMap.put("Content-Length", String.valueOf(body.length));
+
+            return new Response(STATUS.OK, "1.1", headerMap, body);
         }
-        else if(targetUri.startsWith("/user/create")) {
+        if(targetUri.startsWith("/user/create")) {
             userSignUp(request.getQueryParameterMap());
+
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put("Content-Type", MIME.HTML.getMime() + ";charset=utf-8");
+            headerMap.put("Content-Length", String.valueOf(0));
+
+            return new Response(STATUS.CREATED,"1.1", headerMap, null);
         }
+
+        return null;
+    }
+    public boolean isStaticFile(String targetUri) {
+        return Arrays.stream(MIME.values())
+                .anyMatch(mime -> targetUri.endsWith("." + mime.toString()));
     }
 
-    private void serveStaticFile(String route, DataOutputStream dos) throws IOException {
+    private byte[] loadStaticFile(String route) throws IOException {
         // 요청 경로의 파일을 반환
         File f;
         byte[] body;
@@ -145,8 +162,7 @@ public class RequestHandler implements Runnable {
             f = new File(TEMPLATE_FILEPATH + route);
         }
         body = Files.readAllBytes(f.toPath());
-        response200Header(dos, body.length);
-        responseBody(dos, body);
+        return body;
     }
     public void userSignUp(Map<String, String> queryParameterMap) throws NullPointerException {
         // User 객체 생성
@@ -157,6 +173,12 @@ public class RequestHandler implements Runnable {
         // DB 저장
         Database.addUser(user);
     }
+
+    public void sendResponse(Response response, Socket connection) throws IOException {
+        OutputStream out = connection.getOutputStream();
+        DataOutputStream dos = new DataOutputStream(out);
+    }
+
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
