@@ -2,7 +2,13 @@
 
 Java Web Application Server 2023
 
-## 프로젝트 정보 
+## 미션 수행 목표
+- Github Wiki에 개념 학습 내용 정리 
+  - 웹서버
+  - 스레드
+  - Java Concurrent 패키지
+  - HTTP
+- 특정 디렉토리의 파일을 읽어 클라이언트에 응답하기
+- Concurrent 패키지를 사용하도록 변경
 
-이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was 
-를 참고하여 작성되었습니다.
+
