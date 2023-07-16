@@ -1,11 +1,20 @@
 package webserver.model;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Request {
     public enum Method {
-        GET, POST, PUT, DELETE
-    };
+        GET, POST, PUT, DELETE;
+
+        public Method getMethodByName(String name) {
+            return Arrays.stream(Method.values())
+                    .filter(method -> name.equalsIgnoreCase(method.toString()))
+                    .collect(Collectors.toList())
+                    .get(0);
+        }
+    }
 
     private final Method method;
     private final String version;

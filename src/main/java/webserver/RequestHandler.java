@@ -36,12 +36,16 @@ public class RequestHandler implements Runnable {
                 connection.getInetAddress(),
                 connection.getPort());
 
-        try {
+        try(connection) {
             // Request
             Request request = parseRequest(connection);
 
             // Response
             routeRequest(request, connection);
+            // Response response = generateResponse(request, connection);
+            
+            // sendResponse(response);
+
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
