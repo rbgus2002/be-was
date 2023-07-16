@@ -21,12 +21,13 @@ public class RequestUri {
     }
 
     public static RequestUri of(String text) {
-        String[] splitByAmpersand = splitBy(text, QUESTION_MARK); // /uri?a=a&b=2&c=
-        String uri = splitByAmpersand[URI_INDEX];
-
-        String[] paramArray = splitBy(splitByAmpersand[PARAMETERS_INDEX], AMPERSAND_MARK);
+        String[] splitByQuestionMark = splitBy(text, QUESTION_MARK); // /uri?a=a&b=2&c=
+        String uri = splitByQuestionMark[URI_INDEX];
 
         HashMap<String, Object> params = new HashMap<>();
+        if(splitByQuestionMark.length == LENGTH_WHEN_HAS_NO_VALUE) return new RequestUri(uri, params);
+
+        String[] paramArray = splitBy(splitByQuestionMark[PARAMETERS_INDEX], AMPERSAND_MARK);
         for (int i = 0; i < paramArray.length; i++) {
             String[] splitByEqualMark = splitBy(paramArray[i], EQUAL_MARK);
 
