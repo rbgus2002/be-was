@@ -11,10 +11,9 @@ import java.nio.file.Files;
 import static utils.StringUtils.NEWLINE;
 
 public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    public static final String RESOURCE_PATH = "src/main/resources/templates";
-
-    private Socket connection;
+    public final String RESOURCE_PATH = "src/main/resources/templates";
+    private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;

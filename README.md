@@ -15,6 +15,8 @@ Java Web Application Server 2023
 
 ## 학습 내용
 
+- 코드 분석 및 동작
+  과정 - https://github.com/ddingmin/be-was/wiki/%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%8F%99%EC%9E%91-%EA%B3%BC%EC%A0%95
 - HTTP
   메시지 - https://github.com/ddingmin/be-was/wiki/HTTP-Request,-Response-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B5%AC%EC%A1%B0
 - 자바의 스레드 - https://github.com/ddingmin/be-was/wiki/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%8A%A4%EB%A0%88%EB%93%9C
