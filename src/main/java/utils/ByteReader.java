@@ -9,6 +9,9 @@ import java.nio.charset.StandardCharsets;
 import static utils.StringUtils.NEW_LINE;
 
 public class ByteReader {
+    private ByteReader() {
+    }
+    
     public static String readInputStream(InputStream inputStream) throws IOException {
         StringBuilder messageReader = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
