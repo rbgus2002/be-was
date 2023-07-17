@@ -1,17 +1,19 @@
 package webserver;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
 
-    public static void main(String args[]) throws Exception {
-        int port = 0;
+    public static void main(String[] args) throws Exception {
+        int port;
         if (args == null || args.length == 0) {
             port = DEFAULT_PORT;
         } else {
@@ -22,11 +24,11 @@ public class WebServer {
         try (ServerSocket listenSocket = new ServerSocket(port)) {
             logger.info("Web Application Server started {} port.", port);
 
-            // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
+            ExecutorService executorService = Executors.newWorkStealingPool();
+            // 클라이언트가 연결될때까지 대기한다.
             while ((connection = listenSocket.accept()) != null) {
-                Thread thread = new Thread(new RequestHandler(connection));
-                thread.start();
+                executorService.submit(new RequestHandler(connection));
             }
         }
     }
