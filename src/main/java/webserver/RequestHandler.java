@@ -74,22 +74,23 @@ public class RequestHandler implements Runnable {
 			}
 			for (Method mappedMethod : mappedMethods) {
 				sendTemplateResponse((String)mappedMethod.invoke(o), out);
+				return;
 			}
 		}
 	}
 
 	private void sendTemplateResponse(String fileName, OutputStream out) throws IOException {
-		DataOutputStream dos = new DataOutputStream(out);
 		Path path = new File("src/main/resources/templates/" + fileName).toPath();
-		byte[] body = Files.readAllBytes(path);
-		String mimeType = Files.probeContentType(path);
-		response200Header(dos, body.length, mimeType);
-		responseBody(dos, body);
+		responseForPath(out, path);
 	}
 
 	private void sendStaticResponse(String fileName, OutputStream out) throws IOException {
-		DataOutputStream dos = new DataOutputStream(out);
 		Path path = new File("src/main/resources/static" + fileName).toPath();
+		responseForPath(out, path);
+	}
+
+	private void responseForPath(OutputStream out, Path path) throws IOException {
+		DataOutputStream dos = new DataOutputStream(out);
 		byte[] body = Files.readAllBytes(path);
 		String mimeType = Files.probeContentType(path);
 		response200Header(dos, body.length, mimeType);
