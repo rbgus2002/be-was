@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RequestHeader {
+
     private final String requestLine;
     private final List<String> headers;
 

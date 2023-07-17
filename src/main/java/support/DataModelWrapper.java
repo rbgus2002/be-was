@@ -1,4 +1,6 @@
-package webserver;
+package support;
+
+import webserver.Query;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -7,6 +9,7 @@ import java.util.List;
 import static exception.ExceptionName.WRONG_ARGUMENT;
 
 public class DataModelWrapper {
+
     private final Class<?> dataModelClass;
 
     private final List<Field> dataModelClassFields;
@@ -49,4 +52,5 @@ public class DataModelWrapper {
     public boolean equalsClass(Class<?> clazz) {
         return this.dataModelClass == clazz;
     }
+
 }

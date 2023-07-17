@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class ResponseHeader {
+
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final static String HTTP_VERSION = "HTTP/1.1";
     private final static String HTTP_200_OK = "200 OK";
@@ -32,4 +33,5 @@ public abstract class ResponseHeader {
             logger.error(e.getMessage());
         }
     }
+
 }

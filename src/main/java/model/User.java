@@ -5,6 +5,7 @@ import annotation.DataModelField;
 
 @DataModel(path = "/user/create")
 public class User {
+
     @DataModelField
     private String userId;
     @DataModelField
@@ -45,4 +46,5 @@ public class User {
     public String toString() {
         return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
     }
+
 }

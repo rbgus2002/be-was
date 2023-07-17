@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebPageReader {
+
     private static final List<String> WEB_PATH = new ArrayList<>();
 
     static {

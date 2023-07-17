@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Query {
+
     private final Map<String, String> query = new HashMap<>();
 
     public Query() {

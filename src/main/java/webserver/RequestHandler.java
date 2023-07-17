@@ -4,6 +4,8 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.DataModelResolver;
+import support.DataModelWrapper;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +17,7 @@ import static webserver.ResponseHeader.response302Header;
 import static webserver.WebPageReader.readByPath;
 
 public class RequestHandler implements Runnable {
+
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final Socket connection;
@@ -106,4 +109,5 @@ public class RequestHandler implements Runnable {
             logger.error(e.getMessage());
         }
     }
+
 }
