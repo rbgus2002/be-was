@@ -31,7 +31,6 @@ public class HTTPServletRequest {
         return url;
     }
 
-
     public String getVersion() {
         return version;
     }
