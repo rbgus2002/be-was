@@ -32,14 +32,12 @@ public class RequestHandler implements Runnable {
             String url = httpRequest.getUrl();
 
             byte[] body;
-            switch (url) {
-                case "/user/create":
-                    body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
-                    User user = new User(httpRequest.getParams());
-                    logger.debug(user.toString());
-                    break;
-                default:
-                    body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
+            if (url.equals("/user/create")) {
+                body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
+                User user = new User(httpRequest.getParams());
+                logger.debug("{}", user);
+            } else {
+                body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
             }
 
             DataOutputStream dos = new DataOutputStream(out);
