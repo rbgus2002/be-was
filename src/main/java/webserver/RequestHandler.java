@@ -96,11 +96,6 @@ public class RequestHandler implements Runnable {
 		responseBody(dos, body);
 	}
 
-	@GetMapping("/")
-	private String getFile() {
-		return "index.html";
-	}
-
 	private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String mimeType) {
 		try {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
