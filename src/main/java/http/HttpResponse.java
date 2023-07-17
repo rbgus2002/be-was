@@ -65,7 +65,7 @@ public class HttpResponse {
     private void response200Header(DataOutputStream dos, byte[] body) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + this.contentType + ";charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + this.contentType.getType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {

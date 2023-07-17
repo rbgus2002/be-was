@@ -15,4 +15,8 @@ public enum Mime {
     Mime(String type) {
         this.type = type;
     }
+
+    public String getType() {
+        return type;
+    }
 }
