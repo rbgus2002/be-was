@@ -4,21 +4,20 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.core.net.SocketConnector;
 
 public class HttpWasResponse {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasResponse.class);
 	private static final String TEMPLATES_PATH = "src/main/resources/templates";
-
+	private static final String STATIC_PATH = "src/main/resources/static";
+	private static final String CONTENT_TYPE_CSS = "text/css";
+	private static final String CONTENT_TYPE_HTML = "text/html";
+	private static final String CONTENT_TYPE_JS = "application/javascript";
 	private final OutputStream outputStream;
 
 	public HttpWasResponse(OutputStream outputStream) {
@@ -29,12 +28,12 @@ public class HttpWasResponse {
 		final byte[] files = getFiles(resourcePath);
 
 		final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-		response200Header(dataOutputStream, files.length);
+		response200Header(dataOutputStream, files.length, resourcePath);
 		responseBody(dataOutputStream, files);
 	}
 
 	private byte[] getFiles(String resourcePath) throws IOException {
-		final Path path = new File(TEMPLATES_PATH + resourcePath).toPath();
+		final Path path = new File(getResourcePath(resourcePath)+ resourcePath).toPath();
 		return Files.readAllBytes(path);
 	}
 
@@ -47,10 +46,10 @@ public class HttpWasResponse {
 		}
 	}
 
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+	private void response200Header(DataOutputStream dos, int lengthOfBodyContent, final String resourcePath) {
 		try {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+			dos.writeBytes("Content-Type: "+ getContentType(resourcePath) + ";charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
@@ -71,5 +70,25 @@ public class HttpWasResponse {
 		} catch (IOException e){
 			logger.error(e.getMessage());
 		}
+	}
+
+	private String getContentType(String resourcePath) {
+		final String[] split = resourcePath.split("\\.");
+		final String type = split[split.length - 1].trim();
+
+		if (type.equals("js"))
+			return CONTENT_TYPE_JS;
+		else if (type.equals("css"))
+			return CONTENT_TYPE_CSS;
+		return CONTENT_TYPE_HTML;
+	}
+
+	private String getResourcePath(String resourcePath) {
+		final String[] split = resourcePath.split("\\.");
+		final String type = split[split.length - 1].trim();
+		if (type.equals("html")) {
+			return TEMPLATES_PATH;
+		}
+		return STATIC_PATH;
 	}
 }
