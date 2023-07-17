@@ -25,12 +25,17 @@ public class WebServer {
 
     public void run() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_OF_THREAD);
+        HttpRequestProcessor httpRequestProcessor = new HttpRequestProcessor();
+
         try (ServerSocket listenSocket = new ServerSocket(port)) {
             logger.info("Web Application Server started {} port.", port);
 
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
-                executorService.execute(new RequestHandler(connection));
+                Socket httpConnection = connection;
+                executorService.execute(() -> {
+                    httpRequestProcessor.process(httpConnection);
+                });
             }
         }
         executorService.shutdown();
