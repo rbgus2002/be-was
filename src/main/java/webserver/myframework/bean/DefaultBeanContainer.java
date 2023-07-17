@@ -37,7 +37,7 @@ public class DefaultBeanContainer implements BeanContainer {
     @Override
     public List<Class<?>> getBeanClassHasAnnotation(Class<? extends Annotation> annotation) {
         return beanMap.keySet().stream()
-                .filter(clazz -> ReflectionUtils.isClassHasAnnotation(clazz, annotation))
+                .filter(clazz -> ReflectionUtils.classHasAnnotation(clazz, annotation))
                 .collect(Collectors.toList());
     }
 

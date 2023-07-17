@@ -3,6 +3,7 @@ package webserver.http.request;
 
 import webserver.http.HttpMethod;
 
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class HttpRequest {
@@ -16,7 +17,7 @@ public abstract class HttpRequest {
 
     public abstract String getHeader(String headerName);
 
-    public abstract String getParameter(String parameterName);
+    public abstract Optional<String> getParameter(String parameterName);
 
     //TODO: Object 나중에 바꿀 것
     public abstract Object getBody();
