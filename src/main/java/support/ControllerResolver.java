@@ -4,8 +4,8 @@ import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import utils.ClassListener;
-import webserver.Query;
-import webserver.RequestHeader;
+import webserver.request.Query;
+import webserver.request.HttpRequest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,7 +50,10 @@ public abstract class ControllerResolver {
         });
     }
 
-    public static void invoke(String url, RequestHeader header) throws InvocationTargetException, IllegalAccessException {
+    /**
+     * @return 만약 컨트롤러에게 처리를 위임할 수 있는 경우 true를 반환한다. 아닌 경우 false를 반환한다.
+     */
+    public static boolean invoke(String url, HttpRequest header) throws InvocationTargetException, IllegalAccessException {
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
         controllers.forEach((s, controllerMethods) -> {
@@ -60,10 +63,11 @@ public abstract class ControllerResolver {
             }
         });
 
+        // controller 처리 대상인지 검증한다.
         Class<?> controllerClass = clazz.get();
         Method method = methodAtomicReference.get();
         if (controllerClass == null || method == null) {
-            throw new IllegalArgumentException("URL_NOT_FOUND");
+            return false;
         }
         Object instance = getManageObjectFactory().getInstance(controllerClass);
 
@@ -80,6 +84,7 @@ public abstract class ControllerResolver {
                 .toArray();
 
         method.invoke(instance, array);
+        return true;
     }
 
 }

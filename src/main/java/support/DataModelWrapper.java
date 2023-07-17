@@ -1,6 +1,6 @@
 package support;
 
-import webserver.Query;
+import webserver.request.Query;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

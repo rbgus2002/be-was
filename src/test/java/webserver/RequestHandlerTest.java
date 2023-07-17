@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static utils.StringUtils.NEW_LINE;
 import static utils.StringUtils.appendNewLine;
 
 @DisplayName("RequestHandler 테스트")
@@ -122,7 +123,7 @@ class RequestHandlerTest {
         assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", user.getName());
         assertEquals("javajigi%40slipp.net", user.getEmail());
 
-        String[] result = outputStream.toString().split("\r\n");
+        String[] result = outputStream.toString().split(NEW_LINE);
         assertEquals("HTTP/1.1 302 Found", result[0]);
         assertEquals("Location: /index.html", result[1]);
     }

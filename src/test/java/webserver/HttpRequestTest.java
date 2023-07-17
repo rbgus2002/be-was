@@ -3,6 +3,8 @@ package webserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.request.HttpRequest;
+import webserver.request.Query;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -12,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static utils.StringUtils.appendNewLine;
 
 @DisplayName("RequestHeader 테스트")
-class RequestHeaderTest {
+class HttpRequestTest {
     String simpleRequestLine = "GET /index.html HTTP/1.1";
     String SIMPLE_REQUEST_URL = "/index.html";
     String createRequestLine = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
@@ -26,11 +28,11 @@ class RequestHeaderTest {
     void setUp() {
     }
 
-    RequestHeader buildRequestHeader(String request) throws IOException {
+    HttpRequest buildRequestHeader(String request) throws IOException {
         String httpRequest = appendNewLine(request, headers, "", body);
         InputStream in = new ByteArrayInputStream(httpRequest.getBytes(StandardCharsets.UTF_8));
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        RequestHeader.RequestHeaderBuilder requestHeaderBuilder = new RequestHeader.RequestHeaderBuilder();
+        HttpRequest.RequestHeaderBuilder requestHeaderBuilder = new HttpRequest.RequestHeaderBuilder();
         String line = br.readLine();
         requestHeaderBuilder = requestHeaderBuilder.requestLine(line);
         line = br.readLine();
@@ -45,11 +47,11 @@ class RequestHeaderTest {
     @DisplayName("Request Line에서 정상적으로 요청 Url을 분리하는지 검증한다.")
     void parseRequestUrl() throws IOException {
         //given
-        RequestHeader requestHeader = buildRequestHeader(simpleRequestLine);
+        HttpRequest httpRequest = buildRequestHeader(simpleRequestLine);
 
         //when
-        String requestUrl = requestHeader.getRequestUrl();
-        String requestHeaders = requestHeader.getHeaders();
+        String requestUrl = httpRequest.getRequestUrl();
+        String requestHeaders = httpRequest.getHeaders();
 
         //then
         assertEquals(SIMPLE_REQUEST_URL, requestUrl);
@@ -60,11 +62,11 @@ class RequestHeaderTest {
     @DisplayName("Request Line에서 path 부분만 가져온다.")
     void getRequestPath() throws IOException {
         //given
-        RequestHeader requestHeader = buildRequestHeader(createRequestLine);
+        HttpRequest httpRequest = buildRequestHeader(createRequestLine);
 
         //when
-        String requestUrl = requestHeader.getRequestUrl();
-        String requestPath = requestHeader.getRequestPath();
+        String requestUrl = httpRequest.getRequestUrl();
+        String requestPath = httpRequest.getRequestPath();
 
         //then
         assertEquals(CREATE_REQUEST_URL, requestUrl);
@@ -75,11 +77,11 @@ class RequestHeaderTest {
     @DisplayName("Request Line에서 Query 부분만 가져온다.")
     void getRequestQuery() throws IOException {
         //given
-        RequestHeader requestHeader = buildRequestHeader(createRequestLine);
+        HttpRequest httpRequest = buildRequestHeader(createRequestLine);
 
         //when
-        String requestUrl = requestHeader.getRequestUrl();
-        Query query = requestHeader.getRequestQuery();
+        String requestUrl = httpRequest.getRequestUrl();
+        Query query = httpRequest.getRequestQuery();
 
         //then
         assertEquals(CREATE_REQUEST_URL, requestUrl);

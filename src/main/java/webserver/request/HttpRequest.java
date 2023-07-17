@@ -1,15 +1,17 @@
-package webserver;
+package webserver.request;
 
-import utils.StringUtils;
+import support.HttpMethod;
+import webserver.Header;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RequestHeader {
+public class HttpRequest {
 
-    private final String requestLine;
-    private final List<String> headers;
+    private final HttpMethod method;
+    private final String url;
+    private final Header header = new Header();
 
     public static class RequestHeaderBuilder {
         private String requestLine;
@@ -25,24 +27,34 @@ public class RequestHeader {
             return this;
         }
 
-        public RequestHeader build() {
-            return new RequestHeader(requestLine, headers);
+        public HttpRequest build() {
+            return new HttpRequest(requestLine, headers);
         }
     }
 
-    private RequestHeader(String requestLine, List<String> headers) {
-        this.requestLine = requestLine;
-        this.headers = headers;
+    private HttpRequest(String requestLine, List<String> headers) {
+        String[] tokens = requestLine.split(" ");
+        this.method = HttpMethod.valueOf(tokens[0]);
+
+        this.url = tokens[1];
+        headers.forEach(
+                s -> {
+                    String[] split = s.split(":");
+                    header.appendHeader(split[0], split[1].trim());
+                }
+        );
     }
 
     public String getHeaders() {
-        return requestLine + headers.stream()
-                .reduce("", StringUtils::appendNewLine);
+        return header.buildHeader();
+    }
+
+    public HttpMethod getRequestMethod() {
+        return method;
     }
 
     public String getRequestUrl() {
-        String[] tokens = requestLine.split(" ");
-        return tokens[1];
+        return url;
     }
 
     public String getRequestPath() {
