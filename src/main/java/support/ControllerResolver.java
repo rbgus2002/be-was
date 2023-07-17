@@ -7,7 +7,6 @@ import support.annotation.RequestParam;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.Query;
-import webserver.response.HttpResponse;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -55,7 +54,7 @@ public abstract class ControllerResolver {
     /**
      * @return 만약 정상적으로 controller 처리가 완료될 경우 true를 반환한다. 아닌 경우 false를 반환한다.
      */
-    public static boolean invoke(String url, HttpRequest request, HttpResponse response) {
+    public static boolean invoke(String url, HttpRequest request) throws InvocationTargetException, IllegalAccessException {
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
         controllers.forEach((s, controllerMethods) -> {
@@ -85,11 +84,10 @@ public abstract class ControllerResolver {
                 .map(requestQuery::getValue)
                 .toArray();
 
-        try {
-            method.invoke(instance, array);
-        } catch (Exception e) {
+        if (Arrays.asList(array).contains(null)) {
             throw new IllegalArgumentException(ExceptionName.WRONG_ARGUMENT);
         }
+        method.invoke(instance, array);
         return true;
     }
 

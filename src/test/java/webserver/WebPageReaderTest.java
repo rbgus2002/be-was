@@ -62,7 +62,7 @@ class WebPageReaderTest {
 
         //when
         Throwable exception = assertThrows(
-                RuntimeException.class,
+                IOException.class,
                 () -> WebPageReader.readByPath(url)
         );
 

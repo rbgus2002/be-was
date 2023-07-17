@@ -1,7 +1,6 @@
 package controller;
 
 import db.Database;
-import exception.ExceptionName;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,6 @@ public class UserController {
                        @RequestParam(value = "email") String email) {
 
         logger.debug("유저 생성 요청");
-        if (userId == null || password == null || name == null || email == null) {
-            throw new IllegalArgumentException(ExceptionName.WRONG_ARGUMENT);
-        }
         User user = new User(userId, password, name, email);
         Database.addUser(user);
     }

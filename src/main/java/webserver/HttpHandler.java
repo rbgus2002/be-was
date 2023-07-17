@@ -23,7 +23,7 @@ public class HttpHandler {
 
         // controller 검색
         try {
-            if (ControllerResolver.invoke(path, request, response)) {
+            if (ControllerResolver.invoke(path, request)) {
                 response.setStatus(HttpStatus.FOUND);
                 response.buildHeader(new Found(MAIN_PAGE));
                 return;
