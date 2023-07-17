@@ -25,23 +25,36 @@ public class HttpRequestParser {
 
         initMethodAndUrl(line);
         initHeader(line, br);
+        initBody(line, br);
     }
 
     private void initHeader(String line, BufferedReader br) throws IOException {
-        StringBuilder headerBuilder = new StringBuilder(StringUtils.appendLineSeparator(""));
+        this.header = getRequestLines(line, br);
+    }
 
+    private void initBody(String line, BufferedReader br) throws IOException {
+        line = br.readLine();
+        if(line == null){
+            return;
+        }
+
+        this.body = getRequestLines(line, br);
+    }
+
+    private String getRequestLines(String line, BufferedReader br) throws IOException{
+        StringBuilder stringBuilder = new StringBuilder();
         while (line != null && !line.equals("")) {
-            headerBuilder.append(StringUtils.appendLineSeparator(line));
+            stringBuilder.append(StringUtils.appendLineSeparator(line));
             line = br.readLine();
         }
 
-        header = headerBuilder.toString();
+        return stringBuilder.toString();
     }
 
     private void initMethodAndUrl(String line) {
         String[] firstLines = line.split(" ");
-        method = firstLines[0];
-        url = firstLines[1];
+        this.method = firstLines[0];
+        this.url = firstLines[1];
     }
 
     public String getHeader() throws IOException {
@@ -54,6 +67,10 @@ public class HttpRequestParser {
 
     public String getPath() {
         return this.url;
+    }
+
+    public String getBody() {
+        return this.body;
     }
 
 }
