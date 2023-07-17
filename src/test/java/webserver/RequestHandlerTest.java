@@ -2,6 +2,7 @@ package webserver;
 
 import db.Database;
 import model.User;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,9 @@ class RequestHandlerTest {
         requestHandler.userSignUp(queryParameterMap);
 
         // Then
-        assertThat(Database.findAll().size()).isEqualTo(1);
-        assertThat(Database.findUserById("jst0951").getName()).isEqualTo("정성태");
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat(Database.findAll().size()).isEqualTo(1);
+        assertions.assertThat(Database.findUserById("jst0951").getName()).isEqualTo("정성태");
+        assertions.assertAll();
     }
 }
