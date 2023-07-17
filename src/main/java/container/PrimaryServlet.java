@@ -13,7 +13,7 @@ public class PrimaryServlet implements Servlet {
 
     @Override
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
-        response.forward(request.getUrl());
+        response.forward(request);
     }
 
 

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import static util.Path.*;
+import static webserver.Mime.*;
 
 public class HTTPServletResponse {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletResponse.class);
@@ -20,10 +21,14 @@ public class HTTPServletResponse {
         this.dos = dos;
     }
 
-    public void forward(String uri) throws IOException {
-        String extension = uri.substring(uri.lastIndexOf("."), uri.length());
-        byte[] body = getBody(extension, uri);
-        response200Header(body.length, Mime.findByExtension(extension));
+    public void forward(HTTPServletRequest request) throws IOException {
+        String url = request.getUrl();
+        String method = request.getMethod();
+        String version = request.getVersion();
+        logger.debug("url = {}, method = {}, version = {}", url, method, version);
+        String extension = url.substring(url.lastIndexOf("."), url.length());
+        byte[] body = getBody(extension, url);
+        response200Header(body.length, findByExtension(extension), version);
         responseBody(dos, body);
     }
 
@@ -32,9 +37,9 @@ public class HTTPServletResponse {
     }
 
 
-    private void response200Header(int lengthOfBodyContent, Mime mime) {
+    private void response200Header(int lengthOfBodyContent, Mime mime, String version) {
         try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            dos.writeBytes(version + " 200 OK \r\n");
             dos.writeBytes("Content-Type: " + mime.getMimeType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
@@ -63,10 +68,10 @@ public class HTTPServletResponse {
         }
     }
 
-    private byte[] getBody(String extension, String uri) throws IOException {
-        if (extension.equals(".html")) {
-            return Files.readAllBytes(new File(TEMPLATE_PATH.getPath() + uri).toPath());
+    private byte[] getBody(String extension, String url) throws IOException {
+        if (extension.equals(HTML.getExtension())) {
+            return Files.readAllBytes(new File(TEMPLATE_PATH.getPath() + url).toPath());
         }
-        return Files.readAllBytes(new File(STATIC_PATH.getPath()+ uri).toPath());
+        return Files.readAllBytes(new File(STATIC_PATH.getPath() + url).toPath());
     }
 }
