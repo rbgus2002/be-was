@@ -1,4 +1,4 @@
-package controller;
+package support;
 
 public enum HttpMethod {
     GET

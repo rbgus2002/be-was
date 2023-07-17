@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.DataModelResolver;
 import support.DataModelWrapper;
+import support.HttpMethod;
 import webserver.RequestHandler;
 
 import java.lang.reflect.InvocationTargetException;
