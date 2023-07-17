@@ -23,6 +23,10 @@ import webserver.model.Request.Method;
 import webserver.model.Response;
 import webserver.model.Response.STATUS;
 import webserver.model.Response.MIME;
+import static webserver.model.Response.HEADER_CONTENT_TYPE;
+import static webserver.model.Response.HEADER_CHARSET;
+import static webserver.model.Response.HEADER_CONTENT_LENGTH;
+import static webserver.model.Response.HEADER_HTTP_VERSION;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -124,19 +128,19 @@ public class RequestHandler implements Runnable {
             byte[] body = loadStaticFile(targetUri);
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", mime.getMime() + ";charset=utf-8");
-            headerMap.put("Content-Length", String.valueOf(body.length));
+            headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
+            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
 
-            return new Response(STATUS.OK, "1.1", headerMap, body);
+            return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
         }
         if(targetUri.startsWith("/user/create")) {
             userSignUp(request.getQueryParameterMap());
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", MIME.HTML.getMime() + ";charset=utf-8");
-            headerMap.put("Content-Length", String.valueOf(0));
+            headerMap.put(HEADER_CONTENT_TYPE, MIME.HTML.getMime() + HEADER_CHARSET);
+            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(0));
 
-            return new Response(STATUS.CREATED,"1.1", headerMap, null);
+            return new Response(STATUS.CREATED, HEADER_HTTP_VERSION, headerMap, null);
         }
 
         return null;
