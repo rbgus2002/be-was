@@ -1,6 +1,6 @@
 package webserver;
 
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -13,13 +13,14 @@ public class WasHandler {
 
 	private final HttpWasRequest httpWasRequest;
 	private final HttpWasResponse httpWasResponse;
-
-	public WasHandler(final HttpWasRequest httpWasRequest, final HttpWasResponse httpWasResponse) {
+	private final Controller controller;
+	public WasHandler(final HttpWasRequest httpWasRequest, final HttpWasResponse httpWasResponse, Controller controller) {
 		this.httpWasRequest = httpWasRequest;
 		this.httpWasResponse = httpWasResponse;
+		this.controller = controller;
 	}
 
-	public void service() throws IOException {
+	public void service() throws InvocationTargetException, IllegalAccessException {
 		final List<Method> methods = getResourcePathMethod();
 
 		if (methods.isEmpty()) {
@@ -27,6 +28,9 @@ public class WasHandler {
 			httpWasResponse.responseResource(resourcePath);
 			return;
 		}
+
+		final Method method = methods.get(0);
+		method.invoke(controller, httpWasRequest, httpWasResponse);
 	}
 
 	private List<Method> getResourcePathMethod() {

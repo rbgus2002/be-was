@@ -1,20 +1,13 @@
 package webserver;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.Buffer;
-import java.nio.file.Files;
-
-import javax.xml.crypto.Data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import controller.Controller;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -33,9 +26,9 @@ public class RequestHandler implements Runnable {
             final HttpWasRequest httpWasRequest = new HttpWasRequest(in);
             final HttpWasResponse httpWasResponse = new HttpWasResponse(out);
 
-            final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse);
+            final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse, new Controller());
             wasHandler.service();
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }

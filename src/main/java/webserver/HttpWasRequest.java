@@ -6,16 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 public class HttpWasRequest {
 
@@ -59,6 +55,10 @@ public class HttpWasRequest {
 
 	public String getResourcePath() {
 		return map.get(RESOURCE_PATH);
+	}
+
+	public String getHttpMethod() {
+		return map.get("HttpMethod");
 	}
 
 	private void saveResourcePath(String path) {
