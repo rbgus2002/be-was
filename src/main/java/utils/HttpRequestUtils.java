@@ -66,7 +66,7 @@ public class HttpRequestUtils {
     }
 
     private static void parseHeader(String line, Map<String, String> headers) {
-        String[] headerForm = line.split(":\\s");
+        String[] headerForm = line.split(":(\\s?)");
         headers.put(headerForm[0], headerForm[1]);
     }
 
