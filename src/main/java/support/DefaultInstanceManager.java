@@ -7,17 +7,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static exception.ExceptionName.ALREADY_REGISTERED;
 
-public class DefaultManageObjectFactory implements ManageObjectFactory {
+public class DefaultInstanceManager implements InstacneManager {
 
-    private static final DefaultManageObjectFactory INSTANCE = new DefaultManageObjectFactory();
+    private static final DefaultInstanceManager INSTANCE = new DefaultInstanceManager();
 
     private final Map<Class<?>, Object> instances = new ConcurrentHashMap<>(16);
 
-    private DefaultManageObjectFactory() {
+    private DefaultInstanceManager() {
 
     }
 
-    public static DefaultManageObjectFactory getManageObjectFactory() {
+    public static DefaultInstanceManager getManageObjectFactory() {
         return INSTANCE;
     }
 

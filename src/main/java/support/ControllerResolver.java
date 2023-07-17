@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static support.DefaultManageObjectFactory.getManageObjectFactory;
+import static support.DefaultInstanceManager.getManageObjectFactory;
 
 public abstract class ControllerResolver {
 
