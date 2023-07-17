@@ -1,7 +1,6 @@
 package webserver.http;
 
 import utils.RequestParser;
-import utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,16 +20,12 @@ public class HttpHeaders {
         return new HttpHeaders(RequestParser.parseRequestHeaders(br));
     }
 
-    public String show() {
-        StringBuilder sb = new StringBuilder();
-
+    public void show(StringBuilder sb) {
         headers.forEach((key, value) -> {
             sb.append(key);
             sb.append(" : ");
             sb.append(value);
             sb.append(NEW_LINE);
         });
-
-        return sb.toString();
     }
 }

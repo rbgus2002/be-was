@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static utils.StringUtils.NEW_LINE;
 
 public class HttpRequest {
     private final HttpRequestLine httpRequestLine;
@@ -31,10 +30,8 @@ public class HttpRequest {
 
     public String show() {
         StringBuilder sb = new StringBuilder();
-        sb.append("METHOD : ").append(httpRequestLine.getMethod()).append(NEW_LINE);
-        sb.append("URI : ").append(httpRequestLine.getUri()).append(NEW_LINE);
-        sb.append("VERSION : ").append(httpRequestLine.getVersion()).append(NEW_LINE);
-        sb.append(httpHeaders.show());
+        httpRequestLine.show(sb);
+        httpHeaders.show(sb);
 
         return sb.toString();
     }

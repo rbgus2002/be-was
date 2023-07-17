@@ -4,6 +4,8 @@ import utils.RequestParser;
 
 import java.util.Map;
 
+import static utils.StringUtils.NEW_LINE;
+
 public class HttpRequestLine {
     private final String method;
     private final String uri;
@@ -14,17 +16,8 @@ public class HttpRequestLine {
         this.uri = uri;
         this.version = version;
     }
-
-    public String getMethod() {
-        return method;
-    }
-
     public String getUri() {
         return uri;
-    }
-
-    public String getVersion() {
-        return version;
     }
 
     public static HttpRequestLine create(String requestLine) {
@@ -34,5 +27,11 @@ public class HttpRequestLine {
                 requestLines.get("uri"),
                 requestLines.get("version")
         );
+    }
+
+    public void show(StringBuilder sb) {
+        sb.append("METHOD : ").append(method).append(NEW_LINE);
+        sb.append("URI : ").append(uri).append(NEW_LINE);
+        sb.append("VERSION : ").append(version).append(NEW_LINE);
     }
 }
