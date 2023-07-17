@@ -12,7 +12,9 @@ public class Response {
         JS("text/javascript"),
         ICO("image/vnd.microsoft.icon"),
         PNG("image/png"),
-        JPG("image/jpeg");
+        JPG("image/jpeg"),
+        WOFF("application/x-font-woff"),
+        TTF("application/x-font-ttf");
 
         private final String mime;
         MIME(String mime) {
