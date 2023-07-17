@@ -9,10 +9,12 @@ import webserver.myframework.requesthandler.annotation.RequestMapping;
 import webserver.myframework.requesthandler.exception.IllegalHandlerParameterTypeException;
 import webserver.myframework.requesthandler.exception.IllegalHandlerReturnTypeException;
 import webserver.myframework.requesthandler.exception.RequestHandlerException;
-import webserver.myframework.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static webserver.myframework.utils.ReflectionUtils.*;
 
 public class RequestHandlerInitializerImpl implements RequestHandlerInitializer {
     private final BeanContainer beanContainer;
@@ -26,11 +28,13 @@ public class RequestHandlerInitializerImpl implements RequestHandlerInitializer 
 
     @Override
     public void initialize() throws BeanNotFoundException, RequestHandlerException {
-        List<Class<?>> beanClasses = beanContainer.getAllBeans();
+        List<Class<?>> beanClasses = beanContainer.getAllBeans().stream()
+                .filter(clazz -> classHaveAnnotatedMethod(clazz, RequestMapping.class))
+                .collect(Collectors.toList());
         for (Class<?> beanClass : beanClasses) {
             String baseURI = getBaseURI(beanClass);
 
-            List<Method> methods = ReflectionUtils.getMethodsHaveAnnotation(beanClass, RequestMapping.class);
+            List<Method> methods = getMethodsHaveAnnotation(beanClass, RequestMapping.class);
             for (Method method : methods) {
                 verifyHandlerCondition(method);
                 RequestInfo requestInfo = getRequestInfo(baseURI, method);

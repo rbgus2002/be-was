@@ -31,6 +31,7 @@ public class StaticViewResolverImpl implements ViewResolver {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(HTML_PREFIX)
                 .append(isStatic ? STATIC_VIEW : DYNAMIC_VIEW)
+                .append(viewUri.startsWith("/") ? "" : "/")
                 .append(viewUri);
         if (!hasExtension(viewUri)) {
             stringBuilder.append(HTML_SUFFIX);

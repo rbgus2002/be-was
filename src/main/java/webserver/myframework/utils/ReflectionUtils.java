@@ -23,7 +23,7 @@ public class ReflectionUtils {
         return classes;
     }
 
-    public static boolean isClassHasAnnotation(Class<?> clazz, Class<? extends Annotation> targetAnnotation) {
+    public static boolean classHasAnnotation(Class<?> clazz, Class<? extends Annotation> targetAnnotation) {
         List<? extends Class<? extends Annotation>> annotations =
                 getClassesHasCustomAnnotation(clazz);
         if(annotations.contains(targetAnnotation)) {
@@ -31,7 +31,7 @@ public class ReflectionUtils {
         }
 
         return annotations.stream()
-                .anyMatch(annotation -> isClassHasAnnotation(annotation, targetAnnotation));
+                .anyMatch(annotation -> classHasAnnotation(annotation, targetAnnotation));
     }
 
     private static List<? extends Class<? extends Annotation>> getClassesHasCustomAnnotation(Class<?> clazz) {
@@ -51,6 +51,11 @@ public class ReflectionUtils {
         return Arrays.stream(clazz.getMethods())
                 .filter(method -> method.isAnnotationPresent(annotationClass))
                 .collect(Collectors.toList());
+    }
+
+    public static boolean classHaveAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotationClass) {
+        return Arrays.stream(clazz.getMethods())
+                .anyMatch(method -> method.isAnnotationPresent(annotationClass));
     }
 
     private static URL getPackageURL(String packageName) throws FileNotFoundException {

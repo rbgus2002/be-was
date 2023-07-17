@@ -23,7 +23,7 @@ public class BeanInitializerImpl implements BeanInitializer {
     @Override
     public void initialize(String packageName) throws BeanConstructorException, ReflectiveOperationException, FileNotFoundException {
         List<Class<?>> beanClasses = getClassesInPackage(packageName).stream()
-                .filter(clazz -> isClassHasAnnotation(clazz, Component.class) && !clazz.isAnnotation())
+                .filter(clazz -> classHasAnnotation(clazz, Component.class) && !clazz.isAnnotation())
                 .collect(Collectors.toList());
 
         List<Constructor<?>> beanConstructors = getBeanConstructors(beanClasses);

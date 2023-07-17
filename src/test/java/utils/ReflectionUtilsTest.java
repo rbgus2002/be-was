@@ -45,9 +45,9 @@ class ReflectionUtilsTest {
                 //given
                 //when
                 //then
-                assertThat(isClassHasAnnotation(ComponentClass.class, Component.class))
+                assertThat(classHasAnnotation(ComponentClass.class, Component.class))
                         .isTrue();
-                assertThat(isClassHasAnnotation(ExtendComponentClass.class, Component.class))
+                assertThat(classHasAnnotation(ExtendComponentClass.class, Component.class))
                         .isTrue();
             }
         }
@@ -64,7 +64,7 @@ class ReflectionUtilsTest {
                     //given
                     //when
                     //then
-                    assertThat(isClassHasAnnotation(ControllerClass.class, Component.class))
+                    assertThat(classHasAnnotation(ControllerClass.class, Component.class))
                             .isTrue();
                 }
             }
@@ -78,7 +78,7 @@ class ReflectionUtilsTest {
                     //given
                     //when
                     //then
-                    assertThat(isClassHasAnnotation(getClass(), Component.class))
+                    assertThat(classHasAnnotation(getClass(), Component.class))
                             .isFalse();
                 }
             }

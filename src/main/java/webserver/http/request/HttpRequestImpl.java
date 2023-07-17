@@ -4,6 +4,7 @@ import webserver.http.HttpHeaders;
 import webserver.http.HttpMethod;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class HttpRequestImpl extends HttpRequest {
@@ -50,8 +51,8 @@ public class HttpRequestImpl extends HttpRequest {
     }
 
     @Override
-    public String getParameter(String parameterName) {
-        return requestParameters.get(parameterName);
+    public Optional<String> getParameter(String parameterName) {
+        return Optional.ofNullable(requestParameters.get(parameterName));
     }
 
     @Override

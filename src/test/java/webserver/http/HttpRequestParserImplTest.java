@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -122,12 +123,13 @@ class HttpRequestParserImplTest {
         verifyParameter(httpRequest, "parameter1", "hello1");
         verifyParameter(httpRequest, "parameter2", "hello2");
 
-        String notExist = httpRequest.getParameter("notExist");
-        assertThat(notExist).isNull();
+        Optional<String> notExist = httpRequest.getParameter("notExist");
+        assertThat(notExist.isEmpty()).isTrue();
     }
 
     private static void verifyParameter(HttpRequest httpRequest, String parameterName, String hello2) {
-        String parameter = httpRequest.getParameter(parameterName);
+        String parameter = httpRequest.getParameter(parameterName)
+                .orElseThrow(RuntimeException::new);
         assertThat(parameter).isNotNull();
         assertThat(parameter).isEqualTo(hello2);
     }
