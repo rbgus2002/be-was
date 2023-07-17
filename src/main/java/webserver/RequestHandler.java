@@ -3,59 +3,68 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
+import controller.Controller;
+import http.HttpResponse;
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static http.Body.createBody;
-
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private Socket connection;
+    private final Socket connection;
+
+    private final Controller controller = new Controller();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
     public void run() {
-        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
+        logger.debug("New Client Connect! Connected IP : {}, Port : {}",
+                connection.getInetAddress(),
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // 사용자 요청에 대한 처리 구현
+            HttpRequest httpRequest = createRequest(in);
+
+            assert httpRequest != null;
+            byte[] body = controller.loadFileByRequest(httpRequest);
+
+            HttpResponse httpResponse = new HttpResponse(body, new DataOutputStream(out));
+            httpResponse.send();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private HttpRequest createRequest(InputStream in) {
+        try {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             String line = br.readLine();
-            logger.debug("request line: {}", line);
-            byte[] body = createBody(line);
+            logger.debug(line);
+            String[] requestLine = line.split(" ");
+
+            Map<String, String> header = new HashMap<>();
+            line = br.readLine();
             while (!line.equals("")) {
+                logger.debug(line);
+                String[] requestHeader = line.split(": ");
+                header.put(requestHeader[0], requestHeader[1]);
                 line = br.readLine();
-                logger.debug("header: {}", line);
             }
-            DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
+            return new HttpRequest.RequestBuilder(requestLine[0], requestLine[1], requestLine[2])
+                    .setHeader(header)
+                    .build();
 
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
+            // TODO setBody()
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.debug(e.getMessage());
         }
+        return null;
     }
 }
