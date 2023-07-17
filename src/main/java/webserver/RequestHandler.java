@@ -139,7 +139,7 @@ public class RequestHandler implements Runnable {
             return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
         }
 
-        return null;
+        return new Response(STATUS.NOT_FOUND, HEADER_HTTP_VERSION, null, null);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {
