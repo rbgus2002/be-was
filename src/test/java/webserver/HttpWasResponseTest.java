@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class HttpWasResponseTest {
 
 	@Test
-	@DisplayName("404 Header를 제대로 생성하는지")
+	@DisplayName("404 Response를 제대로 생성하는지")
 	void create404Header() {
 		// given
 		String response = "HTTP/1.1 404 NOT FOUND\r\n"
@@ -21,7 +21,7 @@ class HttpWasResponseTest {
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
 
 		// when
-		httpWasResponse.response404Header();
+		httpWasResponse.response404();
 
 		// then
 		Assertions.assertThat(outputStream.toString()).hasToString(response);

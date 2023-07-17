@@ -37,7 +37,7 @@ public class HttpWasResponse {
 			responseBody(files);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			response404Header();
+			response404();
 		}
 	}
 
@@ -76,7 +76,7 @@ public class HttpWasResponse {
 		}
 	}
 
-	public void response404Header() {
+	public void response404() {
 		final byte[] response = "404 Not Found".getBytes();
 		try {
 			dos.writeBytes("HTTP/1.1 " + HttpStatus.NOT_FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.NOT_FOUND.getName() + "\r\n");
