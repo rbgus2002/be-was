@@ -127,13 +127,14 @@ public class RequestHandler implements Runnable {
     private Response generateResponse(Request request) throws Exception {
         String targetUri = request.getTargetUri();
 
-        if (isStaticFile(targetUri)) {
-            String[] tokens = targetUri.split("\\.");
-            String extension = tokens[tokens.length-1];
+        String[] tokens = targetUri.split("\\.");
+        String extension = tokens[tokens.length-1];
+        MIME mime = MIME.getMimeByExtension(extension);
+        if (mime != null) {
             byte[] body = loadStaticFile(targetUri);
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", MIME.getMimeByExtension(extension).getMime() + ";charset=utf-8");
+            headerMap.put("Content-Type", mime.getMime() + ";charset=utf-8");
             headerMap.put("Content-Length", String.valueOf(body.length));
 
             return new Response(STATUS.OK, "1.1", headerMap, body);
@@ -149,10 +150,6 @@ public class RequestHandler implements Runnable {
         }
 
         return null;
-    }
-    public boolean isStaticFile(String targetUri) {
-        return Arrays.stream(MIME.values())
-                .anyMatch(mime -> targetUri.endsWith("." + mime.toString()));
     }
 
     public byte[] loadStaticFile(String route) throws IOException {

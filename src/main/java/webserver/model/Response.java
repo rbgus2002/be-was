@@ -2,6 +2,7 @@ package webserver.model;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Response {
@@ -25,8 +26,8 @@ public class Response {
         public static MIME getMimeByExtension(String extension) {
             return Arrays.stream(MIME.values())
                     .filter(mime -> extension.equalsIgnoreCase(mime.toString()))
-                    .collect(Collectors.toList())
-                    .get(0);
+                    .findFirst()
+                    .orElse(null);
         }
     }
     public enum STATUS {
