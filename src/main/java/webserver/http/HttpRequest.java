@@ -10,6 +10,8 @@ import java.util.Objects;
 
 public class HttpRequest {
 
+    private static final String GET = "GET";
+    private static final String POST = "POST";
     private static final String INTER_PARAM_SEPARATOR = "[&]";
     private static final String INTRA_PARAM_SEPARATOR = "[=]";
 
@@ -32,12 +34,11 @@ public class HttpRequest {
         this.pathParam = HttpUtil.getPathParam(header);
         this.path = HttpUtil.getPath(pathParam);
         this.param = HttpUtil.getParam(pathParam);
-            // 이 부분 param 같은 값들 제대로 불러와지는지
         this.model = getModel();
     }
 
     public Map<String, String> getModel() {
-        if (method.equals("GET")) {
+        if (method.equals(GET)) {
             return parseToModel(param);
         }
 
@@ -69,9 +70,5 @@ public class HttpRequest {
 
     public String getPath() {
         return path;
-    }
-
-    public String getParam() {
-        return param;
     }
 }
