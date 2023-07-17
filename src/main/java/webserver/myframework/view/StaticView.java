@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class HtmlView implements View {
+public class StaticView implements View {
     private final File html;
 
-    public HtmlView(File html) {
+    public StaticView(File html) {
         this.html = html;
     }
 

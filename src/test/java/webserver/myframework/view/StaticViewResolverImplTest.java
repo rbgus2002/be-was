@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.*;
 
 
 @DisplayName("HtmlViewResolverImpl 테스트")
-class HtmlViewResolverImplTest {
-    final ViewResolver viewResolver = new HtmlViewResolverImpl();
+class StaticViewResolverImplTest {
+    final ViewResolver viewResolver = new StaticViewResolverImpl();
 
     @Nested
     @DisplayName("resolve method")
