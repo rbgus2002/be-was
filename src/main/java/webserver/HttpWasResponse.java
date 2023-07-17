@@ -19,19 +19,18 @@ public class HttpWasResponse {
 	private static final String CONTENT_TYPE_HTML = "text/html";
 	private static final String CONTENT_TYPE_JS = "application/javascript";
 	private static final String SPLIT_DOT = "\\.";
-	private final OutputStream outputStream;
+	private final DataOutputStream dos;
 
 	public HttpWasResponse(OutputStream outputStream) {
-		this.outputStream = outputStream;
+		this.dos = new DataOutputStream(outputStream);
 	}
 
 	public void responseResource(String resourcePath) {
 		try {
 			final byte[] files = getFiles(resourcePath);
 
-			final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-			response200Header(dataOutputStream, files.length, resourcePath);
-			responseBody(dataOutputStream, files);
+			response200Header(files.length, resourcePath);
+			responseBody(files);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			response404Header();
@@ -43,7 +42,7 @@ public class HttpWasResponse {
 		return Files.readAllBytes(path);
 	}
 
-	private void responseBody(DataOutputStream dos, byte[] body) {
+	private void responseBody(byte[] body) {
 		try {
 			dos.write(body, 0, body.length);
 			dos.flush();
@@ -52,7 +51,18 @@ public class HttpWasResponse {
 		}
 	}
 
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent, final String resourcePath) {
+	public void response200Header() {
+		try {
+			dos.writeBytes("HTTP/1.1 200 OK \r\n");
+			dos.writeBytes("Content-Type: text/plain;charset=utf-8\r\n");
+			dos.writeBytes("Content-Length: 0\r\n");
+			dos.writeBytes("\r\n");
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
+	private void response200Header(int lengthOfBodyContent, final String resourcePath) {
 		try {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
 			dos.writeBytes("Content-Type: "+ getContentType(resourcePath) + ";charset=utf-8\r\n");
@@ -66,7 +76,6 @@ public class HttpWasResponse {
 	public void response404Header() {
 		final byte[] response = "404 Not Found".getBytes();
 		try {
-			DataOutputStream dos = new DataOutputStream(outputStream);
 			dos.writeBytes("HTTP/1.1 404 NOT FOUND \r\n");
 			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + response.length + "\r\n");

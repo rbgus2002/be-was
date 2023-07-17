@@ -74,4 +74,8 @@ public class HttpWasRequest {
 			logger.info("Request Param : key : {}, value : {}", key, value);
 		}
 	}
+
+	public String getParameter(String key) {
+		return requestParam.get(key);
+	}
 }
