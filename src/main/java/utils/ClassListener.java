@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class ClassListener {
+
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     public static List<Class<?>> scanClass(String packageName) {
@@ -43,4 +44,5 @@ public abstract class ClassListener {
 
         return classes;
     }
+
 }
