@@ -9,7 +9,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestHandler implements Runnable {
+public class RequestHandler implements Runnable {//함수형 인터페이스
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
