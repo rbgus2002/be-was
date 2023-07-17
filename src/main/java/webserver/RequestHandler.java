@@ -23,21 +23,15 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String requestLine = br.readLine();
-            HttpRequest httpRequest = new HttpRequest(requestLine);
+            HttpRequest httpRequest = new HttpRequest(br);
 
-            logger.debug("request line : {}", requestLine);
-
-            while (!"".equals(requestLine)) {
-                requestLine = br.readLine();
-                logger.debug("header : {}", requestLine);
-            }
+            logger.debug(httpRequest.toString());
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + httpRequest.getPath()).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
