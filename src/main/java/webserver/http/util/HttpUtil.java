@@ -16,26 +16,73 @@ import java.util.Objects;
 public class HttpUtil {
 
 	private static final String PATH_PARAM_SEPARATOR = "[?]";
-	private static final String INTER_PARAM_SEPARATOR = "[&]";
-	private static final String INTRA_PARAM_SEPARATOR = "[=]";
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	public static String getContent(BufferedReader reader) throws IOException {
 		StringBuilder content = new StringBuilder();
 		String line;
-		while ((line = reader.readLine()) != null) {
+		int contentLength = 0;
+
+		while ((line = reader.readLine()) != null && !line.isEmpty()) {
 			content.append(line).append(System.lineSeparator());
-
-			if (line.isEmpty()) {
-				break;
-			}
-
 			logger.debug(line);
+
+			if (line.startsWith("Content-Length: ")) {
+				contentLength = Integer.parseInt(line.split(": ")[1]);
+			}
+		}
+
+		if (contentLength > 0) {
+			char[] bodyChars = new char[contentLength];
+			reader.read(bodyChars, 0, contentLength);
+			String body = new String(bodyChars);
+
+			content.append(body);
 		}
 
 		verifyContent(content);
 
 		return content.toString();
+	}
+
+	public static String extractBody(String content) {
+		String[] lines = content.split("\\r?\\n");
+
+		int emptyLineIndex = 0;
+		for (int i = 0; i < lines.length; i++) {
+			if (lines[i].isEmpty()) {
+				emptyLineIndex = i;
+				break;
+			}
+		}
+
+		StringBuilder bodyBuilder = new StringBuilder();
+		for (int i = emptyLineIndex + 1; i < lines.length; i++) {
+			bodyBuilder.append(lines[i]);
+		}
+
+		return bodyBuilder.toString();
+	}
+
+	public static String extractHeader(String content) {
+		String[] lines = content.split("\\r?\\n");
+
+		int emptyLineIndex = 0;
+		for (int i = 0; i < lines.length; i++) {
+			if (lines[i].isEmpty()) {
+				emptyLineIndex = i;
+				break;
+			}
+
+			emptyLineIndex = i;
+		}
+
+		StringBuilder headerBuilder = new StringBuilder();
+		for (int i = 0; i <= emptyLineIndex; i++) {
+			headerBuilder.append(lines[i]).append("\n");
+		}
+
+		return headerBuilder.toString().trim();
 	}
 
 	private static void verifyContent(StringBuilder content) {
@@ -49,25 +96,6 @@ public class HttpUtil {
 		String pathParam = splitContent[1];
 
 		return pathParam;
-	}
-
-	public static Map<String, String> getModel(String param) {
-		if (isEmptyParam(param)) {
-			return new HashMap<>();
-		}
-
-		String[] parsedParam = param.split(INTER_PARAM_SEPARATOR);
-		Map<String, String> queryPair = new HashMap<>();
-		for (String pair : parsedParam) {
-			String[] splitPair = pair.split(INTRA_PARAM_SEPARATOR);
-			queryPair.put(splitPair[0], splitPair[1]);
-		}
-
-		return queryPair;
-	}
-
-	private static boolean isEmptyParam(String param) {
-		return Objects.isNull(param) || param.isEmpty();
 	}
 
 	public static String getPath(String pathParam) {
@@ -116,5 +144,12 @@ public class HttpUtil {
 			}
 		}
 		return headerMap;
+	}
+
+	public static String getMethod(String header) {
+		String[] splitContent = header.split(" ");
+		String method = splitContent[0];
+
+		return method;
 	}
 }
