@@ -22,8 +22,7 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            HttpRequest httpRequest = new HttpRequest(br);
+            HttpRequest httpRequest = new HttpRequest(in);
 
             logger.debug(httpRequest.toString());
 

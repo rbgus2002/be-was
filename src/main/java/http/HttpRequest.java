@@ -6,21 +6,22 @@ import util.StringUtil;
 import webserver.RequestHandler;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import static http.HttpRequestParser.*;
 import static util.StringUtil.*;
 
 public class HttpRequest {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
     private String method;
     private String path;
     private Map<String, String> params;
     private Map<String, String> headers;
     private String httpVersion;
 
-    public HttpRequest(BufferedReader br) throws Exception {
+    public HttpRequest(InputStream in) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         String requestLine = br.readLine();
 
         String[] tokens = requestLine.split(" ");
@@ -69,6 +70,8 @@ public class HttpRequest {
                     .append("&");
         }
         sb.deleteCharAt(sb.length() - 1);
+        sb.append(" ")
+                .append(this.httpVersion);
 
         sb.append(appendNewLine());
 
