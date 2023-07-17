@@ -7,7 +7,7 @@ import common.HttpRequest;
 
 import java.util.Map;
 
-import static common.HttpRequest.Method.isGetMethod;
+import static common.Method.isGetMethod;
 
 public class CreateUserController implements Controller {
     @Override

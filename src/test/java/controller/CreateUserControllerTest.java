@@ -1,17 +1,18 @@
 package controller;
 
+import common.HttpRequest;
+import common.RequestLine;
 import db.Database;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import common.HttpRequest;
-import common.RequestLine;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static common.Method.GET;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CreateUserControllerTest {
 
@@ -43,7 +44,7 @@ class CreateUserControllerTest {
 
     private HttpRequest createRequest(Map<String, String> params) {
         return new HttpRequest(
-                new RequestLine(HttpRequest.Method.GET, "/create", "HTTP/1.1", params),
+                new RequestLine(GET, "/create", "HTTP/1.1", params),
                 null,
                 null
         );

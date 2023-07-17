@@ -1,7 +1,7 @@
 package webserver;
 
 import controller.Controller;
-import common.HttpRequest.Method;
+import common.Method;
 
 import java.util.HashMap;
 import java.util.Map;

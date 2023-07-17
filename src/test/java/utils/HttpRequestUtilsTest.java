@@ -1,6 +1,7 @@
 package utils;
 
 import common.HttpRequest;
+import common.Method;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static common.HttpRequest.Method;
+import static common.Method.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpRequestUtilsTest {
@@ -25,7 +26,7 @@ class HttpRequestUtilsTest {
 
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        verifyRequestLine(request, Method.GET, "/", "", new HashMap<>());
+        verifyRequestLine(request, GET, "/", "", new HashMap<>());
     }
 
     @Test
@@ -36,7 +37,7 @@ class HttpRequestUtilsTest {
 
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        verifyRequestLine(request, Method.GET, "/index.html", "", new HashMap<>());
+        verifyRequestLine(request, GET, "/index.html", "", new HashMap<>());
     }
 
     @Test
@@ -47,7 +48,7 @@ class HttpRequestUtilsTest {
 
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        verifyRequestLine(request, Method.GET, "/dir1/index.html", "", new HashMap<>());
+        verifyRequestLine(request, GET, "/dir1/index.html", "", new HashMap<>());
     }
 
     @Test
@@ -61,7 +62,7 @@ class HttpRequestUtilsTest {
         HashMap<String, String> expectedParams = new HashMap<>();
         expectedParams.put("p1", "v1");
         expectedParams.put("p2", "v2");
-        verifyRequestLine(request, Method.GET, "/dir1/index.html", "", expectedParams);
+        verifyRequestLine(request, GET, "/dir1/index.html", "", expectedParams);
     }
 
     @Test
@@ -75,7 +76,7 @@ class HttpRequestUtilsTest {
         HashMap<String, String> expectedParams = new HashMap<>();
         expectedParams.put("p1", "v1");
         expectedParams.put("p2", "v2");
-        verifyRequestLine(request, Method.GET, "/create", "", expectedParams);
+        verifyRequestLine(request, GET, "/create", "", expectedParams);
     }
 
     @Test
@@ -89,7 +90,7 @@ class HttpRequestUtilsTest {
         HashMap<String, String> expectedParams = new HashMap<>();
         expectedParams.put("p1", null);
         expectedParams.put("p2", null);
-        verifyRequestLine(request, Method.GET, "/create", "", expectedParams);
+        verifyRequestLine(request, GET, "/create", "", expectedParams);
     }
 
     private String createRequestMessage(String method, String uri, String body) {

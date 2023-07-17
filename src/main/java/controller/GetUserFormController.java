@@ -3,7 +3,7 @@ package controller;
 import modelview.ModelView;
 import common.HttpRequest;
 
-import static common.HttpRequest.Method.isGetMethod;
+import static common.Method.isGetMethod;
 
 public class GetUserFormController implements Controller {
     @Override

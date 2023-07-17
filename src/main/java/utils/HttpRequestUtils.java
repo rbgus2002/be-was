@@ -1,6 +1,7 @@
 package utils;
 
 import common.HttpRequest;
+import common.Method;
 import common.RequestLine;
 
 import java.io.BufferedReader;
@@ -62,7 +63,7 @@ public class HttpRequestUtils {
             }
         }
 
-        return new RequestLine(HttpRequest.Method.valueOf(method), path, version, params);
+        return new RequestLine(Method.valueOf(method), path, version, params);
     }
 
     private static void parseHeader(String line, Map<String, String> headers) {
