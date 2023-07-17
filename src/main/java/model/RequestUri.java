@@ -63,4 +63,13 @@ public class RequestUri {
     public UserFormRequestDto paramsToDto() {
         return new UserFormRequestDto(this.params);
     }
+
+    @Override
+    public String toString() {
+        String s = "path uri = " + uri + "\n";
+        for (var entry : params.entrySet()) {
+            s += "[key = " + entry.getKey() + " / value = " + entry.getValue()+"]\n";
+        }
+        return s;
+    }
 }
