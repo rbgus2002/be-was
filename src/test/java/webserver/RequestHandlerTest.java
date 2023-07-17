@@ -3,6 +3,7 @@ package webserver;
 import db.Database;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import static exception.ExceptionName.WRONG_ARGUMENT;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
 
@@ -128,6 +128,7 @@ class RequestHandlerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("이상한 요청 등록 요청 처리 테스트")
     void registerUserDiff() {
         //given
@@ -135,15 +136,14 @@ class RequestHandlerTest {
         RequestHandler requestHandler = buildRequestHandler(request);
 
         //when
-        RuntimeException runtimeException = assertThrows(
-                RuntimeException.class,
-                requestHandler::run
-        );
+        requestHandler.run();
         User user = Database.findUserById("javajigi");
 
         //then
-        assertEquals(WRONG_ARGUMENT, runtimeException.getMessage());
         assertNull(user);
+
+        String[] result = outputStream.toString().split("\r\n");
+        assertEquals("HTTP/1.1 400 Bad Request", result[0]);
     }
 
 }

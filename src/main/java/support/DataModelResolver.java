@@ -30,7 +30,7 @@ public abstract class DataModelResolver {
         });
     }
 
-    public static DataModelWrapper resolve(String path) throws ClassNotFoundException {
+    public static DataModelWrapper resolve(String path) {
         return dataModelClasses.get(path);
     }
 

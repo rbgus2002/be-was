@@ -1,11 +1,8 @@
 package webserver;
 
-import db.Database;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.DataModelResolver;
-import support.DataModelWrapper;
+import support.ControllerResolver;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -41,36 +38,33 @@ public class RequestHandler implements Runnable {
 
             // 요청 수립
             String path = requestHeader.getRequestPath();
-            DataModelWrapper resolve = DataModelResolver.resolve(path);
-            if (resolve != null) {
-                Query requestQuery = requestHeader.getRequestQuery();
-                Object dataModel = resolve.constructClass(requestQuery);
-
-                //TODO: 현재 오직 유저 생성 요청만 받으므로 이를 개선할 필요성이 있다.
-                if (dataModel instanceof User)
-                    url = createUser(dos, (User) dataModel);
+            String responseStatus = "200";
+            try {
+                ControllerResolver.invoke(path, requestHeader);
+                url = "/index.html";
+                responseStatus = "302";
+            } catch (IllegalArgumentException exception) {
+                logger.debug("알맞은 controller 탐색 실패");
             }
-
 
             // 페이지 읽기
             byte[] body = readByPath(url);
             String contentType = makeContentType(url);
 
             // 페이지 반환
-            response200Header(dos, body.length, contentType);
+            switch (responseStatus) {
+                case "200":
+                    response200Header(dos, body.length, contentType);
+                    break;
+                case "302":
+                    response302Header(dos, url);
+                    break;
+            }
             responseBody(dos, body);
-        } catch (IOException | ClassNotFoundException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException | InstantiationException e) {
+        } catch (IOException | IllegalAccessException |
+                 InvocationTargetException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private static String createUser(DataOutputStream dos, User o) {
-        String url = "/index.html";
-        Database.addUser(o);
-        logger.debug("새로운 유저 생성: {}", o.getUserId());
-        response302Header(dos, url);
-        return url;
     }
 
     private static String makeContentType(String url) {

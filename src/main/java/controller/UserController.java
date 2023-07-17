@@ -3,6 +3,9 @@ package controller;
 import annotation.Controller;
 import annotation.RequestMapping;
 import annotation.RequestParam;
+import db.Database;
+import exception.ExceptionName;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.DataModelResolver;
@@ -10,25 +13,25 @@ import support.DataModelWrapper;
 import support.HttpMethod;
 import webserver.RequestHandler;
 
-import java.lang.reflect.InvocationTargetException;
-
 @Controller(value = "/user")
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     @RequestMapping(method = HttpMethod.GET, value = "/create")
-    public void create(@RequestParam String userId, @RequestParam String password, @RequestParam String name, @RequestParam String email) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException, InstantiationException {
+    public void create(@RequestParam("userId") String userId,
+                       @RequestParam("password") String password,
+                       @RequestParam(value = "name") String name,
+                       @RequestParam(value = "email") String email) {
 
-        logger.debug("create 실행");
-        System.out.println("create 실행");
-
+        logger.debug("유저 생성 요청");
         DataModelWrapper resolve = DataModelResolver.resolve("/user/create");
 
         if (resolve != null) {
-            // TODO: 데이터 처리 기능 추가
-//            Query requestQuery = requestHeader.getRequestQuery();
-//            Object dataModel = resolve.constructClass(requestQuery);
+            if (userId == null || password == null || name == null || email == null)
+                throw new RuntimeException(ExceptionName.WRONG_ARGUMENT);
+            User user = new User(userId, password, name, email);
+            Database.addUser(user);
         }
     }
 

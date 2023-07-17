@@ -27,8 +27,6 @@ public class DefaultManageObjectFactory implements ManageObjectFactory {
             throw new RuntimeException(ALREADY_REGISTERED);
         }
 
-        System.out.println(clazz.getConstructors().length);
-
         Constructor<?> constructor = clazz.getConstructor();
         Object o = constructor.newInstance();
         instances.put(clazz, o);
