@@ -48,12 +48,15 @@ public class RequestHandler implements Runnable {
             } else if (url.equals("/user/form.html")) {
                 body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
                 extension = "html";
+            } else if (url.equals("/")) {
+                body = "hello world".getBytes();
+                extension = "text";
             } else {
                 Path path;
                 try {
                     path = Paths.get("src/main/resources/static" + url);
                     body = Files.readAllBytes(path);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     path = Paths.get("src/main/resources/templates" + url);
                     body = Files.readAllBytes(path);
                 }
