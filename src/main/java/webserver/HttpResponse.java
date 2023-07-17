@@ -7,12 +7,10 @@ public class HttpResponse {
 
     private DataOutputStream dos;
     private byte[] body;
-    private HttpRequest httpRequest;
 
-    public HttpResponse(DataOutputStream dos, byte[] body, HttpRequest httpRequest) {
+    public HttpResponse(DataOutputStream dos, byte[] body) {
         this.dos = dos;
         this.body = body;
-        this.httpRequest = httpRequest;
     }
 
     private void response200Header() throws IOException {
