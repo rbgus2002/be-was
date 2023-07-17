@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import controllers.Controller;
+
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
@@ -26,9 +28,6 @@ public class RequestHandler implements Runnable {
 
 	public RequestHandler(Socket connectionSocket) {
 		this.connection = connectionSocket;
-	}
-
-	RequestHandler() {
 	}
 
 	public void run() {
@@ -47,6 +46,8 @@ public class RequestHandler implements Runnable {
 						return;
 					}
 				} catch (ReflectiveOperationException exception) {
+					logger.warn("ReflectiveOperationException");
+					logger.warn(exception.getMessage());
 				}
 			}
 
@@ -59,8 +60,8 @@ public class RequestHandler implements Runnable {
 		String[] arguments;
 		if (line.startsWith("GET")) {
 			arguments = line.split(" ");
-			final Method[] declaredMethods = RequestHandler.class.getDeclaredMethods();
-			Constructor<RequestHandler> constructor = RequestHandler.class.getDeclaredConstructor();
+			final Method[] declaredMethods = Controller.class.getDeclaredMethods();
+			Constructor<Controller> constructor = Controller.class.getDeclaredConstructor();
 			Object o = constructor.newInstance();
 			List<Method> mappedMethods = Arrays.stream(declaredMethods)
 				.filter(method -> method.isAnnotationPresent(GetMapping.class) && method.getAnnotation(GetMapping.class)
