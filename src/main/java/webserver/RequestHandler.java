@@ -2,8 +2,8 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.RequestParser;
 import webserver.http.HttpRequest;
+import webserver.http.HttpRequestLine;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,9 +24,11 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream();
              OutputStream out = connection.getOutputStream()) {
-            HttpRequest httpRequest = new HttpRequest(RequestParser.parseUri(in));
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + httpRequest.getUri()).toPath());
+            HttpRequest httpRequest = HttpRequest.create(in);
+            logger.debug(httpRequest.show());
+            HttpRequestLine httpRequestLine = httpRequest.getHttpRequestLine();
+            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + httpRequestLine.getUri()).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
