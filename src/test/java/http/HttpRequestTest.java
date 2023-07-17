@@ -1,5 +1,6 @@
 package http;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import util.HttpUtils;
@@ -29,10 +30,12 @@ class HttpRequestTest {
 
         //then
         URI expectedUri = new URI("http://localhost:8080/user/create?userId=javajigi&password=password&name=박재성&email=javajigi@slipp.net");
-        assertThat(httpRequest.uri()).isEqualTo(expectedUri);
-        assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
-        assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
-        assertThat(httpRequest.mime()).isEqualTo(Mime.DEFAULT);
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(httpRequest.uri()).isEqualTo(expectedUri);
+            softAssertions.assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
+            softAssertions.assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
+            softAssertions.assertThat(httpRequest.mime()).isEqualTo(Mime.DEFAULT);
+        });
     }
 
     @Test
@@ -49,12 +52,14 @@ class HttpRequestTest {
 
         //then
         URI expectedUri = new URI("http://localhost:8080/user/create.png");
-        assertThat(httpRequest.uri()).isEqualTo(expectedUri);
-        assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
-        assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
-        assertThat(httpRequest.mime()).isEqualTo(Mime.PNG);
-    }
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(httpRequest.uri()).isEqualTo(expectedUri);
+            softAssertions.assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
+            softAssertions.assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
+            softAssertions.assertThat(httpRequest.mime()).isEqualTo(Mime.PNG);
+        });
 
+    }
 
     @Test
     @DisplayName("URI 쿼리스트링이 맵으로 변환된다.")
@@ -70,10 +75,13 @@ class HttpRequestTest {
         Map<String, String> parameters = httpRequest.parameters();
 
         //then
-        assertThat(parameters.get("userId")).isEqualTo("javajigi");
-        assertThat(parameters.get("password")).isEqualTo("password");
-        assertThat(parameters.get("name")).isEqualTo("박재성");
-        assertThat(parameters.get("email")).isEqualTo("javajigi@slipp.net");
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(parameters.get("userId")).isEqualTo("javajigi");
+            softAssertions.assertThat(parameters.get("password")).isEqualTo("password");
+            softAssertions.assertThat(parameters.get("name")).isEqualTo("박재성");
+            softAssertions.assertThat(parameters.get("email")).isEqualTo("javajigi@slipp.net");
+        });
+
     }
 
     @Test
