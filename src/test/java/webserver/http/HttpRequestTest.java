@@ -39,9 +39,9 @@ class HttpRequestTest {
             HttpRequest httpRequest = new HttpRequest(inputStream);
 
             //then
-            softAssertions.assertThat(httpRequest.get("method")).isEqualTo("GET");
-            softAssertions.assertThat(httpRequest.get("uri")).isEqualTo("/hello-world");
-            softAssertions.assertThat(httpRequest.get("version")).isEqualTo("HTTP/1.1");
+            softAssertions.assertThat(httpRequest.get("Method")).isEqualTo("GET");
+            softAssertions.assertThat(httpRequest.get("URI")).isEqualTo("/hello-world");
+            softAssertions.assertThat(httpRequest.get("Version")).isEqualTo("HTTP/1.1");
             softAssertions.assertThat(httpRequest.get("Host")).isEqualTo("localhost:8080");
             softAssertions.assertThat(httpRequest.get("User-Agent")).isEqualTo("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0");
             softAssertions.assertThat(httpRequest.get("Accept")).isEqualTo("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
