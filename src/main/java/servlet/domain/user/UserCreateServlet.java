@@ -12,7 +12,6 @@ import model.user.User;
 import model.user.factory.UserFactory;
 import servlet.domain.user.exception.AlreadyExistUserException;
 
-//@ResponseBody
 @MyMapping("/user/create")
 public class UserCreateServlet implements Servlet {
 
