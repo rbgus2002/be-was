@@ -1,7 +1,9 @@
-package webserver;
+package webserver.httphandler;
 
 import db.Database;
 import model.User;
+import webserver.HttpRequest;
+import webserver.HttpResponse;
 
 import java.io.IOException;
 

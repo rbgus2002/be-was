@@ -1,17 +1,14 @@
 package webserver;
 
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.httphandler.HttpHandler;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

@@ -1,4 +1,7 @@
-package webserver;
+package webserver.httphandler;
+
+import webserver.HttpRequest;
+import webserver.HttpResponse;
 
 import java.io.IOException;
 
