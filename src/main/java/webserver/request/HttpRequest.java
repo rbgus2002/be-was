@@ -31,6 +31,7 @@ public class HttpRequest {
         public HttpRequest build() {
             return new HttpRequest(requestLine, headers);
         }
+
     }
 
     private HttpRequest(String requestLine, List<String> headers) {

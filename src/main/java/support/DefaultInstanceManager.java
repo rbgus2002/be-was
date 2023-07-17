@@ -10,11 +10,9 @@ import static exception.ExceptionName.ALREADY_REGISTERED;
 public class DefaultInstanceManager implements InstacneManager {
 
     private static final DefaultInstanceManager INSTANCE = new DefaultInstanceManager();
-
     private final Map<Class<?>, Object> instances = new ConcurrentHashMap<>(16);
 
     private DefaultInstanceManager() {
-
     }
 
     public static DefaultInstanceManager getManageObjectFactory() {
@@ -36,4 +34,5 @@ public class DefaultInstanceManager implements InstacneManager {
     public Object getInstance(Class<?> clazz) {
         return instances.get(clazz);
     }
+
 }
