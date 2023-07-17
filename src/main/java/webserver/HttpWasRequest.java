@@ -18,8 +18,8 @@ public class HttpWasRequest {
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
 	private static final String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
-	private Map<String, String> map = new ConcurrentHashMap<>();
-	private Map<String, String> requestParam = new ConcurrentHashMap<>();
+	private final Map<String, String> map = new ConcurrentHashMap<>();
+	private final Map<String, String> requestParam = new ConcurrentHashMap<>();
 
 	public HttpWasRequest(InputStream inputStream) throws IOException {
 		parseHttpRequestToMap(inputStream);
@@ -93,7 +93,7 @@ public class HttpWasRequest {
 		return map.get(key);
 	}
 
-	public String base64Decoder(String value) {
+	private String base64Decoder(String value) {
 		if (!Pattern.matches(base64Pattern, value)) {
 			return URLDecoder.decode(value, StandardCharsets.UTF_8);
 		}

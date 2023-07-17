@@ -55,17 +55,6 @@ public class HttpWasResponse {
 		}
 	}
 
-	public void response200Header() {
-		try {
-			dos.writeBytes("HTTP/1.1 " + HttpStatus.OK.getStatusCode() + StringUtils.SPACE + HttpStatus.OK.getName() + "\r\n");
-			dos.writeBytes("Content-Type: text/plain;charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: 0\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
 	public void response302Header(String location) {
 		try {
 			dos.writeBytes("HTTP/1.1 " + HttpStatus.FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.FOUND.getName() + "r\n");
