@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,8 +49,14 @@ public class RequestHandler implements Runnable {
                 body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
                 extension = "html";
             } else {
-                Path path = Paths.get("src/main/resources/static" + url);
-                body = Files.readAllBytes(path);
+                Path path;
+                try {
+                    path = Paths.get("src/main/resources/static" + url);
+                    body = Files.readAllBytes(path);
+                } catch (Exception e) {
+                    path = Paths.get("src/main/resources/templates" + url);
+                    body = Files.readAllBytes(path);
+                }
                 String filename = path.getFileName().toString();
                 extension = filename.substring(filename.lastIndexOf(".") + 1);
             }
