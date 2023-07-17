@@ -1,8 +1,11 @@
 # 기능 목록 및 학습 정리
+## Github Wiki
+[github.com/Chocochip101/be-was/wiki](https://github.com/Chocochip101/be-was/wiki)
+
 ## 기능 목록
 - [X] `index.html` 파일 반환
-- [ ] java thread 모델에 대한 학습
-- [ ] Git Wiki에 내용 정리
+- [X] java thread 모델에 대한 학습
+- [X] Git Wiki에 내용 정리
 - [X] 요청에 대한 헤더 출력
 - [X] Concurrent 패키지 적용
 
