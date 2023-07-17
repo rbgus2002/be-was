@@ -79,22 +79,9 @@ public class HttpRequest {
     private Mime decideMime(String path) {
         String extension = FileUtils.getExtension(path);
 
-        if (!Objects.equals(extension, path)) {
-            switch (extension.toLowerCase()) {
-                case "html":
-                    return Mime.HTML;
-                case "js":
-                    return Mime.JAVA_SCRIPT;
-                case "css":
-                    return Mime.CSS;
-                case "ico":
-                    return Mime.ICO;
-                case "png":
-                    return Mime.PNG;
-                case "jpg":
-                    return Mime.JPG;
-            }
-        }
-        return Mime.DEFAULT;
+        return Arrays.stream(Mime.values())
+                .filter(mime -> mime.getExtension().equals(extension))
+                .findFirst()
+                .orElse(Mime.DEFAULT);
     }
 }
