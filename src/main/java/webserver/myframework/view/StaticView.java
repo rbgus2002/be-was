@@ -5,14 +5,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class StaticView implements View {
-    private final File html;
+    private final File viewFile;
 
-    public StaticView(File html) {
-        this.html = html;
+    public StaticView(File viewFile) {
+        this.viewFile = viewFile;
     }
 
     @Override
     public byte[] render() throws IOException {
-        return Files.readAllBytes(html.toPath());
+        return Files.readAllBytes(viewFile.toPath());
     }
 }

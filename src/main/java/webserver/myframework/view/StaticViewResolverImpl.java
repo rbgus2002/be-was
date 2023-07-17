@@ -9,7 +9,6 @@ public class StaticViewResolverImpl implements ViewResolver {
     private static final String HTML_PREFIX = "src/main/resources";
     private static final String DYNAMIC_VIEW = "/templates";
     private static final String STATIC_VIEW = "/static";
-    private static final String HTML_SUFFIX = ".html";
     private static final String DEFAULT_VIEW_PATH = "/errors/404.html";
 
     @Override
@@ -28,22 +27,9 @@ public class StaticViewResolverImpl implements ViewResolver {
     }
 
     private static String getViewPath(String viewUri, boolean isStatic) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(HTML_PREFIX)
-                .append(isStatic ? STATIC_VIEW : DYNAMIC_VIEW)
-                .append(viewUri.startsWith("/") ? "" : "/")
-                .append(viewUri);
-        if (!hasExtension(viewUri)) {
-            stringBuilder.append(HTML_SUFFIX);
-        }
-        return stringBuilder.toString();
-    }
-
-    private static boolean hasExtension(String filename) {
-        if (filename == null) {
-            return false;
-        }
-        return filename.lastIndexOf('.') >
-               Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+        return HTML_PREFIX +
+               (isStatic ? STATIC_VIEW : DYNAMIC_VIEW) +
+               (viewUri.startsWith("/") ? "" : "/") +
+               viewUri;
     }
 }

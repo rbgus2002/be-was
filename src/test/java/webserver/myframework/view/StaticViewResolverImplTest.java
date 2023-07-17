@@ -18,21 +18,40 @@ class StaticViewResolverImplTest {
     @DisplayName("resolve method")
     class Resolve {
         @Nested
-        @DisplayName("viewPath에 해당하는 파일이 존재한다면")
-        class isFileExist {
+        @DisplayName("templates에 viewPath에 해당하는 파일이 존재한다면")
+        class IsFileExistInTemplates {
             @Test
-            @DisplayName("viewPath에 해당하는 파일의 경로를 갖는 View 객체를 반환한다")
+            @DisplayName("templates에서 viewPath에 해당하는 파일의 경로를 갖는 View 객체를 반환한다")
             void returnView() throws NoSuchFieldException, IllegalAccessException {
                 //given
                 //when
                 View indexView = viewResolver.resolve("/index.html");
 
                 //then
-                Field htmlField = indexView.getClass().getDeclaredField("html");
+                Field htmlField = indexView.getClass().getDeclaredField("viewFile");
                 htmlField.setAccessible(true);
                 Object result = htmlField.get(indexView);
                 assertThat(result).isInstanceOf(File.class);
                 assertThat(((File) result).getName()).isEqualTo("index.html");
+            }
+        }
+
+        @Nested
+        @DisplayName("static에 viewPath에 해당하는 파일이 존재한다면")
+        class IsFileExistInStatic {
+            @Test
+            @DisplayName("statics에서 viewPath에 해당하는 파일의 경로를 갖는 View 객체를 반환한다")
+            void returnView() throws NoSuchFieldException, IllegalAccessException {
+                //given
+                //when
+                View indexView = viewResolver.resolve("/favicon.ico");
+
+                //then
+                Field htmlField = indexView.getClass().getDeclaredField("viewFile");
+                htmlField.setAccessible(true);
+                Object result = htmlField.get(indexView);
+                assertThat(result).isInstanceOf(File.class);
+                assertThat(((File) result).getName()).isEqualTo("favicon.ico");
             }
         }
 
@@ -47,7 +66,7 @@ class StaticViewResolverImplTest {
                 View notFoundView = viewResolver.resolve("/notExist");
 
                 //then
-                Field htmlField = notFoundView.getClass().getDeclaredField("html");
+                Field htmlField = notFoundView.getClass().getDeclaredField("viewFile");
                 htmlField.setAccessible(true);
                 Object result = htmlField.get(notFoundView);
                 assertThat(result).isInstanceOf(File.class);
@@ -55,4 +74,6 @@ class StaticViewResolverImplTest {
             }
         }
     }
+
+
 }
