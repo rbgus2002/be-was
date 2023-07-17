@@ -1,30 +1,34 @@
 package webserver;
 
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HTTPServletRequest {
     private final String method;
-    private final String uri;
+    private final String url;
     private final ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(HTTPServletRequest.class);
+
 
     public HTTPServletRequest(String startLine) {
         method = parseMethod(startLine);
-        uri = parseUri(startLine);
+        url = parseUri(startLine);
     }
 
     public String getMethod() {
         return method;
     }
 
-    public String getUri() {
-        return uri;
+    public String getUrl() {
+        return url;
     }
 
     private String parseUri(String startLine) {
         String[] tokens = startLine.split(" ");
-        if (tokens[1].contains("\\?")) {
+        if (tokens[1].contains("?")) {
             String[] divideUriAndQuery = tokens[1].split("\\?");
             parseQuery(divideUriAndQuery[1]);
             return divideUriAndQuery[0];

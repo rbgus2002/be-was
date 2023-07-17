@@ -24,7 +24,7 @@ public class HTTPServletResponse {
     }
 
     public void redirect() {
-
+        response302Header();
     }
 
 
@@ -39,12 +39,11 @@ public class HTTPServletResponse {
         }
     }
 
-    private void response302Header(int lengthOfBodyContent, Mime mime) {
+    private void response302Header() {
         try {
             dos.writeBytes("HTTP/1.1 302 \r\n");
-            dos.writeBytes("Location: src");
-            dos.writeBytes("Content-Type: " + mime.getMimeType() + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("Location: http://localhost:8080/index.html" + "\r\n");
+            dos.writeBytes("Content-Length: 0" + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());

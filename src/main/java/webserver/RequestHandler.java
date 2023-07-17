@@ -2,10 +2,9 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 
 import container.Servlet;
-import container.ServletContainer;
+import container.DispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,6 @@ public class RequestHandler implements Runnable {
 
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
-
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             DataOutputStream dos = new DataOutputStream(out);
@@ -32,7 +30,7 @@ public class RequestHandler implements Runnable {
                 logger.debug("line = {}", line);
             }
 
-            Servlet servlet = ServletContainer.findServlet(request);
+            Servlet servlet = DispatcherServlet.findServlet(request);
             HTTPServletResponse response = new HTTPServletResponse(dos);
             servlet.service(request, response);
         } catch (IOException e) {
