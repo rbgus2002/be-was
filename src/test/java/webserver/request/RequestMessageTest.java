@@ -3,8 +3,7 @@ package webserver.request;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("응답 메시지 클래스 테스트")
 class RequestMessageTest {
@@ -23,13 +22,15 @@ class RequestMessageTest {
         String path = requestMessage.getPath();
         String version = requestMessage.getVersion();
         String host = requestMessage.getMetaData("Host");
+        boolean hasExtension = requestMessage.isHasExtension();
 
         // then
         assertAll(
                 () -> assertEquals("GET", method),
                 () -> assertEquals("/test", path),
                 () -> assertEquals("HTTP/1.1", version),
-                () -> assertEquals("test.com", host)
+                () -> assertEquals("test.com", host),
+                () -> assertFalse(hasExtension)
         );
     }
 
