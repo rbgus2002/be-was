@@ -55,6 +55,10 @@ public class HttpResponse {
             setContentType("text/html; charset=utf-8");
         } else if (extension.equals("ico")) {
             setContentType("image/x-icon");
+        } else if (extension.equals("jpg") || extension.equals("jpeg")) {
+            setContentType("image/jpeg");
+        } else if (extension.equals("png")) {
+            setContentType("image/png");
         } else {
             setContentType("text/plain");
         }
