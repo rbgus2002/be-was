@@ -20,7 +20,7 @@ public class HttpRequestParser {
         StringBuilder headerBuilder = new StringBuilder(StringUtils.appendLineSeparator(""));
         String line = br.readLine();
 
-        while (!line.equals("")){
+        while (line != null && !line.equals("")){
             headerBuilder.append(StringUtils.appendLineSeparator(line));
             line = br.readLine();
         }
