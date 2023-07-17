@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HttpRequestTest {
 
     @Test
-    @DisplayName("HttpRequest가 생성된다.")
-    void createCustomHttpRequest() throws URISyntaxException, IOException {
+    @DisplayName("default mime의 HttpRequest가 생성된다.")
+    void createDefaultMimeHttpRequest() throws URISyntaxException, IOException {
         //given
         List<String> strings = List.of("GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1",
                 "Host: localhost:8080",
@@ -32,7 +32,29 @@ class HttpRequestTest {
         assertThat(httpRequest.uri()).isEqualTo(expectedUri);
         assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
         assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
+        assertThat(httpRequest.mime()).isEqualTo(Mime.DEFAULT);
     }
+
+    @Test
+    @DisplayName("PNG HttpRequest 객체를 생성한다.")
+    void createPngHttpRequest() throws URISyntaxException {
+        //given
+        List<String> strings = List.of("GET /user/create.png HTTP/1.1",
+                "Host: localhost:8080",
+                "Connection: keep-alive",
+                "Accept: */*");
+
+        //when
+        HttpRequest httpRequest = new HttpRequest(strings);
+
+        //then
+        URI expectedUri = new URI("http://localhost:8080/user/create.png");
+        assertThat(httpRequest.uri()).isEqualTo(expectedUri);
+        assertThat(httpRequest.method()).isEqualTo(HttpUtils.Method.GET);
+        assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
+        assertThat(httpRequest.mime()).isEqualTo(Mime.PNG);
+    }
+
 
     @Test
     @DisplayName("URI 쿼리스트링이 맵으로 변환된다.")
