@@ -2,7 +2,10 @@ package webserver;
 
 import db.Database;
 import model.User;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +24,7 @@ class RequestHandlerTest {
     OutputStream outputStream = new ByteArrayOutputStream();
 
     static class IoSocket extends Socket {
+
         private InputStream inputStream;
         private OutputStream outputStream;
 
@@ -41,6 +45,7 @@ class RequestHandlerTest {
         public OutputStream getOutputStream() {
             return outputStream;
         }
+
     }
 
     @BeforeEach
@@ -59,6 +64,7 @@ class RequestHandlerTest {
     @Nested
     @DisplayName("단순 페이지 로드 테스트")
     class getPage {
+
         @Test
         @DisplayName("페이지를 요청했을 경우 해당 페이지를 반환해야 한다.")
         void test() {
@@ -130,11 +136,13 @@ class RequestHandlerTest {
             String[] result = outputStream.toString().split(NEW_LINE);
             assertEquals("HTTP/1.1 200 OK", result[0]);
         }
+
     }
 
     @Nested
     @DisplayName("유저 생성 테스트")
     class Create {
+
         @Test
         @DisplayName("새로운 유저 등록 요청 처리 테스트")
         void registerUser() {
@@ -158,8 +166,7 @@ class RequestHandlerTest {
         }
 
         @Test
-        @Disabled
-        @DisplayName("이상한 요청 등록 요청 처리 테스트")
+        @DisplayName("다른(누락) 쿼리 등록 요청 처리 테스트")
         void registerUserDiff() {
             //given
             String request = "GET /user/create?userId=javajigi&pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
@@ -175,6 +182,29 @@ class RequestHandlerTest {
             String[] result = outputStream.toString().split(NEW_LINE);
             assertEquals("HTTP/1.1 400 Bad Request", result[0]);
         }
+
+        @Test
+        @DisplayName("다른 순서의 쿼리 등록 요청 처리 테스트")
+        void registerDiffSequence() {
+            //given
+            String request = "GET /user/create?password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request);
+
+            //when
+            requestHandler.run();
+            User user = Database.findUserById("javajigi");
+
+            //then
+            assertEquals("javajigi", user.getUserId());
+            assertEquals("password", user.getPassword());
+            assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", user.getName());
+            assertEquals("javajigi%40slipp.net", user.getEmail());
+
+            String[] result = outputStream.toString().split(NEW_LINE);
+            assertEquals("HTTP/1.1 302 Found", result[0]);
+            assertEquals("Location: " + MAIN_PAGE, result[1]);
+        }
+
     }
 
 }

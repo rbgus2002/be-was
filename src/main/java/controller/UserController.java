@@ -1,14 +1,14 @@
 package controller;
 
-import support.annotation.Controller;
-import support.annotation.RequestMapping;
-import support.annotation.RequestParam;
 import db.Database;
 import exception.ExceptionName;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.HttpMethod;
+import support.annotation.Controller;
+import support.annotation.RequestMapping;
+import support.annotation.RequestParam;
 import webserver.RequestHandler;
 
 @Controller(value = "/user")
@@ -23,8 +23,9 @@ public class UserController {
                        @RequestParam(value = "email") String email) {
 
         logger.debug("유저 생성 요청");
-        if (userId == null || password == null || name == null || email == null)
-            throw new RuntimeException(ExceptionName.WRONG_ARGUMENT);
+        if (userId == null || password == null || name == null || email == null) {
+            throw new IllegalArgumentException(ExceptionName.WRONG_ARGUMENT);
+        }
         User user = new User(userId, password, name, email);
         Database.addUser(user);
     }

@@ -1,11 +1,13 @@
 package support;
 
+import exception.ExceptionName;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import utils.ClassListener;
-import webserver.request.Query;
 import webserver.request.HttpRequest;
+import webserver.request.Query;
+import webserver.response.HttpResponse;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,9 +53,9 @@ public abstract class ControllerResolver {
     }
 
     /**
-     * @return 만약 컨트롤러에게 처리를 위임할 수 있는 경우 true를 반환한다. 아닌 경우 false를 반환한다.
+     * @return 만약 정상적으로 controller 처리가 완료될 경우 true를 반환한다. 아닌 경우 false를 반환한다.
      */
-    public static boolean invoke(String url, HttpRequest header) throws InvocationTargetException, IllegalAccessException {
+    public static boolean invoke(String url, HttpRequest request, HttpResponse response) {
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
         controllers.forEach((s, controllerMethods) -> {
@@ -72,7 +74,7 @@ public abstract class ControllerResolver {
         Object instance = getManageObjectFactory().getInstance(controllerClass);
 
         // 헤더 처리
-        Query requestQuery = header.getRequestQuery();
+        Query requestQuery = request.getRequestQuery();
 
         Parameter[] parameters = method.getParameters();
 
@@ -83,7 +85,11 @@ public abstract class ControllerResolver {
                 .map(requestQuery::getValue)
                 .toArray();
 
-        method.invoke(instance, array);
+        try {
+            method.invoke(instance, array);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(ExceptionName.WRONG_ARGUMENT);
+        }
         return true;
     }
 
