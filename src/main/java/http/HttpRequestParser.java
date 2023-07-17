@@ -51,7 +51,7 @@ public class HttpRequestParser {
         String[] tokens;
         String requestLine = br.readLine();
 
-        while(!"".equals(requestLine)){
+        while(!"".equals(requestLine) && requestLine != null){
             tokens = requestLine.split(": " );
             String key = tokens[0];
             String value = tokens[1];
