@@ -190,7 +190,9 @@ public class RequestHandler implements Runnable {
         dos.writeBytes("\r\n");
         // Body
         byte[] body = response.getBody();
-        dos.write(body, 0, body.length);
+        if(body != null) {
+            dos.write(body, 0, body.length);
+        }
     }
 
 
