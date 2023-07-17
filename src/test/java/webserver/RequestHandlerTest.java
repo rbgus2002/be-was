@@ -6,6 +6,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.UserService;
 import webserver.model.Request;
 
 import static model.User.USERID;
@@ -24,7 +25,7 @@ class RequestHandlerTest {
         Map<String, String> queryParameterMap = requestHandler.parseQueryParameter(targetUri);
 
         // When
-        requestHandler.userSignUp(queryParameterMap);
+        UserService.userSignUp(queryParameterMap);
 
         // Then
         SoftAssertions assertions = new SoftAssertions();
