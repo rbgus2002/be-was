@@ -1,10 +1,10 @@
-package service;
+package mapper;
 
 import model.HttpRequest;
 import model.HttpResponse;
 import model.enums.HttpStatusCode;
 
-public class ResponseService {
+public class ResponseMapper {
     private static final String PAGE_NOT_FOUND = "요청하신 페이지가 없습니다.";
     private static final String PAGE_BAD_REQUEST = "잘못된 요청입니다.";
 
