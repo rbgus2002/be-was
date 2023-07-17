@@ -9,9 +9,17 @@ Java Web Application Server 2023
 
 ## 기능 요구 사항
 
+### step - 1
+
 - [X] 특정 uri 로 접속했을 때, 해당 파일을 request 한다.
 - [X] http request 내용을 읽고 logger 를 통해 확인한다.
 - [X] 자바의 concurrent 패키지를 사용하도록 변경한다.
+
+### step - 2
+
+- [ ] GET 메소드를 통해 파라미터를 받는다.
+    - [ ] Path를 파싱해 파라미터와 분리한다.
+- [ ] 주어진 파라미터를 User 클래스에 담는다.
 
 ## 학습 내용
 
