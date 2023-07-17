@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,7 @@ import org.slf4j.LoggerFactory;
 public class HttpWasRequest {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
+	private static final String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
 	private Map<String, String> map = new ConcurrentHashMap<>();
 	private Map<String, String> requestParam = new ConcurrentHashMap<>();
@@ -69,7 +73,7 @@ public class HttpWasRequest {
 		for (String param : params) {
 			final String[] keyValue = param.split("=");
 			final String key = keyValue[0];
-			final String value = keyValue[1];
+			final String value = base64Decoder(keyValue[1]);
 			requestParam.put(key, value);
 			logger.info("Request Param : key : {}, value : {}", key, value);
 		}
@@ -77,5 +81,14 @@ public class HttpWasRequest {
 
 	public String getParameter(String key) {
 		return requestParam.get(key);
+	}
+
+	public String base64Decoder(String value) {
+		if (Pattern.matches(base64Pattern, value)) {
+			final Base64.Decoder decoder = Base64.getDecoder();
+			final byte[] decode = decoder.decode(value.getBytes());
+			return new String(decode, StandardCharsets.UTF_8);
+		}
+		return value;
 	}
 }
