@@ -1,6 +1,8 @@
-package webserver;
+package webserver.http;
 
 import org.junit.jupiter.api.*;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.Uri;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,9 +11,10 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.*;
 
-class HttpHeaderTest {
+class HttpRequestTest {
     private final String GET = "GET";
-    private final String URI = "/index.html";
+    private final String PATH = "/index.html";
+    private final Uri URI = Uri.from(PATH);
     private String requestStr;
     private InputStream in;
 
@@ -31,7 +34,7 @@ class HttpHeaderTest {
         @DisplayName("요청 메소드를 가져온다")
         void getMethod() throws IOException {
             // given, when
-            HttpHeader request = HttpHeader.from(in);
+            HttpRequest request = HttpRequest.from(in);
 
             // then
             assertNotNull(request);
@@ -42,10 +45,10 @@ class HttpHeaderTest {
         @DisplayName("요청 uri를 가져온다")
         void getUri() throws IOException {
             // given, when
-            HttpHeader request = HttpHeader.from(in);
+            HttpRequest request = HttpRequest.from(in);
 
             // then
-            assertEquals(URI, request.getUri());
+            assertEquals(PATH, request.getPath());
         }
     }
 }

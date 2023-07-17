@@ -1,20 +1,19 @@
-package webserver;
+package webserver.http.request;
 
 public class HttpRequestLine {
     private String method;
-    private String uri;
+    private Uri uri;
     private String version;
 
     private HttpRequestLine(String requestLine) {
         // Postman에서 API 호출 시 NPE 발생 방지
-        // TODO : null 들어오는 이유 확인하기
         if(requestLine == null){
             return;
         }
-        String[] token = requestLine.split(" ");
-        this.method = token[0];
-        this.uri = token[1];
-        this.version = token[2];
+        String[] tokens = requestLine.split(" ");
+        this.method = tokens[0];
+        this.uri = Uri.from(tokens[1]);
+        this.version = tokens[2];
     }
 
     public static HttpRequestLine from(String requestLine){
@@ -25,7 +24,7 @@ public class HttpRequestLine {
         return method;
     }
 
-    String getUri() {
+    Uri getUri() {
         return uri;
     }
 

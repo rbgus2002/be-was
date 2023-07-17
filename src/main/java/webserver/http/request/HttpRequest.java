@@ -1,4 +1,4 @@
-package webserver;
+package webserver.http.request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,11 +10,11 @@ import java.util.StringTokenizer;
 
 import static utils.StringUtils.*;
 
-public class HttpHeader {
-    private final HttpRequestLine requestLine;
+public class HttpRequest {
+    private final HttpRequestLine requestLine; // responseLine과 합쳐서 statusLine이라고 부름
     private final Map<String, String> header = new HashMap<>();
 
-    private HttpHeader(InputStream in) throws IOException {
+    private HttpRequest(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String line = br.readLine();
         this.requestLine = HttpRequestLine.from(line);
@@ -29,8 +29,8 @@ public class HttpHeader {
         }
     }
 
-    public static HttpHeader from(InputStream in) throws IOException {
-        return new HttpHeader(in);
+    public static HttpRequest from(InputStream in) throws IOException {
+        return new HttpRequest(in);
     }
 
     private boolean isNullOrBlank(String line) {
@@ -51,7 +51,7 @@ public class HttpHeader {
         return requestLine.getMethod();
     }
 
-    public String getUri() {
-        return requestLine.getUri();
+    public String getPath() {
+        return requestLine.getUri().getPath();
     }
 }

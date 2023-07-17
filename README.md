@@ -6,9 +6,11 @@ Java Web Application Server 2023
 
 이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was
 를 참고하여 작성되었습니다.
----
 
 # Summary
+
+---
+
 
 ## Requirements
 #### Web Server step-1
@@ -18,6 +20,9 @@ Java Web Application Server 2023
   - [x] http 헤더 구조 객체 생성 (HttpHeader)
 - [x] Java Thread 기반에서 Concurrent 패키지 사용하도록 수정
 - [x] Github 위키에 학습 내용 기록
+#### Web Server step-2
+- [ ] GET을 통한 회원가입 구현
+
 
 ## To Study List
 #### Web Server step-1
@@ -26,3 +31,5 @@ Java Web Application Server 2023
     - [x] 버전별 변경점
     - [ ] 향후 지향점
   - [x] Concurrent 패키지 학습
+#### Web Server step-2
+- [x] GET 프로토콜 이해하기
