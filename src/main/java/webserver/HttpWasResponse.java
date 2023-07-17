@@ -18,6 +18,7 @@ public class HttpWasResponse {
 	private static final String CONTENT_TYPE_CSS = "text/css";
 	private static final String CONTENT_TYPE_HTML = "text/html";
 	private static final String CONTENT_TYPE_JS = "application/javascript";
+	private static final String SPLIT_DOT = "\\.";
 	private final OutputStream outputStream;
 
 	public HttpWasResponse(OutputStream outputStream) {
@@ -73,7 +74,7 @@ public class HttpWasResponse {
 	}
 
 	private String getContentType(String resourcePath) {
-		final String[] split = resourcePath.split("\\.");
+		final String[] split = resourcePath.split(SPLIT_DOT);
 		final String type = split[split.length - 1].trim();
 
 		if (type.equals("js"))
@@ -84,7 +85,7 @@ public class HttpWasResponse {
 	}
 
 	private String getResourcePath(String resourcePath) {
-		final String[] split = resourcePath.split("\\.");
+		final String[] split = resourcePath.split(SPLIT_DOT);
 		final String type = split[split.length - 1].trim();
 		if (type.equals("html")) {
 			return TEMPLATES_PATH;
