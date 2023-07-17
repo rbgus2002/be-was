@@ -12,6 +12,7 @@ public class HTTPServletResponse {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletResponse.class);
     private final DataOutputStream dos;
 
+
     public HTTPServletResponse(DataOutputStream dos) {
         this.dos = dos;
     }
