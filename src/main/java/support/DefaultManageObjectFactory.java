@@ -35,17 +35,6 @@ public class DefaultManageObjectFactory implements ManageObjectFactory {
     }
 
     @Override
-    public void addInstance(Class<?> clazz, Object args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        if(instances.containsKey(clazz)){
-            throw new RuntimeException(ALREADY_REGISTERED);
-        }
-
-        Constructor<?> constructor = clazz.getConstructor(args.getClass());
-        Object o = constructor.newInstance(args);
-        instances.put(clazz, o);
-    }
-
-    @Override
     public Object getInstance(Class<?> clazz) {
         return instances.get(clazz);
     }
