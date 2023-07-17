@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HttpHeaderTest {
+class RequestMessageHeaderTest {
 
 
     @Test
@@ -18,8 +18,9 @@ class HttpHeaderTest {
                 + "Content-Length: " + BODY_OF_LENGTH + "\r\n"
                 + "\r\n";
 
+        RequestMessageHeader requestMessageHeader = new RequestMessageHeader();
         //when
-        String header = HttpHeader.response200Header(BODY_OF_LENGTH,MimeType.HTML.getMimeType());
+        String header = requestMessageHeader.response200Header(BODY_OF_LENGTH,MimeType.HTML.getMimeType());
 
         //then
         assertEquals(expected, header);
@@ -37,7 +38,9 @@ class HttpHeaderTest {
                 + "\r\n";
 
         //when
-        String header = HttpHeader.response302Header(url);
+
+        RequestMessageHeader requestMessageHeader = new RequestMessageHeader();
+        String header = requestMessageHeader.response302Header(url);
 
         //then
         assertEquals(expected, header);
@@ -50,7 +53,9 @@ class HttpHeaderTest {
         String expected = "HTTP/1.1 404\r\n";
 
         //when
-        String header = HttpHeader.response404Header();
+
+        RequestMessageHeader requestMessageHeader = new RequestMessageHeader();
+        String header = requestMessageHeader.response404Header();
 
         //then
         assertEquals(expected, header);

@@ -37,9 +37,9 @@ class DispatcherServletTest {
     private void sendRequest(String url,String expected) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-        HttpResponse httpResponse = new HttpResponse(dataOutputStream);
+        HttpResponse httpResponse = new HttpResponse();
         HttpRequest httpRequest = new HttpRequest(url);
-        dispatcherServlet.service(httpRequest, httpResponse);
+        dispatcherServlet.service(httpRequest, httpResponse, dataOutputStream);
         String header = outputStream.toString().split("\r\n")[0];
 
 

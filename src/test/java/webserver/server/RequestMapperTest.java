@@ -14,7 +14,7 @@ class RequestMapperTest {
     @Test
     @DisplayName("맵이 잘 되는지?")
     void do_right() throws NoSuchFieldException, IllegalAccessException {
-        RequestMapper requestMapper = new RequestMapper();
+        RequestMapper requestMapper = RequestMapper.createRequestMapper();
         Class<RequestMapper> clazz = RequestMapper.class;
         Field field = clazz.getDeclaredField("map");
         field.setAccessible(true);

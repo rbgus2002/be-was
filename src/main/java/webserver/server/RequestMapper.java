@@ -4,17 +4,21 @@ import controller.Controller;
 import controller.HomeController;
 import controller.SignupController;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 public class RequestMapper {
-    private final ConcurrentHashMap<String, Controller> map = new ConcurrentHashMap<>();
+    private final HashMap<String, Controller> map = new HashMap<>();
+    private static final RequestMapper requestMapper = new RequestMapper();
 
-    public RequestMapper() {
+    private RequestMapper() {
         map.put("/", new HomeController());
         map.put("/index.html", new HomeController());
         map.put("/user/create", new SignupController());
     }
 
+    public static RequestMapper createRequestMapper() {
+        return requestMapper;
+    }
     public Controller getController(String url) {
         return map.get(url);
     }

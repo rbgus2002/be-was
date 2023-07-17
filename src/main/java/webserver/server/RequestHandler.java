@@ -34,7 +34,7 @@ public class RequestHandler implements Runnable {
                 logger.info("Remain Header : " + requestHeader);
             }
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
-            dispatcherServlet.service(httpRequest, new HttpResponse(dataOutputStream));
+            dispatcherServlet.service(httpRequest, new HttpResponse(), dataOutputStream);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

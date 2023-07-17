@@ -2,10 +2,9 @@ package webserver.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.util.HeaderParser;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 import static exception.ExceptionMessage.URL_NOT_CORRECT;
 
@@ -15,14 +14,18 @@ public class HttpRequest {
     private final String method;
     private String url;
     private final String version;
-    private final ConcurrentHashMap<String, String> queries = new ConcurrentHashMap<>();
+    private HashMap<String, String> queries;
 
     public HttpRequest(String request) {
         String[] req = request.split(" ");
         ValidRequest(req);
         this.method = req[0];
-        this.url = null;
-        parseQuery(req[1]);
+        this.queries = null;
+        this.url = req[1];
+        if(url.contains("?")) {
+            this.queries = HeaderParser.parseQuery(url);
+            this.url = HeaderParser.parseUrl(this.url);
+        }
         this.version = req[2];
         logger.info("HttpRequest Create end url = " + url);
     }
@@ -46,22 +49,8 @@ public class HttpRequest {
         return version;
     }
 
-    private void parseQuery(String url) {
-        String[] urlQuery = url.split("\\?");
-        if (urlQuery.length == 1) {
-            this.url = url;
-            return;
-        }
-        this.url = urlQuery[0];
-        String[] queries = urlQuery[1].split("&");
-        for (String query : queries) {
-            query = URLDecoder.decode(query, StandardCharsets.UTF_8);
-            String[] parse = query.split("=");
-            this.queries.put(parse[0], parse[1]);
-        }
-    }
 
-    public ConcurrentHashMap<String, String> getQueries() {
+    public HashMap<String, String> getQueries() {
         return queries;
     }
 }

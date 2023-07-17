@@ -28,8 +28,8 @@ class SignupControllerTest {
         signupController = new SignupController();
         ExecutorService service = Executors.newFixedThreadPool(THREADS);
         CountDownLatch latch = new CountDownLatch(THREADS);
-        // when
 
+        // when
         long startTime = System.currentTimeMillis();
         for(int thread = 0; thread < THREADS; thread++) {
             int finalThread = thread;

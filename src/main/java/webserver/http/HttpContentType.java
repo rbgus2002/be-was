@@ -1,17 +1,20 @@
 package webserver.http;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 public class HttpContentType {
 
-    private final ConcurrentHashMap<String, String> extension = new ConcurrentHashMap<>();
+    private static final HttpContentType httpContentType = new HttpContentType();
+    private final HashMap<String, String> extension = new HashMap<>();
 
-    public HttpContentType() {
-
+    private HttpContentType() {
         for(MimeType mimeType : MimeType.values()) {
             extension.put(mimeType.getExtension(), mimeType.getMimeType());
         }
+    }
 
+    public static HttpContentType createHttpContentType() {
+        return httpContentType;
     }
 
     public String getContentType(String s) {
@@ -20,6 +23,5 @@ public class HttpContentType {
         }
         return extension.get(s);
     }
-
 
 }

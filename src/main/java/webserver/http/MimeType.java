@@ -7,7 +7,6 @@ public enum MimeType {
     JS(".js", "text/javascript"),
     WOFF(".woff","application/x-font-woff"),
     TTF(".ttf","application/x-font-ttf"),
-
     ICO(".ico", "image/x-ico"),
     PNG(".png", "image/x-png"),
     JPG(".jpg", "image/jpeg");
