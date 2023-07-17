@@ -1,19 +1,20 @@
 package controller;
 
 import modelview.ModelView;
-import utils.HttpRequest;
+import common.HttpRequest;
 
-import static utils.HttpRequest.Method.isGetMethod;
+import static common.HttpRequest.Method.isGetMethod;
 
 public class GetUserFormController implements Controller {
     @Override
-    public ModelView process(HttpRequest httpRequest) {
-        validateHttpRequest(httpRequest);
-        return new ModelView("/templates/user/form.html", null);
+    public ModelView process(HttpRequest request) {
+        validate(request);
+        return new ModelView("/user/form.html");
     }
 
-    private void validateHttpRequest(HttpRequest httpRequest) {
-        if (isGetMethod(httpRequest.getMethod())) {
+    @Override
+    public void validate(HttpRequest request) {
+        if (isGetMethod(request.getMethod())) {
             return;
         }
         throw new IllegalArgumentException("잘못된 메서드");

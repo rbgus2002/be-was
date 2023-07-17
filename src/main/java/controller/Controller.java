@@ -1,9 +1,10 @@
 package controller;
 
 import modelview.ModelView;
-import utils.HttpRequest;
+import common.HttpRequest;
 
 public interface Controller {
+    ModelView process(HttpRequest request);
 
-    public ModelView process(HttpRequest httpRequest);
+    void validate(HttpRequest request);
 }

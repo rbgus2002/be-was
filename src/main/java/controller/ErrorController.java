@@ -1,12 +1,12 @@
 package controller;
 
-import modelview.ModelView;
 import common.HttpRequest;
+import modelview.ModelView;
 
-public class StaticController implements Controller {
+public class ErrorController implements Controller {
     @Override
     public ModelView process(HttpRequest request) {
-        return new ModelView(request.getPath());
+        return new ModelView("/error.html");
     }
 
     @Override
