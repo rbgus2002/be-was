@@ -33,40 +33,8 @@ public class RequestHandler implements Runnable {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(dos);
             String url = request.getUrl();
-
-            byte[] body;
-            String extension = "";
-            if (url.equals("/user/create")) {
-                body = "".getBytes();
-                response.setMethod("303");
-                response.setStatusMessage("See Other");
-                response.setHeader("Location", "/index.html");
-                User user = new User(request.getParams());
-                logger.debug("{}", user);
-            } else if (url.equals("/index.html")) {
-                body = Files.readAllBytes(Paths.get("src/main/resources/templates/index.html"));
-                extension = "html";
-            } else if (url.equals("/user/form.html")) {
-                body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
-                extension = "html";
-            } else if (url.equals("/")) {
-                body = "hello world".getBytes();
-                extension = "text";
-            } else {
-                Path path;
-                try {
-                    path = Paths.get("src/main/resources/static" + url);
-                    body = Files.readAllBytes(path);
-                } catch (IOException e) {
-                    path = Paths.get("src/main/resources/templates" + url);
-                    body = Files.readAllBytes(path);
-                }
-                String filename = path.getFileName().toString();
-                extension = filename.substring(filename.lastIndexOf(".") + 1);
-            }
-
-            response.setBody(body, extension);
-            response.send();
+            HttpHandler handler = HttpHandler.of(url);
+            handler.service(request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
