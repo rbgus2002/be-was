@@ -53,9 +53,9 @@ public class HttpRequest {
 
         // 헤더 분리
         headers.forEach(
-                s -> {
-                    String[] split = s.split(":");
-                    header.appendHeader(split[0], split[1].trim());
+                header -> {
+                    String[] split = header.split(":");
+                    this.header.appendHeader(split[0], split[1].trim());
                 }
         );
     }
