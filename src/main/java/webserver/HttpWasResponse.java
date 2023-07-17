@@ -108,4 +108,18 @@ public class HttpWasResponse {
 		}
 		return STATIC_PATH;
 	}
+
+	public void response405() {
+		final byte[] response = "405 Method Not Allowed".getBytes();
+		try {
+			dos.writeBytes("HTTP/1.1 " + HttpStatus.METHOD_NOT_ALLOWED.getStatusCode() + StringUtils.SPACE + HttpStatus.METHOD_NOT_ALLOWED.getName() + "\r\n");
+			dos.writeBytes("Content-Type: text/plain;charset=utf-8\r\n");
+			dos.writeBytes("Content-Length: " + response.length + "\r\n");
+			dos.writeBytes("\r\n");
+			dos.write(response, 0, response.length);
+			dos.flush();
+		} catch (IOException e){
+			logger.error(e.getMessage());
+		}
+	}
 }

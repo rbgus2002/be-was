@@ -4,10 +4,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import controller.Controller;
 import controller.annotation.RequestMapping;
+import webserver.utils.HttpMethod;
 
 public class WasHandler {
 
@@ -29,7 +31,15 @@ public class WasHandler {
 			return;
 		}
 
-		final Method method = methods.get(0);
+		final String httpMethod = httpWasRequest.getHttpMethod();
+		final Optional<Method> matchHttpMethod = getMatchHttpMethod(methods, httpMethod);
+		if (matchHttpMethod.isEmpty()) {
+			httpWasResponse.response405();
+			return;
+		}
+
+		final Method method = matchHttpMethod.get();
+
 		method.invoke(controller, httpWasRequest, httpWasResponse);
 	}
 
@@ -45,5 +55,15 @@ public class WasHandler {
 				return path.equals(resourcePath);
 			})
 			.collect(Collectors.toList());
+	}
+
+	private Optional<Method> getMatchHttpMethod(List<Method> methods, String inputMethod) {
+		return methods.stream()
+			.filter(method -> {
+				final RequestMapping requestMapping = method.getDeclaredAnnotation(RequestMapping.class);
+				final HttpMethod httpMethod = requestMapping.method();
+				return httpMethod == HttpMethod.valueOf(inputMethod);
+			})
+			.findAny();
 	}
 }
