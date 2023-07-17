@@ -1,5 +1,6 @@
 package http;
 
+import util.FileUtils;
 import util.HttpUtils;
 
 import java.net.URI;
@@ -7,10 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +17,7 @@ public class HttpRequest {
     private final HttpUtils.Method method;
     private final URI uri;
     private final HttpClient.Version version;
+    private final Mime mime;
     private final Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
 
     public HttpRequest(List<String> requestLines) throws URISyntaxException {
@@ -27,6 +26,7 @@ public class HttpRequest {
         this.method = HttpUtils.Method.of(requestParts[0]);
         this.uri = constructUri(requestParts[1], headers);
         this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
+        this.mime = decideMime(this.uri.getPath());
     }
 
     public Map<String, String> parameters() {
@@ -70,5 +70,31 @@ public class HttpRequest {
 
     public HttpClient.Version version() {
         return this.version;
+    }
+
+    public Mime mime() {
+        return this.mime;
+    }
+
+    private Mime decideMime(String path) {
+        String extension = FileUtils.getExtension(path);
+
+        if (!Objects.equals(extension, path)) {
+            switch (extension.toLowerCase()) {
+                case "html":
+                    return Mime.HTML;
+                case "js":
+                    return Mime.JAVA_SCRIPT;
+                case "css":
+                    return Mime.CSS;
+                case "ico":
+                    return Mime.ICO;
+                case "png":
+                    return Mime.PNG;
+                case "jpg":
+                    return Mime.JPG;
+            }
+        }
+        return Mime.DEFAULT;
     }
 }
