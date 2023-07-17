@@ -11,12 +11,12 @@ public class DispatcherServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
 
-    public static Servlet findServlet(HTTPServletRequest request) {
-        if (request.getUrl().equals("/user/create") && !map.contains("/user/create")) {
+    public static synchronized Servlet findServlet(HTTPServletRequest request) {
+        if (request.getUrl().equals("/user/create") && !isMapHasUrl("/user/create")) {
             map.put("/user/create", new LogInServlet());
             return map.get("/user/create");
         }
-        if (map.contains(request.getUrl())) {
+        if (isMapHasUrl(request.getUrl())) {
             return map.get(request.getUrl());
         }
 
@@ -24,6 +24,12 @@ public class DispatcherServlet {
         return map.get(request.getUrl());
     }
 
+    private static boolean isMapHasUrl(String url) {
+        if (map.contains(url)) {
+            return true;
+        }
+        return false;
+    }
 
 
 }
