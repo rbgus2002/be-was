@@ -1,4 +1,4 @@
-package webserver.utils;
+package webserver.http.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class HttpUtil {
 	}
 
 	public static Map<String, String> getModel(String param) {
-		if (hasNoParam(param)) {
+		if (isEmptyParam(param)) {
 			return new HashMap<>();
 		}
 
@@ -66,8 +66,8 @@ public class HttpUtil {
 		return queryPair;
 	}
 
-	private static boolean hasNoParam(String param) {
-		return Objects.isNull(param);
+	private static boolean isEmptyParam(String param) {
+		return Objects.isNull(param) || param.isEmpty();
 	}
 
 	public static String getPath(String pathParam) {
@@ -87,9 +87,34 @@ public class HttpUtil {
 		return param;
 	}
 
-	private static String[] getDecodedPathAndParam(String pathParam) {
+	private static String[] getDecodedPathAndParam(final String pathParam) {
 		String decodedPathParam = URLDecoder.decode(pathParam, StandardCharsets.UTF_8);
 		String[] pathAndParam = decodedPathParam.split(PATH_PARAM_SEPARATOR);
 		return pathAndParam;
+	}
+
+	public static String getContentType(final String headers) {
+		Map<String, String> headerMap = parseHeaders(headers);
+
+		String acceptHeader = headerMap.get("Accept");
+		if (Objects.nonNull(acceptHeader)) {
+			String[] values = acceptHeader.split(",");
+			return values[0];
+		}
+
+		throw InvalidRequestException.Exception;
+	}
+
+	private static Map<String, String> parseHeaders(final String headers) {
+		Map<String, String> headerMap = new HashMap<>();
+		String[] lines = headers.split("\n");
+
+		for (String line : lines) {
+			String[] parts = line.split(": ", 2);
+			if (parts.length == 2) {
+				headerMap.put(parts[0], parts[1]);
+			}
+		}
+		return headerMap;
 	}
 }
