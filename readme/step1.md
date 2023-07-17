@@ -4,6 +4,7 @@
 - [ ] java thread 모델에 대한 학습
 - [ ] Git Wiki에 내용 정리
 - [X] 요청에 대한 헤더 출력
+- [X] Concurrent 패키지 적용
 
 ## 학습 정리
 - InputStreamReader는 바이트 기반의 InputStream을 문자 기반으로 변환하는 역할을 한다. 
@@ -15,3 +16,6 @@
 ## 고민
 - 쓰레드 풀의 크기 고민이다. 어느정도가 적당할까?
 - 데몬 쓰레드가 꺼지면, 다른 쓰레드도 꺼질까?
+- RequestHandler와 Webserver는 어떻게 테스트하지?
+- 브라우저로 실행 시, request가 두 개인 이유는?
+- log에서 info와 debug의 차이

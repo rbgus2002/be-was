@@ -4,9 +4,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,5 +48,20 @@ class HttpUtilTest {
         softAssertions.assertThat(HttpUtil.isFileRequest("path/to/file.html")).as("복합 파일 포멧").isEqualTo(true);
         softAssertions.assertThat(HttpUtil.isFileRequest("path/to/file.js")).as("html 이외의 포멧").isEqualTo(false);
         softAssertions.assertThat(HttpUtil.isFileRequest("path/to/folder")).as("폴더 경로").isEqualTo(false);
+    }
+
+
+    @Test
+    @DisplayName("요청이 여러줄일 경우, getBuffer 요청에 성공한다.")
+    public void getContentWithMultipleLinesInput() throws IOException {
+        //given
+        String givenBuffer = "Hello," + System.lineSeparator() + "World!" + System.lineSeparator();
+        InputStream inputStream = new ByteArrayInputStream(givenBuffer.getBytes("UTF-8"));
+
+        //when
+        String getBufferResult = HttpUtil.getBuffers(inputStream);
+
+        //then
+        assertEquals(givenBuffer, getBufferResult);
     }
 }

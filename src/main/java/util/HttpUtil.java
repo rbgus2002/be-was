@@ -22,7 +22,7 @@ public class HttpUtil {
             if (line.isEmpty()) {
                 break;
             }
-            logger.info("request = {}", line);
+            logger.debug("request = {}", line);
         }
         return stringBuilder.toString();
     }
