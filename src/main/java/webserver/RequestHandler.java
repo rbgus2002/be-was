@@ -61,7 +61,7 @@ public class RequestHandler implements Runnable {
          */
         String[] tokens = readSingleHTTPLine(br).split(" ");
 
-        Method method = Method.valueOf(tokens[0]);
+        Method method = Method.getMethodByName(tokens[0]);
         String targetUri = tokens[1];
         String version = tokens[2].split("/")[1];
 
