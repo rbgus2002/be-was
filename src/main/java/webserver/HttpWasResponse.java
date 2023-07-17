@@ -57,7 +57,7 @@ public class HttpWasResponse {
 
 	public void response200Header() {
 		try {
-			dos.writeBytes("HTTP/1.1" + HttpStatus.OK.getStatusCode() + StringUtils.SPACE + HttpStatus.OK.getName() + "\r\n");
+			dos.writeBytes("HTTP/1.1 " + HttpStatus.OK.getStatusCode() + StringUtils.SPACE + HttpStatus.OK.getName() + "\r\n");
 			dos.writeBytes("Content-Type: text/plain;charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: 0\r\n");
 			dos.writeBytes("\r\n");
@@ -66,9 +66,19 @@ public class HttpWasResponse {
 		}
 	}
 
+	public void response302Header(String location) {
+		try {
+			dos.writeBytes("HTTP/1.1 " + HttpStatus.FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.FOUND.getName() + "r\n");
+			dos.writeBytes("Content-Type: text/plan;charset=utf-8\r\n" );
+			dos.writeBytes("Location: " + location + "\r\n");
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
 	private void response200Header(int lengthOfBodyContent, final String resourcePath) {
 		try {
-			dos.writeBytes("HTTP/1.1" + HttpStatus.OK.getStatusCode() + StringUtils.SPACE + HttpStatus.OK.getName() + "\r\n");
+			dos.writeBytes("HTTP/1.1 " + HttpStatus.OK.getStatusCode() + StringUtils.SPACE + HttpStatus.OK.getName() + "\r\n");
 			dos.writeBytes("Content-Type: "+ getContentType(resourcePath) + ";charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
 			dos.writeBytes("\r\n");
@@ -80,7 +90,7 @@ public class HttpWasResponse {
 	public void response404Header() {
 		final byte[] response = "404 Not Found".getBytes();
 		try {
-			dos.writeBytes("HTTP/1.1" + HttpStatus.NOT_FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.NOT_FOUND.getName() + "\r\n");
+			dos.writeBytes("HTTP/1.1 " + HttpStatus.NOT_FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.NOT_FOUND.getName() + "\r\n");
 			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + response.length + "\r\n");
 			dos.writeBytes("\r\n");

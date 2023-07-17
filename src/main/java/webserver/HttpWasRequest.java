@@ -28,15 +28,18 @@ public class HttpWasRequest {
 	private void parseHttpRequestToMap(InputStream inputStream) throws IOException {
 		final BufferedReader bufferedReader = convertToBufferedReader(inputStream);
 
-		boolean isFirstRead = false;
 		String input = bufferedReader.readLine();
+		firstRequestHeader(input);
+		saveAnotherHeader(bufferedReader);
+	}
 
+	private void saveAnotherHeader(final BufferedReader bufferedReader) throws IOException {
+		String input = bufferedReader.readLine();
 		while (input != null && !input.isBlank()) {
-			if (!isFirstRead) {
-				firstRequestHeader(input);
-				isFirstRead = true;
-			}
-			logger.debug("request : {}", input);
+			final String[] keyValue = input.split(":", 2);
+			final String key = keyValue[0];
+			final String value = keyValue[1].trim();
+			map.put(key, value);
 			input = bufferedReader.readLine();
 		}
 	}
@@ -84,6 +87,10 @@ public class HttpWasRequest {
 
 	public String getParameter(String key) {
 		return requestParam.get(key);
+	}
+
+	public String getAttribute(String key) {
+		return map.get(key);
 	}
 
 	public String base64Decoder(String value) {

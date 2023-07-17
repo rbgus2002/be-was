@@ -19,6 +19,6 @@ public class Controller {
 
 		Database.addUser(user);
 
-		response.response200Header();
+		response.response302Header("http://localhost:8080/index.html");
 	}
 }
