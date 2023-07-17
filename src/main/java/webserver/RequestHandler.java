@@ -51,16 +51,6 @@ public class RequestHandler implements Runnable {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        finally {
-            try {
-                connection.close();
-                logger.debug("Client disconnected : IP: {}, PORT:{}",
-                        connection.getInetAddress(),
-                        connection.getPort());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     private Request parseRequest(Socket connection) throws IOException, IllegalArgumentException {
@@ -102,7 +92,7 @@ public class RequestHandler implements Runnable {
 
         return new Request(method, version, targetUri, queryParameterMap, headerMap, body);
     }
-    private String readSingleHTTPLine(BufferedReader br) throws IOException {
+    private String readSingleHTTPLine(BufferedReader br) throws IOException, NullPointerException {
         return URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
     }
     private Map<String, String> parseQueryParameter(String route) {
