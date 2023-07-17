@@ -33,18 +33,9 @@ public class RequestHandler implements Runnable {
             final HttpWasRequest httpWasRequest = new HttpWasRequest(in);
             final HttpWasResponse httpWasResponse = new HttpWasResponse(out);
 
-            final String resourcePath = httpWasRequest.getResourcePath();
-            getResource(resourcePath, httpWasResponse);
+            final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse);
+            wasHandler.service();
         } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void getResource(String resourcePath, HttpWasResponse httpWasResponse) {
-        try {
-            httpWasResponse.responseResource(resourcePath);
-        } catch (IOException e) {
-            httpWasResponse.response404Header();
             logger.error(e.getMessage());
         }
     }

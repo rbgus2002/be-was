@@ -1,5 +1,6 @@
 package webserver;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -18,8 +19,14 @@ public class WasHandler {
 		this.httpWasResponse = httpWasResponse;
 	}
 
-	public void service() {
+	public void service() throws IOException {
+		final List<Method> methods = getResourcePathMethod();
 
+		if (methods.isEmpty()) {
+			final String resourcePath = httpWasRequest.getResourcePath();
+			httpWasResponse.responseResource(resourcePath);
+			return;
+		}
 	}
 
 	private List<Method> getResourcePathMethod() {

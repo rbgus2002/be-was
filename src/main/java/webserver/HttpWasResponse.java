@@ -25,12 +25,17 @@ public class HttpWasResponse {
 		this.outputStream = outputStream;
 	}
 
-	public void responseResource(String resourcePath) throws IOException {
-		final byte[] files = getFiles(resourcePath);
+	public void responseResource(String resourcePath) {
+		try {
+			final byte[] files = getFiles(resourcePath);
 
-		final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-		response200Header(dataOutputStream, files.length, resourcePath);
-		responseBody(dataOutputStream, files);
+			final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+			response200Header(dataOutputStream, files.length, resourcePath);
+			responseBody(dataOutputStream, files);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response404Header();
+		}
 	}
 
 	private byte[] getFiles(String resourcePath) throws IOException {
