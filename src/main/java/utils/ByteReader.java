@@ -6,19 +6,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
-import static utils.StringUtils.NEW_LINE;
-
 public class ByteReader {
     private ByteReader() {
     }
-    
+
     public static String readInputStream(InputStream inputStream) throws IOException {
-        StringBuilder messageReader = new StringBuilder();
+        StringBuilder messageBuilder = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        String line;
-        while ((line = br.readLine()) != null && !line.equals("")) {
-            messageReader.append(line).append(NEW_LINE);
+        while (br.ready()) {
+            int ch = br.read();
+            messageBuilder.append((char) ch);
         }
-        return messageReader.toString();
+        return messageBuilder.toString();
     }
 }
