@@ -15,7 +15,7 @@ public enum Mime {
     private final String type;
 
     Mime(String extension, String type) {
-        this.extension = type;
+        this.extension = extension;
         this.type = type;
     }
 
