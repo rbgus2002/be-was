@@ -1,11 +1,11 @@
 package db;
 
+import java.util.Collection;
+import java.util.Map;
+
 import com.google.common.collect.Maps;
 
 import model.User;
-
-import java.util.Collection;
-import java.util.Map;
 
 public class Database {
     private static Map<String, User> users = Maps.newConcurrentMap();
@@ -21,4 +21,5 @@ public class Database {
     public static Collection<User> findAll() {
         return users.values();
     }
+    public static void deleteAll() {users.clear();}
 }
