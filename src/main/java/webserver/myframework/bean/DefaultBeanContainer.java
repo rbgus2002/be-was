@@ -5,9 +5,7 @@ import webserver.myframework.bean.exception.DuplicateBeanException;
 import webserver.myframework.utils.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DefaultBeanContainer implements BeanContainer {
@@ -41,5 +39,10 @@ public class DefaultBeanContainer implements BeanContainer {
         return beanMap.keySet().stream()
                 .filter(clazz -> ReflectionUtils.isClassHasAnnotation(clazz, annotation))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Class<?>> getAllBeans() {
+        return new ArrayList<>(beanMap.keySet());
     }
 }

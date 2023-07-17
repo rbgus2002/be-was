@@ -1,4 +1,4 @@
-package webserver.myframework.handler.request.annotation;
+package webserver.myframework.requesthandler.annotation;
 
 import webserver.myframework.bean.annotation.Component;
 
@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Component
-public @interface Service {
+public @interface Repository {
 }

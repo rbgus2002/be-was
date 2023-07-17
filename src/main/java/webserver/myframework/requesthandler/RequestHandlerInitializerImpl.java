@@ -1,14 +1,14 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.bean.BeanContainer;
 import webserver.myframework.bean.exception.BeanNotFoundException;
-import webserver.myframework.handler.request.annotation.Controller;
-import webserver.myframework.handler.request.annotation.RequestMapping;
-import webserver.myframework.handler.request.exception.IllegalHandlerParameterTypeException;
-import webserver.myframework.handler.request.exception.IllegalHandlerReturnTypeException;
-import webserver.myframework.handler.request.exception.RequestHandlerException;
+import webserver.myframework.requesthandler.annotation.Controller;
+import webserver.myframework.requesthandler.annotation.RequestMapping;
+import webserver.myframework.requesthandler.exception.IllegalHandlerParameterTypeException;
+import webserver.myframework.requesthandler.exception.IllegalHandlerReturnTypeException;
+import webserver.myframework.requesthandler.exception.RequestHandlerException;
 import webserver.myframework.utils.ReflectionUtils;
 
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ public class RequestHandlerInitializerImpl implements RequestHandlerInitializer 
 
     @Override
     public void initialize() throws BeanNotFoundException, RequestHandlerException {
-        List<Class<?>> beanClasses = beanContainer.getBeanClassHasAnnotation(Controller.class);
+        List<Class<?>> beanClasses = beanContainer.getAllBeans();
         for (Class<?> beanClass : beanClasses) {
             String baseURI = getBaseURI(beanClass);
 
@@ -42,7 +42,7 @@ public class RequestHandlerInitializerImpl implements RequestHandlerInitializer 
 
     private static void verifyHandlerCondition(Method method)
             throws IllegalHandlerReturnTypeException, IllegalHandlerParameterTypeException {
-        if(method.getReturnType() != String.class) {
+        if(method.getReturnType() != void.class) {
             throw new IllegalHandlerReturnTypeException();
         }
         List<Class<?>> parameterTypes = List.of(method.getParameterTypes());

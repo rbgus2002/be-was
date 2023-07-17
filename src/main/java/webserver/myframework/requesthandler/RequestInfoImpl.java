@@ -1,4 +1,4 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 import webserver.http.HttpMethod;
 

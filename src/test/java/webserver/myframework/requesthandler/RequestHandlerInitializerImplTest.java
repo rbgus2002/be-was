@@ -1,4 +1,4 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,13 +11,15 @@ import webserver.myframework.bean.BeanContainer;
 import webserver.myframework.bean.BeanInitializer;
 import webserver.myframework.bean.BeanInitializerImpl;
 import webserver.myframework.bean.DefaultBeanContainer;
+import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.bean.exception.BeanConstructorException;
 import webserver.myframework.bean.exception.BeanNotFoundException;
-import webserver.myframework.handler.request.annotation.Controller;
-import webserver.myframework.handler.request.annotation.RequestMapping;
-import webserver.myframework.handler.request.exception.IllegalHandlerReturnTypeException;
-import webserver.myframework.handler.request.exception.IllegalHandlerParameterTypeException;
-import webserver.myframework.handler.request.exception.RequestHandlerException;
+import webserver.myframework.requesthandler.annotation.Controller;
+import webserver.myframework.requesthandler.annotation.RequestMapping;
+import webserver.myframework.requesthandler.exception.CannotResolveHandlerException;
+import webserver.myframework.requesthandler.exception.IllegalHandlerReturnTypeException;
+import webserver.myframework.requesthandler.exception.IllegalHandlerParameterTypeException;
+import webserver.myframework.requesthandler.exception.RequestHandlerException;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -41,7 +43,7 @@ class RequestHandlerInitializerImplTest {
         requestHandlerResolver = new RequestHandlerResolverImpl();
         requestHandlerInitializer = new RequestHandlerInitializerImpl(beanContainer, requestHandlerResolver);
 
-        beanInitializer.initialize("webserver.myframework.handler.request");
+        beanInitializer.initialize("webserver.myframework.requesthandler");
     }
 
     @Nested
@@ -55,17 +57,22 @@ class RequestHandlerInitializerImplTest {
             requestHandlerInitializer.initialize();
 
             //then
-            RequestHandler handler = requestHandlerResolver.resolveHandler("/class/correctMethod", HttpMethod.POST);
-            assertThat(handler).isNotNull();
-            assertThat(handler).isInstanceOf(RequestHandlerImpl.class);
-
-            Object resultController = getFieldVariable(handler, "controller");
-            assertThat(resultController).isInstanceOf(TestController.class);
-
-            Object resultMethod = getFieldVariable(handler, "method");
-            Method testMethod = TestController.class.getMethod("correctMethod", HttpRequest.class, HttpResponse.class);
-            assertThat(resultMethod).isEqualTo(testMethod);
+            verifyRequestHandler("/class/correctMethod", ControllerClass.class);
+            verifyRequestHandler("/correctMethod", ComponentClass.class);
         }
+    }
+
+    private void verifyRequestHandler(String uri, Class<?> controllerClass) throws CannotResolveHandlerException, NoSuchFieldException, IllegalAccessException, NoSuchMethodException {
+        RequestHandler handler = requestHandlerResolver.resolveHandler(uri, HttpMethod.POST);
+        assertThat(handler).isNotNull();
+        assertThat(handler).isInstanceOf(RequestHandlerImpl.class);
+
+        Object resultController = getFieldVariable(handler, "controller");
+        assertThat(resultController).isInstanceOf(controllerClass);
+
+        Object resultMethod = getFieldVariable(handler, "method");
+        Method testMethod = controllerClass.getMethod("correctMethod", HttpRequest.class, HttpResponse.class);
+        assertThat(resultMethod).isEqualTo(testMethod);
     }
 
     @Nested
@@ -80,13 +87,12 @@ class RequestHandlerInitializerImplTest {
         }
 
         @Nested
-        @DisplayName("메소드의 리턴 타입이 String이 아니라면")
+        @DisplayName("메소드의 리턴 타입이 void가 아니라면")
         class MethodReturnTypeIsNotString {
             @Test
             @DisplayName("IllegalHandlerReturnTypeException 예외를 발생시킨다")
             void throwIllegalHandlerReturnTypeException() throws ReflectiveOperationException {
                 //given
-                @SuppressWarnings("JavaReflectionMemberAccess")
                 Method parameterTypeError = ErrorController.class
                         .getDeclaredMethod("returnTypeError", HttpRequest.class, HttpResponse.class);
 
@@ -123,13 +129,13 @@ class RequestHandlerInitializerImplTest {
         }
 
         @Nested
-        @DisplayName("메소드의 리턴 타입이 String이고 메소드의 파라미터가 HttpRequest, HttpResponse라면")
+        @DisplayName("메소드의 리턴 타입이 void이고 메소드의 파라미터가 HttpRequest, HttpResponse라면")
         class MethodCanHandler {
             @Test
             @DisplayName("아무 일도 하지 않는다")
             void doNothing() throws ReflectiveOperationException {
                 //given
-                Method correctMethod = TestController.class
+                Method correctMethod = ControllerClass.class
                         .getDeclaredMethod("correctMethod", HttpRequest.class, HttpResponse.class);
 
                 //when
@@ -149,11 +155,21 @@ class RequestHandlerInitializerImplTest {
 
     @SuppressWarnings("SameReturnValue")
     @Controller(value = "/class")
-    static class TestController {
+    static class ControllerClass {
         @SuppressWarnings("unused")
         @RequestMapping(value = "/correctMethod", method = HttpMethod.POST)
-        public String correctMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
-            return "correctMethod";
+        public void correctMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
+
+        }
+    }
+
+    @Component
+    @RequestMapping
+    static class ComponentClass {
+        @SuppressWarnings("unused")
+        @RequestMapping(value = "/correctMethod", method = HttpMethod.POST)
+        public void correctMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
+
         }
     }
 
@@ -161,14 +177,13 @@ class RequestHandlerInitializerImplTest {
     static class ErrorController {
         @SuppressWarnings("unused")
         @RequestMapping(value = "/returnTypeError", method = HttpMethod.DELETE)
-        public void returnTypeError(HttpRequest httpRequest, HttpResponse httpResponse) {
-
+        public String returnTypeError(HttpRequest httpRequest, HttpResponse httpResponse) {
+            return "wrong";
         }
 
         @SuppressWarnings("unused")
         @RequestMapping(value = "/parameterTypeError", method = HttpMethod.DELETE)
-        public String parameterTypeError(String error) {
-            return "parameterTypeError";
+        public void parameterTypeError(String error) {
         }
     }
 }

@@ -11,4 +11,5 @@ public interface BeanContainer {
     void addBean(Class<?> clazz, Object bean) throws DuplicateBeanException;
     Object findBean(Class<?> name) throws BeanNotFoundException;
     List<Class<?>> getBeanClassHasAnnotation(Class<? extends Annotation> annotation);
+    List<Class<?>> getAllBeans();
 }

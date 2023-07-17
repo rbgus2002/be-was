@@ -12,12 +12,10 @@ import webserver.myframework.bean.BeanContainer;
 import webserver.myframework.bean.BeanInitializer;
 import webserver.myframework.bean.BeanInitializerImpl;
 import webserver.myframework.bean.DefaultBeanContainer;
-import webserver.myframework.bean.exception.BeanConstructorException;
 import webserver.myframework.bean.exception.BeanException;
-import webserver.myframework.bean.exception.BeanNotFoundException;
-import webserver.myframework.handler.request.RequestHandlerInitializerImpl;
-import webserver.myframework.handler.request.RequestHandlerResolver;
-import webserver.myframework.handler.request.exception.RequestHandlerException;
+import webserver.myframework.requesthandler.RequestHandlerInitializerImpl;
+import webserver.myframework.requesthandler.RequestHandlerResolver;
+import webserver.myframework.requesthandler.exception.RequestHandlerException;
 import webserver.myframework.servlet.DispatcherServlet;
 
 public class WebServer {

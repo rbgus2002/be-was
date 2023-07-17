@@ -1,4 +1,4 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
-import webserver.myframework.handler.request.annotation.Controller;
-import webserver.myframework.handler.request.annotation.RequestMapping;
-import webserver.myframework.handler.request.exception.CannotResolveHandlerException;
-import webserver.myframework.handler.request.exception.DuplicateRequestHandlerException;
-import webserver.myframework.handler.request.exception.RequestHandlerException;
+import webserver.myframework.requesthandler.annotation.Controller;
+import webserver.myframework.requesthandler.annotation.RequestMapping;
+import webserver.myframework.requesthandler.exception.CannotResolveHandlerException;
+import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
+import webserver.myframework.requesthandler.exception.RequestHandlerException;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -108,8 +108,7 @@ class RequestHandlerResolverImplTest {
     static class TestRequestResolver {
         @SuppressWarnings("unused")
         @RequestMapping(value = "/test")
-        public String handlerMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
-            return "handlerMethod";
+        public void handlerMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
         }
     }
 

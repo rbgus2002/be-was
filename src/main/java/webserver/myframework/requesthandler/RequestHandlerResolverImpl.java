@@ -1,9 +1,9 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 import webserver.http.HttpMethod;
 import webserver.myframework.bean.annotation.Component;
-import webserver.myframework.handler.request.exception.CannotResolveHandlerException;
-import webserver.myframework.handler.request.exception.DuplicateRequestHandlerException;
+import webserver.myframework.requesthandler.exception.CannotResolveHandlerException;
+import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
 
 import java.util.HashMap;
 import java.util.Map;

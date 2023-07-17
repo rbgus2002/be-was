@@ -1,4 +1,4 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

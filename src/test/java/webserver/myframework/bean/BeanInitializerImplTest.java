@@ -104,7 +104,7 @@ class BeanInitializerImplTest {
     }
 
     static class ErrorBean {
-        @SuppressWarnings("FieldCanBeLocal")
+        @SuppressWarnings({"FieldCanBeLocal", "unused"})
         private final String errorParameter;
 
         public ErrorBean(String errorParameter) {

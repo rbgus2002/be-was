@@ -1,4 +1,4 @@
-package webserver.myframework.handler.request;
+package webserver.myframework.requesthandler;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,20 +20,20 @@ class RequestHandlerImplTest {
             //given
             RequestHandlerImpl requestHandler = new RequestHandlerImpl(new TestClass(),
                     TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class));
-
+            HttpResponse httpResponse = HttpResponse.getInstance();
             //when
-            String result = requestHandler.handle(HttpRequest.builder().build(), HttpResponse.getInstance());
+            requestHandler.handle(HttpRequest.builder().build(), httpResponse);
 
             //then
-            assertThat(result).isEqualTo("string");
+            assertThat(httpResponse.getUri()).isEqualTo("string");
         }
     }
 
     @SuppressWarnings("SameReturnValue")
     static class TestClass {
         @SuppressWarnings("unused")
-        String testMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
-            return "string";
+        void testMethod(HttpRequest httpRequest, HttpResponse httpResponse) {
+            httpResponse.setUri("string");
         }
     }
 }

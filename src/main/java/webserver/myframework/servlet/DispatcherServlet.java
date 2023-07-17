@@ -4,9 +4,9 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.bean.annotation.Autowired;
 import webserver.myframework.bean.annotation.Component;
-import webserver.myframework.handler.request.RequestHandler;
-import webserver.myframework.handler.request.RequestHandlerResolver;
-import webserver.myframework.handler.request.exception.CannotResolveHandlerException;
+import webserver.myframework.requesthandler.RequestHandler;
+import webserver.myframework.requesthandler.RequestHandlerResolver;
+import webserver.myframework.requesthandler.exception.CannotResolveHandlerException;
 import webserver.myframework.view.View;
 import webserver.myframework.view.ViewResolver;
 
@@ -24,18 +24,18 @@ public class DispatcherServlet {
         this.viewResolver = viewResolver;
     }
 
-    //TODO: HttpResponse 반환
     public void handleRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            String uri = "";
+            String uri = httpRequest.getUri();
             try {
                 RequestHandler requestHandler =
                         requestHandlerResolver.resolveHandler(httpRequest.getUri(), httpRequest.getMethod());
-                uri = requestHandler.handle(httpRequest, httpResponse);
+                requestHandler.handle(httpRequest, httpResponse);
+                uri = httpResponse.getUri();
             } catch (CannotResolveHandlerException ignored) {
 
             }
-            if(httpResponse.getBody() == null) {
+            if(!uri.equals(HttpResponse.NOT_RENDER_URI)) {
                 View view = viewResolver.resolve(uri);
                 httpResponse.setBody(view.render());
             }

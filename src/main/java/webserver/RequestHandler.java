@@ -6,9 +6,11 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.HttpHeaders;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpRequestParser;
 import webserver.http.request.HttpRequestParserImpl;
+import webserver.http.request.exception.IllegalRequestParameterException;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.servlet.DispatcherServlet;
 
@@ -39,10 +41,8 @@ public class RequestHandler implements Runnable {
             dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
             DataOutputStream dos = new DataOutputStream(outputStream);
-
-            response200Header(dos, httpResponse);
-            responseBody(dos, httpResponse);
-        } catch (IOException e) {
+            sendResponse(dos, httpResponse);
+        } catch (IOException | IllegalRequestParameterException e) {
             logger.error(e.getMessage());
         }
     }
@@ -54,24 +54,39 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private void response200Header(DataOutputStream dos, HttpResponse httpResponse) {
+    //TODO: text/html 외의 다른 Content-Type도 지원되도록 해야함
+    private void sendResponse(DataOutputStream dos, HttpResponse httpResponse) {
         try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            writeStartLine(dos, httpResponse);
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + httpResponse.getBody().length + "\r\n");
+            writeHeaders(dos, httpResponse);
             dos.writeBytes("\r\n");
+            writeBody(dos, httpResponse);
+            dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void responseBody(DataOutputStream dos, HttpResponse httpResponse) {
-        try {
-            byte[] body = httpResponse.getBody();
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+    private static void writeBody(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        byte[] body = httpResponse.getBody();
+        dos.write(body, 0, body.length);
+        dos.writeBytes("\r\n");
+    }
+
+    private static void writeHeaders(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        HttpHeaders headers = httpResponse.getHeaders();
+        for (String headerName : headers.getHeaderNames()) {
+            dos.writeBytes(headerName + ": " + headers.getHeaderValues(headerName));
         }
+    }
+
+    private static void writeStartLine(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        String stringBuilder = "HTTP/1.1 " +
+                               httpResponse.getStatus().getStatusNumber() + " " +
+                               httpResponse + " " +
+                               "\r\n";
+        dos.writeBytes(stringBuilder);
     }
 }
