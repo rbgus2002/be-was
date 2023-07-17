@@ -24,7 +24,7 @@ class HttpWasResponseTest {
 		httpWasResponse.response404Header();
 
 		// then
-		Assertions.assertThat(outputStream.toString()).isEqualTo(response);
+		Assertions.assertThat(outputStream.toString()).hasToString(response);
 	}
 
 }
