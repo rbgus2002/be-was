@@ -85,14 +85,14 @@ public class RequestHandler implements Runnable {
         /*
          Body
          */
-        StringBuilder sb = new StringBuilder();
+        String body = "";
         if(method == Method.PUT || method == Method.POST) {
-            line = readSingleHTTPLine(br);
-            while(!line.equals("")) {
-                sb.append(line);
-            }
+            int contentLength = Integer.parseInt(headerMap.get(HEADER_CONTENT_LENGTH));
+            char[] bodyCharacters = new char[contentLength];
+            br.read(bodyCharacters);
+
+            body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
         }
-        String body = sb.toString();
 
         return new Request(method, version, targetUri, queryParameterMap, headerMap, body);
     }
@@ -134,7 +134,7 @@ public class RequestHandler implements Runnable {
             return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
         }
         if(targetUri.startsWith("/user/create")) {
-            UserService.userSignUp(request.getQueryParameterMap());
+            UserService.userSignUp(request.getBody());
 
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_CONTENT_TYPE, MIME.HTML.getMime() + HEADER_CHARSET);
