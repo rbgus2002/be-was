@@ -13,7 +13,7 @@ class HttpWasResponseTest {
 	void create404Header() {
 		// given
 		String response = "HTTP/1.1 404 NOT FOUND\r\n"
-			+ "Content-Type: text/html;charset=utf-8\r\n"
+			+ "Content-Type: text/plain;charset=utf-8\r\n"
 			+ "Content-Length: 13\r\n"
 			+ "\r\n"
 			+ "404 Not Found";

@@ -79,7 +79,7 @@ public class HttpWasResponse {
 		final byte[] response = "404 Not Found".getBytes();
 		try {
 			dos.writeBytes("HTTP/1.1 " + HttpStatus.NOT_FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.NOT_FOUND.getName() + "\r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+			dos.writeBytes("Content-Type: text/plain;charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + response.length + "\r\n");
 			dos.writeBytes("\r\n");
 			dos.write(response, 0, response.length);
