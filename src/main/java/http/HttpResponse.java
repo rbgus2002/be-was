@@ -75,7 +75,7 @@ public class HttpResponse {
 
     private void response302Header(DataOutputStream dos) {
         try {
-            dos.writeBytes("HTTP/1.1 301 Moved Temporarily\r\n");
+            dos.writeBytes("HTTP/1.1 302 Found\r\n");
             dos.writeBytes("Location: " + path + "\r\n");
             dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
             dos.writeBytes("Pragma: no-cache\r\n");
