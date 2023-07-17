@@ -29,9 +29,9 @@ public class HTTPServletRequest {
     private String parseUri(String startLine) {
         String[] tokens = startLine.split(" ");
         if (tokens[1].contains("?")) {
-            String[] divideUriAndQuery = tokens[1].split("\\?");
-            parseQuery(divideUriAndQuery[1]);
-            return divideUriAndQuery[0];
+            String[] divideUrlAndQuery = tokens[1].split("\\?");
+            parseQuery(divideUrlAndQuery[1]);
+            return divideUrlAndQuery[0];
         }
         return tokens[1];
     }
