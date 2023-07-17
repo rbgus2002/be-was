@@ -27,21 +27,24 @@ public class RequestUri {
         String uri = splitByQuestionMark[URI_INDEX];
 
         HashMap<String, Object> params = new HashMap<>();
-        if (splitByQuestionMark.length == LENGTH_WHEN_HAS_NO_VALUE) return new RequestUri(uri, params);
+        if (isArrayLengthOne(splitByQuestionMark)) return new RequestUri(uri, params);
 
         String[] paramArray = splitBy(splitByQuestionMark[PARAMETERS_INDEX], AMPERSAND_MARK);
         for (int i = 0; i < paramArray.length; i++) {
-            String[] splitByEqualMark = splitBy(paramArray[i], EQUAL_MARK);
+            String[] paramMap = splitBy(paramArray[i], EQUAL_MARK);
 
-            if (splitByEqualMark.length == LENGTH_WHEN_HAS_NO_VALUE) {
-                continue;
-            }
-            String key = splitByEqualMark[KEY_INDEX];
-            String value = splitByEqualMark[VALUE_INDEX];
+            if (isArrayLengthOne(paramMap)) continue;
+
+            String key = paramMap[KEY_INDEX];
+            String value = paramMap[VALUE_INDEX];
             params.put(key, value);
         }
 
         return new RequestUri(uri, params);
+    }
+
+    private static boolean isArrayLengthOne(String[] array) {
+        return array.length == LENGTH_WHEN_HAS_NO_VALUE;
     }
 
     public boolean match(String uri) {
