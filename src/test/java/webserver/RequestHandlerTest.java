@@ -19,13 +19,14 @@ class RequestHandlerTest {
     public void signUp() throws Exception {
         // Given
         String targetUri = "/user/create?userId=jst0951&password=password&name=정성태&email=jst0951@naver.com";
-        Request request = new Request(null, null, targetUri, null, null, null);
         RequestHandler requestHandler = new RequestHandler(new Socket());
+        Map<String, String> queryParameterMap = requestHandler.parseQueryParameter(targetUri);
 
         // When
-        requestHandler.routeRequest(request, new Socket());
+        requestHandler.userSignUp(queryParameterMap);
 
         // Then
         assertThat(Database.findAll().size()).isEqualTo(1);
+        assertThat(Database.findUserById("jst0951").getName()).isEqualTo("정성태");
     }
 }

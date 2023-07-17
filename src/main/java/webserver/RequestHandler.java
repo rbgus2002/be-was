@@ -95,7 +95,7 @@ public class RequestHandler implements Runnable {
     private String readSingleHTTPLine(BufferedReader br) throws IOException, NullPointerException {
         return URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
     }
-    private Map<String, String> parseQueryParameter(String route) {
+    public Map<String, String> parseQueryParameter(String route) {
         // ?를 기준으로 쿼리 스트링 분할
         String[] tokens = route.split("\\?");
         if(tokens.length < 2) {
