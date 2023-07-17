@@ -10,12 +10,19 @@ public class HTTPServletRequest {
     private final String method;
     private final String url;
     private final ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
+
+    private final String version;
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletRequest.class);
 
 
     public HTTPServletRequest(String startLine) {
         method = parseMethod(startLine);
         url = parseUri(startLine);
+        version = parseVersion(startLine);
+    }
+
+    private String parseVersion(String startLine) {
+        return startLine.split(" ")[2];
     }
 
     public String getMethod() {
@@ -24,6 +31,11 @@ public class HTTPServletRequest {
 
     public String getUrl() {
         return url;
+    }
+
+
+    public String getVersion() {
+        return version;
     }
 
     private String parseUri(String startLine) {

@@ -2,11 +2,14 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Path;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import static util.Path.*;
 
 public class HTTPServletResponse {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletResponse.class);
@@ -43,7 +46,7 @@ public class HTTPServletResponse {
     private void response302Header() {
         try {
             dos.writeBytes("HTTP/1.1 302 \r\n");
-            dos.writeBytes("Location: http://localhost:8080/index.html" + "\r\n");
+            dos.writeBytes("Location: " + HOME_PATH.getPath() + "\r\n");
             dos.writeBytes("Content-Length: 0" + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
@@ -62,8 +65,8 @@ public class HTTPServletResponse {
 
     private byte[] getBody(String extension, String uri) throws IOException {
         if (extension.equals(".html")) {
-            return Files.readAllBytes(new File("src/main/resources/templates" + uri).toPath());
+            return Files.readAllBytes(new File(TEMPLATE_PATH.getPath() + uri).toPath());
         }
-        return Files.readAllBytes(new File("src/main/resources/static" + uri).toPath());
+        return Files.readAllBytes(new File(STATIC_PATH.getPath()+ uri).toPath());
     }
 }
