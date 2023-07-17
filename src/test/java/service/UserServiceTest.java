@@ -14,7 +14,7 @@ import webserver.HttpWasRequest;
 
 class UserServiceTest {
 
-	private UserService userService = new UserService();
+	private final UserService userService = new UserService();
 
 	@BeforeEach
 	void beforeEach() {
