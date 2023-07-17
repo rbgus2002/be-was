@@ -3,7 +3,6 @@ package webserver.myframework.view;
 import webserver.myframework.bean.annotation.Component;
 
 import java.io.File;
-import java.util.Optional;
 
 @Component
 public class StaticViewResolverImpl implements ViewResolver {

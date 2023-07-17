@@ -103,6 +103,7 @@ class ReflectionUtilsTest {
     }
 
     @Component
+    @SuppressWarnings("unused")
     static class ComponentClass {
         @Autowired
         private Object autoWiredField;
