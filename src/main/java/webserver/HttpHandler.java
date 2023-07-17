@@ -5,6 +5,7 @@ import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 import webserver.response.strategy.Found;
+import webserver.response.strategy.NotFound;
 import webserver.response.strategy.OK;
 
 import java.io.IOException;
@@ -28,9 +29,14 @@ public class HttpHandler {
         }
 
         // 페이지 검색 및 반환
-        byte[] body = readByPath(path);
-        response.buildHeader(new OK(makeContentType(path), body.length));
-        response.setBody(body);
+        try {
+            byte[] body = readByPath(path);
+            response.buildHeader(new OK(makeContentType(path), body.length));
+            response.setBody(body);
+        } catch (IOException exception) {
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.buildHeader(new NotFound());
+        }
     }
 
     private String makeContentType(String url) {

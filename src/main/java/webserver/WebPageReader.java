@@ -28,7 +28,7 @@ public class WebPageReader {
                 return Files.readAllBytes(file.toPath());
             }
         }
-        throw new RuntimeException(ExceptionName.FILE_NOT_FOUND);
+        throw new IOException(ExceptionName.FILE_NOT_FOUND);
     }
 
 }
