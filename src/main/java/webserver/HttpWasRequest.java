@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
@@ -13,6 +14,8 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 public class HttpWasRequest {
 
@@ -84,10 +87,8 @@ public class HttpWasRequest {
 	}
 
 	public String base64Decoder(String value) {
-		if (Pattern.matches(base64Pattern, value)) {
-			final Base64.Decoder decoder = Base64.getDecoder();
-			final byte[] decode = decoder.decode(value.getBytes());
-			return new String(decode, StandardCharsets.UTF_8);
+		if (!Pattern.matches(base64Pattern, value)) {
+			return URLDecoder.decode(value, StandardCharsets.UTF_8);
 		}
 		return value;
 	}
