@@ -44,6 +44,10 @@ public class HttpResponse {
         headers.put("Content-Type", type);
     }
 
+    public void setHeader(String key, String value) {
+        headers.put(key, value);
+    }
+
     public void setBody(byte[] body, String extension) {
         this.body = body;
         headers.put("Content-Length", String.valueOf(body.length));

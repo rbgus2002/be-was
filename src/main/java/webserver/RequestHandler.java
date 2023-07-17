@@ -37,8 +37,10 @@ public class RequestHandler implements Runnable {
             byte[] body;
             String extension = "";
             if (url.equals("/user/create")) {
-                body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
-                extension = "html";
+                body = "".getBytes();
+                response.setMethod("303");
+                response.setStatusMessage("See Other");
+                response.setHeader("Location", "/index.html");
                 User user = new User(request.getParams());
                 logger.debug("{}", user);
             } else if (url.equals("/index.html")) {
