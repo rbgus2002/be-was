@@ -57,8 +57,7 @@ public class HttpWasResponse {
 
 	public void response302Header(String location) {
 		try {
-			dos.writeBytes("HTTP/1.1 " + HttpStatus.FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.FOUND.getName() + "r\n");
-			dos.writeBytes("Content-Type: text/plan;charset=utf-8\r\n" );
+			dos.writeBytes("HTTP/1.1 " + HttpStatus.FOUND.getStatusCode() + StringUtils.SPACE + HttpStatus.FOUND.getName() + "\r\n");
 			dos.writeBytes("Location: " + location + "\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());

@@ -27,4 +27,20 @@ class HttpWasResponseTest {
 		Assertions.assertThat(outputStream.toString()).hasToString(response);
 	}
 
+	@Test
+	@DisplayName("302 Header를 제대로 생성하는지")
+	void create302Header() {
+		// given
+		String location = "http:localhost:8080/index.html";
+		String response = "HTTP/1.1 302 FOUND\r\n"
+			+ "Location: " + location + "\r\n";
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
+
+		// when
+		httpWasResponse.response302Header(location);
+
+		// then
+		Assertions.assertThat(outputStream.toString()).hasToString(response);
+	}
 }
