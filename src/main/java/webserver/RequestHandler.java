@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static model.User.*;
+import static webserver.model.Response.*;
 
 import service.FileService;
 import service.UserService;
@@ -25,10 +26,6 @@ import webserver.model.Request.Method;
 import webserver.model.Response;
 import webserver.model.Response.STATUS;
 import webserver.model.Response.MIME;
-import static webserver.model.Response.HEADER_CONTENT_TYPE;
-import static webserver.model.Response.HEADER_CHARSET;
-import static webserver.model.Response.HEADER_CONTENT_LENGTH;
-import static webserver.model.Response.HEADER_HTTP_VERSION;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -137,10 +134,9 @@ public class RequestHandler implements Runnable {
             UserService.userSignUp(request.getBody());
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_CONTENT_TYPE, MIME.HTML.getMime() + HEADER_CHARSET);
-            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(0));
+            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
 
-            return new Response(STATUS.CREATED, HEADER_HTTP_VERSION, headerMap, null);
+            return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
         }
 
         return null;
