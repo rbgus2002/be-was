@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.List;
+import java.util.Objects;
 
 import static util.FileUtils.convertBufferedReaderToList;
 
@@ -53,8 +54,8 @@ public class RequestHandler implements Runnable {
         String path = httpRequest.uri().getPath();
         String extension = FileUtils.getExtension(path);
         HttpResponse httpResponse;
-        if (extension.equals("html")) {
-            httpResponse = HttpResponse.ok(path);
+        if (!Objects.equals(extension, path)) {
+            httpResponse = HttpResponse.ok(path, httpRequest.mime());
         } else {
             // 잘못된 http request이면 /error.html response 생성
             try {
