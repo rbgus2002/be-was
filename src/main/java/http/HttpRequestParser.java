@@ -1,5 +1,7 @@
 package http;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -7,11 +9,6 @@ import java.util.StringTokenizer;
 public class HttpRequestParser {
 
     private HttpRequestParser() {
-    }
-
-    public static String parseMethodFromRequestLine(String requestLine) {
-        int firstSpaceIndex = requestLine.indexOf(" ");
-        return requestLine.substring(0, firstSpaceIndex);
     }
 
     public static String parseUrlFromRequestLine(String requestLine) {
@@ -27,13 +24,6 @@ public class HttpRequestParser {
             return url;
         }
         return url.substring(0, queryIndex);
-    }
-
-    public static String parseVersionFromRequestLine(String requestLine) {
-        int firstSpaceIndex = requestLine.indexOf(" ");
-        int secondSpaceIndex = requestLine.indexOf(" ", firstSpaceIndex + 1);
-
-        return requestLine.substring(secondSpaceIndex + 1);
     }
 
     public static Map<String, String> parseParamsFromUrl(String url) {
@@ -54,5 +44,21 @@ public class HttpRequestParser {
             params.put(key, value);
         }
         return params;
+    }
+
+    public static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        String[] tokens;
+        String requestLine = br.readLine();
+
+        while(!"".equals(requestLine)){
+            tokens = requestLine.split(": " );
+            String key = tokens[0];
+            String value = tokens[1];
+            headers.put(key, value);
+            requestLine = br.readLine();
+        }
+
+        return headers;
     }
 }
