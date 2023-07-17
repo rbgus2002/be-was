@@ -114,6 +114,18 @@ public class RequestHandler implements Runnable {
 
         return queryParameterMap;
     }
+    public Map<String, String> parseBodyParameter(String body) {
+        // &를 기준으로 파라미터 분할
+        String[] bodyParameterList = body.split("&");
+        // Map에 key-value 저장
+        Map<String, String> bodyParameterMap = new HashMap<>();
+        for(String bodyParameter: bodyParameterList) {
+            bodyParameterMap.put(bodyParameter.split("=")[0],
+                    bodyParameter.split("=")[1]);
+        }
+
+        return bodyParameterMap;
+    }
 
     private Response generateResponse(Request request) throws Exception {
         String targetUri = request.getTargetUri();
@@ -131,7 +143,8 @@ public class RequestHandler implements Runnable {
             return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
         }
         if(targetUri.startsWith("/user/create")) {
-            UserService.userSignUp(request.getBody());
+            Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
+            UserService.userSignUp(bodyParameterMap);
 
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
