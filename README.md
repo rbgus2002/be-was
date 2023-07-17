@@ -2,7 +2,7 @@
 
 Java Web Application Server 2023
 
-## step-1 study plan
+## step-2 study plan
 
 - FileIOUtils - static 메서드로 변경
 - GET으로 회원가입 기능 구현
