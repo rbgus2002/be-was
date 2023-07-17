@@ -1,6 +1,4 @@
 # 기능 목록 및 학습 정리
-## Github Wiki
-[github.com/Chocochip101/be-was/wiki](https://github.com/Chocochip101/be-was/wiki)
 
 ## 기능 목록
 - [X] `index.html` 파일 반환
