@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -76,7 +77,7 @@ class ControllerTest {
 
     private void verifyUser(String userId, String password, String name, String email) {
         User expectedUser = new User(userId, password, name, email);
-        User findUser = Database.findUserById(userId);
-        assertThat(findUser).usingRecursiveComparison().isEqualTo(expectedUser);
+        Optional<User> findUser = Database.findUserById(userId);
+        assertThat(findUser).usingRecursiveComparison().isEqualTo(Optional.of(expectedUser));
     }
 }
