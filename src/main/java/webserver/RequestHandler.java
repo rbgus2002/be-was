@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
@@ -28,21 +29,33 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
-            HttpRequest httpRequest = new HttpRequest(in);
-            String url = httpRequest.getUrl();
+            DataOutputStream dos = new DataOutputStream(out);
+            HttpRequest request = new HttpRequest(in);
+            HttpResponse response = new HttpResponse(dos);
+            String url = request.getUrl();
 
             byte[] body;
+            String extension = "";
             if (url.equals("/user/create")) {
                 body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
-                User user = new User(httpRequest.getParams());
+                extension = "html";
+                User user = new User(request.getParams());
                 logger.debug("{}", user);
+            } else if (url.equals("/index.html")) {
+                body = Files.readAllBytes(Paths.get("src/main/resources/templates/index.html"));
+                extension = "html";
+            } else if (url.equals("/user/form.html")) {
+                body = Files.readAllBytes(Paths.get("src/main/resources/templates/user/form.html"));
+                extension = "html";
             } else {
-                body = Files.readAllBytes(Paths.get("src/main/resources/templates" + url));
+                Path path = Paths.get("src/main/resources/static" + url);
+                body = Files.readAllBytes(path);
+                String filename = path.getFileName().toString();
+                extension = filename.substring(filename.lastIndexOf(".") + 1);
             }
 
-            DataOutputStream dos = new DataOutputStream(out);
-            HttpResponse httpResponse = new HttpResponse(dos, body);
-            httpResponse.send();
+            response.setBody(body, extension);
+            response.send();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
