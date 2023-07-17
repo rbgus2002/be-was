@@ -23,6 +23,11 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+            //1.리퀘스트를 파싱해서 그에 대한 정보를 분석하자! -> inputStream을 받아서 찍어보기
+            HttpRequestParser httpRequestParser = new HttpRequestParser(in);
+            logger.debug("Request Header : {}",httpRequestParser.getHeader());
+
+
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = "Hello World".getBytes();
