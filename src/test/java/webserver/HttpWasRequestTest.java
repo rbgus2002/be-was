@@ -26,7 +26,7 @@ class HttpWasRequestTest {
 	}
 
 	@Test
-	@DisplayName("제대로 Query Param이 변환이 되야한다")
+	@DisplayName("제대로 Query Param과 Attribute가 변환이 되야한다")
 	void convertToBase64() throws IOException {
 		// given
 		String request = "GET /user/create?userId=haechan&password=password&name=%EC%9C%A0%ED%95%B4%EC%B0%AC&email=a%40naver.com HTTP/1.1 \r\n"
@@ -44,5 +44,7 @@ class HttpWasRequestTest {
 		softAssertions.assertThat(httpWasRequest.getParameter("password")).isEqualTo("password");
 		softAssertions.assertThat(httpWasRequest.getParameter("name")).isEqualTo("유해찬");
 		softAssertions.assertThat(httpWasRequest.getParameter("email")).isEqualTo("a@naver.com");
+		softAssertions.assertThat(httpWasRequest.getAttribute("Host")).isEqualTo("localhost:8080");
+		softAssertions.assertThat(httpWasRequest.getAttribute("Accept")).isEqualTo("*/*");
 	}
 }
