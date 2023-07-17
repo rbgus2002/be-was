@@ -8,7 +8,6 @@ import org.assertj.core.api.SoftAssertions;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +22,11 @@ class HttpRequestParserTest {
     void checkParseDoneWell() throws IOException {
         SoftAssertions s = new SoftAssertions();
         String requestString = "GET /test HTTP/1.1\n" +
-                "\n" +
                 "Accept: application/json\n" +
                 "Accept-Encoding: gzip, deflate\n" +
-                "Content-Type: application/json\n";
+                "Content-Type: application/json\n" +
+                "\n" +
+                "Test: Header\n";
 
         HttpRequest request = HttpRequestParser.parseHttpRequest(new ByteArrayInputStream(requestString.getBytes()));
         s.assertThat(request.method()).isEqualTo("GET");
@@ -37,6 +37,6 @@ class HttpRequestParserTest {
         actualHeaders.put("Accept", new ArrayList<String>(){{add("application/json");}});
         actualHeaders.put("Accept-Encoding", new ArrayList<String>(){{add("gzip"); add("deflate");}});
         actualHeaders.put("Content-Type", new ArrayList<String>(){{add("application/json");}});
-        assertEquals(request.headers().map().keySet(), actualHeaders.keySet());
+        assertEquals(request.headers().keySet(), actualHeaders.keySet());
     }
 }
