@@ -14,6 +14,8 @@ import webserver.http.util.FileUtil;
 
 public class HttpResponse {
 
+	private static final Integer STATUS_OK = 200;
+	private static final Integer STATUS_REDIRECT = 302;
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
@@ -37,17 +39,17 @@ public class HttpResponse {
 
 	public static HttpResponse createRedirectResponse(DataOutputStream dos, String resourceUrl) {
 		String redirectUrl = resourceUrl.split(":")[1];
-		return new HttpResponse(301, dos, redirectUrl);
+		return new HttpResponse(STATUS_REDIRECT, dos, redirectUrl);
 	}
 
 	public static HttpResponse createDefaultResponse(DataOutputStream dos, String body, String contentType) {
-		return new HttpResponse(200, dos, body.getBytes(), contentType);
+		return new HttpResponse(STATUS_OK, dos, body.getBytes(), contentType);
 	}
 
 	public static HttpResponse createResourceResponse(DataOutputStream dos, String path, String contentType) throws
 		IOException {
 		byte[] body = getResourceBytes(path);
-		return new HttpResponse(200, dos, body, contentType);
+		return new HttpResponse(STATUS_OK, dos, body, contentType);
 	}
 
 	private static byte[] getResourceBytes(final String url) throws IOException {
@@ -60,13 +62,12 @@ public class HttpResponse {
 	}
 
 	public void doResponse() {
-		switch (status) {
-			case 200 :
-				response200Header();
-				break;
-			case 301 :
-				response301Header(redirectUrl);
-				break;
+		if(status == STATUS_OK) {
+			response200Header();
+		}
+
+		if (status == STATUS_REDIRECT) {
+			response302Header(redirectUrl);
 		}
 
 		responseBody(dos, body);
@@ -83,9 +84,9 @@ public class HttpResponse {
 		}
 	}
 
-	private void response301Header(String redirectUrl) {
+	private void response302Header(String redirectUrl) {
 		try {
-			dos.writeBytes("HTTP/1.1 301 Moved Temporarily\r\n");
+			dos.writeBytes("HTTP/1.1 302 Moved Temporarily\r\n");
 			dos.writeBytes("Location: " + redirectUrl + "\r\n");
 			dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
 			dos.writeBytes("Pragma: no-cache\r\n");
