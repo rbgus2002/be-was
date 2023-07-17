@@ -1,24 +1,22 @@
 package controller;
 
 import controller.annotation.RequestMapping;
-import db.Database;
-import model.User;
+import service.UserService;
 import webserver.HttpWasRequest;
 import webserver.HttpWasResponse;
 import webserver.utils.HttpMethod;
 
 public class Controller {
 
+	private final UserService userService;
+
+	public Controller(final UserService userService) {
+		this.userService = userService;
+	}
+
 	@RequestMapping(method = HttpMethod.GET, path = "/user/create")
 	public void saveUser(HttpWasRequest request, HttpWasResponse response) {
-		final String userId = request.getParameter("userId");
-		final String password = request.getParameter("password");
-		final String name = request.getParameter("name");
-		final String email = request.getParameter("email");
-		final User user = new User(userId, password, name, email);
-
-		Database.addUser(user);
-
+		userService.saveUser(request);
 		response.response302Header("http://localhost:8080/index.html");
 	}
 }
