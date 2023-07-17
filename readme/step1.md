@@ -3,7 +3,7 @@
 - [X] `index.html` 파일 반환
 - [ ] java thread 모델에 대한 학습
 - [ ] Git Wiki에 내용 정리
-- [ ] 요청에 대한 헤더 출력
+- [X] 요청에 대한 헤더 출력
 
 ## 학습 정리
 - InputStreamReader는 바이트 기반의 InputStream을 문자 기반으로 변환하는 역할을 한다. 

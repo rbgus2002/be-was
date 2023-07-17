@@ -1,5 +1,8 @@
 package util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +10,7 @@ import java.io.InputStreamReader;
 
 public class HttpUtil {
     private static final String HTML_EXTENSION = "html";
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
 
     public static String getBuffers(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
@@ -18,6 +22,7 @@ public class HttpUtil {
             if (line.isEmpty()) {
                 break;
             }
+            logger.info("request = {}", line);
         }
         return stringBuilder.toString();
     }
