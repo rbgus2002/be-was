@@ -45,7 +45,7 @@ public class HttpRequest {
 
     private void parseOtherHeaders(BufferedReader bufferedReader) throws IOException {
         String line;
-        while(!(line = bufferedReader.readLine()).isEmpty()) {
+        while (!(line = bufferedReader.readLine()).isEmpty()) {
             int colonIndex = line.indexOf(":");
             String field = line.substring(0, colonIndex);
             String value = line.substring(colonIndex + 1).trim();
@@ -54,9 +54,12 @@ public class HttpRequest {
     }
 
     private void parseBody(BufferedReader bufferedReader) throws IOException {
-        String body = bufferedReader.lines().collect(Collectors.joining(HttpHeaderEnums.CRLF.getString()));
-        headers.put("body", body);
-        logger.debug("{}", getBody());
+        if (bufferedReader.ready()) {
+            String body = bufferedReader.lines().collect(Collectors.joining(HttpHeaderEnums.CRLF.getString()));
+            headers.put("body", body);
+            return;
+        }
+        headers.put("body", "");
     }
 
     public String get(String fieldName) {
@@ -65,5 +68,9 @@ public class HttpRequest {
 
     public String getBody() {
         return headers.get("body");
+    }
+
+    public String getURI() {
+        return headers.get(HttpHeaderEnums.URI.getString());
     }
 }

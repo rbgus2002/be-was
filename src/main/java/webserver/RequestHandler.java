@@ -1,15 +1,17 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.HttpRequest;
+
+import java.io.*;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
+    private static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
@@ -23,9 +25,11 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+
+            HttpRequest httpRequest = new HttpRequest(in);
+            byte[] body = readTemplateFile(httpRequest.getURI());
+
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
@@ -51,5 +55,23 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private byte[] readTemplateFile(String URI) throws IOException {
+        if (URI.equals("/")) {
+            URI = "/index.html";
+        }
+
+        Path path = Paths.get(TEMPLATES_DIRECTORY + URI);
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+
+        InputStream inputStream = Files.newInputStream(path);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            byteArrayOutputStream.write(buffer, 0, bytesRead);
+        }
+        return byteArrayOutputStream.toByteArray();
     }
 }
