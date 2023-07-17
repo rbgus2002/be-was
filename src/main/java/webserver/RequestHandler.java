@@ -183,6 +183,7 @@ public class RequestHandler implements Runnable {
         if(body != null) {
             dos.write(body, 0, body.length);
         }
+        dos.flush();
     }
 
 
