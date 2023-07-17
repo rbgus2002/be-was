@@ -1,7 +1,7 @@
 package support;
 
-import annotation.DataModel;
-import annotation.DataModelField;
+import support.annotation.DataModel;
+import support.annotation.DataModelField;
 import utils.ClassListener;
 
 import java.lang.reflect.Field;

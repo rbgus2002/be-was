@@ -1,7 +1,7 @@
 package model;
 
-import annotation.DataModel;
-import annotation.DataModelField;
+import support.annotation.DataModel;
+import support.annotation.DataModelField;
 
 @DataModel(path = "/user/create")
 public class User {
