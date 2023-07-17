@@ -22,8 +22,11 @@ Java Web Application Server 2023
 ## 학습할 내용
 
 ### step1 - index.html 응답
-- [ ] 자바 스레드 모델에 대해 학습 (버전별 변경점, 향후 지향점)
-- [ ] 자바 Concurrent 패키지에 대해 학습
-- [ ] HTTP
-  - [ ] Request Header
-- [ ] InputStream
+- [x] [Web Server, WAS](https://github.com/SeoSiun/be-was/wiki/Web-Server-&-WAS)
+- [x] 자바 스레드 모델에 대해 학습 (버전별 변경점, 향후 지향점)
+  - [x] [JVM](https://github.com/SeoSiun/be-was/wiki/JVM-(Java-Virtual-Machine))
+  - [x] [Thread & Java Thread model](https://github.com/SeoSiun/be-was/wiki/%EC%93%B0%EB%A0%88%EB%93%9C-(Thread))
+- [x] [자바 Concurrent 패키지](https://github.com/SeoSiun/be-was/wiki/Concurrent-%ED%8C%A8%ED%82%A4%EC%A7%80(Java.util.concurrent))
+- [x] [HTTP](https://github.com/SeoSiun/be-was/wiki/HTTP)
+- [x] [입출력 Stream](https://github.com/SeoSiun/be-was/wiki/%EC%9E%85%EC%B6%9C%EB%A0%A5-Stream)
+- [x] [Socket](https://github.com/SeoSiun/be-was/wiki/Socket)
