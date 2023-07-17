@@ -2,7 +2,7 @@ package webserver.utils;
 
 public enum HttpStatus {
 	OK(200, "OK"),
-	NOT_FOUND(400, "NOT FOUND"),
+	NOT_FOUND(404, "NOT FOUND"),
 	FOUND(302, "FOUND");
 
 	private final int statusCode;
