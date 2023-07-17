@@ -34,4 +34,5 @@ class ClassListenerTest {
         //then
         assertEquals(0, classes.size());
     }
+
 }

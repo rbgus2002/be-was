@@ -19,7 +19,6 @@ public class HttpHandler {
     public void doGet(HttpRequest httpRequest, HttpResponse response) throws IOException, InvocationTargetException, IllegalAccessException {
         String path = httpRequest.getRequestPath();
         response.setStatus(HttpStatus.OK);
-        String url = httpRequest.getRequestUrl();
 
         // controller 검색
         if (ControllerResolver.invoke(path, httpRequest)) {
@@ -29,8 +28,8 @@ public class HttpHandler {
         }
 
         // 페이지 검색 및 반환
-        byte[] body = readByPath(url);
-        response.buildHeader(new OK(makeContentType(url), body.length));
+        byte[] body = readByPath(path);
+        response.buildHeader(new OK(makeContentType(path), body.length));
         response.setBody(body);
     }
 

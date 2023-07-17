@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("웹 페이지 리더기 테스트")
 class WebPageReaderTest {
+
     @Test
     @DisplayName("Html 파일을 읽어야 한다.")
     void read() throws IOException {
@@ -68,4 +69,5 @@ class WebPageReaderTest {
         //then
         assertEquals(ExceptionName.FILE_NOT_FOUND, exception.getMessage());
     }
+
 }

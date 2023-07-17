@@ -10,7 +10,8 @@ import java.util.List;
 public class HttpRequest {
 
     private final HttpMethod method;
-    private final String url;
+    private final String path;
+    private final Query query = new Query();
     private final Header header = new Header();
 
     public static class RequestHeaderBuilder {
@@ -33,10 +34,23 @@ public class HttpRequest {
     }
 
     private HttpRequest(String requestLine, List<String> headers) {
+        // 메소드 분리
         String[] tokens = requestLine.split(" ");
         this.method = HttpMethod.valueOf(tokens[0]);
 
-        this.url = tokens[1];
+        // url 파싱
+        String[] pathAndQuery = tokens[1].split("\\?");
+        this.path = pathAndQuery[0];
+        if (pathAndQuery.length > 1) {
+            String[] queries = pathAndQuery[1].split("&");
+            Arrays.stream(queries)
+                    .forEach(queryComponent -> {
+                        String[] keyAndValue = queryComponent.split("=");
+                        this.query.appendQuery(keyAndValue[0], keyAndValue[1]);
+                    });
+        }
+
+        // 헤더 분리
         headers.forEach(
                 s -> {
                     String[] split = s.split(":");
@@ -53,26 +67,11 @@ public class HttpRequest {
         return method;
     }
 
-    public String getRequestUrl() {
-        return url;
-    }
-
     public String getRequestPath() {
-        String[] pathAndQuery = getRequestUrl().split("\\?");
-        return pathAndQuery[0];
+        return path;
     }
 
     public Query getRequestQuery() {
-        String[] pathAndQuery = getRequestUrl().split("\\?");
-        String queryString = pathAndQuery[1];
-
-        Query query = new Query();
-        String[] queries = queryString.split("&");
-        Arrays.stream(queries)
-                .forEach(queryComponent -> {
-                    String[] keyAndValue = queryComponent.split("=");
-                    query.appendQuery(keyAndValue[0], keyAndValue[1]);
-                });
         return query;
     }
 

@@ -25,4 +25,5 @@ class DataModelResolverTest {
         assertNotNull(resolve);
         assertTrue(resolve.equalsClass(User.class));
     }
+
 }
