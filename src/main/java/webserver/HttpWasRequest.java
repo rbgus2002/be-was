@@ -18,6 +18,9 @@ public class HttpWasRequest {
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
 	private static final String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
+	private static final String PROTOCOL_VERSION = "ProtocolVersion";
+	private static final String HTTP_METHOD = "HttpMethod";
+
 	private final Map<String, String> map = new ConcurrentHashMap<>();
 	private final Map<String, String> requestParam = new ConcurrentHashMap<>();
 
@@ -64,9 +67,9 @@ public class HttpWasRequest {
 
 	private void firstRequestHeader(String input) {
 		final String[] split = input.split(" ");
-		map.put("HttpMethod", split[0]);
+		map.put(HTTP_METHOD, split[0]);
 		saveResourcePath(split[1]);
-		map.put("ProtocolVersion", split[2]);
+		map.put(PROTOCOL_VERSION, split[2]);
 	}
 
 	public String getResourcePath() {
@@ -74,7 +77,7 @@ public class HttpWasRequest {
 	}
 
 	public String getHttpMethod() {
-		return map.get("HttpMethod");
+		return map.get(HTTP_METHOD);
 	}
 
 	private void saveResourcePath(String path) {
