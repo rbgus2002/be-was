@@ -20,20 +20,20 @@ Java Web Application Server 2023
 ### webserver package
 WAS 구동 시 필요한 기능들이 구현되어 있습니다.
 
-  - WebServer
-
+  - WebServer <br/>
     사용자의 요청을 받아 서버 소켓을 생성하고 연결합니다. 사용자의 요청이 올 때 마다 새로운 스레드를 스레드 풀에서 가져와 병렬적으로 처리합니다.
     - Header
       - Reqeust & Response 헤더를 전담하는 객체입니다.
     - WebPageReader
       - 다양한 페이지를 사용자에게 전달하기 위해 서버의 파일을 읽습니다. 해당 객체에 특정 경로를 추가함으로써 해당 경로내의 파일을 탐색하여 사용자에게 페이지를 전달합니다.
       - 기본적으로 resources/static, resource/template 내의 파일을 지원합니다.
-    - RequestHandler
+    - RequestHandler extend HttpHandler
       - 사용자의 요청이 들어왔을 때 요청을 해석하고(HttpRequest) 이에 맞춰 적합한 처리를 진행 한 후 HttpResponse를 작성하고 사용자에게 전달합니다.
-  - support
 
+  - support <br/>
     서버의 다양한 기능을 지원하기 위한 클래스가 정의되어 있습니다.
     - InstanceManager
-       - 서버에서 처리하는 메소드를 가진 인스턴스를 검색하고 보관합니다.
+       - Contrainer Annotaion에 관련있는 모든 클래스의 인스턴스를 검색하고 보관합니다.
     - ControllerResolver
       - 서버에서 사용하는 모든 Controller와 내부 메소드를 찾고 정의된 url이 호출될 경우 이를 처리합니다.
+    
