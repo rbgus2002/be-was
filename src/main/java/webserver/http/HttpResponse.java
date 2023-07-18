@@ -15,7 +15,7 @@ import webserver.http.util.FileUtil;
 public class HttpResponse {
 
 	private static final Integer STATUS_OK = 200;
-	private static final Integer STATUS_REDIRECT = 302;
+	private static final Integer STATUS_REDIRECT = 303;
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
@@ -67,7 +67,7 @@ public class HttpResponse {
 		}
 
 		if (status == STATUS_REDIRECT) {
-			response302Header(redirectUrl);
+			response303Header(redirectUrl);
 		}
 
 		responseBody(dos, body);
@@ -84,9 +84,9 @@ public class HttpResponse {
 		}
 	}
 
-	private void response302Header(String redirectUrl) {
+	private void response303Header(String redirectUrl) {
 		try {
-			dos.writeBytes("HTTP/1.1 302 Moved Temporarily\r\n");
+			dos.writeBytes("HTTP/1.1 303 See Other\r\n");
 			dos.writeBytes("Location: " + redirectUrl + "\r\n");
 			dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
 			dos.writeBytes("Pragma: no-cache\r\n");

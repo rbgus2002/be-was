@@ -15,7 +15,6 @@ import container.MyContainer;
 import container.Servlet;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.util.HttpUtil;
 
 public class RequestHandler implements Runnable {
 
