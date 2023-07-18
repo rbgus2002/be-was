@@ -1,16 +1,13 @@
 package controller;
 
-import http.ContentType;
-import http.HttpResponse;
-import http.HttpStatus;
+import http.*;
 import service.UserService;
-
-import http.HttpRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static http.Extension.HTML;
 import static utils.FileIOUtils.*;
 
 public class Controller {
@@ -18,51 +15,20 @@ public class Controller {
 
     public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) throws IOException {
         String uri = httpRequest.getUri();
-        String[] uris = uri.split("\\.");
-        switch (uris[uris.length - 1]) {
-            case HTML:
-                return loadTemplatesFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.HTML);
-            case CSS:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.CSS);
-            case JS:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.JS);
-            case ICO:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.ICO);
-            case PNG:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.PNG);
-            case JPG:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.JPG);
-            case EOT:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.EOT);
-            case SVG:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.SVG);
-            case TTF:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.TTF);
-            case WOFF:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.WOFF);
-            case WOFF2:
-                return loadStaticFromPath(HttpStatus.OK, uri)
-                        .setContentType(ContentType.WOFF2);
-            default:
-                return verifyValidUri(uri);
-        }
-    }
-
-    public HttpResponse.ResponseBuilder verifyValidUri(String uri) throws IOException {
-        if (uri.contains("?"))
+        if (uri.contains("?")) {
             return routeByUri(uri);
-        else
+        }
+        String[] uris = uri.split("\\.");
+        String extension = uris[uris.length - 1];
+        if (MIME.getMIME().entrySet().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
             return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/wrong_access.html");
+        }
+        if (extension.equals(HTML)) {
+            return loadTemplatesFromPath(HttpStatus.OK, uri)
+                    .setContentType(MIME.getMIME().get(HTML));
+        }
+        return loadStaticFromPath(HttpStatus.OK, uri)
+                    .setContentType(MIME.getMIME().get(extension));
     }
 
     public HttpResponse.ResponseBuilder routeByUri(String uri) {
