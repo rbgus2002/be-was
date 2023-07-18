@@ -17,4 +17,8 @@ public enum HttpVersion {
                 .findFirst()
                 .orElse(NOT_IMPLEMENTED);
     }
+
+    public String getVersion() {
+        return version;
+    }
 }
