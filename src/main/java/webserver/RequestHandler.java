@@ -103,28 +103,23 @@ public class RequestHandler implements Runnable {
             return null;
         }
         String queryString = tokens[1];
-        // &를 기준으로 파라미터 분할
-        String[] queryParameterList = queryString.split("&");
-        // Map에 key-value 저장
-        Map<String, String> queryParameterMap = new HashMap<>();
-        for(String queryParameter: queryParameterList) {
-            queryParameterMap.put(queryParameter.split("=")[0],
-                    queryParameter.split("=")[1]);
-        }
 
-        return queryParameterMap;
+        return parseParameterMap(queryString);
     }
     public Map<String, String> parseBodyParameter(String body) {
+        return parseParameterMap(body);
+    }
+    private Map<String, String> parseParameterMap(String string) {
         // &를 기준으로 파라미터 분할
-        String[] bodyParameterList = body.split("&");
+        String[] parameterList = string.split("&");
         // Map에 key-value 저장
-        Map<String, String> bodyParameterMap = new HashMap<>();
-        for(String bodyParameter: bodyParameterList) {
-            bodyParameterMap.put(bodyParameter.split("=")[0],
-                    bodyParameter.split("=")[1]);
+        Map<String, String> parameterMap = new HashMap<>();
+        for(String parameter: parameterList) {
+            parameterMap.put(parameter.split("=")[0],
+                    parameter.split("=")[1]);
         }
 
-        return bodyParameterMap;
+        return parameterMap;
     }
 
     private Response generateResponse(Request request) throws Exception {
