@@ -16,6 +16,11 @@ class ControllerTest {
 
     Controller controller = Controller.getInstance();
 
+    final String userId = "abc";
+    final String password = "1q2w3e4r";
+    final String name = "kim";
+    final String email = "a@a.com";
+
     @AfterEach
     void tearDown() {
         Database.clear();
@@ -34,14 +39,12 @@ class ControllerTest {
 
     @Nested
     class CreateMethod {
-        final String userId = "abc";
-        final String password = "1q2w3e4r";
-        final String name = "kim";
-        final String email = "a@a.com";
+
         final Map<String, String> userParameters = new HashMap<>();
 
         @BeforeEach
         void setUp() {
+            userParameters.clear();
             userParameters.put("userId", userId);
             userParameters.put("password", password);
             userParameters.put("name", name);
@@ -72,6 +75,53 @@ class ControllerTest {
             //when, then
             assertThrows(IllegalArgumentException.class, () -> controller.creatUser(userParameters));
             verifyUser(userId, existPassword, existName, existEmail);
+        }
+    }
+
+    @Nested
+    class Login {
+
+        @Test
+        @DisplayName("아이디와 패스워드를 확인해 로그인한다.")
+        void loginSuccess() {
+            //given
+            User user = new User(userId, password, name, email);
+            Database.addUser(user);
+            Map<String, String> loginParameters = new HashMap<>();
+            loginParameters.put("userId", userId);
+            loginParameters.put("password", password);
+
+            //when
+            HttpResponse httpResponse = controller.login(loginParameters);
+
+            //then
+            assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.redirect("/index.html"));
+        }
+
+        @Test
+        @DisplayName("userId로 사용자를 찾을 수 없으면 예외가 발생한다.")
+        void userNotExist() {
+            //given
+            String noId = "kjdfksj";
+            Map<String, String> loginParameters = new HashMap<>();
+            loginParameters.put("userId", noId);
+            loginParameters.put("password", password);
+
+            //when, then
+            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters));
+        }
+
+        @Test
+        @DisplayName("userId 찾은 사용자의 비밀번호가 다르면 예외가 발생한다.")
+        void passwordNotMatch() {
+            //given
+            String invalidPassword = "kjdfksj";
+            Map<String, String> loginParameters = new HashMap<>();
+            loginParameters.put("userId", userId);
+            loginParameters.put("password", invalidPassword);
+
+            //when, then
+            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters));
         }
     }
 
