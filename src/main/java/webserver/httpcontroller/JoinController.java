@@ -10,9 +10,7 @@ import java.io.IOException;
 public class JoinController extends HttpController {
     @Override
     public void service(HttpRequest request, HttpResponse response) throws IOException {
-        response.setMethod("303");
-        response.setStatusMessage("See Other");
-        response.setHeader("Location", "/index.html");
+        response.setRedirect("/index.html");
         Database.addUser(new User(request.getParams()));
         for (User user : Database.findAll()) {
             logger.debug("{}", user);

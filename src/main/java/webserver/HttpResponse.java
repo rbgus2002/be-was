@@ -67,4 +67,10 @@ public class HttpResponse {
             setContentType("text/plain");
         }
     }
+
+    public void setRedirect(String url) {
+        setMethod("302");
+        setStatusMessage("Found");
+        setHeader("Location", url);
+    }
 }
