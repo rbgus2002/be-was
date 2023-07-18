@@ -13,6 +13,7 @@ public class RequestUri {
     private static final int URI_INDEX = 0;
     private static final int PARAMETERS_INDEX = 1;
     private static final int LENGTH_WHEN_HAS_NO_VALUE = 1;
+    private static final String COMMA = ".";
 
     private final String uri;
     private final Map<String, Object> params;
@@ -51,8 +52,8 @@ public class RequestUri {
         return this.uri.equals(uri);
     }
 
-    public boolean uriEndsWith(String s) {
-        return uri.endsWith(s);
+    public boolean isUriStaticFile() {
+        return uri.contains(COMMA);
     }
 
     public String getUri() {

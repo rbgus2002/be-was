@@ -1,6 +1,7 @@
 package model;
 
 import model.enums.HttpStatusCode;
+import model.enums.MIME;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +23,11 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, String body) {
+    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, String body, MIME extension) {
         Map<String, String> header = new HashMap<>();
         int lengthOfBody = body.getBytes().length;
 
-        // TODO 수정하기
-        header.put("Content-Type", "text/html;charset=utf-8");
+        header.put("Content-Type", extension.getContentType());
         header.put("Content-Length", String.valueOf(lengthOfBody));
         HttpHeader httpHeader = HttpHeader.of(header);
 

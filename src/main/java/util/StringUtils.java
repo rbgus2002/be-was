@@ -12,6 +12,7 @@ public class StringUtils {
     public static final String AMPERSAND_MARK = "&";
     public static final String EQUAL_MARK = "=";
     public static final String COLON_MARK = ":";
+    public static final String COMMA_MARK = "\\.";
 
     public static String[] splitBy(String text, String regex){
         return text.split(regex);
