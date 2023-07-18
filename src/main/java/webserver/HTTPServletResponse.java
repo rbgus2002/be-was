@@ -16,6 +16,7 @@ public class HTTPServletResponse {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletResponse.class);
     private final DataOutputStream dos;
 
+    private final byte[] body;
 
     public HTTPServletResponse(DataOutputStream dos) {
         this.dos = dos;

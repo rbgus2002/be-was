@@ -3,7 +3,6 @@ package parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
-import webserver.RequestHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +16,6 @@ public class PostParser implements Parser {
 
     @Override
     public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException {
-        logger.debug("씨작");
         String url = parseUrl(startLine);
         String method = parseMethod(startLine);
         String version = parseVersion(startLine);
