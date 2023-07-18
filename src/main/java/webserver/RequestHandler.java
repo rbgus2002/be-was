@@ -28,12 +28,10 @@ public class RequestHandler implements Runnable {
 
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = new HttpRequest(in);
-            HttpResponse response = new HttpResponse(dos);
+            HttpResponse response = new HttpResponse();
             String url = request.getUrl();
-            HttpController controller = HttpController.of(url);
-            controller.process(request, response);
-            WebView view = new WebView();
-            view.render(dos, response);
+            FrontController controller = new FrontController();
+            controller.service(dos, request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

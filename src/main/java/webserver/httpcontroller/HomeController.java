@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class HomeController extends HttpController {
     @Override
-    public void process(HttpRequest request, HttpResponse response) throws IOException {
-        response.setBody("Hello, World".getBytes(), "txt");
+    public String process(HttpRequest request, HttpResponse response) throws IOException {
+        return "/index.html";
     }
 }

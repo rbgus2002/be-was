@@ -1,7 +1,5 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,11 +10,6 @@ public class HttpResponse {
     private String statusMessage = "OK";
     private byte[] body;
     private final Map<String, String> headers = new HashMap<>();
-    private final DataOutputStream dos;
-
-    public HttpResponse(DataOutputStream dos) {
-        this.dos = dos;
-    }
 
     public void setMethod(String method) {
         this.method = method;
@@ -82,9 +75,5 @@ public class HttpResponse {
 
     public Map<String, String> getHeaders() {
         return headers;
-    }
-
-    public DataOutputStream getDos() {
-        return dos;
     }
 }
