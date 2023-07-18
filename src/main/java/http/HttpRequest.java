@@ -1,7 +1,7 @@
 package http;
 
-import util.StringUtils;
 import util.HttpUtils;
+import util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,11 +11,8 @@ import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HttpRequest {
 
@@ -25,7 +22,6 @@ public class HttpRequest {
     private final Mime mime;
     private final Map<String, String> headers;
     private final String body;
-    private static final Pattern pat = Pattern.compile("([^&=]+)=([^&]*)");
 
     public HttpRequest(BufferedReader reader) throws URISyntaxException, IOException {
         String requestLine = reader.readLine();
@@ -36,18 +32,6 @@ public class HttpRequest {
         this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
         this.mime = decideMime(this.uri.getPath());
         this.body = parseBody(reader);
-    }
-
-    public Map<String, String> parameters(String query) {
-        if (query == null) {
-            return Collections.emptyMap();
-        }
-        Matcher matcher = pat.matcher(query);
-        Map<String, String> map = new HashMap<>();
-        while (matcher.find()) {
-            map.put(matcher.group(1), matcher.group(2));
-        }
-        return map;
     }
 
     private Map<String, String> parseHeader(BufferedReader reader) throws IOException {

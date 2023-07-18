@@ -4,6 +4,7 @@ import controller.Controller;
 import http.HttpRequest;
 import http.HttpResponse;
 import util.HttpUtils;
+import util.StringUtils;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -74,14 +75,14 @@ public class RequestMappingHandler {
         if (isValidInvoke(methodHandle)) {
             return (HttpResponse) methodHandle.invoke();
         }
-        return (HttpResponse) methodHandle.invoke(httpRequest.parameters(httpRequest.uri().getQuery()));
+        return (HttpResponse) methodHandle.invoke(StringUtils.parseParameters(httpRequest.uri().getQuery()));
     }
 
     private static HttpResponse invokePost(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
         if (isValidInvoke(methodHandle)) {
             return (HttpResponse) methodHandle.invoke();
         }
-        return (HttpResponse) methodHandle.invoke(httpRequest.parameters(httpRequest.getBody()));
+        return (HttpResponse) methodHandle.invoke(StringUtils.parseParameters(httpRequest.getBody()));
     }
 
     private static boolean isValidInvoke(MethodHandle methodHandle) {
