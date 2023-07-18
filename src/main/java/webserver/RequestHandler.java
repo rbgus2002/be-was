@@ -103,7 +103,7 @@ public class RequestHandler implements Runnable {
             headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
             headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
 
-            return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
+            return new Response(STATUS.OK, headerMap, body);
         }
         // Service Logic
         if(targetUri.startsWith("/user/create")) {
@@ -113,7 +113,7 @@ public class RequestHandler implements Runnable {
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
 
-            return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
+            return new Response(STATUS.TEMPORARY_MOVED, headerMap, null);
         }
         if(targetUri.startsWith("/user/login")){
             Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
@@ -123,7 +123,7 @@ public class RequestHandler implements Runnable {
             if(!UserService.validateUser(userId, password)) {
                 Map<String, String> headerMap = new HashMap<>();
                 headerMap.put(HEADER_REDIRECT_LOCATION, LOGIN_FAILED_URL);
-                return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
+                return new Response(STATUS.TEMPORARY_MOVED, headerMap, null);
             }
 
             // Session ID 추가
@@ -132,10 +132,10 @@ public class RequestHandler implements Runnable {
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
             headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + session.getSessionId() + HEADER_COOKIE_PATH);
 
-            return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
+            return new Response(STATUS.TEMPORARY_MOVED, headerMap, null);
         }
 
-        return new Response(STATUS.NOT_FOUND, HEADER_HTTP_VERSION, null, null);
+        return new Response(STATUS.NOT_FOUND, null, null);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {

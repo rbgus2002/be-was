@@ -3,6 +3,8 @@ package webserver.model;
 import java.util.Arrays;
 import java.util.Map;
 
+import static http.HttpUtil.HEADER_HTTP_VERSION;
+
 public class Response {
     public enum MIME {
         HTML("text/html"),
@@ -54,14 +56,12 @@ public class Response {
     }
 
     private final STATUS status;
-    private final String version;
+    private final String version = HEADER_HTTP_VERSION;
     private final Map<String, String> headerMap;
     private final byte[] body;
 
-    public Response(STATUS status, String version,
-                    Map<String, String> headerMap, byte[] body) {
+    public Response(STATUS status, Map<String, String> headerMap, byte[] body) {
         this.status = status;
-        this.version = version;
         this.headerMap = headerMap;
         this.body = body;
     }
