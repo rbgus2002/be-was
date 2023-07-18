@@ -2,11 +2,11 @@ package model;
 
 import java.util.UUID;
 
-public class UserSession {
+public class Session {
     private final User user;
     private String sessionId;
 
-    public UserSession(User user) {
+    public Session(User user) {
         this.user = user;
         this.sessionId = UUID.randomUUID().toString();
     }
