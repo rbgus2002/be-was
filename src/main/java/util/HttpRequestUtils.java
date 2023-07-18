@@ -32,8 +32,8 @@ public class HttpRequestUtils {
         return method;
     }
 
-    public static String getUrl(String header) {
-        String[] tokens = header.split(" ");
+    public static String getUrl(String firstLine) {
+        String[] tokens = firstLine.split(" ");
         String url = tokens[1];
         logger.debug("request url: {}", url);
 
