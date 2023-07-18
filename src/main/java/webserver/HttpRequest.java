@@ -1,5 +1,8 @@
 package webserver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+
     private String method;
     private String url;
     private String version;
@@ -19,6 +24,7 @@ public class HttpRequest {
         String input;
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String startLine = br.readLine();
+        logger.debug(startLine);
         String[] statusLineTokens = startLine.split(" ");
         method = statusLineTokens[0];
         parseTarget(statusLineTokens[1]);
@@ -28,9 +34,8 @@ public class HttpRequest {
                 String[] tokens = input.split(":");
                 headers.put(tokens[0], tokens[1]);
             } else {
-                String[] tokens = input.split(":");
-                headers.put(tokens[0], tokens[1]);
-                parseParam(br.readLine());
+                logger.debug(input);
+                parseParam(input);
             }
         }
     }
@@ -51,6 +56,7 @@ public class HttpRequest {
             String[] paramTokens = keyValue.split("=");
             params.put(paramTokens[0], paramTokens[1]);
         }
+        logger.debug("{}", params);
     }
 
     public String getParam(String key) {

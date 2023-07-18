@@ -24,31 +24,34 @@ public class HttpResponse {
     }
 
     public void setContentType(String type) {
-        headers.put("Content-Type", type);
+        String contentType;
+        if (type.equals("css")) {
+            contentType = "text/css";
+        } else if (type.equals("js")) {
+            contentType = "text/javascript";
+        } else if (type.equals("html")) {
+            contentType = "text/html; charset=utf-8";
+        } else if (type.equals("ico")) {
+            contentType = "image/x-icon";
+        } else if (type.equals("jpg") || type.equals("jpeg")) {
+            contentType = "image/jpeg";
+        } else if (type.equals("png")) {
+            contentType = "image/png";
+        } else if (type.equals("txt")) {
+            contentType = "text/plain";
+        } else {
+            contentType = type;
+        }
+        headers.put("Content-Type", contentType);
     }
 
     public void setHeader(String key, String value) {
         headers.put(key, value);
     }
 
-    public void setBody(byte[] body, String extension) {
+    public void setBody(byte[] body) {
         this.body = body;
         headers.put("Content-Length", String.valueOf(body.length));
-        if (extension.equals("css")) {
-            setContentType("text/css");
-        } else if (extension.equals("js")) {
-            setContentType("text/javascript");
-        } else if (extension.equals("html")) {
-            setContentType("text/html; charset=utf-8");
-        } else if (extension.equals("ico")) {
-            setContentType("image/x-icon");
-        } else if (extension.equals("jpg") || extension.equals("jpeg")) {
-            setContentType("image/jpeg");
-        } else if (extension.equals("png")) {
-            setContentType("image/png");
-        } else {
-            setContentType("text/plain");
-        }
     }
 
     public void setRedirect(String url) {

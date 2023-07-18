@@ -42,7 +42,8 @@ public class FrontController {
         body = Files.readAllBytes(path);
         String filename = path.getFileName().toString();
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
-        response.setBody(body, extension);
+        response.setBody(body);
+        response.setContentType(extension);
     }
 
     private void render(DataOutputStream dos, HttpResponse response) throws IOException {
