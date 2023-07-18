@@ -4,7 +4,6 @@ import java.io.*;
 import java.lang.annotation.Annotation;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -14,11 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
 import container.Servlet;
-import webserver.exception.InvalidRequestException;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.util.HttpUtil;
-import webserver.http.util.FileUtil;
 
 public class RequestHandler implements Runnable {
 
@@ -61,7 +57,7 @@ public class RequestHandler implements Runnable {
 
 	private HttpResponse processServlet(DataOutputStream dos, Servlet servlet, HttpRequest httpRequest) throws IOException {
 		Annotation[] declaredAnnotations = servlet.getClass().getDeclaredAnnotations();
-		Map<String, String> model = HttpUtil.getModel(httpRequest.getParam());
+		Map<String, String> model = httpRequest.getModel();
 
 		String result = servlet.execute(model);
 

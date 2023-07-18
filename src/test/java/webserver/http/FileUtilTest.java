@@ -12,6 +12,7 @@ import webserver.http.util.FileUtil;
 
 @DisplayName("FileUtil 테스트")
 class FileUtilTest {
+
     @Test
     @DisplayName("정적 파일 요청임을 확인")
     void isFileRequest() {
