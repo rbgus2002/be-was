@@ -9,8 +9,8 @@ import java.io.IOException;
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private String version = "HTTP/1.1";
-    private HttpStatus httpStatus = HttpStatus.OK;
-    private ContentType contentType = ContentType.HTML;
+    private HttpStatus httpStatus;
+    private ContentType contentType;
     private byte[] body;
     private DataOutputStream dos;
 
@@ -61,7 +61,7 @@ public class HttpResponse {
     private void responseHeader() {
         try {
             dos.writeBytes(version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + contentType.getMimeType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {

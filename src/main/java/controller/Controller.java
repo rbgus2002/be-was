@@ -1,5 +1,6 @@
 package controller;
 
+import http.ContentType;
 import http.HttpResponse;
 import service.UserService;
 
@@ -20,9 +21,38 @@ public class Controller {
         HttpResponse.ResponseBuilder responseBuilder = new HttpResponse.ResponseBuilder();
         switch (uris[uris.length - 1]) {
             case HTML:
-                return loadTemplatesFromPath(responseBuilder, uri);
+                return loadTemplatesFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.HTML);
             case CSS:
-                return loadStaticFromPath(responseBuilder, uri);
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.CSS);
+            case JS:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.JS);
+            case ICO:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.ICO);
+            case PNG:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.PNG);
+            case JPG:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.JPG);
+            case EOT:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.EOT);
+            case SVG:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.SVG);
+            case TTF:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.TTF);
+            case WOFF:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.WOFF);
+            case WOFF2:
+                return loadStaticFromPath(responseBuilder, uri)
+                        .setContentType(ContentType.WOFF2);
             default:
                 return routeByUri(responseBuilder, uri);
         }
