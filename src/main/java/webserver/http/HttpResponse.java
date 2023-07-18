@@ -25,25 +25,21 @@ public class HttpResponse {
     }
 
     public boolean isBodyEmpty() {
-        return body == null;
-    }
-
-    public int getBodyLength() {
-        if (body.length > 0) {
-            return body.length;
-        }
-        return 0;
+        return body == null || body.length == 0;
     }
 
     public String getHeaderMessage() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(status.getStatusLine()).append(HttpConstant.CRLF);
+
+        stringBuilder.append(status.getStatusLine())
+                .append(HttpConstant.CRLF);
 
         for (String key : headers.keySet()) {
-            stringBuilder.append(key).append(": ").append(headers.get(key)).append(HttpConstant.CRLF);
+            stringBuilder.append(key)
+                    .append(": ")
+                    .append(headers.get(key))
+                    .append(HttpConstant.CRLF);
         }
-
-        stringBuilder.append(HttpConstant.CRLF);
 
         return stringBuilder.toString();
     }
