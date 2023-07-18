@@ -1,15 +1,17 @@
 package webserver;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class HttpRequestParserTest {
-    String request = "GET /favicon.ico HTTP/1.1\n" +
+    String requestInput = "GET /favicon.ico HTTP/1.1\n" +
             "Host: localhost:8080\n" +
             "Connection: keep-alive\n" +
             "sec-ch-ua: \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"\n" +
@@ -50,30 +52,31 @@ class HttpRequestParserTest {
             "  \"email\": \"john@example.com\",\n" +
             "  \"age\": 30\n" +
             "}\n";
+    HttpRequest request;
+
+    @BeforeEach
+    void init() throws IOException{
+        request = HttpRequestParser.getInstance().getRequest(new ByteArrayInputStream(requestInput.getBytes()));
+    }
+
 
     @Test
     @DisplayName("http request byte 값이 들어오면 해당 헤더를 제대로 추출해야 한다.")
-    void header() throws IOException {
-        HttpRequestParser requestParser = new HttpRequestParser(new ByteArrayInputStream(request.getBytes()));
-
-        assertEquals(header, requestParser.getHeader());//헤더만 추출해야 함
-        assertNotEquals(request, requestParser.getHeader());//바디가 포함 된 전체 request와 값이 달라야 한다
+    void header() {
+        assertEquals(header, request.getHeader());//헤더만 추출해야 함
+        assertNotEquals(requestInput, request.getHeader());//바디가 포함 된 전체 request와 값이 달라야 한다
     }
 
     @Test
     @DisplayName("http request byte 값이 들어오면 해당 헤더의 method와 url이 제대로 추출되어야 한다.")
-    void methodAndUrl() throws IOException {
-        HttpRequestParser requestParser = new HttpRequestParser(new ByteArrayInputStream(request.getBytes()));
-
-        assertEquals("GET", requestParser.getMethod());
-        assertEquals("/favicon.ico", requestParser.getPath());
+    void methodAndUrl() {
+        assertEquals("GET", request.getMethod());
+        assertEquals("/favicon.ico", request.getUrl());
     }
 
     @Test
     @DisplayName("http request byte 값이 들어오면 해당 request의 body를 추출해야 한다.")
-    void body() throws IOException {
-        HttpRequestParser requestParser = new HttpRequestParser(new ByteArrayInputStream(request.getBytes()));
-
-        assertEquals(body, requestParser.getBody());
+    void body() {
+        assertEquals(body, request.getBody());
     }
 }

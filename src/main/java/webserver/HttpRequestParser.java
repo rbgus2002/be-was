@@ -10,69 +10,47 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class HttpRequestParser {
-    private String method;
-    private String url;
-    private String header;
-    private String body;
-    private String line;
+    private static final HttpRequestParser requestParser = new HttpRequestParser();
+    private HttpRequestParser() {
 
-    public HttpRequestParser(InputStream in) throws IOException {
+    }
+
+    public static HttpRequestParser getInstance() {
+        return requestParser;
+    }
+
+    public HttpRequest getRequest(InputStream in) throws  IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        parseRequest(br);
+
+        return parseRequest(br);
     }
 
-    private void parseRequest(BufferedReader br) throws IOException {
-        line = br.readLine();
-        if(br.ready()){
-            initMethodAndUrl();
-            initHeader(br);
-            initBody(br);
+    private HttpRequest parseRequest(BufferedReader br) throws IOException {
+        if(!br.ready()){
+            return new HttpRequest();
         }
-    }
-
-    private void initMethodAndUrl() {
+        String line = br.readLine();
         String[] firstLine = line.split(" ");
-        this.method = firstLine[0];
-        this.url = firstLine[1];
+        return new HttpRequest(firstLine[0], firstLine[1], initHeader(br, line), initBody(br));
+
     }
 
-    private void initHeader(BufferedReader br) throws IOException {
-        this.header = getLines(br);
-    }
-
-    private void initBody(BufferedReader br) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        while (br.ready()){
-            stringBuilder.append((char)br.read());
-        }
-
-        this.body = stringBuilder.toString();
-    }
-
-    private String getLines(BufferedReader br) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
+    private String initHeader(BufferedReader br, String line) throws IOException {
+        StringBuilder headerBuilder = new StringBuilder();
         while (!line.equals("")) {
-            stringBuilder.append(StringUtils.appendLineSeparator(line));
+            headerBuilder.append(StringUtils.appendLineSeparator(line));
             line = br.readLine();
         }
-
-        return stringBuilder.toString();
+        return headerBuilder.toString();
     }
 
-    public String getHeader() {
-        return this.header;
-    }
+    private String initBody(BufferedReader br) throws IOException {
+        StringBuilder bodyBuilder = new StringBuilder();
+        while (br.ready()){
+            bodyBuilder.append((char)br.read());
+        }
 
-    public String getMethod() {
-        return this.method;
-    }
-
-    public String getPath() {
-        return this.url;
-    }
-
-    public String getBody() {
-        return this.body;
+        return bodyBuilder.toString();
     }
 
 }
