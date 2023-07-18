@@ -11,10 +11,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-
-import static util.FileUtils.convertBufferedReaderToList;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -33,21 +31,22 @@ public class RequestHandler implements Runnable {
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 
             // 요청 읽기
-            List<String> strings = convertBufferedReaderToList(reader);
-            HttpRequest httpRequest = new HttpRequest(strings);
-
-            printLogs(strings);
-
+            HttpRequest httpRequest = new HttpRequest(reader);
+            printLogs(httpRequest);
             response(httpRequest);
         } catch (Throwable e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void printLogs(List<String> strings) {
-        for (String str : strings) {
-            logger.debug(str);
+    private void printLogs(HttpRequest httpRequest) {
+        StringBuilder requestBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : httpRequest.getHeaders().entrySet()) {
+            requestBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
         }
+        logger.debug("Method : {}, URI : {}, Version : {}", httpRequest.method(), httpRequest.uri(), httpRequest.version());
+        logger.debug("Headers : {}", requestBuilder);
+        logger.debug("Mime : {}, Body : {}", httpRequest.mime(), httpRequest.getBody());
     }
 
     private void response(HttpRequest httpRequest) {
@@ -61,6 +60,7 @@ public class RequestHandler implements Runnable {
             try {
                 httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
             } catch (Throwable e) {
+                logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
                 httpResponse = HttpResponse.redirect("/error.html");
             }
         }
