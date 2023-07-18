@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static utils.StringUtils.NEW_LINE;
+
 public class HttpRequest {
 
     private final HttpMethod method;
     private final String path;
     private final Query query = new Query();
     private final Header header = new Header();
+    private final String version;
 
     public static class RequestHeaderBuilder {
         private String requestLine;
@@ -51,6 +54,8 @@ public class HttpRequest {
                     });
         }
 
+        this.version = tokens[2];
+
         // 헤더 분리
         headers.forEach(
                 header -> {
@@ -58,6 +63,7 @@ public class HttpRequest {
                     this.header.appendHeader(split[0], split[1].trim());
                 }
         );
+
     }
 
     public String getHeaders() {
@@ -74,6 +80,20 @@ public class HttpRequest {
 
     public Query getRequestQuery() {
         return query;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.append(method)
+                .append(" ")
+                .append(path)
+                .append(query)
+                .append(" ")
+                .append(version)
+                .append(NEW_LINE)
+                .append(header.buildHeader())
+                .toString();
     }
 
 }
