@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("요청 메시지 클래스 테스트")
-class RequestMessageTest {
+class HttpRequestTest {
     @Test
     @DisplayName("응답 메시지 객체가 생성된다.")
     void create() {
@@ -16,13 +16,13 @@ class RequestMessageTest {
                 "Accept: application/json\n";
 
         // when
-        RequestMessage requestMessage = new RequestMessage(message);
+        HttpRequest httpRequest = new HttpRequest(message);
 
-        String method = requestMessage.getMethod();
-        String path = requestMessage.getPath();
-        String version = requestMessage.getVersion();
-        String host = requestMessage.getMetaData("Host");
-        boolean hasExtension = requestMessage.isHasExtension();
+        String method = httpRequest.getMethod();
+        String path = httpRequest.getPath();
+        String version = httpRequest.getVersion();
+        String host = httpRequest.getMetaData("Host");
+        boolean hasExtension = httpRequest.isHasExtension();
 
         // then
         assertAll(
@@ -43,11 +43,11 @@ class RequestMessageTest {
                 "Accept: application/json\n";
 
         // when
-        RequestMessage requestMessage = new RequestMessage(message);
+        HttpRequest httpRequest = new HttpRequest(message);
 
-        String user = requestMessage.getParameter("user");
-        String password = requestMessage.getParameter("password");
-        String name = requestMessage.getParameter("name");
+        String user = httpRequest.getParameter("user");
+        String password = httpRequest.getParameter("password");
+        String name = httpRequest.getParameter("name");
 
         // then
         assertAll(

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.StringUtils.NEW_LINE;
 
 @DisplayName("응답 메시지 클래스 테스트")
-class ResponseMessageTest {
+class HttpResponseTest {
     @Test
     @DisplayName("응답 메시지를 생성한다.")
     void create() {
@@ -28,7 +28,7 @@ class ResponseMessageTest {
                 "Content-Length: " + body.length() + NEW_LINE +
                 "Content-Type: text/html;charset=utf-8" + NEW_LINE;
         // when
-        ResponseMessage message = new ResponseMessage(ok, body.getBytes());
+        HttpResponse message = new HttpResponse(ok, body.getBytes());
 
         // then
         assertAll(
