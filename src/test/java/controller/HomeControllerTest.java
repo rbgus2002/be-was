@@ -13,7 +13,7 @@ class HomeControllerTest {
     @DisplayName("Home Controller 가 잘 작동하는 지??")
     void home() {
         // given
-        HttpRequest httpRequest = new HttpRequest("GET /index.html HTTP/1.1");
+        HttpRequest httpRequest = new HttpRequest("GET /index.html HTTP/1.1", null);
 
         // when
         String s = homeController.execute(httpRequest, null);

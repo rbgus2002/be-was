@@ -3,6 +3,7 @@ package webserver.util;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
 
 public class HeaderParser {
 
@@ -10,12 +11,16 @@ public class HeaderParser {
     private static final String QUERY_PARSER = "&";
     private static final String KEY_VALUE_PARSER = "=";
 
-    public static HashMap<String,String> parseQuery(String url) {
+    public static String parseQuery(String url) {
         String[] urlQuery = splitUrl(url);
         if (urlQuery.length == 1) {
             return null;
         }
-        String[] queries = urlQuery[1].split(QUERY_PARSER);
+        return urlQuery[1];
+    }
+
+    public static Map<String, String> parseFormData(String formData) {
+        String[] queries = formData.split(QUERY_PARSER);
         HashMap<String, String>  parseQueries = new HashMap<>();
         for (String query : queries) {
             query = URLDecoder.decode(query, StandardCharsets.UTF_8);

@@ -35,7 +35,9 @@ class SignupControllerTest {
             int finalThread = thread;
             service.execute(() -> {
                 try {
-                    HttpRequest httpRequest = new HttpRequest("GET /user/create?userId=" + finalThread + "&password=sss&name=sss" + finalThread + "&email=sss%40naver.com HTTP/1.1");
+                    HttpRequest httpRequest = new HttpRequest("GET /user/create?userId="
+                            + finalThread + "&password=sss&name=sss"
+                            + finalThread + "&email=sss%40naver.com HTTP/1.1", null);
                     signupController.execute(httpRequest, null);
                 } catch(Exception e) {
                     logger.error(e.getMessage());

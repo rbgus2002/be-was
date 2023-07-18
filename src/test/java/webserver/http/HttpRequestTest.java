@@ -29,7 +29,7 @@ class HttpRequestTest {
                 "?" + SignupController.USERID_KEY + "=" + USERID_VAL + "&" +
                 SignupController.PASSWORD_KEY + "=" + PASSWORD_VAL + "&" +
                 SignupController.NAME_KEY + "=" + NAME_VAL + "&" +
-                SignupController.EMAIL_KEY + "=" + EMAIL_VAL + " " + VERSION);
+                SignupController.EMAIL_KEY + "=" + EMAIL_VAL + " " + VERSION, null);
 
     }
 
@@ -53,7 +53,7 @@ class HttpRequestTest {
     @DisplayName("쿼리 파싱이 제대로 되는지?")
     void query_parsing() {
         //given
-        Map<String, String> queries = httpRequest.getQueries();
+        Map<String, String> queries = httpRequest.getFormDataMap();
 
         //when
 
@@ -74,8 +74,8 @@ class HttpRequestTest {
         //when
 
         //then
-        softAssertions.assertThatCode(() -> new HttpRequest("error")).isEqualTo(RuntimeException.class);
-        softAssertions.assertThatCode(() -> new HttpRequest("GET error")).isEqualTo(RuntimeException.class);
+        softAssertions.assertThatCode(() -> new HttpRequest("error",null)).isEqualTo(RuntimeException.class);
+        softAssertions.assertThatCode(() -> new HttpRequest("GET error",null)).isEqualTo(RuntimeException.class);
     }
 
 

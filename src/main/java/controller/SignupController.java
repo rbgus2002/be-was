@@ -21,7 +21,7 @@ public class SignupController implements Controller {
     @Override
     public String execute(HttpRequest request, HttpResponse response) {
 
-        Map<String, String> queries = request.getQueries();
+        Map<String, String> queries = request.getFormDataMap();
         User user = new User(queries.get(USERID_KEY),
                 queries.get(PASSWORD_KEY),
                 queries.get(NAME_KEY),
