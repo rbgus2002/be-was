@@ -65,6 +65,7 @@ public class Response {
     public static final String HEADER_SESSION_ID = "sid=";
     public static final String HEADER_COOKIE_PATH = "; Path=/";
     public static final String INDEX_URL = "/index.html";
+    public static final String LOGIN_FAILED_URL = "/user/login_failed.html";
 
     private final STATUS status;
     private final String version;
