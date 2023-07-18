@@ -1,6 +1,6 @@
-package webserver.http;
+package webserver.http.request;
 
-import utils.RequestParser;
+import utils.Parser;
 
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class HttpRequestLine {
     }
 
     public static HttpRequestLine create(String requestLine) {
-        Map<String, String> requestLines = RequestParser.parseRequestLine(requestLine);
+        Map<String, String> requestLines = Parser.parseRequestLine(requestLine);
         return new HttpRequestLine(
                 requestLines.get("method"),
                 requestLines.get("uri"),

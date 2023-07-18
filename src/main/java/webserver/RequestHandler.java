@@ -2,8 +2,8 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
-import webserver.http.HttpRequestLine;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.HttpRequestLine;
 
 import java.io.*;
 import java.net.Socket;
