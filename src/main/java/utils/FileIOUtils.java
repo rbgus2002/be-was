@@ -13,28 +13,36 @@ public class FileIOUtils {
     public static final String STATIC_RESOURCES = "src/main/resources/static";
     public static final String TEMPLATES_RESOURCES = "src/main/resources/templates";
 
-    public static HttpResponse.ResponseBuilder loadStaticFromPath(HttpStatus httpStatus, String uri) throws IOException {
+    public static HttpResponse.ResponseBuilder loadStaticFromPath(HttpStatus httpStatus, String uri) {
         Path path = Paths.get(STATIC_RESOURCES + uri);
-        if (Files.exists(path)) {
+        try {
+            if (Files.exists(path)) {
+                return new HttpResponse.ResponseBuilder()
+                        .setStatus(httpStatus)
+                        .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
+            }
             return new HttpResponse.ResponseBuilder()
                     .setStatus(httpStatus)
-                    .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
+                    .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return new HttpResponse.ResponseBuilder()
-                .setStatus(httpStatus)
-                .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
     }
 
-    public static HttpResponse.ResponseBuilder loadTemplatesFromPath(HttpStatus httpStatus, String uri) throws IOException {
+    public static HttpResponse.ResponseBuilder loadTemplatesFromPath(HttpStatus httpStatus, String uri) {
         Path path = Paths.get(TEMPLATES_RESOURCES + uri);
-        if (Files.exists(path)) {
+        try {
+            if (Files.exists(path)) {
+                return new HttpResponse.ResponseBuilder()
+                        .setStatus(httpStatus)
+                        .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
+            }
             return new HttpResponse.ResponseBuilder()
                     .setStatus(httpStatus)
-                    .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
+                    .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return new HttpResponse.ResponseBuilder()
-                .setStatus(httpStatus)
-                .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
     }
 
 }

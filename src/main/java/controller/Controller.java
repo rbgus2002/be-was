@@ -13,25 +13,31 @@ import static utils.FileIOUtils.*;
 public class Controller {
     private final UserService userService = new UserService();
 
-    public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) throws IOException {
-        String uri = httpRequest.getUri();
-        if (uri.contains("?")) {
-            return routeByUri(uri);
-        }
-        String[] uris = uri.split("\\.");
-        String extension = uris[uris.length - 1];
-        if (MIME.getMIME().entrySet().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
-            return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/wrong_access.html");
-        }
-        if (extension.equals(HTML)) {
-            return loadTemplatesFromPath(HttpStatus.OK, uri)
+    public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) {
+        try {
+            String uri = httpRequest.getUri();
+            if (uri.contains("?")) {
+                return routeByUri(uri);
+            }
+            String[] uris = uri.split("\\.");
+            String extension = uris[uris.length - 1];
+            if (MIME.getMIME().entrySet().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
+                return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/wrong_access.html");
+            }
+            if (extension.equals(HTML)) {
+                return loadTemplatesFromPath(HttpStatus.OK, uri)
+                        .setContentType(MIME.getMIME().get(HTML));
+            }
+            return loadStaticFromPath(HttpStatus.OK, uri)
+                    .setContentType(MIME.getMIME().get(extension));
+        } catch (Exception e) {
+            return loadTemplatesFromPath(HttpStatus.OK, "/error.html")
                     .setContentType(MIME.getMIME().get(HTML));
         }
-        return loadStaticFromPath(HttpStatus.OK, uri)
-                    .setContentType(MIME.getMIME().get(extension));
+
     }
 
-    public HttpResponse.ResponseBuilder routeByUri(String uri) {
+    public HttpResponse.ResponseBuilder routeByUri(String uri) throws IOException {
         String[] apis = uri.split("\\?");
         if (apis[0].equals("/user/create")) {
             return createUser(parseParams(apis[1]));
@@ -49,13 +55,9 @@ public class Controller {
         return information;
     }
 
-    public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
+    public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) throws IOException {
         userService.createUser(parameters);
-        try {
-            return loadTemplatesFromPath(HttpStatus.OK, "/user/signup_success.html");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return loadTemplatesFromPath(HttpStatus.OK, "/user/signup_success.html");
     }
 
 }
