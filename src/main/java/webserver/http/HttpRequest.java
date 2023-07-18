@@ -1,8 +1,5 @@
 package webserver.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +10,6 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 public class HttpRequest {
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
-
     private final Map<String, String> headers;
 
     public HttpRequest(InputStream in) throws IOException {
@@ -24,6 +19,9 @@ public class HttpRequest {
 
     public void parseMessage(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        if (!bufferedReader.ready()) {
+            throw new IOException("Received Empty Request Message");
+        }
 
         parseHeader(bufferedReader);
         parseBody(bufferedReader);
