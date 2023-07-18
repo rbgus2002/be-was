@@ -23,6 +23,7 @@ public class RequestHandler implements Runnable {
         this.connection = connectionSocket;
     }
 
+    @Override
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
@@ -33,7 +34,10 @@ public class RequestHandler implements Runnable {
             // 요청 읽기
             HttpRequest httpRequest = new HttpRequest(reader);
             printLogs(httpRequest);
-            response(httpRequest);
+            HttpResponse httpResponse = handleHttpRequest(httpRequest);
+
+            ResponseHandler responseHandler = new ResponseHandler(connection);
+            responseHandler.response(httpResponse);
         } catch (Throwable e) {
             logger.error(e.getMessage());
         }
@@ -49,7 +53,7 @@ public class RequestHandler implements Runnable {
         logger.debug("Mime : {}, Body : {}", httpRequest.mime(), httpRequest.getBody());
     }
 
-    private void response(HttpRequest httpRequest) {
+    private HttpResponse handleHttpRequest(HttpRequest httpRequest) {
         String path = httpRequest.uri().getPath();
         String extension = StringUtils.getExtension(path);
         HttpResponse httpResponse;
@@ -65,6 +69,6 @@ public class RequestHandler implements Runnable {
                 httpResponse = HttpResponse.notFound();
             }
         }
-        httpResponse.response(connection);
+        return httpResponse;
     }
 }
