@@ -3,57 +3,66 @@ package webserver.request;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.StringUtils.NEW_LINE;
+import static webserver.request.HttpRequestParser.parseRequest;
 
 @DisplayName("요청 메시지 클래스 테스트")
 class HttpRequestTest {
     @Test
-    @DisplayName("응답 메시지 객체가 생성된다.")
-    void create() {
+    @DisplayName("body가 없는 응답 메시지 객체가 생성된다.")
+    void createWithoutBody() throws IOException {
         // given
-        String message = "GET /test HTTP/1.1\n" +
-                "Host: test.com\n" +
-                "Accept: application/json\n";
+        String message = "GET /test HTTP/1.1" + NEW_LINE +
+                "Host: test.com" + NEW_LINE +
+                "Accept: application/json" + NEW_LINE + NEW_LINE;
 
         // when
-        HttpRequest httpRequest = new HttpRequest(message);
+        HttpRequest httpRequest = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
         String method = httpRequest.getMethod();
-        String path = httpRequest.getPath();
+        String url = httpRequest.getUrl();
         String version = httpRequest.getVersion();
         String host = httpRequest.getMetaData("Host");
-        boolean hasExtension = httpRequest.isHasExtension();
 
         // then
         assertAll(
                 () -> assertEquals("GET", method),
-                () -> assertEquals("/test", path),
+                () -> assertEquals("/test", url),
                 () -> assertEquals("HTTP/1.1", version),
-                () -> assertEquals("test.com", host),
-                () -> assertFalse(hasExtension)
+                () -> assertEquals("test.com", host)
         );
     }
 
     @Test
-    @DisplayName("Path에 파라미터를 포함한 GET 메소드의 객체가 생성된다.")
-    void createGetWithParameters() {
+    @DisplayName("body가 존재하는 응답 메시지 객체가 생성된다.")
+    void createWithBody() throws IOException {
         // given
-        String message = "GET /test?user=ddingmin&password=1234&name=gildong HTTP/1.1\n" +
-                "Host: test.com\n" +
-                "Accept: application/json\n";
+        String message = "POST /api/data HTTP/1.1" + NEW_LINE +
+                "Host: example.com" + NEW_LINE +
+                "Content-Type: application/json" + NEW_LINE +
+                "Content-Length: 25" + NEW_LINE +
+                NEW_LINE +
+                "{\"name\": \"John\", \"age\": 30}" + NEW_LINE;
+        String targetBody = "{\"name\": \"John\", \"age\": 30}" + NEW_LINE;
 
         // when
-        HttpRequest httpRequest = new HttpRequest(message);
+        HttpRequest httpRequest = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
-        String user = httpRequest.getParameter("user");
-        String password = httpRequest.getParameter("password");
-        String name = httpRequest.getParameter("name");
+        String method = httpRequest.getMethod();
+        String url = httpRequest.getUrl();
+        String version = httpRequest.getVersion();
+        String body = httpRequest.getBody();
 
         // then
         assertAll(
-                () -> assertEquals("ddingmin", user),
-                () -> assertEquals("1234", password),
-                () -> assertEquals("gildong", name)
+                () -> assertEquals("POST", method),
+                () -> assertEquals("/api/data", url),
+                () -> assertEquals(targetBody, body)
         );
     }
 }
