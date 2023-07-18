@@ -1,5 +1,6 @@
 package webserver;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -31,6 +32,10 @@ public class WebServer {
             while ((connection = listenSocket.accept()) != null) {
                 executorService.submit(new RequestHandler(connection));
             }
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        } finally {
+            executorService.shutdown();
         }
     }
 }
