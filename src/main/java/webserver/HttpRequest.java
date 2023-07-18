@@ -3,7 +3,6 @@ package webserver;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Interface & abstract 줄이기 -> Impl 붙은 거 나눌 필요가 없는듯?
 public class HttpRequest {
 
     private String method;

@@ -40,7 +40,13 @@ public class HttpRequestHandler {
         // TODO: file이 존재하지 않는 경우 404 response return
         byte[] body = Files.readAllBytes(Paths.get(path));
 
-        return new HttpResponse(request.version(), 200, body);
+        HttpResponse.Builder builder = HttpResponse.newBuilder();
+
+        builder.version(request.version())
+                .statusCode(200)
+                .body(body);
+
+        return builder.build();
     }
 
     private static HttpResponse handleUserCreateRequest(HttpRequest request) throws UnsupportedEncodingException {
@@ -55,6 +61,13 @@ public class HttpRequestHandler {
         }
         User user = new User(paramPair.get("userId"), paramPair.get("password"), paramPair.get("name"), paramPair.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
-        return new HttpResponse(request.version(), 200, user.toString().getBytes());
+
+        HttpResponse.Builder builder = HttpResponse.newBuilder();
+
+        builder.version(request.version())
+                .statusCode(200)
+                .body(user.toString().getBytes());
+
+        return builder.build();
     }
 }
