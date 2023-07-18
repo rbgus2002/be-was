@@ -1,7 +1,7 @@
 package webserver.http;
 
 import controller.SignupController;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,9 @@ class HttpRequestTest {
     private final String NAME_VAL = "sss";
     private final String EMAIL_VAL = "sss@naver.com";
     HttpRequest httpRequest;
+
+    SoftAssertions softAssertions = new SoftAssertions();
+
     @BeforeEach
     void setup() {
         httpRequest = new HttpRequest(METHOD + " " +  URL +
@@ -38,9 +41,11 @@ class HttpRequestTest {
         //when
 
         //then
-        Assertions.assertEquals(METHOD, httpRequest.getMethod());
-        Assertions.assertEquals(URL, httpRequest.getUrl());
-        Assertions.assertEquals(VERSION, httpRequest.getVersion());
+        softAssertions.assertThat(METHOD).isEqualTo(httpRequest.getMethod());
+        softAssertions.assertThat(URL).isEqualTo(httpRequest.getUrl());
+        softAssertions.assertThat(VERSION).isEqualTo(httpRequest.getVersion());
+
+        softAssertions.assertAll();
     }
 
 
@@ -53,11 +58,12 @@ class HttpRequestTest {
         //when
 
         //then
-        Assertions.assertEquals(USERID_VAL, queries.get(SignupController.USERID_KEY));
-        Assertions.assertEquals(PASSWORD_VAL, queries.get(SignupController.PASSWORD_KEY));
-        Assertions.assertEquals(NAME_VAL, queries.get(SignupController.NAME_KEY));
-        Assertions.assertEquals(EMAIL_VAL, queries.get(SignupController.EMAIL_KEY));
+        softAssertions.assertThat(USERID_VAL).isEqualTo(queries.get(SignupController.USERID_KEY));
+        softAssertions.assertThat(PASSWORD_VAL).isEqualTo(queries.get(SignupController.PASSWORD_KEY));
+        softAssertions.assertThat(NAME_VAL).isEqualTo(queries.get(SignupController.NAME_KEY));
+        softAssertions.assertThat(EMAIL_VAL).isEqualTo(queries.get(SignupController.EMAIL_KEY));
 
+        softAssertions.assertAll();
     }
 
     @Test
@@ -68,9 +74,8 @@ class HttpRequestTest {
         //when
 
         //then
-        Assertions.assertThrows(RuntimeException.class, () -> new HttpRequest("error"));
-
-        Assertions.assertThrows(RuntimeException.class, () -> new HttpRequest("GET error"));
+        softAssertions.assertThatCode(() -> new HttpRequest("error")).isEqualTo(RuntimeException.class);
+        softAssertions.assertThatCode(() -> new HttpRequest("GET error")).isEqualTo(RuntimeException.class);
     }
 
 

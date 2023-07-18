@@ -38,7 +38,7 @@ public class ResponseMessageHeader {
         return getStatusHeader(RESPONSE_404)+ NEW_LINE;
     }
 
-    private static String getContentTypeHeader(String contentType) {
+    private String getContentTypeHeader(String contentType) {
         return CONTENT_TYPE.getConstant() + KEY_VALUE_PARSER + contentType + SEMI_COLUMN + CHARSET + EQUAL + UTF_8 + NEW_LINE;
     }
 

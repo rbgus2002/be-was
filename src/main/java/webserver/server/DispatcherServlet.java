@@ -31,6 +31,9 @@ public class DispatcherServlet {
         ClientConnection clientConnection = new ClientConnection(dataOutputStream, resp);
         if (toUrl.contains("redirect")) {
             String redirectUrl = toUrl.split(":")[1];
+            if(redirectUrl.contains(" ")) {
+                redirectUrl = redirectUrl.trim();
+            }
             clientConnection.sendRedirect(redirectUrl);
             return;
         }

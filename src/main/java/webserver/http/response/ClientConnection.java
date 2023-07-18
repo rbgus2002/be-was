@@ -22,7 +22,11 @@ public class ClientConnection {
 
     public void sendRedirect(String redirectUrl) {
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
-        writeHeader(responseMessageHeader.response302Header(redirectUrl));
+        try {
+            writeHeader(responseMessageHeader.response302Header(redirectUrl));
+        } catch(IOException e) {
+            logger.error(e.getMessage());
+        }
 
         logger.info("HttpResponse redirect end");
     }
@@ -33,32 +37,29 @@ public class ClientConnection {
         String contentType = httpContentType.getContentType(extension);
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         ResponseBody responseBody = httpResponse.getBody();
-        if (responseBody.readBody() != null) {
-            write200Response(contentType, responseMessageHeader, responseBody);
-            return;
+        try {
+            if (responseBody.readBody() != null) {
+                write200Response(contentType, responseMessageHeader, responseBody);
+                dos.flush();
+                return;
+            }
+            writeHeader(responseMessageHeader.response404Header());
+            dos.flush();
+        } catch(IOException e) {
+            logger.error(e.getMessage());
         }
-        writeHeader(responseMessageHeader.response404Header());
 
         logger.info("HttpResponse forward end");
     }
 
-    private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, ResponseBody responseBody) {
-
+    private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, ResponseBody responseBody) throws IOException {
         writeHeader(responseMessageHeader.response200Header(responseBody.getLength(), contentType));
-        try {
-            writeBody(responseBody);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+        writeBody(responseBody);
+
     }
 
-    private void writeHeader(String responseMessageHeader) {
-        try {
-            dos.writeBytes(responseMessageHeader);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    private void writeHeader(String responseMessageHeader) throws IOException {
+        dos.writeBytes(responseMessageHeader);
     }
 
 
