@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import db.Database;
+import model.Session;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import static model.User.*;
 import static webserver.model.Response.*;
 
 import service.FileService;
+import service.SessionService;
 import service.UserService;
 import webserver.model.Request;
 import webserver.model.Request.Method;
@@ -145,6 +147,25 @@ public class RequestHandler implements Runnable {
 
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+
+            return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
+        }
+        if(targetUri.startsWith("/user/login")){
+            Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
+            String userId = bodyParameterMap.get("userId");
+            String password = bodyParameterMap.get("password");
+            // ID/PW 검증
+            if(!UserService.validateUser(userId, password)) {
+                Map<String, String> headerMap = new HashMap<>();
+                headerMap.put(HEADER_REDIRECT_LOCATION, LOGIN_FAILED_URL);
+                return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
+            }
+
+            // Session ID 추가
+            Session session = SessionService.getSession(userId);
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+            headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + session.getSessionId() + HEADER_COOKIE_PATH);
 
             return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
         }
