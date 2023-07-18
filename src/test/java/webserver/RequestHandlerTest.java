@@ -17,7 +17,7 @@ class RequestHandlerTest {
     @DisplayName("index.html 요청 테스트")
     void htmlRequestTest() {
         given()
-            .port(PORT)
+            .log().all()
         .when()
             .get("/index.html")
         .then()
@@ -36,18 +36,36 @@ class RequestHandlerTest {
     }
 
     @Test
+    @DisplayName("/user/create 요청 후 리다이렉트 되야 한다.")
+    void redirectAfterRequestCreateUser() {
+        String uri = USER_CREATE_URI;
+        given()
+            .log().all()
+            .redirects().follow(false)
+            .param("name", "kim")
+            .param("email", "a@a.a")
+            .param("userId", "id")
+            .param("password", "pawd")
+        .when()
+            .get(uri)
+        .then()
+            .header("Location", "/index.html")
+            .statusCode(MOVED_PERMANENTLY.getValue());
+    }
+
+    @Test
     @DisplayName("/user/create 요청 테스트")
     void requestCreateUser() {
         String uri = USER_CREATE_URI;
         given()
-            .port(PORT)
-                .param("name", "kim")
-                .param("email", "a@a.a")
-                .param("userId", "id")
-                .param("password", "pawd")
+            .log().all()
+            .param("name", "kim")
+            .param("email", "a@a.a")
+            .param("userId", "id")
+            .param("password", "pawd")
         .when()
             .get(uri)
         .then()
-            .statusCode(CREATED.getValue());
+            .statusCode(OK.getValue());
     }
 }

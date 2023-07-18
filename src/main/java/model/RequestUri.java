@@ -18,18 +18,22 @@ public class RequestUri {
     private final String uri;
     private final Map<String, Object> params;
 
-    public RequestUri(String uri, Map<String, Object> params) {
+    private RequestUri(String uri, Map<String, Object> params) {
         this.uri = uri;
         this.params = params;
+    }
+    private RequestUri(String uri) {
+        this.uri= uri;
+        this.params = new HashMap<>();
     }
 
     public static RequestUri of(String text) {
         String[] splitByQuestionMark = splitBy(text, QUESTION_MARK); // /uri?a=a&b=2&c=
         String uri = splitByQuestionMark[URI_INDEX];
 
-        HashMap<String, Object> params = new HashMap<>();
-        if (isArrayLengthOne(splitByQuestionMark)) return new RequestUri(uri, params);
+        if (isArrayLengthOne(splitByQuestionMark)) return new RequestUri(uri);
 
+        HashMap<String, Object> params = new HashMap<>();
         String[] paramArray = splitBy(splitByQuestionMark[PARAMETERS_INDEX], AMPERSAND_MARK);
         for (int i = 0; i < paramArray.length; i++) {
             String[] paramMap = splitBy(paramArray[i], EQUAL_MARK);
