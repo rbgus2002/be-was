@@ -54,6 +54,7 @@ public class Response {
         }
     }
 
+    public static final String HEADER_HTTP = "HTTP/";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_CHARSET = ";charset=utf-8";
     public static final String HEADER_CONTENT_LENGTH = "Content-Length";

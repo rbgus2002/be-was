@@ -158,7 +158,7 @@ public class RequestHandler implements Runnable {
 
         // StatusLine
         STATUS status = response.getStatus();
-        dos.writeBytes("HTTP/" + response.getVersion() + " " +
+        dos.writeBytes(HEADER_HTTP + response.getVersion() + " " +
                 status.getStatusCode() + " " + status.getStatusMessage() + "\r\n");
         // Headers
         for (Map.Entry<String, String> entry : response.getHeaderMap().entrySet()) {
