@@ -5,21 +5,51 @@ import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private String version = "HTTP/1.1";
     private HttpStatus httpStatus = HttpStatus.OK;
+    private ContentType contentType = ContentType.HTML;
     private byte[] body;
     private DataOutputStream dos;
 
-    public HttpResponse(Map<HttpStatus, byte[]> response, DataOutputStream dos) {
-        response.forEach((status, bytes) -> {
-            this.httpStatus = status;
-            this.body = bytes;
-        });
-        this.dos = dos;
+    public static class ResponseBuilder {
+        private String version = "HTTP/1.1";
+        private HttpStatus httpStatus = HttpStatus.OK;
+        private ContentType contentType = ContentType.HTML;
+        private byte[] body;
+        private DataOutputStream dos;
+
+        public ResponseBuilder() {
+        }
+
+        public ResponseBuilder setStatus(HttpStatus httpStatus) {
+            this.httpStatus = httpStatus;
+            return this;
+        }
+
+        public ResponseBuilder setContentType(ContentType contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
+        public ResponseBuilder setBody(byte[] body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpResponse build(DataOutputStream dos) {
+            this.dos = dos;
+            return new HttpResponse(this);
+        }
+    }
+
+    public HttpResponse(ResponseBuilder builder) {
+        this.httpStatus = builder.httpStatus;
+        this.contentType = builder.contentType;
+        this.body = builder.body;
+        this.dos = builder.dos;
     }
 
     public void send() {

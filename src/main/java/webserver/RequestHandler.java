@@ -33,9 +33,9 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = createRequest(in);
 
             assert httpRequest != null;
-            Map<HttpStatus, byte[]> response = controller.loadFileByRequest(httpRequest);
+            HttpResponse.ResponseBuilder responseBuilder = controller.loadFileByRequest(httpRequest);
 
-            HttpResponse httpResponse = new HttpResponse(response, new DataOutputStream(out));
+            HttpResponse httpResponse = responseBuilder.build(new DataOutputStream(out));
             httpResponse.send();
         } catch (IOException e) {
             logger.error(e.getMessage());

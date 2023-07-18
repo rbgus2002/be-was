@@ -1,5 +1,6 @@
 package utils;
 
+import http.HttpResponse;
 import http.HttpStatus;
 
 import java.io.File;
@@ -14,16 +15,16 @@ public class FileIOUtils {
     public static final String STATIC_RESOURCES = "src/main/resources/static";
     public static final String TEMPLATES_RESOURCES = "src/main/resources/templates";
 
-    public static Map<HttpStatus, byte[]> loadStaticFromPath(String uri) throws IOException {
-        Map<HttpStatus, byte[]> response = new HashMap<>();
-        response.put(HttpStatus.OK, Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
-        return response;
+    public static HttpResponse.ResponseBuilder loadStaticFromPath(HttpResponse.ResponseBuilder responseBuilder, String uri) throws IOException {
+        return responseBuilder
+                .setStatus(HttpStatus.OK)
+                .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
     }
 
-    public static Map<HttpStatus, byte[]> loadTemplatesFromPath(String uri) throws IOException {
-        Map<HttpStatus, byte[]> response = new HashMap<>();
-        response.put(HttpStatus.OK, Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
-        return response;
+    public static HttpResponse.ResponseBuilder loadTemplatesFromPath(HttpResponse.ResponseBuilder responseBuilder, String uri) throws IOException {
+        return responseBuilder
+                .setStatus(HttpStatus.OK)
+                .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
     }
 
 }
