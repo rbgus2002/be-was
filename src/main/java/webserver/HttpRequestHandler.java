@@ -26,9 +26,9 @@ public class HttpRequestHandler {
     }};
 
     public static byte[] handleRequest(HttpRequest request) throws IOException {
-        logger.info("HERE..... request uri: {}", request.uri());
-        if(requestHandlers.containsKey(request.uri())) {
-            return (byte[]) requestHandlers.get(request.uri()).apply(request);
+//        logger.info("HERE..... request path: {}", request.path());
+        if(requestHandlers.containsKey(request.path())) {
+            return (byte[]) requestHandlers.get(request.path()).apply(request);
         }
         return handleGetStaticRequest(request);
     }
@@ -44,6 +44,7 @@ public class HttpRequestHandler {
     }
 
     private static byte[] handleUserCreateRequest(Object request) throws UnsupportedEncodingException {
+        logger.info("HERE!");
         String paramString = ((HttpRequest) request).uri().split("\\?")[1];
         String[] parameters = paramString.split("&");
         Map<String, String> paramPair = new HashMap();

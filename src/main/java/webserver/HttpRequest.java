@@ -8,6 +8,7 @@ public abstract class HttpRequest {
 
     public interface Builder {
         public HttpRequest.Builder uri(String uri);
+        public HttpRequest.Builder path(String path);
         public HttpRequest.Builder version(String version);
         public HttpRequest.Builder setHeader(String name, String value);
         public HttpRequest.Builder method(String method);
@@ -21,6 +22,8 @@ public abstract class HttpRequest {
     public abstract String method();
 
     public abstract String uri();
+
+    public abstract String path();
 
     public abstract String version();
 

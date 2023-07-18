@@ -27,7 +27,7 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = HttpRequestParser.parseHttpRequest(in);
 
-            byte[] body = HttpRequestHandler.handleGetStaticRequest(request);
+            byte[] body = HttpRequestHandler.handleRequest(request);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {

@@ -28,7 +28,7 @@ public class HttpRequestParser {
         while (oneLine.length() != 0) {
             String[] header = oneLine.split(":");
             builder.setHeader(header[0].trim(), header[1].trim());
-            logger.info("HEADERS: {}", oneLine);
+//            logger.info("HEADERS: {}", oneLine);
             oneLine = bufferedReader.readLine();
         }
     }
@@ -36,7 +36,8 @@ public class HttpRequestParser {
     private static void parseFirstLine(HttpRequest.Builder builder, String firstLine) {
         String[] tokens = firstLine.split(" ");
         builder.method(tokens[0].trim())
-                .uri("localhost:8080" + tokens[1].trim())
+                .uri(tokens[1].trim())
+                .path(tokens[1].split("\\?")[0])
                 .version(tokens[2].trim());
     }
 }

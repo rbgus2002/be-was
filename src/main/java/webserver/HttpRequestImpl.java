@@ -5,6 +5,7 @@ import java.util.Map;
 public class HttpRequestImpl extends HttpRequest {
     private String method;
     private String uri;
+    private String path;
     private String version;
     private Map<String, String> headers;
     private Map<String, String> body;
@@ -12,6 +13,7 @@ public class HttpRequestImpl extends HttpRequest {
     HttpRequestImpl(HttpRequestBuilderImpl builder) {
         this.method = builder.method();
         this.uri = builder.uri();
+        this.path = builder.path();
         this.version = builder.version();
         this.headers = builder.headers();
         this.body = builder.headers();
@@ -26,6 +28,9 @@ public class HttpRequestImpl extends HttpRequest {
     public String uri() {
         return uri;
     }
+
+    @Override
+    public String path() { return path; }
 
     @Override
     public String version() {

@@ -6,6 +6,7 @@ import java.util.Map;
 public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     private String method;
     private String uri;
+    private String path;
     private String version;
     private Map<String, String> headers;
     private Map<String, String> body;
@@ -18,6 +19,12 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     @Override
     public HttpRequest.Builder uri(String uri) {
         this.uri = uri;
+        return this;
+    }
+
+    @Override
+    public HttpRequest.Builder path(String path) {
+        this.path = path;
         return this;
     }
 
@@ -45,6 +52,8 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     }
 
     String uri() { return  uri; }
+
+    String path() { return path; }
 
     String method() { return method; }
 
