@@ -13,12 +13,12 @@ public abstract class HttpController {
     public static HttpController of(String url) {
         if (url.equals("/")) {
             return new HomeController();
-        }else if (url.equals("/user/create")) {
+        } else if (url.equals("/user/create")) {
             return new JoinController();
         } else {
             return new DefaultController();
         }
     }
 
-    public abstract void service(HttpRequest request, HttpResponse response) throws IOException;
+    public abstract void process(HttpRequest request, HttpResponse response) throws IOException;
 }

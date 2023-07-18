@@ -9,12 +9,11 @@ import java.io.IOException;
 
 public class JoinController extends HttpController {
     @Override
-    public void service(HttpRequest request, HttpResponse response) throws IOException {
+    public void process(HttpRequest request, HttpResponse response) throws IOException {
         response.setRedirect("/index.html");
         Database.addUser(new User(request.getParams()));
         for (User user : Database.findAll()) {
             logger.debug("{}", user);
         }
-        response.send();
     }
 }

@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class DefaultController extends HttpController {
     @Override
-    public void service(HttpRequest request, HttpResponse response) throws IOException {
+    public void process(HttpRequest request, HttpResponse response) throws IOException {
         Path path;
         byte[] body;
         try {
@@ -23,6 +23,5 @@ public class DefaultController extends HttpController {
         String filename = path.getFileName().toString();
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
         response.setBody(body, extension);
-        response.send();
     }
 }
