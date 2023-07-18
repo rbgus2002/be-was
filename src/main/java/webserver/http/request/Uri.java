@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Uri {
-    private final String ERROR_MESSAGE = "Uri 형식이 맞지 않습니다. request 정보를 확인해주세요";
     private String path;
     private Map<String, String> query = new HashMap<>();
 
@@ -37,9 +36,9 @@ public class Uri {
         return path;
     }
 
-//    public Map<String, String> getQuery() {
-//        return query;
-//    }
+    public Map<String, String> getQuery() {
+        return query;
+    }
 
     private String getQueryString(){
         if(query.size() == 0){

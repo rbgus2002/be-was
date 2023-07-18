@@ -12,6 +12,7 @@ import static utils.StringUtils.*;
 
 public class HttpRequest {
     private final HttpRequestLine requestLine; // responseLine과 합쳐서 statusLine이라고 부름
+    private final String HTML = "html";
     private final Map<String, String> header = new HashMap<>();
 
     private HttpRequest(InputStream in) throws IOException {
@@ -53,5 +54,13 @@ public class HttpRequest {
 
     public String getPath() {
         return requestLine.getUri().getPath();
+    }
+
+    public Map<String, String> getQuery(){
+        return requestLine.getUri().getQuery();
+    }
+
+    public boolean requestStaticFile(){
+        return getPath().endsWith(HTML);
     }
 }

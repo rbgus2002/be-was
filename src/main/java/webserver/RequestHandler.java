@@ -1,6 +1,7 @@
 package webserver;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.file.Files;
 
@@ -11,7 +12,6 @@ import webserver.http.response.HttpResponse;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
     private Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -24,15 +24,10 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // 요구사항 : 서버로 들어오는 요청을 log.debug를 이용해 출력한다
-            HttpRequest request = HttpRequest.from(in);
-            logger.debug("{}", request);
-
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + request.getPath()).toPath());
-
-            HttpResponse.response(dos, body);
-        } catch (IOException e) {
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
+            dispatcherServlet.doService(in, out);
+        } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException e) {
             logger.error(e.getMessage());
         }
     }
