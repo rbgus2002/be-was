@@ -6,6 +6,7 @@ import java.util.Map;
 public class HttpResponse {
     private HttpStatus status;
     private final Map<String, String> headers;
+    private byte[] body;
 
     public HttpResponse() {
         headers = new LinkedHashMap<>();
@@ -19,7 +20,22 @@ public class HttpResponse {
         headers.put(name, value);
     }
 
-    public String getMessage() {
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
+
+    public boolean isBodyEmpty() {
+        return body == null;
+    }
+
+    public int getBodyLength() {
+        if (body.length > 0) {
+            return body.length;
+        }
+        return 0;
+    }
+
+    public String getHeaderMessage() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(status.getStatusLine()).append(HttpConstant.CRLF);
 
@@ -30,5 +46,13 @@ public class HttpResponse {
         stringBuilder.append(HttpConstant.CRLF);
 
         return stringBuilder.toString();
+    }
+
+    public byte[] getHeaderBytes() {
+        return getHeaderMessage().getBytes();
+    }
+
+    public byte[] getBodyBytes() {
+        return body;
     }
 }

@@ -2,7 +2,10 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.HttpConstant;
 import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,47 +29,42 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
-
             HttpRequest httpRequest = new HttpRequest(in);
-            byte[] body = readTemplateFile(httpRequest.getURI());
+            HttpResponse httpResponse = new HttpResponse();
 
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            readFileToResponseBody(httpResponse, httpRequest.getURI());
+
+            sendResponse(httpResponse, dos);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+    private void sendResponse(HttpResponse httpResponse, DataOutputStream dos) throws IOException {
+        dos.write(httpResponse.getHeaderBytes());
+        dos.write(HttpConstant.CRLF.getBytes());
+        if (!httpResponse.isBodyEmpty()) {
+            dos.write(httpResponse.getBodyBytes());
         }
+        dos.flush();
     }
 
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private byte[] readTemplateFile(String URI) throws IOException {
+    private void readFileToResponseBody(HttpResponse httpResponse, String URI) throws IOException {
         Path path = Paths.get(TEMPLATES_DIRECTORY + URI);
 
-        if (URI.equals("/")) {
-            return readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/index.html"));
-        }
         if (Files.exists(path) && !Files.isDirectory(path)) {
-            return readBytesFromFile(path);
+            httpResponse.setBody(readBytesFromFile(path));
+            httpResponse.setStatus(HttpStatus.OK);
+        } else if (URI.equals("/")) {
+            httpResponse.setBody(readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/index.html")));
+            httpResponse.setStatus(HttpStatus.OK);
+        } else {
+            httpResponse.setBody(readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/404.html")));
+            httpResponse.setStatus(HttpStatus.NOT_FOUND);
         }
-        return readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/404.html"));
+
+        httpResponse.setHeader(HttpConstant.CONTENT_TYPE, "text/html;charset=utf-8");
+        httpResponse.setHeader(HttpConstant.CONTENT_LENGTH, String.valueOf(httpResponse.getBodyLength()));
     }
 
     private byte[] readBytesFromFile(Path path) throws IOException {

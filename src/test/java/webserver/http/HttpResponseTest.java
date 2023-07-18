@@ -25,7 +25,7 @@ class HttpResponseTest {
         httpResponse.setHeader(HttpConstant.AUTHORIZATION, "Bearer ABCD1234");
 
         //then
-        Assertions.assertEquals(responseMessage, httpResponse.getMessage());
+        Assertions.assertEquals(responseMessage, httpResponse.getHeaderMessage());
     }
 
 }
