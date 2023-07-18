@@ -20,9 +20,9 @@ class HttpResponseTest {
         //when
         HttpResponse httpResponse = new HttpResponse();
         httpResponse.setStatus(HttpStatus.OK);
-        httpResponse.setHeader(HttpHeaderName.CONTENT_TYPE.getName(), "text/html;charset=utf-8");
-        httpResponse.setHeader(HttpHeaderName.CONTENT_LENGTH.getName(), "0");
-        httpResponse.setHeader(HttpHeaderName.AUTHORIZATION.getName(), "Bearer ABCD1234");
+        httpResponse.setHeader(HttpConstant.CONTENT_TYPE, "text/html;charset=utf-8");
+        httpResponse.setHeader(HttpConstant.CONTENT_LENGTH, "0");
+        httpResponse.setHeader(HttpConstant.AUTHORIZATION, "Bearer ABCD1234");
 
         //then
         Assertions.assertEquals(responseMessage, httpResponse.getMessage());

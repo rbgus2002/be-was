@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class HttpResponse {
     private HttpStatus status;
-    private Map<String, String> headers;
+    private final Map<String, String> headers;
 
     public HttpResponse() {
         headers = new LinkedHashMap<>();
@@ -21,13 +21,13 @@ public class HttpResponse {
 
     public String getMessage() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(status.getStatusLine()).append(HttpHeaderName.CRLF.getName());
+        stringBuilder.append(status.getStatusLine()).append(HttpConstant.CRLF);
 
         for (String key : headers.keySet()) {
-            stringBuilder.append(key).append(": ").append(headers.get(key)).append(HttpHeaderName.CRLF.getName());
+            stringBuilder.append(key).append(": ").append(headers.get(key)).append(HttpConstant.CRLF);
         }
 
-        stringBuilder.append(HttpHeaderName.CRLF.getName());
+        stringBuilder.append(HttpConstant.CRLF);
 
         return stringBuilder.toString();
     }

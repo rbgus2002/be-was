@@ -38,9 +38,9 @@ public class HttpRequest {
         String requestLine = bufferedReader.readLine();
         StringTokenizer stringTokenizer = new StringTokenizer(requestLine);
 
-        headers.put(HttpHeaderEnums.METHOD.getString(), stringTokenizer.nextToken());
-        headers.put(HttpHeaderEnums.URI.getString(), stringTokenizer.nextToken());
-        headers.put(HttpHeaderEnums.VERSION.getString(), stringTokenizer.nextToken());
+        headers.put(HttpConstant.METHOD, stringTokenizer.nextToken());
+        headers.put(HttpConstant.URI, stringTokenizer.nextToken());
+        headers.put(HttpConstant.VERSION, stringTokenizer.nextToken());
     }
 
     private void parseOtherHeaders(BufferedReader bufferedReader) throws IOException {
@@ -55,7 +55,7 @@ public class HttpRequest {
 
     private void parseBody(BufferedReader bufferedReader) throws IOException {
         if (bufferedReader.ready()) {
-            String body = bufferedReader.lines().collect(Collectors.joining(HttpHeaderEnums.CRLF.getString()));
+            String body = bufferedReader.lines().collect(Collectors.joining(HttpConstant.CRLF));
             headers.put("body", body);
             return;
         }
@@ -71,6 +71,6 @@ public class HttpRequest {
     }
 
     public String getURI() {
-        return headers.get(HttpHeaderEnums.URI.getString());
+        return headers.get(HttpConstant.URI);
     }
 }
