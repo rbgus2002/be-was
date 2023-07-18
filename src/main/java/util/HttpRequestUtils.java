@@ -39,12 +39,12 @@ public class HttpRequestUtils {
         return method;
     }
 
-    public static String getPath(String header) {
+    public static String getUrl(String header) {
         String[] tokens = header.split(" ");
-        String path = tokens[1];
-        logger.debug("request path: {}", path);
+        String url = tokens[1];
+        logger.debug("request url: {}", url);
 
-        return path;
+        return url;
     }
 
     public static boolean isValidPath(String path) {

@@ -24,10 +24,11 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             String header = HttpRequestUtils.getRequestHeader(in);
             String method = HttpRequestUtils.getMethod(header);
-            String path = HttpRequestUtils.getPath(header);
+            String url = HttpRequestUtils.getUrl(header);
+
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = getBody(path);
+            byte[] body = getBody(url);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
