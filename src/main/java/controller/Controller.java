@@ -32,4 +32,9 @@ public class Controller {
 
         return HttpResponse.redirect();
     }
+
+    @GetMapping(value = "/test")
+    public HttpResponse test() throws IOException {
+        return null;
+    }
 }

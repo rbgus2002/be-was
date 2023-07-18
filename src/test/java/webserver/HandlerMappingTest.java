@@ -10,8 +10,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
@@ -41,5 +43,18 @@ class HandlerMappingTest {
 
         // then
         HandlerMapping.getHandler(request);
+    }
+
+    @Test
+    @DisplayName("Controller의 메소드를 미리 Map에 할당해둔다")
+    void confirmStaticMap() throws IOException {
+        // given
+        HttpRequest request = HttpRequest.from(in);
+
+        // when
+        Method method = HandlerMapping.getHandler(request);
+
+        // then
+        assertEquals("createUser", method.getName());
     }
 }

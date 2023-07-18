@@ -39,11 +39,12 @@ public class HttpResponse {
 
         if(status == OK){
             response200Header(dos);
-        }else if(status == BAD_REQUEST){
-            response400Header(dos);
-        }else if(status == NOT_FOUND){
-            response404Header(dos);
         }
+//        else if(status == BAD_REQUEST){
+//            response400Header(dos);
+//        }else if(status == NOT_FOUND){
+//            response404Header(dos);
+//        }
 
         responseBody(dos);
     }
