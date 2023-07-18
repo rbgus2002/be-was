@@ -21,8 +21,10 @@ Java Web Application Server 2023
 - [x] Java Thread 기반에서 Concurrent 패키지 사용하도록 수정
 - [x] Github 위키에 학습 내용 기록
 #### Web Server step-2
-- [ ] GET을 통한 회원가입 구현
-
+- [x] GET을 통한 회원가입 구현
+  - [x] Dispatcher Servlet 구현
+#### Web Server step-3
+- [ ] 다양한 Content-Type 지원하도록 구현
 
 ## To Study List
 #### Web Server step-1
@@ -33,3 +35,4 @@ Java Web Application Server 2023
   - [x] Concurrent 패키지 학습
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
+#### Web Server step-3
