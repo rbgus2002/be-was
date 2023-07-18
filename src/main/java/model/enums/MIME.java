@@ -8,6 +8,7 @@ public enum MIME {
     PNG("image/png"),
     JPG("image/jpg"),
     JSON("application/json"),
+    URL_ENCODED("application/x-www-form-urlencoded"),
     ;
 
     private final String contentType;
