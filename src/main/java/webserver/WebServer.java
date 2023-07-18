@@ -29,7 +29,7 @@ public class WebServer {
             while ((connection = listenSocket.accept()) != null) {
                 Runnable requestHandler = new RequestHandler(connection);
                 ExecutorService executors = Executors.newFixedThreadPool(10);
-                executors.execute(requestHandler);
+                executors.submit(requestHandler);
             }
         }
     }
