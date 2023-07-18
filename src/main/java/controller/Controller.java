@@ -34,13 +34,17 @@ public class Controller {
 
     @RequestMapping(path = "/user/login", method = HttpUtils.Method.POST)
     public HttpResponse login(Map<String, String> parameters) {
-        User newUser = ModelConverter.toUser(parameters);
-        User user = Database.findUserById(newUser.getUserId())
+        String userId = parameters.get("userId");
+        String password = parameters.get("password");
+        validateLogin(userId, password);
+        return HttpResponse.redirect("/index.html");
+    }
+
+    private void validateLogin(String userId, String password) {
+        User user = Database.findUserById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다."));
-        if (!user.getPassword().equals(parameters.get("password"))) {
+        if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다.");
         }
-        Database.addUser(newUser);
-        return HttpResponse.redirect("/index.html");
     }
 }
