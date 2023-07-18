@@ -44,7 +44,7 @@ public class HttpResponse {
         }
 
         public HttpResponse.Builder body(byte[] body) {
-            this.body = body.clone();
+            this.body = body;
             return this;
         }
 
