@@ -23,7 +23,7 @@ public class HttpWasResponse {
 	private static final String REQUEST_LINE = "HTTP/1.1 %s %s\r\n";
 	private final DataOutputStream dos;
 	private HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-	private HttpResponseHeader header = new HttpResponseHeader();
+	private final HttpResponseHeader header = new HttpResponseHeader();
 	private byte[] body = new byte[0];
 
 
