@@ -28,6 +28,10 @@ public class HttpRequest {
         return requestLine.getVersion();
     }
 
+    public ContentType getContentType() {
+        return requestLine.getContentType();
+    }
+
     public Map<String, String> getParams() {
         return requestLine.getParams();
     }

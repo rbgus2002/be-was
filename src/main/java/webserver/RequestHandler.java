@@ -17,7 +17,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
 
-import static common.ContentType.HTML;
 import static common.ResponseCode.OK;
 
 
@@ -52,7 +51,8 @@ public class RequestHandler implements Runnable {
             byte[] body = Files.readAllBytes(new File(path).toPath());
 
             // Response 객체 생성
-            HttpResponse response = HttpResponseUtils.createDefaultHeaderResponse(request.getVersion(), OK, HTML, body);
+            HttpResponse response = HttpResponseUtils.createDefaultHeaderResponse(
+                    request.getVersion(), OK, request.getContentType(), body);
 
             // HTTP 응답 보내기
             HttpResponseUtils.sendResponse(out, response);

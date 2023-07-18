@@ -1,5 +1,6 @@
 package utils;
 
+import common.ContentType;
 import common.HttpRequest;
 import common.Method;
 import common.RequestLine;
@@ -11,6 +12,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import static common.ContentType.*;
 
 public class HttpRequestUtils {
 
@@ -45,6 +48,8 @@ public class HttpRequestUtils {
             throw new RuntimeException("잘못된 URI 형식");
         }
 
+        ContentType contentType = parseContentType(uri);
+
         Map<String, String> params = new HashMap<>();
         String[] parts = uri.split("\\?");
 
@@ -63,7 +68,29 @@ public class HttpRequestUtils {
             }
         }
 
-        return new RequestLine(Method.valueOf(method), path, version, params);
+        return new RequestLine(Method.valueOf(method), path, version, contentType, params);
+    }
+
+    private static ContentType parseContentType(String uri) {
+        if (uri.endsWith(".html")) {
+            return HTML;
+        }
+        if (uri.endsWith(".css")) {
+            return CSS;
+        }
+        if (uri.endsWith(".js")) {
+            return JS;
+        }
+        if (uri.endsWith(".png")) {
+            return PNG;
+        }
+        if (uri.endsWith(".jpg")) {
+            return JPG;
+        }
+        if (uri.endsWith(".ico")) {
+            return ICO;
+        }
+        return NONE;
     }
 
     private static void parseHeader(String line, Map<String, String> headers) {

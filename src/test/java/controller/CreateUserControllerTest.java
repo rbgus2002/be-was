@@ -1,5 +1,6 @@
 package controller;
 
+import common.ContentType;
 import common.HttpRequest;
 import common.RequestLine;
 import db.Database;
@@ -44,7 +45,7 @@ class CreateUserControllerTest {
 
     private HttpRequest createRequest(Map<String, String> params) {
         return new HttpRequest(
-                new RequestLine(GET, "/create", "HTTP/1.1", params),
+                new RequestLine(GET, "/create", "HTTP/1.1", ContentType.HTML, params),
                 null,
                 null
         );
