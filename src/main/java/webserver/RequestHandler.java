@@ -72,9 +72,9 @@ public class RequestHandler implements Runnable {
          Headers
          */
         Map<String, String> headerMap = new HashMap<>();
-        String line = readSingleHTTPLine(br);
+        String line = readSingleHTTPLine(br).replace(" ", "");
         while(!line.equals("")) {
-            tokens = line.split(": ");
+            tokens = line.split(":");
             headerMap.put(tokens[0], tokens[1]);
             line = readSingleHTTPLine(br);
         }
