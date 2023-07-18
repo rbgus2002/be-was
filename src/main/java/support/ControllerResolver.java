@@ -114,8 +114,8 @@ public abstract class ControllerResolver {
             if (hasMethod.get()) {
                 throw new MethodNotAllowedException();
             }
+            throw new NotSupportedException();
         }
-        throw new NotSupportedException();
     }
 
 }

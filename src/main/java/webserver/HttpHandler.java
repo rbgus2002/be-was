@@ -9,7 +9,10 @@ import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 import webserver.response.MIME;
-import webserver.response.strategy.*;
+import webserver.response.strategy.Found;
+import webserver.response.strategy.NoHeader;
+import webserver.response.strategy.NotFound;
+import webserver.response.strategy.OK;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,10 +36,15 @@ public class HttpHandler {
     public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
         String path = request.getRequestPath();
 
-        interceptController(request, response, path);
+        if (interceptController(request, response, path)) {
+            return;
+        }
+
+        response.setStatus(HttpStatus.NOT_FOUND);
+        response.buildHeader(new NotFound());
     }
 
-    private boolean interceptController(HttpRequest request, HttpResponse response, String path)  {
+    private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
         try {
             ControllerResolver.invoke(path, request);
             response.setStatus(HttpStatus.FOUND);

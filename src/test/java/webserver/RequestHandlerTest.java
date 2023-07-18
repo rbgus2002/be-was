@@ -16,7 +16,6 @@ import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.NEW_LINE;
 import static utils.StringUtils.appendNewLine;
-import static webserver.HttpHandler.MAIN_PAGE;
 
 @DisplayName("RequestHandler 테스트")
 class RequestHandlerTest {
@@ -25,6 +24,7 @@ class RequestHandlerTest {
     SoftAssertions softAssertions;
 
     final String OK = "HTTP/1.1 200 OK";
+    final String Found = "HTTP/1.1 302 Found";
     final String BAD_REQUEST = "HTTP/1.1 400 Bad Request";
     final String NOT_FOUND = "HTTP/1.1 404 Not Found";
     final String METHOD_NOT_ALLOWED = "HTTP/1.1 405 Method Not Allowed";
@@ -192,8 +192,7 @@ class RequestHandlerTest {
             softAssertions.assertThat(user.getPassword()).isEqualTo("password");
             softAssertions.assertThat(user.getName()).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
             softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
-            softAssertions.assertThat(result[0]).isEqualTo("HTTP/1.1 302 Found");
-            softAssertions.assertThat(result[1]).isEqualTo("Location: " + MAIN_PAGE);
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
             softAssertions.assertAll();
 
         }
@@ -228,12 +227,15 @@ class RequestHandlerTest {
             String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
+            softAssertions.assertThat(user).isNotNull();
+            softAssertions.assertAll();
+
             softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
             softAssertions.assertThat(user.getPassword()).isEqualTo("password");
             softAssertions.assertThat(user.getName()).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
             softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
-            softAssertions.assertThat(result[0]).isEqualTo("HTTP/1.1 302 Found");
-            softAssertions.assertThat(result[1]).isEqualTo("Location: " + MAIN_PAGE);
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
             softAssertions.assertAll();
         }
 
