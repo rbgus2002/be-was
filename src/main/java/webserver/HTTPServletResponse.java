@@ -22,4 +22,12 @@ public class HTTPServletResponse {
         this.body = body;
         this.header = header;
     }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public byte[] getBody() {
+        return body;
+    }
 }
