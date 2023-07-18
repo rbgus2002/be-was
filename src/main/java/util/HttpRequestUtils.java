@@ -41,6 +41,6 @@ public class HttpRequestUtils {
 
     public static boolean isValidPath(String path) {
         String[] splitPath = path.split("\\.");
-        return splitPath[0].charAt(0) == '/' && splitPath[1].equals("html");
+        return splitPath[0].startsWith("/") && splitPath[1].equals("html");
     }
 }
