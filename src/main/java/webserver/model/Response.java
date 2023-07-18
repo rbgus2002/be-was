@@ -61,6 +61,9 @@ public class Response {
     public static final String HEADER_CONTENT_LENGTH = "Content-Length";
     public static final String HEADER_HTTP_VERSION = "1.1";
     public static final String HEADER_REDIRECT_LOCATION = "Location";
+    public static final String HEADER_SET_COOKIE = "Set-Cookie";
+    public static final String HEADER_SESSION_ID = "sid=";
+    public static final String HEADER_COOKIE_PATH = "; Path=/";
     public static final String INDEX_URL = "/index.html";
 
     private final STATUS status;
