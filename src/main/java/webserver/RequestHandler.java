@@ -54,6 +54,7 @@ public class RequestHandler implements Runnable {
         String extension = FileUtils.getExtension(path);
         HttpResponse httpResponse;
         if (!Objects.equals(extension, path)) {
+            // 정적 파일 응답
             httpResponse = HttpResponse.ok(path, httpRequest.mime());
         } else {
             // 잘못된 http request이면 /error.html response 생성
