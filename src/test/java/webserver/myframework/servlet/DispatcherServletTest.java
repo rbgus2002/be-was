@@ -31,21 +31,24 @@ class DispatcherServletTest {
     @BeforeEach
     void setUp() throws ReflectiveOperationException, DuplicateRequestHandlerException {
         RequestHandlerResolver handlerResolver = new RequestHandlerResolverImpl();
-        handlerResolver.registerHandler(getTestRequestInfo(), getTestHandler());
+        handlerResolver.registerHandler(
+                getTestRequestInfo("/exist"), getTestHandler("existHandler"));
+        handlerResolver.registerHandler(
+                getTestRequestInfo("/notExist"), getTestHandler("notExistHandler"));
         dispatcherServlet = new DispatcherServlet(handlerResolver, new StaticViewResolverImpl());
     }
 
-    private static RequestInfo getTestRequestInfo() {
+    private static RequestInfo getTestRequestInfo(String uri) {
         return RequestInfo.builder()
-                .uri("/test")
+                .uri(uri)
                 .httpMethod(HttpMethod.GET)
                 .build();
     }
 
-    private static RequestHandlerImpl getTestHandler() throws NoSuchMethodException {
+    private static RequestHandlerImpl getTestHandler(String methodName) throws NoSuchMethodException {
         return new RequestHandlerImpl(
                 new TestController(),
-                TestController.class.getMethod("testHandler", HttpRequest.class, HttpResponse.class));
+                TestController.class.getMethod(methodName, HttpRequest.class, HttpResponse.class));
     }
 
     @Nested
@@ -103,7 +106,7 @@ class DispatcherServletTest {
             void render405ErrorPage() throws IOException {
                 //given
                 HttpRequest httpRequest = HttpRequest.builder()
-                        .uri("/test")
+                        .uri("/exist")
                         .method(HttpMethod.POST).build();
                 HttpResponse httpResponse = HttpResponse.getInstance();
 
@@ -126,31 +129,52 @@ class DispatcherServletTest {
                 @DisplayName("핸들러에게 요청을 위임한다")
                 void delegateRequestToHandler() throws IOException {
                     HttpRequest httpRequest = HttpRequest.builder()
-                            .uri("/index.html")
-                            .method(HttpMethod.POST).build();
+                            .uri("/exist")
+                            .method(HttpMethod.GET).build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
 
                     //when
                     dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
                     //then
-                    Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/form.html"));
+                    assertThat(httpResponse.getBody())
+                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/form.html")));
                 }
             }
             
             @Nested
-            @DisplayName("응답의 URI에 해당하는 파일이 존재하는 경우")
+            @DisplayName("응답의 URI에 해당하는 파일이 존재하지 않는 경우")
             class FileMatchedResponseURINotExist {
-                
+                @Test
+                @DisplayName("404 에러 페이지를 렌더링한다")
+                void render404ErrorPage() throws IOException {
+                    HttpRequest httpRequest = HttpRequest.builder()
+                            .uri("/notExist")
+                            .method(HttpMethod.GET).build();
+                    HttpResponse httpResponse = HttpResponse.getInstance();
+
+                    //when
+                    dispatcherServlet.handleRequest(httpRequest, httpResponse);
+
+                    //then
+                    assertThat(httpResponse.getBody())
+                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/errors/404.html")));
+                }
             }
         }
     }
 
+    @SuppressWarnings("unused")
     @Controller
-    static class TestController {
-        @RequestMapping("/test")
-        public void testHandler(HttpRequest request, HttpResponse response) {
+    public static class TestController {
+        @RequestMapping("/exist")
+        public void existHandler(HttpRequest request, HttpResponse response) {
             response.setUri("/user/form.html");
+        }
+
+        @RequestMapping("/notExist")
+        public void notExistHandler(HttpRequest request, HttpResponse response) {
+            response.setUri("/notExist/notExist");
         }
     }
 }

@@ -19,7 +19,7 @@ import java.io.IOException;
 public class DispatcherServlet {
     private final RequestHandlerResolver requestHandlerResolver;
     private final ViewResolver viewResolver;
-    private static final String ERROR_URI = "/errors";
+    private static final String ERROR_URI = "/errors/";
 
     @Autowired
     public DispatcherServlet(RequestHandlerResolver requestHandlerResolver,
@@ -44,7 +44,7 @@ public class DispatcherServlet {
         HttpStatus httpResponseStatus = httpResponse.getStatus();
         if (httpResponseStatus.getStatusNumber() >= 400 &&
             !httpResponseStatus.equals(HttpStatus.NOT_FOUND)) {
-            uri = ERROR_URI + httpResponse.getStatus().getStatusNumber();
+            uri = ERROR_URI + httpResponse.getStatus().getStatusNumber() + ".html";
         }
 
         if (!uri.equals(HttpResponse.NOT_RENDER_URI)) {
