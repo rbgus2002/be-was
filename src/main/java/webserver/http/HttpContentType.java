@@ -1,16 +1,24 @@
 package webserver.http;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.util.HashMap;
+import java.util.Map;
 
 public class HttpContentType {
 
     private static final HttpContentType httpContentType = new HttpContentType();
-    private final HashMap<String, String> extension = new HashMap<>();
+    private final ImmutableMap<String, String> extension;
 
     private HttpContentType() {
+        Map<String, String> tmpMap = new HashMap<>();
         for(MimeType mimeType : MimeType.values()) {
-            extension.put(mimeType.getExtension(), mimeType.getMimeType());
+            tmpMap.put(mimeType.getExtension(), mimeType.getMimeType());
         }
+
+        extension = ImmutableMap.<String, String>builder()
+                .putAll(tmpMap)
+                .build();
     }
 
     public static HttpContentType createHttpContentType() {

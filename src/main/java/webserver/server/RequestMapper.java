@@ -1,19 +1,21 @@
 package webserver.server;
 
+import com.google.common.collect.ImmutableMap;
 import controller.Controller;
 import controller.HomeController;
 import controller.SignupController;
 
-import java.util.HashMap;
 
 public class RequestMapper {
-    private final HashMap<String, Controller> map = new HashMap<>();
+    private final ImmutableMap<String, Controller> map;
     private static final RequestMapper requestMapper = new RequestMapper();
 
     private RequestMapper() {
-        map.put("/", new HomeController());
-        map.put("/index.html", new HomeController());
-        map.put("/user/create", new SignupController());
+        map = ImmutableMap.<String, Controller>builder()
+                .put("/", new HomeController())
+                .put("/index.html", new HomeController())
+                .put("/user/create", new SignupController())
+                .build();
     }
 
     public static RequestMapper createRequestMapper() {

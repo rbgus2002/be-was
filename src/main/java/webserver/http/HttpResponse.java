@@ -3,7 +3,7 @@ package webserver.http;
 
 public class HttpResponse {
 
-    RequestMessageHeader requestMessageHeader;
+    private final RequestMessageHeader requestMessageHeader;
     //todo: responseBody 넣기
 
 
