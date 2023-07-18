@@ -99,7 +99,7 @@ class HttpRequestUtilsTest {
                 "Connection: keep-alive\r\n"+
                 "Accept: */*\r\n"+
                 "\r\n"+
-                body + "\r\n";
+                body;
     }
 
     private void verifyRequestLine(

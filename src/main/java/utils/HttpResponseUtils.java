@@ -8,8 +8,7 @@ import java.io.OutputStream;
 
 public class HttpResponseUtils {
 
-    private HttpResponseUtils() {
-    }
+    private HttpResponseUtils() {}
 
     public static void sendResponse(OutputStream out, HttpResponse response) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);

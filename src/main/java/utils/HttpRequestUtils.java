@@ -32,7 +32,7 @@ public class HttpRequestUtils {
 
         StringBuilder bodyBuilder = new StringBuilder();
         while (br.ready()) {
-            parseBody(br.readLine(), bodyBuilder);
+            parseBody((char) br.read(), bodyBuilder);
         }
 
         return new HttpRequest(requestLine, headers, bodyBuilder.toString());
@@ -98,7 +98,7 @@ public class HttpRequestUtils {
         headers.put(headerForm[0], headerForm[1]);
     }
 
-    private static void parseBody(String line, StringBuilder bodyBuilder) {
-        bodyBuilder.append(line);
+    private static void parseBody(char text, StringBuilder bodyBuilder) {
+        bodyBuilder.append(text);
     }
 }
