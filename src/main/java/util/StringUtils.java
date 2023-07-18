@@ -14,6 +14,8 @@ public class StringUtils {
     public static final String COLON_MARK = ":";
     public static final String COMMA_MARK = "\\.";
 
+    private StringUtils() {}
+
     public static String[] splitBy(String text, String regex){
         return text.split(regex);
     }

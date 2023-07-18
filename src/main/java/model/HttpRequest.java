@@ -10,12 +10,52 @@ public class HttpRequest {
     private final HttpHeader httpHeader;
     private final String body;
 
-    public HttpRequest(RequestUri requestUri, String protocol, Method method, HttpHeader httpHeader, String body) {
-        this.requestUri = requestUri;
-        this.protocol = protocol;
-        this.method = method;
-        this.httpHeader = httpHeader;
-        this.body = body;
+    public static class Builder {
+        private RequestUri requestUri;
+        private String protocol;
+        private Method method;
+        private HttpHeader httpHeader;
+        private String body;
+
+        public Builder() {
+        }
+
+        public Builder requestUri(RequestUri uri) {
+            this.requestUri = uri;
+            return this;
+        }
+
+        public Builder protocol(String protocol) {
+            this.protocol = protocol;
+            return this;
+        }
+
+        public Builder method(Method method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder httpHeader(HttpHeader header) {
+            this.httpHeader = header;
+            return this;
+        }
+
+        public Builder body(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(this);
+        }
+    }
+
+    public HttpRequest(Builder builder) {
+        requestUri = builder.requestUri;
+        method = builder.method;
+        protocol = builder.protocol;
+        httpHeader = builder.httpHeader;
+        body = builder.body;
     }
 
     public boolean match(Method method, String uri) {

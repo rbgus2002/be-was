@@ -1,10 +1,6 @@
 package model;
 
 import model.enums.HttpStatusCode;
-import model.enums.MIME;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static util.StringUtils.NEXTLINE;
 import static util.StringUtils.SPACE;
@@ -15,7 +11,6 @@ public class HttpResponse {
     private final HttpHeader httpHeader;
     private final String body;
 
-    // TODO 빌더 패턴 적용하기
     private HttpResponse(String protocol, HttpStatusCode statusCode, HttpHeader header, String body) {
         this.protocol = protocol;
         this.statusCode = statusCode;
@@ -23,7 +18,7 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header,String body) {
+    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header, String body) {
         return new HttpResponse(
                 httpRequest.getProtocol(),
                 statusCode,
