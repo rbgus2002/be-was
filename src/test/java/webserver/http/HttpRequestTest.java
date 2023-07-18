@@ -2,12 +2,14 @@ package webserver.http;
 
 import controller.SignupController;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpMethod;
 
+import java.util.HashMap;
 import java.util.Map;
 
 class HttpRequestTest {
@@ -25,7 +27,7 @@ class HttpRequestTest {
 
     @BeforeEach
     void setup() {
-        httpRequest = new HttpRequest(METHOD + " " +  URL +
+        httpRequest = new HttpRequest(METHOD + " " + URL +
                 "?" + SignupController.USERID_KEY + "=" + USERID_VAL + "&" +
                 SignupController.PASSWORD_KEY + "=" + PASSWORD_VAL + "&" +
                 SignupController.NAME_KEY + "=" + NAME_VAL + "&" +
@@ -50,7 +52,7 @@ class HttpRequestTest {
 
 
     @Test
-    @DisplayName("쿼리 파싱이 제대로 되는지?")
+    @DisplayName("Get 방식의 쿼리 파싱이 되는지?")
     void query_parsing() {
         //given
         Map<String, String> queries = httpRequest.getFormDataMap();
@@ -67,16 +69,88 @@ class HttpRequestTest {
     }
 
     @Test
-    @DisplayName("비정상 값이 들어온다면 어떻게 되는지?")
+    @DisplayName("비정상 Request Header가 들어온다면 어떻게 되는지?")
     void not_correct() {
         //given
 
         //when
 
         //then
-        softAssertions.assertThatCode(() -> new HttpRequest("error",null)).isEqualTo(RuntimeException.class);
-        softAssertions.assertThatCode(() -> new HttpRequest("GET error",null)).isEqualTo(RuntimeException.class);
+        softAssertions.assertThatCode(() -> new HttpRequest("error", null)).isInstanceOf(RuntimeException.class);
+        softAssertions.assertThatCode(() -> new HttpRequest("GET error", null)).isInstanceOf(RuntimeException.class);
+
+        softAssertions.assertAll();
     }
 
+    @Test
+    @DisplayName("Body Data가 Post방식으로 들어오면 어떻게 되는지?")
+    void post_body() {
+        //given
+        httpRequest = new HttpRequest("POST /create/user HTTP/1.1", "test=1&test2=2");
+
+        //when
+        HashMap<String, String> testMap = new HashMap<>();
+        testMap.put("test", "1");
+        testMap.put("test2", "2");
+
+        //then
+        Assertions.assertEquals(testMap, httpRequest.getFormDataMap());
+    }
+
+    @Test
+    @DisplayName("Body Data가 Get방식으로 들어오면 어떻게 되는지?")
+    void get_body() {
+        //given
+        httpRequest = new HttpRequest("GET /create/user HTTP/1.1", "test=1&test2=2");
+
+        //when
+
+        //then
+        Assertions.assertNull(httpRequest.getFormDataMap());
+    }
+
+
+    @Test
+    @DisplayName("Post 방식으로 query가 넘어오면 어떻게 되는지?")
+    void post_query() {
+        //given
+        httpRequest = new HttpRequest("POST /create/user?test11=11&test22=22 HTTP/1.1", null);
+
+        //when
+
+        //then
+        Assertions.assertNull(httpRequest.getFormDataMap());
+    }
+
+    @Test
+    @DisplayName("Post 방식으로 query랑 body data 둘 다 넘어오면 어떻게 되는지?")
+    void post_query_body() {
+
+        //given
+        httpRequest = new HttpRequest("POST /create/user?test11=11&test2=22 HTTP/1.1", "test=1&test2=2");
+
+        //when
+        HashMap<String, String> testMap = new HashMap<>();
+        testMap.put("test", "1");
+        testMap.put("test2", "2");
+
+        //then
+        Assertions.assertEquals(testMap, httpRequest.getFormDataMap());
+    }
+
+    @Test
+    @DisplayName("Get 방식으로 query랑 body data 둘 다 넘어오면 어떻게 되는지?")
+    void get_query_body() {
+        //given
+        httpRequest = new HttpRequest("GET /create/user?test11=11&test22=22 HTTP/1.1", "test=1&test2=2");
+
+        //when
+        HashMap<String, String> testMap = new HashMap<>();
+        testMap.put("test11", "11");
+        testMap.put("test22", "22");
+
+        //then
+        Assertions.assertEquals(testMap, httpRequest.getFormDataMap());
+    }
 
 }
