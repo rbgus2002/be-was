@@ -55,18 +55,6 @@ public class Response {
         }
     }
 
-    public static final String HEADER_HTTP = "HTTP/";
-    public static final String HEADER_CONTENT_TYPE = "Content-Type";
-    public static final String HEADER_CHARSET = ";charset=utf-8";
-    public static final String HEADER_CONTENT_LENGTH = "Content-Length";
-    public static final String HEADER_HTTP_VERSION = "1.1";
-    public static final String HEADER_REDIRECT_LOCATION = "Location";
-    public static final String HEADER_SET_COOKIE = "Set-Cookie";
-    public static final String HEADER_SESSION_ID = "sid=";
-    public static final String HEADER_COOKIE_PATH = "; Path=/";
-    public static final String INDEX_URL = "/index.html";
-    public static final String LOGIN_FAILED_URL = "/user/login_failed.html";
-
     private final STATUS status;
     private final String version;
     private final Map<String, String> headerMap;

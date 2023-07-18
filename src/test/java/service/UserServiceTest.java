@@ -5,6 +5,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.RequestHandler;
+import static http.HttpUtil.*;
 
 import java.net.Socket;
 import java.util.Map;
@@ -15,8 +16,7 @@ class UserServiceTest {
     public void signUp() throws Exception {
         // Given
         String targetUri = "/user/create?userId=jst0951&password=password&name=정성태&email=jst0951@naver.com";
-        RequestHandler requestHandler = new RequestHandler(new Socket());
-        Map<String, String> queryParameterMap = requestHandler.parseQueryParameter(targetUri);
+        Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
 
         // When
         UserService.userSignUp(queryParameterMap);
