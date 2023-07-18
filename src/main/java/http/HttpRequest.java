@@ -54,10 +54,10 @@ public class HttpRequest {
         Map<String, String> map = new HashMap<>();
         String line;
         while ((line = reader.readLine()) != null && !line.isEmpty()) {
-            String[] headerParts = line.split(":");
-            if (headerParts.length >= 2) {
-                String headerName = headerParts[0].trim();
-                String headerValue = headerParts[1].trim();
+            int colonIndex = line.indexOf(':');
+            if (colonIndex != -1) {
+                String headerName = line.substring(0, colonIndex).trim();
+                String headerValue = line.substring(colonIndex + 1).trim();
                 map.put(headerName, headerValue);
             }
         }
