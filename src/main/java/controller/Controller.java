@@ -2,6 +2,7 @@ package controller;
 
 import http.ContentType;
 import http.HttpResponse;
+import http.HttpStatus;
 import service.UserService;
 
 import http.HttpRequest;
@@ -20,41 +21,48 @@ public class Controller {
         String[] uris = uri.split("\\.");
         switch (uris[uris.length - 1]) {
             case HTML:
-                return loadTemplatesFromPath(uri)
+                return loadTemplatesFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.HTML);
             case CSS:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.CSS);
             case JS:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.JS);
             case ICO:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.ICO);
             case PNG:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.PNG);
             case JPG:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.JPG);
             case EOT:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.EOT);
             case SVG:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.SVG);
             case TTF:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.TTF);
             case WOFF:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.WOFF);
             case WOFF2:
-                return loadStaticFromPath(uri)
+                return loadStaticFromPath(HttpStatus.OK, uri)
                         .setContentType(ContentType.WOFF2);
             default:
-                return routeByUri(uri);
+                return verifyValidUri(uri);
         }
+    }
+
+    public HttpResponse.ResponseBuilder verifyValidUri(String uri) throws IOException {
+        if (uri.contains("?"))
+            return routeByUri(uri);
+        else
+            return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/wrong_access.html");
     }
 
     public HttpResponse.ResponseBuilder routeByUri(String uri) {
@@ -78,7 +86,7 @@ public class Controller {
     public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
         try {
-            return loadTemplatesFromPath("/user/signup_success.html");
+            return loadTemplatesFromPath(HttpStatus.OK, "/user/signup_success.html");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

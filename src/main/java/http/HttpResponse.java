@@ -64,6 +64,10 @@ public class HttpResponse {
             dos.writeBytes("Content-Type: " + contentType.getMimeType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
+            logger.error(version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\r\n");
+            logger.error("Content-Type: " + contentType.getMimeType() + ";charset=utf-8\r\n");
+            logger.error("Content-Length: " + body.length + "\r\n");
+            logger.error("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
