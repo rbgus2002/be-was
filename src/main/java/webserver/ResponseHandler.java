@@ -1,5 +1,7 @@
 package webserver;
 
+import annotation.RequestMappingHandler;
+import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
 import org.slf4j.Logger;
@@ -16,13 +18,14 @@ public class ResponseHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public ResponseHandler(Socket connection) {
         this.connection = connection;
     }
 
-    public void response(HttpResponse httpResponse) {
+    public void response(HttpRequest httpRequest) {
+        HttpResponse httpResponse = handleHttpRequest(httpRequest);
         try (OutputStream out = this.connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
             HttpStatus status = httpResponse.getHttpStatus();
@@ -38,6 +41,25 @@ public class ResponseHandler {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private HttpResponse handleHttpRequest(HttpRequest httpRequest) {
+        String path = httpRequest.uri().getPath();
+        String extension = StringUtils.getExtension(path);
+        HttpResponse httpResponse;
+        if (!Objects.equals(extension, path)) {
+            // 정적 파일 응답
+            httpResponse = HttpResponse.ok(path, httpRequest.mime());
+        } else {
+            // 잘못된 http request이면 /error.html response 생성
+            try {
+                httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
+            } catch (Throwable e) {
+                logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
+                httpResponse = HttpResponse.notFound();
+            }
+        }
+        return httpResponse;
     }
 
     private void response200(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
