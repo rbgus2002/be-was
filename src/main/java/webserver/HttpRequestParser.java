@@ -36,7 +36,7 @@ public class HttpRequestParser {
     private static void parseFirstLine(HttpRequest.Builder builder, String firstLine) {
         String[] tokens = firstLine.split(" ");
         builder.method(tokens[0].trim())
-                .uri("http://localhost:8080" + tokens[1].trim())
+                .uri("localhost:8080" + tokens[1].trim())
                 .version(tokens[2].trim());
     }
 }
