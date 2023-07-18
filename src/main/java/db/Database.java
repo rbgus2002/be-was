@@ -24,8 +24,10 @@ public class Database {
     }
 
     // Session
-    public static void addSession(String userId) {
-        sessions.put(userId, new Session(userId));
+    public static Session addSession(String userId) {
+        Session session = new Session(userId);
+        sessions.put(userId, session);
+        return session;
     }
     public static void updateSession(String userId, Session session) {
         sessions.put(userId, session);
