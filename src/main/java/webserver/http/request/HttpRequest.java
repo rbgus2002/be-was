@@ -1,5 +1,7 @@
 package webserver.http.request;
 
+import webserver.http.HttpHeaders;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
