@@ -25,10 +25,10 @@ class HttpWasResponseTest {
 
 		// then
 		SoftAssertions softAssertions = new SoftAssertions();
-		softAssertions.assertThat(outputStream.toString()).contains(requestLine);
-		softAssertions.assertThat(outputStream.toString()).contains(contentType);
-		softAssertions.assertThat(outputStream.toString()).contains(contentLength);
-		softAssertions.assertThat(outputStream.toString()).contains(body);
+		softAssertions.assertThat(outputStream.toString()).as("requestLine 테스트").contains(requestLine);
+		softAssertions.assertThat(outputStream.toString()).as("contentType 테스트").contains(contentType);
+		softAssertions.assertThat(outputStream.toString()).as("contentLength 테스트").contains(contentLength);
+		softAssertions.assertThat(outputStream.toString()).as("body 테스트").contains(body);
 	}
 
 	@Test
@@ -47,8 +47,8 @@ class HttpWasResponseTest {
 
 		// then
 		SoftAssertions softAssertions = new SoftAssertions();
-		softAssertions.assertThat(outputStream.toString()).contains(requestLine);
-		softAssertions.assertThat(outputStream.toString()).contains(location);
+		softAssertions.assertThat(outputStream.toString()).as("requestLine 테스트").contains(requestLine);
+		softAssertions.assertThat(outputStream.toString()).as("location 테스트").contains(location);
 	}
 
 	@Test
@@ -68,9 +68,9 @@ class HttpWasResponseTest {
 
 		// then
 		SoftAssertions softAssertions = new SoftAssertions();
-		softAssertions.assertThat(outputStream.toString()).contains(requestLine);
-		softAssertions.assertThat(outputStream.toString()).contains(contentType);
-		softAssertions.assertThat(outputStream.toString()).contains(contentLength);
-		softAssertions.assertThat(outputStream.toString()).contains(body);
+		softAssertions.assertThat(outputStream.toString()).as("requestLine 테스트").contains(requestLine);
+		softAssertions.assertThat(outputStream.toString()).as("contentType 테스트").contains(contentType);
+		softAssertions.assertThat(outputStream.toString()).as("contentLength 테스트").contains(contentLength);
+		softAssertions.assertThat(outputStream.toString()).as("body 테스트").contains(body);
 	}
 }
