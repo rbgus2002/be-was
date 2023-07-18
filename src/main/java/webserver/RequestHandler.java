@@ -76,7 +76,7 @@ public class RequestHandler implements Runnable {
         while(!line.equals("")) {
             tokens = line.split(":");
             headerMap.put(tokens[0], tokens[1]);
-            line = readSingleHTTPLine(br);
+            line = readSingleHTTPLine(br).replace(" ", "");
         }
 
         /*
