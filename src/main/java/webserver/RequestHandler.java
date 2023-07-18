@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static http.HttpUtil.*;
+import static model.User.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -116,8 +117,8 @@ public class RequestHandler implements Runnable {
         }
         if(targetUri.startsWith("/user/login")){
             Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
-            String userId = bodyParameterMap.get("userId");
-            String password = bodyParameterMap.get("password");
+            String userId = bodyParameterMap.get(USERID);
+            String password = bodyParameterMap.get(PASSWORD);
             // ID/PW 검증
             if(!UserService.validateUser(userId, password)) {
                 Map<String, String> headerMap = new HashMap<>();
