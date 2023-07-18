@@ -6,15 +6,16 @@ import webserver.http.HttpConstant;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
+import webserver.utils.FileUtils;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class RequestHandler implements Runnable {
-    private static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
@@ -32,7 +33,7 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            readFileToResponseBody(httpResponse, httpRequest.getURI());
+            readFileToResponseBody(httpRequest.getURI(), httpResponse);
 
             sendResponse(httpResponse, dos);
         } catch (IOException e) {
@@ -49,33 +50,27 @@ public class RequestHandler implements Runnable {
         dos.flush();
     }
 
-    private void readFileToResponseBody(HttpResponse httpResponse, String URI) throws IOException {
-        Path path = Paths.get(TEMPLATES_DIRECTORY + URI);
-
-        if (Files.exists(path) && !Files.isDirectory(path)) {
-            httpResponse.setBody(readBytesFromFile(path));
+    private void readFileToResponseBody(String URI, HttpResponse httpResponse) throws IOException {
+        if (FileUtils.isFileExist(URI)) {
             httpResponse.setStatus(HttpStatus.OK);
+            readFile(httpResponse, URI);
         } else if (URI.equals("/")) {
-            httpResponse.setBody(readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/index.html")));
             httpResponse.setStatus(HttpStatus.OK);
+            readFile(httpResponse, "/index.html");
         } else {
-            httpResponse.setBody(readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/404.html")));
             httpResponse.setStatus(HttpStatus.NOT_FOUND);
+            readFile(httpResponse, "/404.html");
         }
 
         httpResponse.setHeader(HttpConstant.CONTENT_TYPE, "text/html;charset=utf-8");
         httpResponse.setHeader(HttpConstant.CONTENT_LENGTH, String.valueOf(httpResponse.getBodyLength()));
     }
 
-    private byte[] readBytesFromFile(Path path) throws IOException {
-        InputStream inputStream = Files.newInputStream(path);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            byteArrayOutputStream.write(buffer, 0, bytesRead);
+    private void readFile(HttpResponse httpResponse, String URI) throws IOException {
+        if (FileUtils.isTemplateFile(URI)) {
+            httpResponse.setBody(FileUtils.readBytesFromFile(Paths.get(FileUtils.TEMPLATES_DIRECTORY + URI)));
+            return;
         }
-        return byteArrayOutputStream.toByteArray();
+        httpResponse.setBody(FileUtils.readBytesFromFile(Paths.get(FileUtils.STATIC_DIRECTORY + URI)));
     }
 }
