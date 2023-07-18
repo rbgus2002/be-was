@@ -1,4 +1,4 @@
-package webserver;
+package webserver.request;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,6 +8,8 @@ import java.io.IOException;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import webserver.request.HttpWasRequest;
 
 class HttpWasRequestTest {
 

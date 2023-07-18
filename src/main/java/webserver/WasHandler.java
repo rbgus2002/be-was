@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import controller.Controller;
 import controller.FrontController;
 import controller.annotation.RequestMapping;
+import webserver.request.HttpWasRequest;
+import webserver.response.HttpWasResponse;
 import webserver.utils.HttpMethod;
 
 public class WasHandler {
