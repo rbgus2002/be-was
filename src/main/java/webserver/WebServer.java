@@ -27,8 +27,8 @@ public class WebServer {
         BeanContainer beanContainer = initializeFramework();
         DispatcherServlet dispatcherServlet = (DispatcherServlet) beanContainer.findBean(DispatcherServlet.class);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors());
+
+        ExecutorService executorService = Executors.newWorkStealingPool();
 
         try (ServerSocket listenSocket = new ServerSocket(port)) {
             logger.info("Web Application Server started {} port.", port);

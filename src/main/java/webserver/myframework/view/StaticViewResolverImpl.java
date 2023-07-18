@@ -6,7 +6,7 @@ import java.io.File;
 
 @Component
 public class StaticViewResolverImpl implements ViewResolver {
-    private static final String HTML_PREFIX = "src/main/resources";
+    private static final String RESOURCE_PREFIX = "src/main/resources";
     private static final String DYNAMIC_VIEW = "/templates";
     private static final String STATIC_VIEW = "/static";
     private static final String DEFAULT_VIEW_PATH = "/errors/404.html";
@@ -23,15 +23,13 @@ public class StaticViewResolverImpl implements ViewResolver {
             return new StaticView(staticFile);
         }
 
-        return new StaticView(new File(HTML_PREFIX + DYNAMIC_VIEW +  DEFAULT_VIEW_PATH));
+        return new StaticView(new File(RESOURCE_PREFIX + DYNAMIC_VIEW + DEFAULT_VIEW_PATH));
     }
 
     private static String getViewPath(String viewUri, boolean isStatic) {
-        return HTML_PREFIX +
+        return RESOURCE_PREFIX +
                (isStatic ? STATIC_VIEW : DYNAMIC_VIEW) +
                (viewUri.startsWith("/") ? "" : "/") +
                viewUri;
     }
-
-
 }
