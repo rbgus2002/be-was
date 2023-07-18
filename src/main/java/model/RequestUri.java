@@ -1,5 +1,7 @@
 package model;
 
+import dto.UserFormRequestDto;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +10,12 @@ import static util.StringUtils.*;
 public class RequestUri {
     private static final int KEY_INDEX = 0;
     private static final int VALUE_INDEX = 1;
-    private String uri;
-    private Map<String, Object> params;
+    private static final int URI_INDEX = 0;
+    private static final int PARAMETERS_INDEX = 1;
+    private static final int LENGTH_WHEN_HAS_NO_VALUE = 1;
+
+    private final String uri;
+    private final Map<String, Object> params;
 
     public RequestUri(String uri, Map<String, Object> params) {
         this.uri = uri;
@@ -17,21 +23,53 @@ public class RequestUri {
     }
 
     public static RequestUri of(String text) {
-        String[] splitByAmpersand = splitBy(text, AMPERSAND_MARK);
-        String uri = splitByAmpersand[0];
+        String[] splitByQuestionMark = splitBy(text, QUESTION_MARK); // /uri?a=a&b=2&c=
+        String uri = splitByQuestionMark[URI_INDEX];
 
         HashMap<String, Object> params = new HashMap<>();
-        for (int i = 1; i < splitByAmpersand.length; i++) {
-            String[] splitByEqualMark = splitBy(splitByAmpersand[i], EQUAL_MARK);
-            String key = splitByEqualMark[KEY_INDEX];
-            String value = splitByEqualMark[VALUE_INDEX];
+        if (isArrayLengthOne(splitByQuestionMark)) return new RequestUri(uri, params);
+
+        String[] paramArray = splitBy(splitByQuestionMark[PARAMETERS_INDEX], AMPERSAND_MARK);
+        for (int i = 0; i < paramArray.length; i++) {
+            String[] paramMap = splitBy(paramArray[i], EQUAL_MARK);
+
+            if (isArrayLengthOne(paramMap)) continue;
+
+            String key = paramMap[KEY_INDEX];
+            String value = paramMap[VALUE_INDEX];
             params.put(key, value);
         }
 
         return new RequestUri(uri, params);
     }
 
+    private static boolean isArrayLengthOne(String[] array) {
+        return array.length == LENGTH_WHEN_HAS_NO_VALUE;
+    }
+
     public boolean match(String uri) {
         return this.uri.equals(uri);
+    }
+
+    public boolean uriEndsWith(String s) {
+        return uri.endsWith(s);
+    }
+
+    public String getUri() {
+        return this.uri;
+    }
+
+    // 지워질 예정
+    public UserFormRequestDto paramsToDto() {
+        return new UserFormRequestDto(this.params);
+    }
+
+    @Override
+    public String toString() {
+        String s = "path uri = " + uri + "\n";
+        for (var entry : params.entrySet()) {
+            s += "[key = " + entry.getKey() + " / value = " + entry.getValue()+"]\n";
+        }
+        return s;
     }
 }

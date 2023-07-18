@@ -93,11 +93,4 @@ public enum HttpStatusCode {
     public String toString() {
         return value + " " + description;
     }
-
-    public static HttpStatusCode getByValue(int value) {
-        for(HttpStatusCode status : values()) {
-            if(status.value == value) return status;
-        }
-        throw new IllegalArgumentException("Invalid status code: " + value);
-    }
 }

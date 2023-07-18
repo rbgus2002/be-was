@@ -3,8 +3,7 @@ package model;
 import java.util.HashMap;
 import java.util.Map;
 
-import static util.StringUtils.mapToHeaderFormat;
-import static util.StringUtils.splitBy;
+import static util.StringUtils.*;
 
 public class HttpHeader {
     private static final int KEY_INDEX = 0;
@@ -22,14 +21,13 @@ public class HttpHeader {
     public static HttpHeader of(String[] texts) {
         HashMap<String, String> contents = new HashMap<>();
         for (var text : texts) {
-            String[] splited = splitBy(text, ":");
+            String[] splited = splitBy(text, COLON_MARK);
             String key = splited[KEY_INDEX];
             String value = splited[VALUE_INDEX];
             contents.put(key, value);
         }
         return new HttpHeader(contents);
     }
-
 
     public HttpHeader newInstance() {
         // ??

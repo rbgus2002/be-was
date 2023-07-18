@@ -1,48 +1,64 @@
 package controller;
 
+import dto.UserFormRequestDto;
 import model.HttpRequest;
 import model.HttpResponse;
 import model.enums.HttpStatusCode;
 import model.enums.Method;
 import service.FileService;
-import service.ResponseService;
+import mapper.ResponseMapper;
+import service.UserService;
 
 import java.io.FileNotFoundException;
 
-import static constant.SourcePath.BASIC_INDEX_PATH;
-import static constant.SourcePath.USER_FORM_PATH;
-import static constant.Uri.BASIC_INDEX_URI;
-import static constant.Uri.USER_FORM_URI;
+import static constant.Uri.USER_CREATE_URI;
+import static util.StringUtils.NO_CONTENT;
 
 public class RestController {
     private final FileService fileService;
-    private final ResponseService responseService;
+    private final UserService userService;
+    private final ResponseMapper responseMapper;
 
     public RestController() {
         fileService = new FileService();
-        responseService = new ResponseService();
+        userService = new UserService();
+        responseMapper = new ResponseMapper();
     }
 
     public HttpResponse route(HttpRequest httpRequest) throws FileNotFoundException {
-        HttpResponse response = responseService.createNotFoundResponse(httpRequest);
-        if (httpRequest.match(Method.GET, BASIC_INDEX_URI)) {
-            // TODO *.html static 한 것들은 그냥 넘겨주게
-            response = getHttpResponse(httpRequest, BASIC_INDEX_PATH);
+        HttpResponse response = responseMapper.createNotFoundResponse(httpRequest);
+        if (httpRequest.match(Method.GET) && httpRequest.endsWithHtml()) {
+            response = sendNotRestfulResponse(httpRequest);
         }
-        // TODO
-        if (httpRequest.match(Method.GET, USER_FORM_URI)) {
-            response = getHttpResponse(httpRequest, USER_FORM_PATH);
+
+        if (httpRequest.match(Method.GET, USER_CREATE_URI)) {
+            response = addUserByForm(httpRequest);
         }
         return response;
+    }
+
+    private HttpResponse addUserByForm(HttpRequest request) {
+        try {
+            UserFormRequestDto userFormRequestDto = request.paramsToDto();
+            userService.createByForm(userFormRequestDto);
+            return responseMapper
+                    .createHttpResponse(request, HttpStatusCode.CREATED, NO_CONTENT);
+        } catch (Exception e) {
+            return responseMapper.createBadRequestResponse(request);
+        }
+    }
+
+    private HttpResponse sendNotRestfulResponse(HttpRequest request) {
+        return getHttpResponse(request, request.getUri());
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, String path) {
         try {
             String fileContents = fileService.openFile(path);
-            return responseService
+            return responseMapper
                     .createHttpResponse(request, HttpStatusCode.OK, fileContents);
         } catch (FileNotFoundException e) {
-            return responseService.createBadRequestResponse(request);
+            return responseMapper.createBadRequestResponse(request);
         }
     }
 }

@@ -1,10 +1,10 @@
 package webserver;
 
+import controller.RestController;
 import model.HttpRequest;
 import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import controller.RestController;
 import util.Parser;
 
 import java.io.*;
