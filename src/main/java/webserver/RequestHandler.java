@@ -69,24 +69,24 @@ public class RequestHandler implements Runnable {
 					.equals(arguments[1]))
 				.collect(Collectors.toList());
 			if (mappedMethods.isEmpty()) {
-				sendStaticResponse(arguments[1], out);
+				sendResourceResponse(arguments[1], out);
 				return;
 			}
 			for (Method mappedMethod : mappedMethods) {
-				sendTemplateResponse((String)mappedMethod.invoke(o), out);
+				sendResourceResponse((String)mappedMethod.invoke(o), out);
 				return;
 			}
 		}
 	}
 
-	private void sendTemplateResponse(String fileName, OutputStream out) throws IOException {
-		Path path = new File("src/main/resources/templates/" + fileName).toPath();
-		responseForPath(out, path);
-	}
-
-	private void sendStaticResponse(String fileName, OutputStream out) throws IOException {
-		Path path = new File("src/main/resources/static" + fileName).toPath();
-		responseForPath(out, path);
+	private void sendResourceResponse(String fileName, OutputStream out) throws IOException {
+		Path templatePath = new File("src/main/resources/templates/" + fileName).toPath();
+		Path staticPath = new File("src/main/resources/static" + fileName).toPath();
+		if (Files.exists(templatePath)) {
+			responseForPath(out, templatePath);
+			return;
+		}
+		responseForPath(out, staticPath);
 	}
 
 	private void responseForPath(OutputStream out, Path path) throws IOException {
