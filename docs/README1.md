@@ -1,4 +1,4 @@
-# step-1
+# step-1 index.html 응답
 
 ## 프로젝트 분석
 - [x] HTTP 학습
