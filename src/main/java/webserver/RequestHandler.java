@@ -111,7 +111,7 @@ public class RequestHandler implements Runnable {
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
 
-            return new Response(STATUS.TEMPORARY_MOVED, headerMap, null);
+            return new Response(STATUS.SEE_OTHER, headerMap, null);
         }
         if(targetUri.startsWith("/user/login")){
             Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
@@ -121,7 +121,7 @@ public class RequestHandler implements Runnable {
             if(!UserService.validateUser(userId, password)) {
                 Map<String, String> headerMap = new HashMap<>();
                 headerMap.put(HEADER_REDIRECT_LOCATION, LOGIN_FAILED_URL);
-                return new Response(STATUS.TEMPORARY_MOVED, headerMap, null);
+                return new Response(STATUS.SEE_OTHER, headerMap, null);
             }
 
             // Session ID 추가
@@ -130,7 +130,7 @@ public class RequestHandler implements Runnable {
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
             headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + session.getSessionId() + HEADER_COOKIE_PATH);
 
-            return new Response(STATUS.TEMPORARY_MOVED, headerMap, null);
+            return new Response(STATUS.SEE_OTHER, headerMap, null);
         }
 
         return new Response(STATUS.NOT_FOUND, null, null);
