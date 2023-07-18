@@ -15,22 +15,22 @@ public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
     private final String path;
-    private final int httpStatus;
+    private final HttpStatus httpStatus;
     private final Mime contentType;
 
     public static HttpResponse ok(String path, Mime mime) {
-        return new HttpResponse(path, mime, 200);
+        return new HttpResponse(path, mime, HttpStatus.OK);
     }
 
     public static HttpResponse redirect(String path) {
-        return new HttpResponse(path, null, 302);
+        return new HttpResponse(path, null, HttpStatus.FOUND);
     }
 
     public static HttpResponse notFound() {
-        return new HttpResponse(null, null, 404);
+        return new HttpResponse(null, null, HttpStatus.NOT_FOUND);
     }
 
-    private HttpResponse(String path, Mime mime, int httpStatus) {
+    private HttpResponse(String path, Mime mime, HttpStatus httpStatus) {
         this.path = path;
         this.contentType = mime;
         this.httpStatus = httpStatus;
@@ -40,13 +40,13 @@ public class HttpResponse {
         try (OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
 
-            if (this.httpStatus == 200) {
+            if (this.httpStatus == HttpStatus.OK) {
                 response200(dos);
             }
-            if (this.httpStatus == 302) {
+            if (this.httpStatus == HttpStatus.FOUND) {
                 response302Header(dos);
             }
-            if (this.httpStatus == 404) {
+            if (this.httpStatus == HttpStatus.NOT_FOUND) {
                 response404(dos);
             }
         } catch (IOException e) {
