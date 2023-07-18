@@ -29,11 +29,6 @@ public class HttpHeader {
         return new HttpHeader(contents);
     }
 
-    public HttpHeader newInstance() {
-        // ??
-        return new HttpHeader(new HashMap<String, String>(this.contents));
-    }
-
     public String stringfy() {
         return mapToHeaderFormat(contents);
     }
