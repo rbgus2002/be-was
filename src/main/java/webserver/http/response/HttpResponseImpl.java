@@ -3,8 +3,6 @@ package webserver.http.response;
 import webserver.http.ContentType;
 import webserver.http.HttpHeaders;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 public class HttpResponseImpl extends HttpResponse {
     private static final String redirectionHeader = "Location";

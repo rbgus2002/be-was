@@ -1,7 +1,5 @@
 package user.controller;
 
-import db.Database;
-import model.User;
 import user.service.UserService;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;

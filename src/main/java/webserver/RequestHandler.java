@@ -10,7 +10,6 @@ import webserver.http.HttpHeaders;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpRequestParser;
 import webserver.http.request.HttpRequestParserImpl;
-import webserver.http.request.exception.IllegalRequestParameterException;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.servlet.DispatcherServlet;
 

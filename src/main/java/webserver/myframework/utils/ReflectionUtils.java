@@ -21,7 +21,7 @@ public class ReflectionUtils {
     public static List<Class<?>> getClassesInPackage(String packageName) throws ReflectiveOperationException, FileNotFoundException {
         List<Class<?>> classes = new ArrayList<>();
         URL packageURL = getPackageURL(packageName);
-        processDirectory(getFilesInDirectory(packageURL), packageName, classes);
+        processDirectory(getPackageDirectory(packageURL), packageName, classes);
         return classes;
     }
 
