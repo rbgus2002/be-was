@@ -20,15 +20,18 @@ public class HttpRequest {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String startLine = br.readLine();
         String[] statusLineTokens = startLine.split(" ");
-        try {
-            method = statusLineTokens[0];
-            parseTarget(statusLineTokens[1]);
-            version = statusLineTokens[2];
-        } catch (Exception ignored) {
-        }
-        while ((input = br.readLine()) != null && !input.isEmpty()) {
-            String[] tokens = input.split(":");
-            headers.put(tokens[0], tokens[1]);
+        method = statusLineTokens[0];
+        parseTarget(statusLineTokens[1]);
+        version = statusLineTokens[2];
+        while ((input = br.readLine()) != null && in.available() > 0) {
+            if (input.contains(":")) {
+                String[] tokens = input.split(":");
+                headers.put(tokens[0], tokens[1]);
+            } else {
+                String[] tokens = input.split(":");
+                headers.put(tokens[0], tokens[1]);
+                parseParam(br.readLine());
+            }
         }
     }
 
@@ -36,13 +39,17 @@ public class HttpRequest {
         if (target.contains("?")) {
             String[] targetTonkens = target.split("\\?");
             url = targetTonkens[0];
-            String[] split1 = targetTonkens[1].split("&");
-            for (String s : split1) {
-                String[] paramTokens = s.split("=");
-                params.put(paramTokens[0], paramTokens[1]);
-            }
+            parseParam(targetTonkens[1]);
         } else {
             url = target;
+        }
+    }
+
+    private void parseParam(String query) {
+        String[] keyValues = query.split("&");
+        for (String keyValue : keyValues) {
+            String[] paramTokens = keyValue.split("=");
+            params.put(paramTokens[0], paramTokens[1]);
         }
     }
 
