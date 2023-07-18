@@ -61,7 +61,7 @@ public class RequestHandler implements Runnable {
                 httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
             } catch (Throwable e) {
                 logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
-                httpResponse = HttpResponse.redirect("/error.html");
+                httpResponse = HttpResponse.notFound();
             }
         }
         httpResponse.response(connection);

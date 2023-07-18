@@ -26,6 +26,10 @@ public class HttpResponse {
         return new HttpResponse(path, null, 302);
     }
 
+    public static HttpResponse notFound() {
+        return new HttpResponse(null, null, 404);
+    }
+
     private HttpResponse(String path, Mime mime, int httpStatus) {
         this.path = path;
         this.contentType = mime;
@@ -37,11 +41,13 @@ public class HttpResponse {
             DataOutputStream dos = new DataOutputStream(out);
 
             if (this.httpStatus == 200) {
-                // 정적 파일을 읽는데 문제가 발생하면 /error.html 반환
                 response200(dos);
             }
             if (this.httpStatus == 302) {
                 response302Header(dos);
+            }
+            if (this.httpStatus == 404) {
+                response404(dos);
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -49,17 +55,14 @@ public class HttpResponse {
     }
 
     private void response200(DataOutputStream dos) throws IOException {
-        byte[] body;
         try {
             InputStream fileInputStream = getResourceAsStream(this.path);
-            body = fileInputStream.readAllBytes();
-
+            byte[] body = fileInputStream.readAllBytes();
+            response200Header(dos, body);
+            responseBody(dos, body);
         } catch (IOException e) {
-            InputStream fileInputStream = getResourceAsStream("/error.html");
-            body = fileInputStream.readAllBytes();
+            response404(dos);
         }
-        response200Header(dos, body);
-        responseBody(dos, body);
     }
 
     private void response200Header(DataOutputStream dos, byte[] body) {
@@ -80,6 +83,29 @@ public class HttpResponse {
             dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
             dos.writeBytes("Pragma: no-cache\r\n");
             dos.writeBytes("Expires: 0\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response404(DataOutputStream dos) throws IOException {
+        byte[] body;
+        try {
+            InputStream fileInputStream = getResourceAsStream("/error.html");
+            body = fileInputStream.readAllBytes();
+        } catch (IOException e) {
+            body = "<html><body><h1>404 Not Found</h1></body></html>".getBytes();
+        }
+        response404Header(dos, body);
+        responseBody(dos, body);
+    }
+
+    private void response404Header(DataOutputStream dos, byte[] body) {
+        try {
+            dos.writeBytes("HTTP/1.1 404 Not Found\r\n");
+            dos.writeBytes("Content-Type: text/html; charset=UTF-8\r\n");
+            dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
