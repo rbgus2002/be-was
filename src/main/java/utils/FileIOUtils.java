@@ -22,14 +22,14 @@ public class FileIOUtils {
     public static final String STATIC_RESOURCES = "src/main/resources/static";
     public static final String TEMPLATES_RESOURCES = "src/main/resources/templates";
 
-    public static HttpResponse.ResponseBuilder loadStaticFromPath(HttpResponse.ResponseBuilder responseBuilder, String uri) throws IOException {
-        return responseBuilder
+    public static HttpResponse.ResponseBuilder loadStaticFromPath(String uri) throws IOException {
+        return new HttpResponse.ResponseBuilder()
                 .setStatus(HttpStatus.OK)
                 .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
     }
 
-    public static HttpResponse.ResponseBuilder loadTemplatesFromPath(HttpResponse.ResponseBuilder responseBuilder, String uri) throws IOException {
-        return responseBuilder
+    public static HttpResponse.ResponseBuilder loadTemplatesFromPath(String uri) throws IOException {
+        return new HttpResponse.ResponseBuilder()
                 .setStatus(HttpStatus.OK)
                 .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
     }
