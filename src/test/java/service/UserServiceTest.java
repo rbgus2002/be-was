@@ -50,7 +50,7 @@ class UserServiceTest {
         // Then
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(UserService.getAllUser().size()).isEqualTo(1);
-        assertions.assertThat(UserService.getUser("jst0951").getName()).isEqualTo("정성태");
+        assertions.assertThat(UserService.getUser("jst0951").getPassword()).isEqualTo("password");
         assertions.assertAll();
     }
 }
