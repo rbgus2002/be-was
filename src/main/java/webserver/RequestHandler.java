@@ -9,7 +9,6 @@ import java.util.Map;
 import controller.Controller;
 import http.HttpResponse;
 import http.HttpRequest;
-import http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +34,8 @@ public class RequestHandler implements Runnable {
             assert httpRequest != null;
             HttpResponse.ResponseBuilder responseBuilder = controller.loadFileByRequest(httpRequest);
 
-            HttpResponse httpResponse = responseBuilder.build(new DataOutputStream(out));
-            httpResponse.send();
+            HttpResponse httpResponse = responseBuilder.build();
+            httpResponse.send(new DataOutputStream(out));
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -51,7 +50,7 @@ public class RequestHandler implements Runnable {
 
             Map<String, String> header = new HashMap<>();
             line = br.readLine();
-            while (!line.equals("")) {
+            while (!"".equals(line)) {
                 logger.debug(line);
                 String[] requestHeader = line.split(": ");
                 header.put(requestHeader[0], requestHeader[1]);

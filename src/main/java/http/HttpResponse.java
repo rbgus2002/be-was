@@ -6,20 +6,20 @@ import org.slf4j.LoggerFactory;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import static utils.StringUtils.appendNewLine;
+
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private String version = "HTTP/1.1";
     private HttpStatus httpStatus;
     private ContentType contentType;
     private byte[] body;
-    private DataOutputStream dos;
 
     public static class ResponseBuilder {
         private String version = "HTTP/1.1";
         private HttpStatus httpStatus = HttpStatus.OK;
         private ContentType contentType = ContentType.HTML;
         private byte[] body;
-        private DataOutputStream dos;
 
         public ResponseBuilder() {
         }
@@ -39,8 +39,7 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse build(DataOutputStream dos) {
-            this.dos = dos;
+        public HttpResponse build() {
             return new HttpResponse(this);
         }
     }
@@ -49,31 +48,33 @@ public class HttpResponse {
         this.httpStatus = builder.httpStatus;
         this.contentType = builder.contentType;
         this.body = builder.body;
-        this.dos = builder.dos;
     }
 
-    public void send() {
-        responseHeader();
-        responseBody();
+    public void send(DataOutputStream dos) {
+        responseHeader(dos);
+        responseBody(dos);
     }
 
 
-    private void responseHeader() {
+    private void responseHeader(DataOutputStream dos) {
         try {
-            dos.writeBytes(version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\r\n");
-            dos.writeBytes("Content-Type: " + contentType.getMimeType() + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + body.length + "\r\n");
-            dos.writeBytes("\r\n");
-            logger.error(version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\r\n");
-            logger.error("Content-Type: " + contentType.getMimeType() + ";charset=utf-8\r\n");
-            logger.error("Content-Length: " + body.length + "\r\n");
-            logger.error("\r\n");
+            String statusLine = version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage();
+            String contentTypeLine = "Content-Type: " + contentType.getMimeType() + ";charset=utf-8";
+            String contentLengthLine = "Content-Length: " + body.length;
+            dos.writeBytes(appendNewLine(statusLine));
+            dos.writeBytes(appendNewLine(contentTypeLine));
+            dos.writeBytes(appendNewLine(contentLengthLine));
+            dos.writeBytes(appendNewLine(""));
+            logger.debug("{} {} {} \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
+            logger.debug("Content-Type: {};charset=utf-8\n", contentType.getMimeType());
+            logger.debug("Content-Length: {}\r\n", body.length);
+            logger.debug("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void responseBody() {
+    private void responseBody(DataOutputStream dos) {
         try {
             dos.write(body, 0, body.length);
             dos.flush();
