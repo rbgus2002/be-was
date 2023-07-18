@@ -1,4 +1,4 @@
-package webserver;
+package global.handler;
 
 import java.io.*;
 import java.net.Socket;
@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import util.HttpUtil;
+import global.util.HttpUtil;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

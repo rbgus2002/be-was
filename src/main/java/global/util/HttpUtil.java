@@ -1,4 +1,4 @@
-package util;
+package global.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +16,11 @@ public class HttpUtil {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
-        while ((line = bufferedReader.readLine()) != null) {
+        while (bufferedReader.ready()) {
+            line = bufferedReader.readLine();
+            logger.info("line = {}", line);
             stringBuilder.append(line).append(System.lineSeparator());
 
-            if (line.isEmpty()) {
-                break;
-            }
             logger.debug("request = {}", line);
         }
         return stringBuilder.toString();
@@ -29,7 +28,7 @@ public class HttpUtil {
 
     public static String getUrl(String content) {
         String[] splitResult = content.split(" ");
-        return splitResult[1];
+        return splitResult.length >= 2 ? splitResult[1] : content;
     }
 
     public static boolean isFileRequest(String url) {
@@ -40,4 +39,5 @@ public class HttpUtil {
     private static boolean isHtmlExtension(String extension) {
         return extension.equals(HTML_EXTENSION);
     }
+
 }
