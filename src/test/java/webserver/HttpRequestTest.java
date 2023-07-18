@@ -1,5 +1,6 @@
 package webserver;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,11 +67,13 @@ class HttpRequestTest {
         Query query = httpRequest.getRequestQuery();
 
         //then
-        assertEquals("javajigi", query.getValue("userId"));
-        assertEquals("password", query.getValue("password"));
-        assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", query.getValue("name"));
-        assertEquals("javajigi%40slipp.net", query.getValue("email"));
-        assertEquals(4, query.size());
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(query.getValue("userId")).isEqualTo("javajigi");
+        softAssertions.assertThat(query.getValue("password")).isEqualTo("password");
+        softAssertions.assertThat(query.getValue("name")).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
+        softAssertions.assertThat(query.getValue("email")).isEqualTo("javajigi%40slipp.net");
+        softAssertions.assertThat(query.size()).isEqualTo(4);
+        softAssertions.assertAll();
     }
 
 }
