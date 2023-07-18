@@ -16,17 +16,19 @@ public class HttpResponse {
 
     private final String path;
     private final int httpStatus;
+    private final Mime contentType;
 
-    public static HttpResponse ok(String path) {
-        return new HttpResponse(path, 200);
+    public static HttpResponse ok(String path, Mime mime) {
+        return new HttpResponse(path, mime, 200);
     }
 
     public static HttpResponse redirect(String path) {
-        return new HttpResponse(path, 302);
+        return new HttpResponse(path, null, 302);
     }
 
-    private HttpResponse(String path, int httpStatus) {
+    private HttpResponse(String path, Mime mime, int httpStatus) {
         this.path = path;
+        this.contentType = mime;
         this.httpStatus = httpStatus;
     }
 
@@ -36,11 +38,7 @@ public class HttpResponse {
 
             if (this.httpStatus == 200) {
                 // 정적 파일을 읽는데 문제가 발생하면 /error.html 반환
-                try {
-                    response200(dos, this.path);
-                } catch (IOException e) {
-                    response200(dos, "/error.html");
-                }
+                response200(dos);
             }
             if (this.httpStatus == 302) {
                 response302Header(dos);
@@ -50,9 +48,16 @@ public class HttpResponse {
         }
     }
 
-    private void response200(DataOutputStream dos, String path) throws IOException {
-        InputStream fileInputStream = getResourceAsStream(path);
-        byte[] body = fileInputStream.readAllBytes();
+    private void response200(DataOutputStream dos) throws IOException {
+        byte[] body;
+        try {
+            InputStream fileInputStream = getResourceAsStream(this.path);
+            body = fileInputStream.readAllBytes();
+
+        } catch (IOException e) {
+            InputStream fileInputStream = getResourceAsStream("/error.html");
+            body = fileInputStream.readAllBytes();
+        }
         response200Header(dos, body);
         responseBody(dos, body);
     }
@@ -60,7 +65,7 @@ public class HttpResponse {
     private void response200Header(DataOutputStream dos, byte[] body) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + this.contentType.getType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
@@ -70,7 +75,7 @@ public class HttpResponse {
 
     private void response302Header(DataOutputStream dos) {
         try {
-            dos.writeBytes("HTTP/1.1 301 Moved Temporarily\r\n");
+            dos.writeBytes("HTTP/1.1 302 Found\r\n");
             dos.writeBytes("Location: " + path + "\r\n");
             dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
             dos.writeBytes("Pragma: no-cache\r\n");

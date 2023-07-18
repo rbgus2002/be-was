@@ -25,10 +25,9 @@ public class Controller {
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
     public HttpResponse creatUser(Map<String, String> parameters) {
         User newUser = ModelConverter.toUser(parameters);
-        User findUser = Database.findUserById(newUser.getUserId());
-        if (findUser != null) {
+        Database.findUserById(newUser.getUserId()).ifPresent(user -> {
             throw new IllegalArgumentException("중복된 userId입니다.");
-        }
+        });
         Database.addUser(newUser);
         return HttpResponse.redirect("/index.html");
     }
