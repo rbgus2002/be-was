@@ -8,10 +8,10 @@ public class FrontController {
 	private static final Map<String, Object> instances = new HashMap<>();
 
 	public FrontController() {
-		intializeInstances();
+		initializeInstances();
 	}
 
-	private void intializeInstances() {
+	private void initializeInstances() {
 		instances.put(Controller.class.getName(), new Controller());
 	}
 
