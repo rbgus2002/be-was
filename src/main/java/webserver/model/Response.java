@@ -37,6 +37,7 @@ public class Response {
         CREATED(201, "Created"),
         TEMPORARY_MOVED(302, "Found"),
         BAD_REQUEST(400, "Bad Request"),
+        UNAUTHORIZED(401, "Unauthorized"),
         NOT_FOUND(404, "Not Found");
 
         private final int statusCode;
