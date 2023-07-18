@@ -2,7 +2,6 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.HttpMethod;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
@@ -34,8 +33,14 @@ public class RequestHandler extends HttpHandler implements Runnable {
             // 요청 수립
             HttpResponse response = new HttpResponse();
 
-            if (request.getRequestMethod() == HttpMethod.GET)
-                doGet(request, response);
+            switch (request.getRequestMethod()) {
+                case GET:
+                    doGet(request, response);
+                    break;
+                case POST:
+                    doPost(request, response);
+                    break;
+            }
 
             response.response(dos);
         } catch (IOException | InvocationTargetException | IllegalAccessException e) {

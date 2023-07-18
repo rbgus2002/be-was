@@ -1,14 +1,13 @@
 package webserver;
 
 import support.ControllerResolver;
+import support.exception.BadRequestException;
+import support.exception.MethodNotAllowedException;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 import webserver.response.MIME;
-import webserver.response.strategy.BadRequest;
-import webserver.response.strategy.Found;
-import webserver.response.strategy.NotFound;
-import webserver.response.strategy.OK;
+import webserver.response.strategy.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +28,12 @@ public class HttpHandler {
         searchAndReturnPage(response, path);
     }
 
+    public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
+        String path = request.getRequestPath();
+
+        interceptController(request, response, path);
+    }
+
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) throws InvocationTargetException, IllegalAccessException {
         try {
             if (ControllerResolver.invoke(path, request)) {
@@ -36,9 +41,13 @@ public class HttpHandler {
                 response.buildHeader(new Found(MAIN_PAGE));
                 return true;
             }
-        } catch (IllegalArgumentException exception) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
+        } catch (MethodNotAllowedException e) {
+            response.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
             response.buildHeader(new BadRequest());
+            return true;
+        } catch (BadRequestException e) {
+            response.setStatus(HttpStatus.BAD_REQUEST);
+            response.buildHeader(new NoHeader());
             return true;
         }
         return false;

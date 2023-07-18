@@ -4,6 +4,8 @@ import exception.ExceptionName;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
+import support.exception.BadRequestException;
+import support.exception.MethodNotAllowedException;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.Query;
@@ -15,15 +17,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static support.DefaultInstanceManager.getInstanceMagager;
 
 public abstract class ControllerResolver {
 
-    private final static Map<String, ControllerMethods> controllers = new HashMap<>();
+    private final static Map<String, ControllerMethod> controllers = new HashMap<>();
 
     static {
         List<Class<?>> controllerClasses = ClassListener.scanClass("controller");
@@ -33,14 +35,15 @@ public abstract class ControllerResolver {
             if (annotation != null) {
                 String path = annotation.value();
 
-                Map<String, Method> controllerMethods = Arrays.stream(clazz.getDeclaredMethods())
+                Map<String, ControllerMethodStruct> controllerMethod = Arrays.stream(clazz.getDeclaredMethods())
                         .filter(method -> method.isAnnotationPresent(RequestMapping.class))
                         .collect(Collectors.toUnmodifiableMap(
                                 method -> method.getAnnotation(RequestMapping.class).value(),
-                                Function.identity()
+                                method -> new ControllerMethodStruct(HttpMethod.POST, method)
                         ));
 
-                controllers.put(path, new ControllerMethods(clazz, controllerMethods));
+
+                controllers.put(path, new ControllerMethod(clazz, controllerMethod));
             }
         });
     }
@@ -48,13 +51,18 @@ public abstract class ControllerResolver {
     /**
      * @return 만약 정상적으로 controller 처리가 완료될 경우 true를 반환한다. 아닌 경우 false를 반환한다.
      */
-    public static boolean invoke(String url, HttpRequest request) throws InvocationTargetException, IllegalAccessException {
+    public static boolean invoke(String url, HttpRequest request) throws InvocationTargetException, IllegalAccessException, MethodNotAllowedException, BadRequestException {
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
+        AtomicBoolean hasMethod = new AtomicBoolean(false);
         controllers.forEach((s, controllerMethods) -> {
             if (url.startsWith(s)) {
-                clazz.set(controllerMethods.getControllerClass());
-                methodAtomicReference.set(controllerMethods.find(url.substring(s.length())));
+                hasMethod.set(true);
+                ControllerMethodStruct methodStruct = controllerMethods.find(url.substring(s.length()));
+                if (methodStruct.getHttpMethod() == request.getRequestMethod()) {
+                    clazz.set(controllerMethods.getControllerClass());
+                    methodAtomicReference.set(methodStruct.getMethod());
+                }
             }
         });
 
@@ -62,6 +70,9 @@ public abstract class ControllerResolver {
         Class<?> controllerClass = clazz.get();
         Method method = methodAtomicReference.get();
         if (controllerClass == null || method == null) {
+            if (hasMethod.get()) {
+                throw new MethodNotAllowedException();
+            }
             return false;
         }
         Object instance = getInstanceMagager().getInstance(controllerClass);
@@ -79,7 +90,7 @@ public abstract class ControllerResolver {
                 .toArray();
 
         if (Arrays.asList(array).contains(null)) {
-            throw new IllegalArgumentException(ExceptionName.WRONG_ARGUMENT);
+            throw new BadRequestException(ExceptionName.WRONG_ARGUMENT);
         }
         method.invoke(instance, array);
         return true;

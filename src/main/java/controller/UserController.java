@@ -14,7 +14,7 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @RequestMapping(method = HttpMethod.GET, value = "/create")
+    @RequestMapping(method = HttpMethod.POST, value = "/create")
     public void create(@RequestParam("userId") String userId,
                        @RequestParam("password") String password,
                        @RequestParam("name") String name,

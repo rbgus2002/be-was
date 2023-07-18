@@ -1,12 +1,11 @@
 package webserver;
 
+import controller.UserController;
 import db.Database;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import support.DefaultInstanceManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,9 +24,10 @@ class RequestHandlerTest {
     OutputStream outputStream = new ByteArrayOutputStream();
     SoftAssertions softAssertions;
 
-    String OK = "HTTP/1.1 200 OK";
-    String BAD_REQUEST = "HTTP/1.1 400 Bad Request";
-    String NOT_FOUND = "HTTP/1.1 404 Not Found";
+    final String OK = "HTTP/1.1 200 OK";
+    final String BAD_REQUEST = "HTTP/1.1 400 Bad Request";
+    final String NOT_FOUND = "HTTP/1.1 404 Not Found";
+    final String METHOD_NOT_ALLOWED = "HTTP/1.1 405 Method Not Allowed";
 
     static class IoSocket extends Socket {
 
@@ -52,6 +52,11 @@ class RequestHandlerTest {
             return outputStream;
         }
 
+    }
+
+    @BeforeAll
+    static void prepare() {
+        DefaultInstanceManager.getInstanceMagager().addInstance(UserController.class);
     }
 
     @BeforeEach
@@ -150,11 +155,31 @@ class RequestHandlerTest {
     @DisplayName("유저 생성 테스트")
     class Create {
 
+        private final String method = "POST";
+
+        @Test
+        @DisplayName("GET, POST 메소드 분리 테스트")
+        void methodSeparate() {
+            //given
+            String request = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request);
+
+            //when
+            requestHandler.run();
+            User user = Database.findUserById("javajigi");
+            String[] result = outputStream.toString().split(NEW_LINE);
+
+            //then
+            softAssertions.assertThat(user).isNull();
+            softAssertions.assertThat(result[0]).isEqualTo(METHOD_NOT_ALLOWED);
+            softAssertions.assertAll();
+        }
+
         @Test
         @DisplayName("새로운 유저 등록 요청 처리 테스트")
         void registerUser() {
             //given
-            String request = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+            String request = method + " /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
             RequestHandler requestHandler = buildRequestHandler(request);
 
             //when
@@ -177,7 +202,7 @@ class RequestHandlerTest {
         @DisplayName("다른(누락) 쿼리 등록 요청 처리 테스트")
         void registerUserDiff() {
             //given
-            String request = "GET /user/create?userId=javajigi&pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+            String request = method + " /user/create?userId=javajigi&pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
             RequestHandler requestHandler = buildRequestHandler(request);
 
             //when
@@ -194,7 +219,7 @@ class RequestHandlerTest {
         @DisplayName("다른 순서의 쿼리 등록 요청 처리 테스트")
         void registerDiffSequence() {
             //given
-            String request = "GET /user/create?password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi HTTP/1.1";
+            String request = method + " /user/create?password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi HTTP/1.1";
             RequestHandler requestHandler = buildRequestHandler(request);
 
             //when
