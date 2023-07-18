@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class HttpWasRequest {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
-	private static final String base64Pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
+	private static final String BASE64_PATTERN = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
 	private static final String PROTOCOL_VERSION = "ProtocolVersion";
 	private static final String HTTP_METHOD = "HttpMethod";
@@ -110,7 +110,7 @@ public class HttpWasRequest {
 	}
 
 	private String base64Decoder(String value) {
-		if (!Pattern.matches(base64Pattern, value)) {
+		if (!Pattern.matches(BASE64_PATTERN, value)) {
 			return URLDecoder.decode(value, StandardCharsets.UTF_8);
 		}
 		return value;
