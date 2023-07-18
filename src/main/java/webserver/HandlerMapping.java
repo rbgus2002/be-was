@@ -24,12 +24,11 @@ public class HandlerMapping {
     private HandlerMapping() {
     }
 
-    public static Method getHandler(HttpRequest request) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    public static Method getHandler(HttpRequest request){
         Method[] methods = Controller.class.getMethods();
         for (Method method : methods) {
             if (isMapped(method, request.getPath())) {
                 return method;
-//                method.invoke(Controller.class.getDeclaredConstructor().newInstance());
             }
         }
         return null;

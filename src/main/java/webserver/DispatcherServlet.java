@@ -19,7 +19,7 @@ public class DispatcherServlet {
         Method method = HandlerMapping.getHandler(request);
 
         HttpResponse response;
-        if(request.isStaticFileRequested()){
+        if(method == null){
             response = HttpResponse.find(request.getPath());
         }else{
             response = callMethod(request, method);

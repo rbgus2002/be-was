@@ -59,8 +59,4 @@ public class HttpRequest {
     public Map<String, String> getQuery(){
         return requestLine.getUri().getQuery();
     }
-
-    public boolean isStaticFileRequested() {
-        return getPath().endsWith(HTML);
-    }
 }

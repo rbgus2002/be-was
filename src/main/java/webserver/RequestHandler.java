@@ -26,7 +26,10 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
             dispatcherServlet.doService(in, out);
-        } catch (Throwable e) {
+        } catch (IOException e){
+            // TODO : Redirect 로직 다시 구성 (여기서 리다이렉트 시킬 수 있게 하기)
+        }
+        catch (Throwable e) {
             logger.error(e.getMessage());
         }
     }
