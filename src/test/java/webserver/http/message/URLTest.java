@@ -1,8 +1,9 @@
-package webserver.http;
+package webserver.http.message;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.message.URL;
 
 import java.util.List;
 

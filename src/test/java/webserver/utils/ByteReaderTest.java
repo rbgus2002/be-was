@@ -1,8 +1,9 @@
-package utils;
+package webserver.utils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.utils.ByteReader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

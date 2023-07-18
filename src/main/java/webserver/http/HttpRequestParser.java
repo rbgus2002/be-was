@@ -1,9 +1,9 @@
-package webserver;
+package webserver.http;
 
-import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
-import webserver.http.HttpVersion;
-import webserver.http.URL;
+import webserver.http.message.HttpMethod;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpVersion;
+import webserver.http.message.URL;
 
 import java.util.Arrays;
 import java.util.HashMap;

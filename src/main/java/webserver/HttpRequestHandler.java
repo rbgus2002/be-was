@@ -3,9 +3,9 @@ package webserver;
 import webserver.handlers.Handler;
 import webserver.handlers.IndexHandler;
 import webserver.handlers.NotFoundHandler;
-import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.message.HttpMethod;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpResponse;
 
 import java.util.HashMap;
 import java.util.Map;

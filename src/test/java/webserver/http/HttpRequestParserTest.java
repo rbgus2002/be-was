@@ -1,13 +1,14 @@
-package webserver;
+package webserver.http;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
-import webserver.http.HttpVersion;
-import webserver.http.URL;
+import webserver.http.HttpRequestParser;
+import webserver.http.message.HttpMethod;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpVersion;
+import webserver.http.message.URL;
 
 import java.util.List;
 import java.util.Map;

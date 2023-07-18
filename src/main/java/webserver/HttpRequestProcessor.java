@@ -2,11 +2,13 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ByteReader;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
-import webserver.http.HttpStatus;
-import webserver.http.HttpVersion;
+import webserver.http.HttpRequestParser;
+import webserver.http.HttpResponseStringifier;
+import webserver.utils.ByteReader;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpResponse;
+import webserver.http.message.HttpStatus;
+import webserver.http.message.HttpVersion;
 
 import java.io.*;
 import java.net.Socket;

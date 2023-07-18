@@ -1,8 +1,8 @@
-package webserver;
+package webserver.http;
 
-import webserver.http.HttpResponse;
-import webserver.http.HttpStatus;
-import webserver.http.HttpVersion;
+import webserver.http.message.HttpResponse;
+import webserver.http.message.HttpStatus;
+import webserver.http.message.HttpVersion;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;

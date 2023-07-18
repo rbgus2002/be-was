@@ -1,10 +1,11 @@
-package webserver;
+package webserver.http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpResponse;
-import webserver.http.HttpStatus;
-import webserver.http.HttpVersion;
+import webserver.http.HttpResponseStringifier;
+import webserver.http.message.HttpResponse;
+import webserver.http.message.HttpStatus;
+import webserver.http.message.HttpVersion;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

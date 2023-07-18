@@ -1,12 +1,11 @@
 package webserver;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.fixture.HttpRequestFixture;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
-import webserver.http.HttpStatus;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpResponse;
+import webserver.http.message.HttpStatus;
 import webserver.utils.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,9 +1,9 @@
 package webserver.fixture;
 
-import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
-import webserver.http.HttpVersion;
-import webserver.http.URL;
+import webserver.http.message.HttpMethod;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpVersion;
+import webserver.http.message.URL;
 
 public class HttpRequestFixture {
     public static HttpRequest getRequestIndex() {

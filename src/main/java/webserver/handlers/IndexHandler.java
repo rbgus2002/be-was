@@ -1,7 +1,7 @@
 package webserver.handlers;
 
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.message.HttpRequest;
+import webserver.http.message.HttpResponse;
 import webserver.utils.FileUtils;
 
 public class IndexHandler implements Handler {
