@@ -18,8 +18,8 @@ class HttpResponseTest {
 
         //when
         httpResponse.setStatus(HttpStatus.OK);
-        httpResponse.setHeader(HttpConstant.CONTENT_TYPE, "text/html;charset=utf-8");
-        httpResponse.setHeader(HttpConstant.CONTENT_LENGTH, "0");
+        httpResponse.setContentType("text/html;charset=utf-8");
+        httpResponse.setContentLength(0);
         httpResponse.setHeader(HttpConstant.AUTHORIZATION, "Bearer ABCD1234");
 
         //then

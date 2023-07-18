@@ -12,12 +12,20 @@ public class HttpResponse {
         headers = new LinkedHashMap<>();
     }
 
+    public void setHeader(String name, String value) {
+        headers.put(name, value);
+    }
+
     public void setStatus(HttpStatus status) {
         this.status = status;
     }
 
-    public void setHeader(String name, String value) {
-        headers.put(name, value);
+    public void setContentType(String contentType) {
+        headers.put(HttpConstant.CONTENT_TYPE, contentType);
+    }
+
+    public void setContentLength(int contentLength) {
+        headers.put(HttpConstant.CONTENT_LENGTH, String.valueOf(contentLength));
     }
 
     public void setBody(byte[] body) {

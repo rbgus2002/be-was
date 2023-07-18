@@ -1,8 +1,9 @@
 package webserver.utils;
 
-import java.io.ByteArrayOutputStream;
+import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,30 +15,53 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    public static boolean isFileExist(String URI) {
+    public static void processFileResponse(String URI, HttpResponse httpResponse) throws IOException {
+        URI = preprocessURI(URI);
+        byte[] body = readFileBytes(URI);
+        HttpStatus status = resolveHttpStatus(URI);
+        String contentType = ContentTypeResolver.getContentType(URI);
+
+        httpResponse.setStatus(status);
+        httpResponse.setContentType(contentType);
+        httpResponse.setContentLength(body.length);
+        httpResponse.setBody(body);
+    }
+
+    private static String preprocessURI(String URI) {
+        if(isFileExist(URI)) {
+            return URI;
+        }
+        if(URI.equals("/")) {
+            return "/index.html";
+        }
+        return "/404.html";
+    }
+
+    public static byte[] readFileBytes(String URI) throws IOException {
+        if (FileUtils.isStaticFile(URI)) {
+            return Files.readAllBytes(Paths.get(STATIC_DIRECTORY + URI));
+        }
+        return Files.readAllBytes(Paths.get(TEMPLATES_DIRECTORY + URI));
+    }
+
+    private static HttpStatus resolveHttpStatus(String URI) {
+        if(URI.equals("/404.html")) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return HttpStatus.OK;
+    }
+
+    private static boolean isFileExist(String URI) {
         return isTemplateFile(URI) || isStaticFile(URI);
     }
 
-    public static boolean isTemplateFile(String URI) {
+    private static boolean isTemplateFile(String URI) {
         Path path = Paths.get(TEMPLATES_DIRECTORY + URI);
         return Files.exists(path) && !Files.isDirectory(path);
     }
 
-    public static boolean isStaticFile(String URI) {
+    private static boolean isStaticFile(String URI) {
         Path path = Paths.get(STATIC_DIRECTORY + URI);
         return Files.exists(path) && !Files.isDirectory(path);
     }
-
-    public static byte[] readBytesFromFile(Path path) throws IOException {
-        InputStream inputStream = Files.newInputStream(path);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            byteArrayOutputStream.write(buffer, 0, bytesRead);
-        }
-        return byteArrayOutputStream.toByteArray();
-    }
-
 }
