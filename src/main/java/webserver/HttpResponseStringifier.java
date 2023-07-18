@@ -27,7 +27,9 @@ public class HttpResponseStringifier {
 
     private void appendBody(StringBuilder responseBuilder, HttpResponse httpResponse) {
         byte[] body = httpResponse.getBody();
-        responseBuilder.append(new String(body, StandardCharsets.UTF_8));
+        if (body != null) {
+            responseBuilder.append(new String(body, StandardCharsets.UTF_8));
+        }
     }
 
     private void appendCRLF(StringBuilder responseBuilder) {
