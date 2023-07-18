@@ -1,4 +1,4 @@
-package webserver.http;
+package webserver.http.request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,10 @@ public class HttpRequest {
     public HttpRequest(HttpRequestLine httpRequestLine, HttpHeaders httpHeaders) {
         this.httpRequestLine = httpRequestLine;
         this.httpHeaders = httpHeaders;
+    }
+
+    public String getRequestUri() {
+        return httpRequestLine.getUri();
     }
 
     public HttpRequestLine getHttpRequestLine() {
