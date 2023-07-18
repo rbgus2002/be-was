@@ -2,6 +2,7 @@ package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.Headers;
 
 import java.io.*;
 
@@ -29,7 +30,7 @@ class HeaderTest {
         Headers headers = Headers.from(bufferedReader);
 
         // then
-        assertEquals(httpHeaders, headers.getString());
+        assertEquals(httpHeaders, headers.toString());
     }
 
     @Test
@@ -56,6 +57,6 @@ class HeaderTest {
         Headers headers = Headers.from(bufferedReader);
 
         // then
-        assertEquals(httpHeaders, headers.getString());
+        assertEquals(httpHeaders, headers.toString());
     }
 }
