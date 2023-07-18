@@ -7,7 +7,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.FileUtils;
 
-import java.io.DataOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,7 +16,7 @@ import java.net.Socket;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -27,24 +27,25 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
             FileUtils.processFileResponse(httpRequest.getURI(), httpResponse);
 
-            sendResponse(httpResponse, dos);
+            sendResponse(httpResponse, out);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void sendResponse(HttpResponse httpResponse, DataOutputStream dos) throws IOException {
-        dos.write(httpResponse.getHeaderBytes());
-        dos.write(HttpConstant.CRLF.getBytes());
+    private void sendResponse(HttpResponse httpResponse, OutputStream out) throws IOException {
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(out);
+
+        bufferedOutputStream.write(httpResponse.getHeaderBytes());
+        bufferedOutputStream.write(HttpConstant.CRLF.getBytes());
         if (!httpResponse.isBodyEmpty()) {
-            dos.write(httpResponse.getBodyBytes());
+            bufferedOutputStream.write(httpResponse.getBodyBytes());
         }
-        dos.flush();
+        bufferedOutputStream.flush();
     }
 }
