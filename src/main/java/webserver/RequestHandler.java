@@ -9,8 +9,6 @@ import service.UserService;
 import webserver.model.Request;
 import webserver.model.Request.Method;
 import webserver.model.Response;
-import webserver.model.Response.MIME;
-import webserver.model.Response.STATUS;
 
 import java.io.*;
 import java.net.Socket;
