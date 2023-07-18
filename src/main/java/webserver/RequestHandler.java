@@ -27,9 +27,24 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = HttpRequestParser.parseHttpRequest(in);
 
-            byte[] body = HttpRequestHandler.handleRequest(request);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            HttpResponse response = HttpRequestHandler.handleRequest(request);
+//            response200Header(dos, body.length);
+//            responseBody(dos, body);
+            responseResult(dos, response);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void responseResult(DataOutputStream dos, HttpResponse response) {
+        try {
+            // TODO: \r\n appendNewLine으로 바꾸기?
+            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            dos.writeBytes(String.format("%s %d %s \r\n", response.version(), response.statusCode(), response.statusText()));
+            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Length: " + response.version().length() + "\r\n");
+            dos.writeBytes("\r\n");
+            dos.write(response.body(), 0, response.body().length);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

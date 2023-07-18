@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public class HttpRequestHandler {
     private final static Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
-    private static final Map<String, Function> requestHandlers = new HashMap<>(){{
+    private static final Map<String, Function<HttpRequest, HttpResponse>> requestHandlers = new HashMap<>(){{
         put("/user/create", request -> {
             try {
                 return handleUserCreateRequest(request);
@@ -25,29 +25,29 @@ public class HttpRequestHandler {
         });
     }};
 
-    public static byte[] handleRequest(HttpRequest request) throws IOException {
-//        logger.info("HERE..... request path: {}", request.path());
+    public static HttpResponse handleRequest(HttpRequest request) throws IOException {
         if(requestHandlers.containsKey(request.path())) {
-            return (byte[]) requestHandlers.get(request.path()).apply(request);
+            return requestHandlers.get(request.path()).apply(request);
         }
         return handleGetStaticRequest(request);
     }
 
-    private static byte[] handleGetStaticRequest(HttpRequest request) throws IOException {
+    private static HttpResponse handleGetStaticRequest(HttpRequest request) throws IOException {
         String fileName = request.uri();
-//        logger.info("Requested Filename: {}", fileName);
 
         String path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
-//        logger.info("Path: {}", path);
 
-        return Files.readAllBytes(Paths.get(path));
+        // TODO: file이 존재하지 않는 경우 404 response return
+        byte[] body = Files.readAllBytes(Paths.get(path));
+
+        return new HttpResponse(request.version(), 200, body);
     }
 
-    private static byte[] handleUserCreateRequest(Object request) throws UnsupportedEncodingException {
-        logger.info("HERE!");
-        String paramString = ((HttpRequest) request).uri().split("\\?")[1];
+    private static HttpResponse handleUserCreateRequest(HttpRequest request) throws UnsupportedEncodingException {
+        String paramString = request.uri().split("\\?")[1];
         String[] parameters = paramString.split("&");
         Map<String, String> paramPair = new HashMap();
+        // TODO: 값이 비어있는 경우? -> html에서 설정 가능할 것 같기도 함.
         for(String parameter: parameters) {
             int splitIndex = parameter.indexOf("=");
             paramPair.put(parameter.substring(0,splitIndex),
@@ -55,6 +55,6 @@ public class HttpRequestHandler {
         }
         User user = new User(paramPair.get("userId"), paramPair.get("password"), paramPair.get("name"), paramPair.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
-        return user.toString().getBytes();
+        return new HttpResponse(request.version(), 200, user.toString().getBytes());
     }
 }
