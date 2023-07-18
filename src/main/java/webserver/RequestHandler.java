@@ -32,8 +32,8 @@ public class RequestHandler implements Runnable {
             String url = request.getUrl();
             HttpController controller = HttpController.of(url);
             controller.process(request, response);
-            response.send();
-
+            WebView view = new WebView();
+            view.render(dos, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

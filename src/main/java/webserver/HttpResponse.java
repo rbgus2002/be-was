@@ -18,16 +18,6 @@ public class HttpResponse {
         this.dos = dos;
     }
 
-    public void send() throws IOException {
-        dos.writeBytes(version + " " + method + statusMessage + "\r\n");
-        for (Map.Entry<String, String> header : headers.entrySet()) {
-            dos.writeBytes(header.getKey() + ": " + header.getValue() + "\r\n");
-        }
-        dos.writeBytes("\r\n");
-        dos.write(body, 0, body.length);
-        dos.flush();
-    }
-
     public void setMethod(String method) {
         this.method = method;
     }
@@ -72,5 +62,29 @@ public class HttpResponse {
         setMethod("302");
         setStatusMessage("Found");
         setHeader("Location", url);
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public byte[] getBody() {
+        return body;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public DataOutputStream getDos() {
+        return dos;
     }
 }
