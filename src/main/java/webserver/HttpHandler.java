@@ -3,6 +3,8 @@ package webserver;
 import support.ControllerResolver;
 import support.exception.BadRequestException;
 import support.exception.MethodNotAllowedException;
+import support.exception.NotSupportedException;
+import support.exception.ServerErrorException;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -34,23 +36,27 @@ public class HttpHandler {
         interceptController(request, response, path);
     }
 
-    private boolean interceptController(HttpRequest request, HttpResponse response, String path) throws InvocationTargetException, IllegalAccessException {
+    private boolean interceptController(HttpRequest request, HttpResponse response, String path)  {
         try {
-            if (ControllerResolver.invoke(path, request)) {
-                response.setStatus(HttpStatus.FOUND);
-                response.buildHeader(new Found(MAIN_PAGE));
-                return true;
-            }
+            ControllerResolver.invoke(path, request);
+            response.setStatus(HttpStatus.FOUND);
+            response.buildHeader(new Found(MAIN_PAGE));
+            return true;
+        } catch (NotSupportedException e) {
+            return false;
         } catch (MethodNotAllowedException e) {
             response.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
-            response.buildHeader(new BadRequest());
+            response.buildHeader(new NoHeader());
             return true;
         } catch (BadRequestException e) {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.buildHeader(new NoHeader());
             return true;
+        } catch (ServerErrorException e) {
+            response.setStatus(HttpStatus.SERVER_ERROR);
+            response.buildHeader(new NoHeader());
+            return true;
         }
-        return false;
     }
 
     private void searchAndReturnPage(HttpResponse response, String path) {

@@ -6,7 +6,8 @@ public enum HttpStatus {
     FOUND(302, "302 Found"),
     BAD_REQUEST(400, "400 Bad Request"),
     NOT_FOUND(404, "404 Not Found"),
-    METHOD_NOT_ALLOWED(405, "405 Method Not Allowed");
+    METHOD_NOT_ALLOWED(405, "405 Method Not Allowed"),
+    SERVER_ERROR(500, "500 Server Error");
 
     private final int status;
     private final String message;
