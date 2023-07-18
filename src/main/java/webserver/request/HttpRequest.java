@@ -5,7 +5,7 @@ import java.util.Map;
 
 import static utils.StringUtils.*;
 
-public class RequestMessage {
+public class HttpRequest {
     private final String method;
     private final String path;
     private final String version;
@@ -13,7 +13,7 @@ public class RequestMessage {
     private final Map<String, String> metaData = new HashMap<>();
     private final Map<String, String> parameters = new HashMap<>();
 
-    public RequestMessage(String header) {
+    public HttpRequest(String header) {
         String[] lines = header.split(NEW_LINE);
 
         String[] tokens = lines[0].split(" ");
@@ -77,5 +77,17 @@ public class RequestMessage {
 
     public boolean isHasExtension() {
         return hasExtension;
+    }
+
+    @Override
+    public String toString() {
+        return "RequestMessage{" +
+                "method='" + method + '\'' +
+                ", path='" + path + '\'' +
+                ", version='" + version + '\'' +
+                ", hasExtension=" + hasExtension +
+                ", metaData=" + metaData +
+                ", parameters=" + parameters +
+                '}';
     }
 }
