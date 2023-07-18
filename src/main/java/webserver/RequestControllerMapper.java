@@ -1,7 +1,7 @@
 package webserver;
 
 import controller.Controller;
-import common.Method;
+import common.enums.Method;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class RequestControllerMapper {
         return instance;
     }
 
-    private static Map<String, Map<Method, Controller>> mapper = new HashMap<>();
+    private static final Map<String, Map<Method, Controller>> mapper = new HashMap<>();
 
     public void put(String path, Method method, Controller controller) {
         if (!mapper.containsKey(path)) {

@@ -21,6 +21,10 @@ public enum ContentType {
         return description;
     }
 
+    public boolean isHtmlContent() {
+        return this == HTML;
+    }
+
     public boolean isStaticContent() {
         return this == JS || this == CSS || this == ICO || this == PNG || this == JPG;
     }

@@ -1,7 +1,7 @@
 package utils;
 
 import common.HttpRequest;
-import common.Method;
+import common.enums.Method;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static common.Method.*;
+import static common.enums.Method.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpRequestUtilsTest {

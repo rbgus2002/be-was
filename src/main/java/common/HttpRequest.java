@@ -1,5 +1,8 @@
 package common;
 
+import common.enums.ContentType;
+import common.enums.Method;
+
 import java.util.Map;
 import java.util.Map.Entry;
 

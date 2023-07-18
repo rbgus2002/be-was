@@ -1,8 +1,8 @@
 package utils;
 
-import common.ContentType;
+import common.enums.ContentType;
 import common.HttpRequest;
-import common.Method;
+import common.enums.Method;
 import common.RequestLine;
 
 import java.io.BufferedReader;
@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static common.ContentType.*;
+import static common.enums.ContentType.*;
 
 public class HttpRequestUtils {
 

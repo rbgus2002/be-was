@@ -4,15 +4,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class HttpResponse {
-    private final ResponseLine responseLine;
-    private final Map<String, String> headers;
-    private final byte[] body;
-
-    public HttpResponse(ResponseLine responseLine, Map<String, String> headers, byte[] body) {
-        this.responseLine = responseLine;
-        this.headers = headers;
-        this.body = body;
-    }
+    private ResponseLine responseLine;
+    private Map<String, String> headers;
+    private byte[] body;
 
     public String getResponseLine() {
         return responseLine.toString() + "\r\n";
@@ -31,5 +25,17 @@ public class HttpResponse {
 
     public byte[] getBody() {
         return body;
+    }
+
+    public void setResponseLine(ResponseLine responseLine) {
+        this.responseLine = responseLine;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
     }
 }

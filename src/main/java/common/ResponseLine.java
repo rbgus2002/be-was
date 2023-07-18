@@ -1,11 +1,16 @@
 package common;
 
+import common.enums.ResponseCode;
+
 public class ResponseLine {
     private final String version;
-    private final ResponseCode responseCode;
+    private ResponseCode responseCode;
 
-    public ResponseLine(String version, ResponseCode responseCode) {
+    public ResponseLine(String version) {
         this.version = version;
+    }
+
+    public void setResponseCode(ResponseCode responseCode) {
         this.responseCode = responseCode;
     }
 

@@ -1,6 +1,6 @@
 package controller;
 
-import common.ContentType;
+import common.enums.ContentType;
 import common.HttpRequest;
 import common.RequestLine;
 import db.Database;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static common.Method.GET;
+import static common.enums.Method.GET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CreateUserControllerTest {
