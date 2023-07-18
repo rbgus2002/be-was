@@ -30,7 +30,7 @@ public class HttpResponse {
         return new HttpResponse(OK, "/index.html");
     }
 
-    public static HttpResponse find(String resource) throws IOException {
+    public static HttpResponse findStatic(String resource) throws IOException {
         return new HttpResponse(OK, resource);
     }
 
