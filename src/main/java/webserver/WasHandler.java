@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import controller.Controller;
+import controller.FrontController;
 import controller.annotation.RequestMapping;
 import webserver.utils.HttpMethod;
 
@@ -15,11 +16,11 @@ public class WasHandler {
 
 	private final HttpWasRequest httpWasRequest;
 	private final HttpWasResponse httpWasResponse;
-	private final Controller controller;
-	public WasHandler(final HttpWasRequest httpWasRequest, final HttpWasResponse httpWasResponse, Controller controller) {
+	private final FrontController frontController;
+	public WasHandler(final HttpWasRequest httpWasRequest, final HttpWasResponse httpWasResponse, FrontController frontController) {
 		this.httpWasRequest = httpWasRequest;
 		this.httpWasResponse = httpWasResponse;
-		this.controller = controller;
+		this.frontController = frontController;
 	}
 
 	public void service() throws InvocationTargetException, IllegalAccessException {
@@ -40,7 +41,9 @@ public class WasHandler {
 
 		final Method method = matchHttpMethod.get();
 
-		method.invoke(controller, httpWasRequest, httpWasResponse);
+		final Class<?> methodClass = method.getDeclaringClass();
+		frontController.getInstance(methodClass.getName());
+		method.invoke(frontController.getInstance(methodClass.getName()), httpWasRequest, httpWasResponse);
 	}
 
 	private List<Method> getResourcePathMethod() {
