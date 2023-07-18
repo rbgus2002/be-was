@@ -8,9 +8,4 @@ public class UserController implements Controller {
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
 
     }
-
-    @Override
-    public void doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
-
-    }
 }
