@@ -30,8 +30,8 @@ public class RequestHandler implements Runnable {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(dos);
             String url = request.getUrl();
-            HttpController handler = HttpController.of(url);
-            handler.service(request, response);
+            HttpController controller = HttpController.of(url);
+            controller.service(request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
