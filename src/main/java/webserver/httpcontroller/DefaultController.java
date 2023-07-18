@@ -1,4 +1,4 @@
-package webserver.httphandler;
+package webserver.httpcontroller;
 
 import webserver.HttpRequest;
 import webserver.HttpResponse;
@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class DefaultHandler extends HttpHandler {
+public class DefaultController extends HttpController {
     @Override
     public void service(HttpRequest request, HttpResponse response) throws IOException {
         Path path;

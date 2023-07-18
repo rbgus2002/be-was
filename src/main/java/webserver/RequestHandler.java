@@ -2,7 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.httphandler.HttpHandler;
+import webserver.httpcontroller.HttpController;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class RequestHandler implements Runnable {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(dos);
             String url = request.getUrl();
-            HttpHandler handler = HttpHandler.of(url);
+            HttpController handler = HttpController.of(url);
             handler.service(request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());

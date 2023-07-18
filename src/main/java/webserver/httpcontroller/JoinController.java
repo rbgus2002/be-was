@@ -1,4 +1,4 @@
-package webserver.httphandler;
+package webserver.httpcontroller;
 
 import db.Database;
 import model.User;
@@ -7,7 +7,7 @@ import webserver.HttpResponse;
 
 import java.io.IOException;
 
-public class JoinHandler extends HttpHandler {
+public class JoinController extends HttpController {
     @Override
     public void service(HttpRequest request, HttpResponse response) throws IOException {
         response.setMethod("303");

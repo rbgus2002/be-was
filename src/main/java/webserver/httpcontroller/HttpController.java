@@ -1,4 +1,4 @@
-package webserver.httphandler;
+package webserver.httpcontroller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,16 +7,16 @@ import webserver.HttpResponse;
 
 import java.io.IOException;
 
-public abstract class HttpHandler {
-    static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
+public abstract class HttpController {
+    static final Logger logger = LoggerFactory.getLogger(HttpController.class);
 
-    public static HttpHandler of(String url) {
+    public static HttpController of(String url) {
         if (url.equals("/")) {
-            return new HomeHandler();
+            return new HomeController();
         }else if (url.equals("/user/create")) {
-            return new JoinHandler();
+            return new JoinController();
         } else {
-            return new DefaultHandler();
+            return new DefaultController();
         }
     }
 
