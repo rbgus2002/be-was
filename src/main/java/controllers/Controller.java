@@ -1,10 +1,10 @@
 package controllers;
 
-import webserver.GetMapping;
+import annotations.GetMapping;
 
 public class Controller {
 
-	@GetMapping("/")
+	@GetMapping(path = "/")
 	public String getIndex() {
 		return "index.html";
 	}

@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import annotations.AnnotationMap;
+import annotations.GetMapping;
 import controllers.Controller;
 
 public class RequestHandler implements Runnable {
@@ -60,22 +62,12 @@ public class RequestHandler implements Runnable {
 		String[] arguments;
 		if (line.startsWith("GET")) {
 			arguments = line.split(" ");
-			final Method[] declaredMethods = Controller.class.getDeclaredMethods();
-			Constructor<Controller> constructor = Controller.class.getDeclaredConstructor();
-			Object o = constructor.newInstance();
-			List<Method> mappedMethods = Arrays.stream(declaredMethods)
-				.filter(method -> method.isAnnotationPresent(GetMapping.class) && method.getAnnotation(GetMapping.class)
-					.value()
-					.equals(arguments[1]))
-				.collect(Collectors.toList());
-			if (mappedMethods.isEmpty()) {
-				sendResourceResponse(arguments[1], out);
+			if (AnnotationMap.exists(MethodType.GET, arguments[1])) {
+				String path = AnnotationMap.run(MethodType.GET, arguments[1]);
+				sendResourceResponse(path, out);
 				return;
 			}
-			for (Method mappedMethod : mappedMethods) {
-				sendResourceResponse((String)mappedMethod.invoke(o), out);
-				return;
-			}
+			sendResourceResponse(arguments[1], out);
 		}
 	}
 
