@@ -17,8 +17,8 @@ Java Web Application Server 2023
 ### 프로그래밍 요구사항
 - 프로젝트 분석
 - 구조 변경
-  - [자바 스레드 모델](https://github.com/jjy0709/be-was.wiki.git)에 대해 학습한다. 
-  - [자바 Concurrent 패키지](https://github.com/jjy0709/be-was.wiki.git)에 대해 학습한다.
+  - [자바 스레드 모델](https://github.com/jjy0709/be-was/wiki/%5BJava%5D-Thread-Class)에 대해 학습한다. 
+  - [자바 Concurrent 패키지](https://github.com/jjy0709/be-was/wiki/%5BJava%5D-Concurrent-Package)에 대해 학습한다.
   - 기존의 프로젝트를 Concurrent 패키지를 사용하도록 변경한다.
 - OOP와 클린 코딩
   - 기능요구사항을 만족하는 코드 작성
