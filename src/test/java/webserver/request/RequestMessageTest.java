@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("응답 메시지 클래스 테스트")
+@DisplayName("요청 메시지 클래스 테스트")
 class RequestMessageTest {
     @Test
     @DisplayName("응답 메시지 객체가 생성된다.")
