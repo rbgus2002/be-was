@@ -8,6 +8,7 @@ import container.DispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import parser.GetParser;
+import parser.PostParser;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -26,11 +27,12 @@ public class RequestHandler implements Runnable {
             String line = "";
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
-            HTTPServletRequest request = new GetParser().getProperRequest(br);
-            while (!(line = br.readLine()).isEmpty()) {
-                logger.debug("line = {}", line);
+            HTTPServletRequest request = null;
+            if (startLine.split(" ")[0].equals("POST")) {
+                request = new PostParser().getProperRequest(startLine, br);
+            }else{
+                request = new GetParser().getProperRequest(startLine, br);
             }
-
             Servlet servlet = DispatcherServlet.findServlet(request);
             HTTPServletResponse response = new HTTPServletResponse(dos);
             servlet.service(request, response);

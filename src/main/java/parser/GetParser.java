@@ -11,14 +11,12 @@ public class GetParser implements Parser {
     private ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
 
     @Override
-    public HTTPServletRequest getProperRequest(BufferedReader br) throws IOException {
-        String startLine = br.readLine();
+    public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException {
         String url = parseUrl(startLine);
         String method = parseMethod(startLine);
         String version = parseVersion(startLine);
         HTTPServletRequest request = new HTTPServletRequest(method, url, version);
         request.addQuery(query);
-
         return request;
     }
 
