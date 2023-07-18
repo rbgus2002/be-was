@@ -12,6 +12,7 @@ import service.UserService;
 
 import java.io.FileNotFoundException;
 
+import static constant.Uri.INDEX_HTML_URI;
 import static constant.Uri.USER_CREATE_URI;
 import static util.StringUtils.*;
 
@@ -47,7 +48,7 @@ public class RestController {
             UserFormRequestDto userFormRequestDto = request.paramsToDto();
             userService.createByForm(userFormRequestDto);
             return responseMapper
-                    .createHttpResponse(request, HttpStatusCode.CREATED, NO_CONTENT, MIME.JSON);
+                    .createRedirectResponse(request, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
         } catch (Exception e) {
             return responseMapper.createBadRequestResponse(request);
         }

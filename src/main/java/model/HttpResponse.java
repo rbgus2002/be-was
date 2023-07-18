@@ -23,18 +23,11 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, String body, MIME extension) {
-        Map<String, String> header = new HashMap<>();
-        int lengthOfBody = body.getBytes().length;
-
-        header.put("Content-Type", extension.getContentType());
-        header.put("Content-Length", String.valueOf(lengthOfBody));
-        HttpHeader httpHeader = HttpHeader.of(header);
-
+    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header,String body) {
         return new HttpResponse(
                 httpRequest.getProtocol(),
                 statusCode,
-                httpHeader,
+                header,
                 body
         );
     }
