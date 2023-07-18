@@ -66,8 +66,8 @@ public class HttpRequest {
 
     }
 
-    public String getHeaders() {
-        return header.buildHeader();
+    public String getHeaderValue(String key) {
+        return header.getValue(key);
     }
 
     public HttpMethod getRequestMethod() {

@@ -16,6 +16,10 @@ public class Header {
         return this;
     }
 
+    public String getValue(String key) {
+        return headers.get(key);
+    }
+
     public String buildHeader() {
         StringBuilder stringBuilder = new StringBuilder();
 
