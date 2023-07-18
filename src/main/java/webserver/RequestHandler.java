@@ -125,6 +125,7 @@ public class RequestHandler implements Runnable {
     private Response generateResponse(Request request) throws Exception {
         String targetUri = request.getTargetUri();
 
+        // Static Files
         String[] tokens = targetUri.split("\\.");
         String extension = tokens[tokens.length-1];
         MIME mime = MIME.getMimeByExtension(extension);
@@ -137,6 +138,7 @@ public class RequestHandler implements Runnable {
 
             return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
         }
+        // Service Logic
         if(targetUri.startsWith("/user/create")) {
             Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
             UserService.userSignUp(bodyParameterMap);
