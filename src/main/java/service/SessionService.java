@@ -18,14 +18,13 @@ public class SessionService {
 
         return session;
     }
+    public static Collection<Session> getAllSession() {
+        return Database.findAllSession();
+    }
 
     public static Session updateSession(String userId) {
         Session session = new Session(userId);
         Database.updateSession(userId, session);
         return session;
-    }
-
-    public static Collection<Session> getAllSession() {
-        return Database.findAllSession();
     }
 }
