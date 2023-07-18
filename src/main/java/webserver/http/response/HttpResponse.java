@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.stream.Collectors;
 import webserver.http.Headers;
+import webserver.http.Http.MIME;
 import webserver.http.Http.StatusCode;
 import webserver.http.request.HttpRequest;
 
@@ -41,8 +42,11 @@ public class HttpResponse implements Serializable {
         if (request.getRequestLine() == null) {
             return null;
         }
-        URL resource = HttpResponse.class.getResource(TEMPLATES + request.getRequestLine().getTarget().toString());
-        return write(resource);
+        if(request.is(MIME.HTML)) {
+            URL resource = HttpResponse.class.getResource(TEMPLATES + request.getRequestLine().getTarget().getPath());
+            return write(resource);
+        }
+        return write(null);
     }
 
     private static byte[] write(final URL resource) throws IOException {

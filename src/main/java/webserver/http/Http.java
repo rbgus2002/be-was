@@ -96,4 +96,34 @@ public class Http {
             return value;
         }
     }
+
+    public enum MIME {
+        HTML(".html"),
+        CSS(".css"),
+        JS(".js"),
+        ICO(".ico"),
+        PNG(".png"),
+        JSON(".json"),
+        JPG(".jpg"),
+        JPEG(".jpeg"),
+        EOT(".eot"),
+        SVG(".svg"),
+        TTF(".ttf"),
+        WOFF(".woff"),
+        WOFF2(".woff2"),
+        NONE("");
+
+        private final String extension;
+
+        MIME(final String value) {
+            this.extension = value;
+        }
+
+        public static MIME findBy(final String text) {
+            return Arrays.stream(MIME.values())
+                    .filter(m -> m.extension.equals(text))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(text + "에 해당하는 확장자가 없습니다"));
+        }
+    }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class QueryParameter {
-    private static final String DELIMITER = "?";
+    public static final String DELIMITER = "?";
     private static final String ENTRY_SEPARATOR = "&";
     private static final String ENTRY_DELIMITER = "=";
 

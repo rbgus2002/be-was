@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import webserver.http.Headers;
 import webserver.http.Http;
+import webserver.http.Http.MIME;
 import webserver.http.Http.Method;
 import webserver.http.Http.Version;
 
@@ -66,6 +67,12 @@ public class HttpRequest implements Serializable {
         int contentLength = Integer.parseInt(headers.get(Http.Headers.CONTENT_LENGTH));
         char[] chars = new char[contentLength];
         return String.valueOf(bufferedReader.read(chars, 0, contentLength));
+    }
+
+    public boolean is(final MIME mime) {
+        return this.requestLine.getTarget()
+                .getMIME()
+                .equals(mime);
     }
 
     public RequestLine getRequestLine() {
