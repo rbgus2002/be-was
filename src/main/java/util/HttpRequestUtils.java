@@ -38,4 +38,9 @@ public class HttpRequestUtils {
 
         return path;
     }
+
+    public static boolean isValidPath(String path) {
+        String[] splitPath = path.split("\\.");
+        return splitPath[0].charAt(0) == '/' && splitPath[1].equals("html");
+    }
 }

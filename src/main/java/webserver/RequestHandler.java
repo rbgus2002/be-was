@@ -27,12 +27,18 @@ public class RequestHandler implements Runnable {
             String path = HttpRequestUtils.getPath(header);
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
+            byte[] body = getBody(path);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private byte[] getBody(String path) throws IOException {
+        return HttpRequestUtils.isValidPath(path) ?
+                Files.readAllBytes(new File("src/main/resources/templates" + path).toPath()) :
+                "Invalid Path".getBytes();
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
