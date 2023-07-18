@@ -1,14 +1,12 @@
 package service;
 
-import db.Database;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.RequestHandler;
-import static http.HttpUtil.*;
 
-import java.net.Socket;
 import java.util.Map;
+
+import static http.HttpUtil.parseQueryParameter;
 
 class UserServiceTest {
     @Test

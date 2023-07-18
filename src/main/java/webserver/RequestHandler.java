@@ -1,34 +1,25 @@
 package webserver;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import db.Database;
 import model.Session;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static http.HttpUtil.*;
-import static model.User.*;
-import static webserver.model.Response.*;
-
 import service.FileService;
 import service.SessionService;
 import service.UserService;
 import webserver.model.Request;
 import webserver.model.Request.Method;
 import webserver.model.Response;
-import webserver.model.Response.STATUS;
 import webserver.model.Response.MIME;
+import webserver.model.Response.STATUS;
+
+import java.io.*;
+import java.net.Socket;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import static http.HttpUtil.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

@@ -4,7 +4,6 @@ import db.Database;
 import model.Session;
 
 import java.util.Collection;
-import java.util.UUID;
 
 public class SessionService {
 

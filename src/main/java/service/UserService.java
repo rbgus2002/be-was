@@ -4,11 +4,9 @@ import db.Database;
 import model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import static model.User.*;
-import static model.User.EMAIL;
 
 public class UserService {
 
