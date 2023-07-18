@@ -23,7 +23,7 @@ class UserServiceTest {
 
         // Then
         SoftAssertions assertions = new SoftAssertions();
-        assertions.assertThat(Database.findAll().size()).isEqualTo(1);
+        assertions.assertThat(Database.findAllUser().size()).isEqualTo(1);
         assertions.assertThat(Database.findUserById("jst0951").getName()).isEqualTo("정성태");
         assertions.assertAll();
     }
