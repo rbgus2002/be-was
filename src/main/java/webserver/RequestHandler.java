@@ -30,7 +30,7 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = StaticFIleUtils.isExistedStaticFileRequest(request.getUrl()) ?
-                    Files.readAllBytes(new File("src/main/resources/templates" + request.getUrl()).toPath()) :
+                    StaticFIleUtils.getStaticByte(request.getUrl()) :
                     "Hello World".getBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);

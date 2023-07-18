@@ -12,6 +12,14 @@ public class StaticFIleUtils {
     private static final Logger logger = LoggerFactory.getLogger(StaticFIleUtils.class);
     public static boolean isExistedStaticFileRequest(String url) throws IOException {
         String[] splitedUrl = url.split("[.]");
-        return splitedUrl.length > 1 && splitedUrl[1].equals("html") && Files.exists(new File("src/main/resources/templates" + url).toPath());
+        return splitedUrl.length > 1 &&
+                (Files.exists(new File("src/main/resources/templates" + url).toPath()) || Files.exists(new File("src/main/resources/static" + url).toPath()));
+    }
+
+    public static byte[] getStaticByte(String url) throws IOException {
+        if(Files.exists(new File("src/main/resources/templates" + url).toPath())){
+            return Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
+        }
+        return Files.readAllBytes(new File("src/main/resources/static" + url).toPath());
     }
 }
