@@ -3,6 +3,7 @@ package service;
 import db.Database;
 import model.User;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,5 +20,13 @@ public class UserService {
                 parameterMap.get(EMAIL));
         // DB 저장
         Database.addUser(user);
+    }
+
+    public static Collection<User> getAllUser() {
+        return Database.findAllUser();
+    }
+
+    public static User getUser(String userId) {
+        return Database.findUserById(userId);
     }
 }
