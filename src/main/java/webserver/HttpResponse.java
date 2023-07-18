@@ -12,6 +12,7 @@ public class HttpResponse {
 
     private static final Map<Integer, String> statusMap = new HashMap() {{
         put(200, "OK");
+        put(400, "Bad Request");
         put(404, "Not Found");
     }};
 

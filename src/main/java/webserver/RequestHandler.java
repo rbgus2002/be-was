@@ -28,8 +28,6 @@ public class RequestHandler implements Runnable {
             HttpRequest request = HttpRequestParser.parseHttpRequest(in);
 
             HttpResponse response = HttpRequestHandler.handleRequest(request);
-//            response200Header(dos, body.length);
-//            responseBody(dos, body);
             responseHeader(dos, response);
             responseBody(dos, response);
         } catch (IOException e) {
