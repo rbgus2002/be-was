@@ -22,7 +22,7 @@ public class Controller {
         return SingletonHelper.INSTANCE;
     }
 
-    @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
+    @RequestMapping(path = "/user/create", method = HttpUtils.Method.POST)
     public HttpResponse creatUser(Map<String, String> parameters) {
         User newUser = ModelConverter.toUser(parameters);
         Database.findUserById(newUser.getUserId()).ifPresent(user -> {
