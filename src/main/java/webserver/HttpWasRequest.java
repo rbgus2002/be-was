@@ -27,10 +27,23 @@ public class HttpWasRequest {
 
 	private void parseHttpRequestToMap(InputStream inputStream) throws IOException {
 		final BufferedReader bufferedReader = convertToBufferedReader(inputStream);
-
 		String input = bufferedReader.readLine();
 		firstRequestHeader(input);
 		saveAnotherHeader(bufferedReader);
+		bodyParser(bufferedReader);
+	}
+
+	private void bodyParser(BufferedReader bufferedReader) throws IOException {
+		if (!bufferedReader.ready()) {
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+
+		int data;
+		while(bufferedReader.ready() && (data = bufferedReader.read()) != -1) {
+			sb.append((char) data);
+		}
+		map.put("body", sb.toString());
 	}
 
 	private void saveAnotherHeader(final BufferedReader bufferedReader) throws IOException {
