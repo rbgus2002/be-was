@@ -18,8 +18,13 @@ public class UserService {
     }
 
     public static void userSignUp(Map<String, String> parameterMap) throws NullPointerException {
+        // 이미 존재하는 User인지 확인
+        User user = Database.findUserById(parameterMap.get(USERID));
+        if(user != null) {
+            return;
+        }
         // User 객체 생성
-        User user = new User(parameterMap.get(USERID),
+        user = new User(parameterMap.get(USERID),
                 parameterMap.get(PASSWORD),
                 parameterMap.get(NAME),
                 parameterMap.get(EMAIL));
