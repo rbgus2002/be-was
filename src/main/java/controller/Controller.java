@@ -1,7 +1,7 @@
 package controller;
 
 import modelview.ModelView;
-import common.HttpRequest;
+import common.http.HttpRequest;
 
 public interface Controller {
     ModelView process(HttpRequest request);

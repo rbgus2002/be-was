@@ -28,4 +28,8 @@ public enum ContentType {
     public boolean isStaticContent() {
         return this == JS || this == CSS || this == ICO || this == PNG || this == JPG;
     }
+
+    public boolean isNoneContent() {
+        return this == NONE;
+    }
 }

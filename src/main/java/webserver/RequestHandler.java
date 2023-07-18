@@ -1,7 +1,7 @@
 package webserver;
 
-import common.HttpRequest;
-import common.HttpResponse;
+import common.http.HttpRequest;
+import common.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.HttpRequestUtils;

@@ -1,6 +1,6 @@
 package utils;
 
-import common.HttpResponse;
+import common.http.HttpResponse;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

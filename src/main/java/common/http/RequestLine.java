@@ -1,4 +1,4 @@
-package common;
+package common.http;
 
 import common.enums.ContentType;
 import common.enums.Method;

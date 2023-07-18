@@ -1,9 +1,9 @@
 package utils;
 
 import common.enums.ContentType;
-import common.HttpRequest;
+import common.http.HttpRequest;
 import common.enums.Method;
-import common.RequestLine;
+import common.http.RequestLine;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -81,14 +81,14 @@ public class HttpRequestUtils {
         if (uri.endsWith(".js")) {
             return JS;
         }
+        if (uri.endsWith(".ico")) {
+            return ICO;
+        }
         if (uri.endsWith(".png")) {
             return PNG;
         }
         if (uri.endsWith(".jpg")) {
             return JPG;
-        }
-        if (uri.endsWith(".ico")) {
-            return ICO;
         }
         return NONE;
     }

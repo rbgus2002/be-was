@@ -1,6 +1,6 @@
 package controller;
 
-import common.HttpRequest;
+import common.http.HttpRequest;
 import modelview.ModelView;
 
 public class ErrorController implements Controller {

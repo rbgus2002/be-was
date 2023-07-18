@@ -1,6 +1,6 @@
 package utils;
 
-import common.HttpRequest;
+import common.http.HttpRequest;
 import common.enums.Method;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

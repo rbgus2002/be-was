@@ -1,4 +1,4 @@
-package common;
+package common.http;
 
 import java.util.Map;
 import java.util.Map.Entry;

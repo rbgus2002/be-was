@@ -3,7 +3,7 @@ package controller;
 import model.User;
 import modelview.ModelView;
 import service.UserService;
-import common.HttpRequest;
+import common.http.HttpRequest;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class CreateUserController implements Controller {
                 params.get("email")
         );
 
-        ModelView modelView = new ModelView("/index.html");
+        ModelView modelView = new ModelView(null);
         modelView.getModel().put("user", user);
         return modelView;
     }

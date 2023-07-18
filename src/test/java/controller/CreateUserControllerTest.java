@@ -1,8 +1,8 @@
 package controller;
 
 import common.enums.ContentType;
-import common.HttpRequest;
-import common.RequestLine;
+import common.http.HttpRequest;
+import common.http.RequestLine;
 import db.Database;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;

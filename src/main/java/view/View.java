@@ -1,9 +1,9 @@
 package view;
 
-import common.HttpRequest;
-import common.HttpResponse;
 import common.enums.ResponseCode;
-import common.ResponseLine;
+import common.http.HttpRequest;
+import common.http.HttpResponse;
+import common.http.ResponseLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +24,12 @@ public class View {
         ResponseLine responseLine = new ResponseLine(request.getVersion());
         Map<String, String> headers = new HashMap<>();
         byte[] body = new byte[0];
+
+        if (viewPath == null) {
+            responseLine.setResponseCode(ResponseCode.OK);
+            response.setResponseLine(responseLine);
+            return;
+        }
 
         try {
             body = Files.readAllBytes(new File(viewPath).toPath());

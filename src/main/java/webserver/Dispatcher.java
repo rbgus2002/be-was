@@ -1,7 +1,7 @@
 package webserver;
 
-import common.HttpRequest;
-import common.HttpResponse;
+import common.http.HttpRequest;
+import common.http.HttpResponse;
 import common.enums.ContentType;
 import common.enums.Method;
 import controller.Controller;
