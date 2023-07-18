@@ -13,7 +13,7 @@ public class QueryParameter {
 
     private final Map<String, String> map;
 
-    public QueryParameter(final Map<String, String> map) {
+    private QueryParameter(final Map<String, String> map) {
         this.map = map;
     }
 
