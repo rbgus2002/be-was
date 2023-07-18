@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static exception.ExceptionName.ALREADY_REGISTERED;
 
-public class DefaultInstanceManager implements InstacneManager {
+public class DefaultInstanceManager implements InstanceManager {
 
     private static final DefaultInstanceManager INSTANCE = new DefaultInstanceManager();
     private final Map<Class<?>, Object> instances = new ConcurrentHashMap<>(16);
