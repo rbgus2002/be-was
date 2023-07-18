@@ -9,34 +9,37 @@ import java.util.Map;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-    private String statusLine;
-    private Map<String, String> headers;
+    private String version = "HTTP/1.1";
+    private HttpStatus httpStatus = HttpStatus.OK;
     private byte[] body;
     private DataOutputStream dos;
 
-    public HttpResponse(byte[] body, DataOutputStream dos) {
-        this.body = body;
+    public HttpResponse(Map<HttpStatus, byte[]> response, DataOutputStream dos) {
+        response.forEach((status, bytes) -> {
+            this.httpStatus = status;
+            this.body = bytes;
+        });
         this.dos = dos;
     }
 
     public void send() {
-        responseHeader(HttpStatus.OK, body.length);
-        responseBody(body);
+        responseHeader();
+        responseBody();
     }
 
 
-    private void responseHeader(HttpStatus status, int lengthOfBodyContent) {
+    private void responseHeader() {
         try {
-            dos.writeBytes("HTTP/1.1 " + status.getStatusCode() + " " + status.getStatusMessage() + "\r\n");
+            dos.writeBytes(version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void responseBody(byte[] body) {
+    private void responseBody() {
         try {
             dos.write(body, 0, body.length);
             dos.flush();

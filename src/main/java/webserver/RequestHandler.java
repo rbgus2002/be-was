@@ -9,6 +9,7 @@ import java.util.Map;
 import controller.Controller;
 import http.HttpResponse;
 import http.HttpRequest;
+import http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +33,9 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = createRequest(in);
 
             assert httpRequest != null;
-            byte[] body = controller.loadFileByRequest(httpRequest);
+            Map<HttpStatus, byte[]> response = controller.loadFileByRequest(httpRequest);
 
-            HttpResponse httpResponse = new HttpResponse(body, new DataOutputStream(out));
+            HttpResponse httpResponse = new HttpResponse(response, new DataOutputStream(out));
             httpResponse.send();
         } catch (IOException e) {
             logger.error(e.getMessage());

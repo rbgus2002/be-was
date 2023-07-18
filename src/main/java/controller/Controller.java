@@ -1,5 +1,6 @@
 package controller;
 
+import http.HttpStatus;
 import service.UserService;
 
 import http.HttpRequest;
@@ -13,7 +14,7 @@ import static utils.FileIOUtils.*;
 public class Controller {
     private final UserService userService = new UserService();
 
-    public byte[] loadFileByRequest(HttpRequest httpRequest) throws IOException {
+    public Map<HttpStatus, byte[]> loadFileByRequest(HttpRequest httpRequest) throws IOException {
         String uri = httpRequest.getUri();
         String[] uris = uri.split("\\.");
         switch (uris[uris.length - 1]) {
@@ -26,7 +27,7 @@ public class Controller {
         }
     }
 
-    public byte[] routeByUri(String uri) {
+    public Map<HttpStatus, byte[]> routeByUri(String uri) {
         String[] apis = uri.split("\\?");
         if (apis[0].equals("/user/create")) {
             return createUser(parseParams(apis[1]));
@@ -44,7 +45,7 @@ public class Controller {
         return information;
     }
 
-    public byte[] createUser(Map<String, String> parameters) {
+    public Map<HttpStatus, byte[]> createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
         try {
             return loadTemplatesFromPath("/user/signup_success.html");
