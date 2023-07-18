@@ -23,3 +23,5 @@ Java Web Application Server 2023
 - [ ] HttpWasResponse 클래스가 하드코딩으로 하지 않고 여러개의 값을 조합해서 Response를 하도록 리팩토링
 - [ ] Mime 타입 지원하도록 관리하는 핸들러나 로직 구현
 - [ ] Response에서 응답이 `\r\n`으로 반환되도록 수정
+- [ ] 상수로 포장할 수 있는 값들 변경
+- [ ] 단위 테스트 작성
