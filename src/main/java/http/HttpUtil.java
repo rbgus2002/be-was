@@ -38,7 +38,11 @@ public class HttpUtil {
     public enum STATUS {
         OK(200, "OK"),
         CREATED(201, "Created"),
-        TEMPORARY_MOVED(302, "Found"),
+        MOVED_PERMANENTLY(301, "Moved Permanently"),
+        FOUND(302, "Found"),
+        SEE_OTHER(303, "See Other"),
+        TEMPORARY_REDIRECT(307, "Temporary Redirect"),
+        PERMANENT_REDIRECT(308, "Permanent Redirect"),
         BAD_REQUEST(400, "Bad Request"),
         UNAUTHORIZED(401, "Unauthorized"),
         NOT_FOUND(404, "Not Found");
