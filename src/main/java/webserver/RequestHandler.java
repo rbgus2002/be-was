@@ -28,10 +28,14 @@ public class RequestHandler implements Runnable {
                 return;
             }
 
-            while (!"".equals(line)) {
-                logger.debug("request line: {}", linwe);
-                line = bufferedReader.readLine();
-            }
+            String[] tokens = line.split(" ");
+            String path = tokens[1];
+            logger.debug("request path: {}", path);
+
+//            while (!"".equals(line)) {
+//                logger.debug("request line: {}", line);
+//                line = bufferedReader.readLine();
+//            }
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = "Hello World".getBytes();
