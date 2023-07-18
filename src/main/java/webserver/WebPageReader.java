@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WebPageReader {
+
     private static final List<String> WEB_PATH = new ArrayList<>();
 
     static {
@@ -23,11 +24,11 @@ public class WebPageReader {
     public static byte[] readByPath(String url) throws IOException {
         for (String path : WEB_PATH) {
             File file = new File(path + url);
-            if(file.exists() && file.isFile()){
+            if (file.exists() && file.isFile()) {
                 return Files.readAllBytes(file.toPath());
             }
         }
-        throw new RuntimeException(ExceptionName.FILE_NOT_FOUND);
+        throw new IOException(ExceptionName.FILE_NOT_FOUND);
     }
 
 }

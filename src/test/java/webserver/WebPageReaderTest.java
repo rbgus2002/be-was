@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("웹 페이지 리더기 테스트")
 class WebPageReaderTest {
-
 
     @Test
     @DisplayName("Html 파일을 읽어야 한다.")
@@ -56,17 +56,18 @@ class WebPageReaderTest {
 
     @Test
     @DisplayName("없는 파일은 예외를 발생하며 실패하여야 한다.")
-    void readNoFile() throws IOException {
+    void readNoFile() {
         //given
         String url = "/NO_FILE";
 
         //when
         Throwable exception = assertThrows(
-                RuntimeException.class,
+                IOException.class,
                 () -> WebPageReader.readByPath(url)
         );
 
         //then
-        assertEquals(ExceptionName.FILE_NOT_FOUND,exception.getMessage());
+        assertEquals(ExceptionName.FILE_NOT_FOUND, exception.getMessage());
     }
+
 }

@@ -1,0 +1,79 @@
+package webserver.request;
+
+import support.HttpMethod;
+import webserver.Header;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class HttpRequest {
+
+    private final HttpMethod method;
+    private final String path;
+    private final Query query = new Query();
+    private final Header header = new Header();
+
+    public static class RequestHeaderBuilder {
+        private String requestLine;
+        private final List<String> headers = new ArrayList<>();
+
+        public RequestHeaderBuilder requestLine(String requestLine) {
+            this.requestLine = requestLine;
+            return this;
+        }
+
+        public RequestHeaderBuilder header(String header) {
+            this.headers.add(header);
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(requestLine, headers);
+        }
+
+    }
+
+    private HttpRequest(String requestLine, List<String> headers) {
+        // 메소드 분리
+        String[] tokens = requestLine.split(" ");
+        this.method = HttpMethod.valueOf(tokens[0]);
+
+        // url 파싱
+        String[] pathAndQuery = tokens[1].split("\\?");
+        this.path = pathAndQuery[0];
+        if (pathAndQuery.length > 1) {
+            String[] queries = pathAndQuery[1].split("&");
+            Arrays.stream(queries)
+                    .forEach(queryComponent -> {
+                        String[] keyAndValue = queryComponent.split("=");
+                        this.query.appendQuery(keyAndValue[0], keyAndValue[1]);
+                    });
+        }
+
+        // 헤더 분리
+        headers.forEach(
+                header -> {
+                    String[] split = header.split(":");
+                    this.header.appendHeader(split[0], split[1].trim());
+                }
+        );
+    }
+
+    public String getHeaders() {
+        return header.buildHeader();
+    }
+
+    public HttpMethod getRequestMethod() {
+        return method;
+    }
+
+    public String getRequestPath() {
+        return path;
+    }
+
+    public Query getRequestQuery() {
+        return query;
+    }
+
+}
