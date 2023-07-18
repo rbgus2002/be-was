@@ -28,7 +28,7 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 Runnable requestHandler = new RequestHandler(connection);
-                ExecutorService executors = Executors.newFixedThreadPool(10);
+                ExecutorService executors = Executors.newWorkStealingPool();
                 executors.submit(requestHandler);
             }
         }
