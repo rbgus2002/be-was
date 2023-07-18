@@ -28,4 +28,15 @@ public class UserService {
         // DB 저장
         Database.addUser(user);
     }
+
+    public static boolean validateUser(String userId, String password) {
+        // User 검색
+        User user = Database.findUserById(userId);
+        if (user == null) {
+            return false;
+        }
+
+        // 아이디/비밀번호 검증
+        return userId.equals(user.getUserId()) && password.equals(user.getPassword());
+    }
 }
