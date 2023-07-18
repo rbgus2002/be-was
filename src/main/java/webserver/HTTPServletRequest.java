@@ -18,6 +18,7 @@ public class HTTPServletRequest {
         this.method = method;
         this.url = url;
         this.version = version;
+        logger.debug("method = {}, url = {}, version = {}", method, url, version);
     }
 
     public String getMethod() {

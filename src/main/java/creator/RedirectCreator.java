@@ -3,8 +3,6 @@ package creator;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
-import java.io.IOException;
-
 import static util.Path.HOME_PATH;
 
 public class RedirectCreator implements Creator {
