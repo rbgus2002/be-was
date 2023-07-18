@@ -14,27 +14,27 @@ class DispatcherServletTest {
 
     @Test
     @DisplayName("forward 되는지?")
-    void forward() throws IOException {
+    void forward() {
         String url = "GET / HTTP/1.1";
-        sendRequest(url, "HTTP/1.1 200");
+        sendRequest(url, "HTTP/1.1 200 OK");
     }
 
     @Test
     @DisplayName("redirect 되는지?")
-    void redirect() throws IOException {
+    void redirect() {
         String url = "GET redirect:/ HTTP/1.1";
-        sendRequest(url, "HTTP/1.1 302");
+        sendRequest(url, "HTTP/1.1 302 Found");
     }
 
     @Test
     @DisplayName("error 케이스")
-    void error() throws IOException {
+    void error() {
 
         String url = "GET /ddd HTTP/1.1";
-        sendRequest(url, "HTTP/1.1 404");
+        sendRequest(url, "HTTP/1.1 404 Not Found");
     }
 
-    private void sendRequest(String url,String expected) throws IOException {
+    private void sendRequest(String url,String expected) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         HttpResponse httpResponse = new HttpResponse();

@@ -1,20 +1,31 @@
 package webserver.http.response;
 
+import static webserver.http.response.ResponseMessageHeader.BLANK;
+
 public enum StatusLine {
 
+    RESPONSE_200("200","OK"),
+    RESPONSE_302("302", "Found"),
+    RESPONSE_404("404", "Not Found");
 
-    HTTP_VERSION("HTTP/1.1 "),
-    RESPONSE_200("200"),
-    RESPONSE_302("302"),
-    RESPONSE_404("404");
+    private final String code;
+    private final String message;
+    private static final String HTTP_VERSION = "HTTP/1.1";
 
-    private final String literal;
-
-    StatusLine(String literal) {
-        this.literal = literal;
+    StatusLine(String code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
-    public String getConstant() {
-        return literal;
+    public String getCode() {
+        return code;
+    }
+
+    public String getMessage(){
+        return message;
+    }
+
+    public static String getStatusHeader(StatusLine statusLine) {
+        return HTTP_VERSION + BLANK + statusLine.getCode() + BLANK +  statusLine.getMessage();
     }
 }

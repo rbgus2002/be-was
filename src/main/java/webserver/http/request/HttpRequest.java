@@ -7,6 +7,7 @@ import webserver.util.Parser;
 import java.util.Map;
 
 import static exception.ExceptionMessage.URL_NOT_CORRECT;
+import static webserver.http.response.ResponseMessageHeader.BLANK;
 
 public class HttpRequest {
 
@@ -15,7 +16,6 @@ public class HttpRequest {
     private final String url;
     private final String version;
     private FormData formData;
-    public final String BLANK = " ";
 
     public HttpRequest(String request, String requestBody) {
         String[] req = request.split(BLANK);

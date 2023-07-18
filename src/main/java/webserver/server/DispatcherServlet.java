@@ -11,6 +11,8 @@ import webserver.http.response.ResponseBody;
 
 import java.io.DataOutputStream;
 
+import static webserver.http.response.ResponseMessageHeader.BLANK;
+
 public class DispatcherServlet {
 
     private final RequestMapper requestMapper = RequestMapper.createRequestMapper();
@@ -31,7 +33,7 @@ public class DispatcherServlet {
         ClientConnection clientConnection = new ClientConnection(dataOutputStream, resp);
         if (toUrl.contains(REDIRECT)) {
             String redirectUrl = toUrl.split(":")[1];
-            if(redirectUrl.contains(req.BLANK)) {
+            if(redirectUrl.contains(BLANK)) {
                 redirectUrl = redirectUrl.trim();
             }
             clientConnection.sendRedirect(redirectUrl);

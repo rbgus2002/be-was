@@ -1,6 +1,5 @@
 package webserver.http.response;
 
-import static webserver.http.response.StatusLine.HTTP_VERSION;
 
 public enum ResponseHeader {
 
@@ -19,7 +18,4 @@ public enum ResponseHeader {
         return literal;
     }
 
-    public static String getStatusHeader(StatusLine statusLine) {
-        return HTTP_VERSION.getConstant() + statusLine.getConstant();
-    }
 }

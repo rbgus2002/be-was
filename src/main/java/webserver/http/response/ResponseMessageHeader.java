@@ -6,18 +6,20 @@ import static webserver.http.response.ResponseHeader.*;
 import static webserver.http.response.StatusLine.*;
 
 public class ResponseMessageHeader {
-    private static final String KEY_VALUE_PARSER = ": ";
+    private static final String KEY_VALUE_PARSER = ":";
     private static final String SEMI_COLUMN = ";";
     private static final String EQUAL = "=";
     private static final String CHARSET = "charset";
     private static final String UTF_8 = "utf-8";
     private static final String NEW_LINE = "\r\n";
 
+    public static final String BLANK = " ";
+
     public String response200Header(int bodyOfLength, String contentType) {
         String header = "";
         header += getStatusHeader(RESPONSE_200)+ NEW_LINE;
         header += getContentTypeHeader(contentType);
-        header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + bodyOfLength + NEW_LINE;
+        header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + BLANK + bodyOfLength + NEW_LINE;
         header += NEW_LINE;
 
         return header;
@@ -27,8 +29,8 @@ public class ResponseMessageHeader {
     public String response302Header(String redirectUrl) {
         String header = "";
         header += getStatusHeader(RESPONSE_302)+ NEW_LINE;
-        header += LOCATION.getConstant() + KEY_VALUE_PARSER + WebServer.HOME_URL + redirectUrl + NEW_LINE;
-        header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + "0" + NEW_LINE;
+        header += LOCATION.getConstant() + KEY_VALUE_PARSER + BLANK + WebServer.HOME_URL + redirectUrl + NEW_LINE;
+        header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + BLANK + "0" + NEW_LINE;
         header += NEW_LINE;
 
         return header;
@@ -39,7 +41,7 @@ public class ResponseMessageHeader {
     }
 
     private String getContentTypeHeader(String contentType) {
-        return CONTENT_TYPE.getConstant() + KEY_VALUE_PARSER + contentType + SEMI_COLUMN + CHARSET + EQUAL + UTF_8 + NEW_LINE;
+        return CONTENT_TYPE.getConstant() + KEY_VALUE_PARSER + BLANK + contentType + SEMI_COLUMN + CHARSET + EQUAL + UTF_8 + NEW_LINE;
     }
 
 
