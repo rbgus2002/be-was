@@ -64,17 +64,29 @@ public class HttpRequest {
             return new HttpRequest(this);
         }
 
-        String uri() { return  uri; }
+        String uri() {
+            return uri;
+        }
 
-        String path() { return path; }
+        String path() {
+            return path;
+        }
 
-        String method() { return method; }
+        String method() {
+            return method;
+        }
 
-        String version() { return version; }
+        String version() {
+            return version;
+        }
 
-        Map headers() { return headers; }
+        Map headers() {
+            return headers;
+        }
 
-        Map body() { return body; }
+        Map body() {
+            return body;
+        }
     }
 
     public static HttpRequest.Builder newBuilder() {
@@ -89,7 +101,9 @@ public class HttpRequest {
         return uri;
     }
 
-    public String path() { return path; }
+    public String path() {
+        return path;
+    }
 
     public String version() {
         return version;

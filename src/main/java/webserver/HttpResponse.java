@@ -54,17 +54,32 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse build() { return new HttpResponse(this); }
+        public HttpResponse build() {
+            return new HttpResponse(this);
+        }
 
-        String version() { return version; }
-        int statusCode() { return statusCode; }
-        Map headers() { return headers; }
-        byte[] body() { return body; }
+        String version() {
+            return version;
+        }
+
+        int statusCode() {
+            return statusCode;
+        }
+
+        Map headers() {
+            return headers;
+        }
+
+        byte[] body() {
+            return body;
+        }
 
 
     }
 
-    public static HttpResponse.Builder newBuilder() { return new Builder(); }
+    public static HttpResponse.Builder newBuilder() {
+        return new Builder();
+    }
 
     public String version() {
         return this.version;
@@ -78,7 +93,9 @@ public class HttpResponse {
         return this.statusText;
     }
 
-    public Map headers() { return headers; }
+    public Map headers() {
+        return headers;
+    }
 
     public byte[] body() {
         return this.body;

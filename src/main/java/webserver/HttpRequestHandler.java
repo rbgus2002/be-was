@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -17,14 +15,14 @@ import static db.Database.addUser;
 
 public class HttpRequestHandler {
     private final static Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
-    private static final Map<String, Function<HttpRequest, HttpResponse>> requestHandlers = new HashMap<>(){{
+    private static final Map<String, Function<HttpRequest, HttpResponse>> requestHandlers = new HashMap<>() {{
         put("/user/create", request -> {
             return handleUserCreateRequest(request);
         });
     }};
 
     public static HttpResponse handleRequest(HttpRequest request) throws IOException {
-        if(requestHandlers.containsKey(request.path())) {
+        if (requestHandlers.containsKey(request.path())) {
             return requestHandlers.get(request.path()).apply(request);
         }
         return handleGetStaticRequest(request);
@@ -62,7 +60,7 @@ public class HttpRequestHandler {
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
         // TODO: verifyUser 로직 구현
-        if(parameters.values().size() != 4) {
+        if (parameters.values().size() != 4) {
             return builder.version(request.version())
                     .statusCode(400)
                     .body("잘못된 입력입니다.".getBytes())
@@ -82,17 +80,20 @@ public class HttpRequestHandler {
     }
 
     private static Map<String, String> parseUri(String uri) {
-        Map<String,String> result = new HashMap<>();
-        if(uri.indexOf("\\?") < 0 || uri.substring(uri.indexOf("\\?")+1).length() < 33) {
+        Map<String, String> result = new HashMap<>();
+        if (uri.indexOf("?") < 0 || uri.indexOf("?") == uri.length()-1) {
             return result;
         }
-        String paramString = uri.substring(uri.indexOf("\\?")+1);
+        String paramString = uri.substring(uri.indexOf("?") + 1);
 
         String[] parameters = paramString.split("&");
-        for(String parameter: parameters) {
+//        if(parameters.length < 4) {
+//            return result;
+//        }
+        for (String parameter : parameters) {
             int splitIndex = parameter.indexOf("=");
-            if(splitIndex < 0 || splitIndex == parameter.length()-1) break;
-            result.put(parameter.substring(0,splitIndex), parameter.substring(splitIndex+1));
+            if (splitIndex < 0 || splitIndex == parameter.length() - 1) break;
+            result.put(parameter.substring(0, splitIndex), parameter.substring(splitIndex + 1));
         }
 
         return result;
