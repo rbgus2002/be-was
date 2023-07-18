@@ -57,7 +57,9 @@ public class RequestHandler implements Runnable {
     //TODO: text/html 외의 다른 Content-Type도 지원되도록 해야함
     private void sendResponse(DataOutputStream dos, HttpResponse httpResponse) {
         try {
-            writeStartLine(dos, httpResponse);
+            writeResponseLine(dos, httpResponse);
+            writeContentType(dos, httpResponse);
+
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + httpResponse.getBody().length + "\r\n");
             writeHeaders(dos, httpResponse);
@@ -69,10 +71,23 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private static void writeBody(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
-        byte[] body = httpResponse.getBody();
-        dos.write(body, 0, body.length);
-        dos.writeBytes("\r\n");
+    private static void writeResponseLine(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        String responseLine = "HTTP/1.1 " +
+                              httpResponse.getStatus().getStatusNumber() + " " +
+                              httpResponse + " " +
+                              "\r\n";
+        dos.writeBytes(responseLine);
+    }
+
+    private static void writeContentType(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Content-Type: ");
+        stringBuilder.append(httpResponse.getContentType().getValue());
+        if(httpResponse.getContentType().getValue().contains("text")) {
+            stringBuilder.append(";charset=utf-8");
+        }
+        stringBuilder.append("\r\n");
+        dos.writeBytes(stringBuilder.toString());
     }
 
     private static void writeHeaders(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
@@ -82,11 +97,9 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private static void writeStartLine(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
-        String stringBuilder = "HTTP/1.1 " +
-                               httpResponse.getStatus().getStatusNumber() + " " +
-                               httpResponse + " " +
-                               "\r\n";
-        dos.writeBytes(stringBuilder);
+    private static void writeBody(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        byte[] body = httpResponse.getBody();
+        dos.write(body, 0, body.length);
+        dos.writeBytes("\r\n");
     }
 }

@@ -14,12 +14,12 @@ public class StaticViewResolverImpl implements ViewResolver {
     @Override
     public View resolve(String viewUri) {
         File dynamicFile = new File(getViewPath(viewUri, false));
-        if(dynamicFile.exists() && dynamicFile.canRead()) {
+        if(dynamicFile.exists() && dynamicFile.isFile() && dynamicFile.canRead()) {
             return new StaticView(dynamicFile);
         }
 
         File staticFile = new File(getViewPath(viewUri, true));
-        if(staticFile.exists() && staticFile.canRead()) {
+        if(staticFile.exists() && staticFile.isFile() && staticFile.canRead()) {
             return new StaticView(staticFile);
         }
 
@@ -32,4 +32,6 @@ public class StaticViewResolverImpl implements ViewResolver {
                (viewUri.startsWith("/") ? "" : "/") +
                viewUri;
     }
+
+
 }

@@ -5,5 +5,5 @@ import webserver.http.response.HttpResponse;
 
 
 public interface RequestHandler {
-    void handle(HttpRequest httpRequest, HttpResponse httpResponse) throws ReflectiveOperationException;
+    void handle(HttpRequest httpRequest, HttpResponse httpResponse);
 }
