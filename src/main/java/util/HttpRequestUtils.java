@@ -31,6 +31,14 @@ public class HttpRequestUtils {
         return stringBuilder.toString();
     }
 
+    public static String getMethod(String header) {
+        String[] tokens = header.split(" ");
+        String method = tokens[0];
+        logger.debug("request method: {}", method);
+
+        return method;
+    }
+
     public static String getPath(String header) {
         String[] tokens = header.split(" ");
         String path = tokens[1];

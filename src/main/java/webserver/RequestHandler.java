@@ -23,6 +23,7 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             String header = HttpRequestUtils.getRequestHeader(in);
+            String method = HttpRequestUtils.getMethod(header);
             String path = HttpRequestUtils.getPath(header);
 
             DataOutputStream dos = new DataOutputStream(out);
