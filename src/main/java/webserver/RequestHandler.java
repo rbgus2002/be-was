@@ -22,10 +22,8 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            String header = HttpRequestUtils.getRequestHeader(in);
-            String method = HttpRequestUtils.getMethod(header);
-            String url = HttpRequestUtils.getUrl(header);
-
+            String firstLine = HttpRequestUtils.getFirstLine(in);
+            String url = HttpRequestUtils.getUrl(firstLine);
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = getBody(url);

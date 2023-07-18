@@ -14,25 +14,18 @@ public class HttpRequestUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    public static String getRequestHeader(InputStream in) throws IOException {
+    public static String getFirstLine(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        StringBuilder stringBuilder = new StringBuilder();
-
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            if (line.equals("")) {
-                break;
-            }
-
-            stringBuilder.append(line).append("\n");
-            logger.debug("request line: {}", line);
+        String line = bufferedReader.readLine();
+        if (line == null) {
+            throw new IOException("유효하지 않은 Request Header 입니다.");
         }
 
-        return stringBuilder.toString();
+        return line;
     }
 
-    public static String getMethod(String header) {
-        String[] tokens = header.split(" ");
+    public static String getMethod(String firstLine) {
+        String[] tokens = firstLine.split(" ");
         String method = tokens[0];
         logger.debug("request method: {}", method);
 
