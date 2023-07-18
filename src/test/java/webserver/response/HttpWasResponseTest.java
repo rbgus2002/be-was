@@ -3,6 +3,7 @@ package webserver.response;
 import java.io.ByteArrayOutputStream;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,5 +45,28 @@ class HttpWasResponseTest {
 
 		// then
 		Assertions.assertThat(outputStream.toString()).hasToString(response);
+	}
+
+	@Test
+	@DisplayName("405 Header를 제대로 생성하는지")
+	void create405Header() {
+		// given
+		String requestLine = "HTTP/1.1 405 Method Not Allowed\r\n";
+		String contentType = "Content-Type: text/plain;charset=utf-8\r\n";
+		String contentLength = "Content-Length: 22\r\n";
+		String body = "405 Method Not Allowed\r\n";
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
+
+		// when
+		httpWasResponse.response405();
+		httpWasResponse.doResponse();
+
+		// then
+		SoftAssertions softAssertions = new SoftAssertions();
+		softAssertions.assertThat(outputStream.toString()).contains(requestLine);
+		softAssertions.assertThat(outputStream.toString()).contains(contentType);
+		softAssertions.assertThat(outputStream.toString()).contains(contentLength);
+		softAssertions.assertThat(outputStream.toString()).contains(body);
 	}
 }
