@@ -34,7 +34,7 @@ public class HttpRequestParser {
         }
         String line = br.readLine();
         String[] firstLine = line.split(" ");
-        return new HttpRequest(firstLine[0], firstLine[1].split("[?]")[0], initParams(line), initHeader(br, line), initBody(br));
+        return new HttpRequest(firstLine[0], firstLine[1].split("[?]")[0], initParams(firstLine[1]), initHeader(br, line), initBody(br));
 
     }
 
