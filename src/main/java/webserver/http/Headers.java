@@ -1,4 +1,4 @@
-package webserver;
+package webserver.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static utils.StringUtils.appendNewLine;
+import static utils.StringUtils.*;
 
 public class Headers {
     private static final Logger logger = LoggerFactory.getLogger(Headers.class);
@@ -25,22 +25,30 @@ public class Headers {
 
         while ((line = bufferedReader.readLine()) != null) {
             logger.debug(line);
-            int separatorIndex = line.indexOf(":");
+            int separatorIndex = line.indexOf(COLON);
             if (separatorIndex == -1) {
                 break;
             }
-            headers.putHeader(line.substring(0, separatorIndex).strip(), line.substring(separatorIndex + 1).strip());
+            headers.put(line.substring(0, separatorIndex).strip(), line.substring(separatorIndex + 1).strip());
         }
         return headers;
     }
 
-    public void putHeader(String key, String value) {
+    public static Headers createDefaultHeaders(int contentLength) {
+        Headers headers = new Headers();
+        headers.put("Content-Type", "text/html;charset=utf-8");
+        headers.put("Content-Length", String.valueOf(contentLength));
+        return headers;
+    }
+
+    public void put(String key, String value) {
         headers.put(key, value);
     }
 
-    public String getString() {
+    @Override
+    public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        headers.forEach((name, value) -> stringBuilder.append(appendNewLine(name + ": " + value)));
+        headers.forEach((name, value) -> stringBuilder.append(appendNewLine(name + COLON + SPACE + value)));
         return stringBuilder.toString();
     }
 }
