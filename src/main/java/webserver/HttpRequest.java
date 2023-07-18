@@ -29,14 +29,19 @@ public class HttpRequest {
         method = statusLineTokens[0];
         parseTarget(statusLineTokens[1]);
         version = statusLineTokens[2];
-        while ((input = br.readLine()) != null && in.available() > 0) {
+        while ((input = br.readLine()) != null && !input.isEmpty()) {
             if (input.contains(":")) {
-                String[] tokens = input.split(":");
+                String[] tokens = input.split(":(\\s*)");
                 headers.put(tokens[0], tokens[1]);
-            } else {
-                logger.debug(input);
-                parseParam(input);
             }
+        }
+        String contentLength = getHeader("Content-Length");
+        if (contentLength != null) {
+            int length = Integer.parseInt(contentLength);
+            char[] buffer = new char[length];
+            int bytesRead = br.read(buffer, 0, length);
+            input = String.valueOf(buffer, 0, bytesRead);
+            parseParam(input);
         }
     }
 
