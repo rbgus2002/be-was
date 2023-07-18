@@ -16,7 +16,6 @@ import webserver.myframework.bean.exception.BeanConstructorException;
 import webserver.myframework.bean.exception.BeanNotFoundException;
 import webserver.myframework.requesthandler.annotation.Controller;
 import webserver.myframework.requesthandler.annotation.RequestMapping;
-import webserver.myframework.requesthandler.exception.CannotResolveHandlerException;
 import webserver.myframework.requesthandler.exception.IllegalHandlerReturnTypeException;
 import webserver.myframework.requesthandler.exception.IllegalHandlerParameterTypeException;
 import webserver.myframework.requesthandler.exception.RequestHandlerException;
@@ -62,7 +61,7 @@ class RequestHandlerInitializerImplTest {
         }
     }
 
-    private void verifyRequestHandler(String uri, Class<?> controllerClass) throws CannotResolveHandlerException, NoSuchFieldException, IllegalAccessException, NoSuchMethodException {
+    private void verifyRequestHandler(String uri, Class<?> controllerClass) throws RequestHandlerException, ReflectiveOperationException {
         RequestHandler handler = requestHandlerResolver.resolveHandler(uri, HttpMethod.POST);
         assertThat(handler).isNotNull();
         assertThat(handler).isInstanceOf(RequestHandlerImpl.class);
