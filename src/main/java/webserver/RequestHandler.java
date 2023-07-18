@@ -58,16 +58,22 @@ public class RequestHandler implements Runnable {
     }
 
     private byte[] readTemplateFile(String URI) throws IOException {
-        if (URI.equals("/")) {
-            URI = "/index.html";
-        }
-
         Path path = Paths.get(TEMPLATES_DIRECTORY + URI);
-        byte[] buffer = new byte[4096];
-        int bytesRead;
 
+        if (URI.equals("/")) {
+            return readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/index.html"));
+        }
+        if (Files.exists(path) && !Files.isDirectory(path)) {
+            return readBytesFromFile(path);
+        }
+        return readBytesFromFile(Paths.get(TEMPLATES_DIRECTORY + "/404.html"));
+    }
+
+    private byte[] readBytesFromFile(Path path) throws IOException {
         InputStream inputStream = Files.newInputStream(path);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        int bytesRead;
 
         while ((bytesRead = inputStream.read(buffer)) != -1) {
             byteArrayOutputStream.write(buffer, 0, bytesRead);
