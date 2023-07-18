@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static exception.BadRequestException.BAD_REQUEST_MESSAGE;
 
-public class RequestParser {
+public class Parser {
 
     public static Map<String, String> parseRequestLine(String requestLine) {
         if (requestLine == null) {
@@ -24,7 +24,7 @@ public class RequestParser {
         return requestLineMap;
     }
 
-    public static Map<String, String> parseRequestHeaders(BufferedReader br) throws IOException {
+    public static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
         String line;
         Map<String, String> requestHeaders = new HashMap<>();
 

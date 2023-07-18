@@ -1,6 +1,6 @@
-package webserver.http;
+package webserver.http.request;
 
-import utils.RequestParser;
+import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class HttpHeaders {
     }
 
     public static HttpHeaders create(BufferedReader br) throws IOException {
-        return new HttpHeaders(RequestParser.parseRequestHeaders(br));
+        return new HttpHeaders(Parser.parseHeaders(br));
     }
 
     public void show(StringBuilder sb) {
