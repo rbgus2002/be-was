@@ -1,5 +1,7 @@
 package webserver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -8,42 +10,48 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class HttpRequestParser {
-
-    BufferedReader br;
-    String method;
-    String url;
-    String header;
-    String body;
+    private String method;
+    private String url;
+    private String header;
+    private String body;
+    private String line;
 
     public HttpRequestParser(InputStream in) throws IOException {
-        this.br = new BufferedReader(new InputStreamReader(in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
         parseRequest(br);
     }
 
     private void parseRequest(BufferedReader br) throws IOException {
-        String line = br.readLine();
-
-        initMethodAndUrl(line);
-        initHeader(line, br);
-        initBody(line, br);
-    }
-
-    private void initHeader(String line, BufferedReader br) throws IOException {
-        this.header = getRequestLines(line, br);
-    }
-
-    private void initBody(String line, BufferedReader br) throws IOException {
         line = br.readLine();
-        if(line == null){
-            return;
+        if(br.ready()){
+            initMethodAndUrl();
+            initHeader(br);
+            initBody(br);
+        }
+    }
+
+    private void initMethodAndUrl() {
+        String[] firstLine = line.split(" ");
+        this.method = firstLine[0];
+        this.url = firstLine[1];
+    }
+
+    private void initHeader(BufferedReader br) throws IOException {
+        this.header = getLines(br);
+    }
+
+    private void initBody(BufferedReader br) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        while (br.ready()){
+            stringBuilder.append((char)br.read());
         }
 
-        this.body = getRequestLines(line, br);
+        this.body = stringBuilder.toString();
     }
 
-    private String getRequestLines(String line, BufferedReader br) throws IOException{
+    private String getLines(BufferedReader br) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        while (line != null && !line.equals("")) {
+        while (!line.equals("")) {
             stringBuilder.append(StringUtils.appendLineSeparator(line));
             line = br.readLine();
         }
@@ -51,13 +59,7 @@ public class HttpRequestParser {
         return stringBuilder.toString();
     }
 
-    private void initMethodAndUrl(String line) {
-        String[] firstLines = line.split(" ");
-        this.method = firstLines[0];
-        this.url = firstLines[1];
-    }
-
-    public String getHeader() throws IOException {
+    public String getHeader() {
         return this.header;
     }
 
