@@ -60,7 +60,7 @@ public class PostParser implements Parser {
         String[] tokens = postData.split("&");
         for (String token : tokens) {
             String key = token.substring(0, token.indexOf("="));
-            String value = token.substring(token.indexOf("=") + 1, token.length());
+            String value = token.substring(token.indexOf("=") + 1);
             logger.debug("key = {}, value = {}", key, value);
             query.put(key, value);
         }

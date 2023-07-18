@@ -7,5 +7,5 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public interface Creator {
-    public HTTPServletResponse getProperResponse(HTTPServletRequest request);
+    public HTTPServletResponse getProperResponse(HTTPServletRequest request) throws IOException;
 }

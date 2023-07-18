@@ -14,7 +14,7 @@ import parser.PostParser;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     private ParserFactory factory;
 
@@ -28,11 +28,9 @@ public class RequestHandler implements Runnable {
             factory = new ParserFactory();
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             DataOutputStream dos = new DataOutputStream(out);
-            String line = "";
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
-            HTTPServletRequest request = null;
-            request = factory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
+            HTTPServletRequest request = factory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             Servlet servlet = DispatcherServlet.findServlet(request);
             HTTPServletResponse response = new HTTPServletResponse(dos);
             servlet.service(request, response);

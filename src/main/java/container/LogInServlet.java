@@ -15,7 +15,6 @@ public class LogInServlet implements Servlet {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-
     @Override
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
         ConcurrentHashMap<String, String> query = request.getQuery();

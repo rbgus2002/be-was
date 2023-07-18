@@ -20,7 +20,6 @@ public class GetParser implements Parser {
         return request;
     }
 
-
     private String parseVersion(String startLine) {
         return startLine.split(" ")[2];
     }

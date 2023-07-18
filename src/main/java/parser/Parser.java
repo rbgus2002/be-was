@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public interface Parser {
-    public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException;
-
+    HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException;
 
 }
