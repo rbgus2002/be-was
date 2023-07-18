@@ -1,4 +1,4 @@
-package common;
+package common.enums;
 
 public enum Method {
     GET, POST, PUT, DELETE;
