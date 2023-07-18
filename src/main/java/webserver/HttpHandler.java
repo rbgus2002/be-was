@@ -1,5 +1,7 @@
 package webserver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import support.ControllerResolver;
 import support.exception.BadRequestException;
 import support.exception.MethodNotAllowedException;
@@ -22,6 +24,7 @@ import static webserver.WebPageReader.readByPath;
 public class HttpHandler {
 
     public static final String MAIN_PAGE = "/index.html";
+    private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
 
     public void doGet(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
         String path = request.getRequestPath();
@@ -55,15 +58,15 @@ public class HttpHandler {
         } catch (MethodNotAllowedException e) {
             response.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
             response.buildHeader(new NoHeader());
-            return true;
+            return false;
         } catch (BadRequestException e) {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.buildHeader(new NoHeader());
-            return true;
+            return false;
         } catch (ServerErrorException e) {
             response.setStatus(HttpStatus.SERVER_ERROR);
             response.buildHeader(new NoHeader());
-            return true;
+            return false;
         }
     }
 

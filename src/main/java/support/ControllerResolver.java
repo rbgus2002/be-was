@@ -1,6 +1,8 @@
 package support;
 
 import exception.ExceptionName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
@@ -27,6 +29,7 @@ import static support.DefaultInstanceManager.getInstanceMagager;
 public abstract class ControllerResolver {
 
     private final static Map<String, ControllerMethod> controllers = new HashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
     static {
         List<Class<?>> controllerClasses = ClassListener.scanClass("controller");
@@ -54,20 +57,24 @@ public abstract class ControllerResolver {
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
         AtomicBoolean hasMethod = new AtomicBoolean(false);
+
         controllers.forEach((s, controllerMethods) -> {
             if (url.startsWith(s)) {
-                hasMethod.set(true);
                 ControllerMethodStruct methodStruct = controllerMethods.find(url.substring(s.length()));
-                if (methodStruct.getHttpMethod() == request.getRequestMethod()) {
-                    clazz.set(controllerMethods.getControllerClass());
-                    methodAtomicReference.set(methodStruct.getMethod());
+                if(methodStruct != null){
+                    hasMethod.set(true);
+                    if (methodStruct.getHttpMethod() == request.getRequestMethod()) {
+                        hasMethod.set(true);
+                        clazz.set(controllerMethods.getControllerClass());
+                        methodAtomicReference.set(methodStruct.getMethod());
+                    }
                 }
             }
         });
 
         Class<?> controllerClass = clazz.get();
         Method method = methodAtomicReference.get();
-        verifyControllerTrigger(hasMethod, controllerClass, method);
+        verifyControllerTrigger(hasMethod.get(), controllerClass, method);
 
         // 헤더 처리
         Object[] args = transformQuery(request, method);
@@ -109,9 +116,9 @@ public abstract class ControllerResolver {
      * @throws MethodNotAllowedException 같은 URL을 공유하는 다른 컨트롤러 메소드가 있을 경우 발생한다.
      * @throws NotSupportedException     다른 조건 없이 단순히 처리 메소드가 없을 경우 발생한다.
      */
-    private static void verifyControllerTrigger(AtomicBoolean hasMethod, Class<?> controllerClass, Method method) throws MethodNotAllowedException, NotSupportedException {
+    private static void verifyControllerTrigger(boolean hasMethod, Class<?> controllerClass, Method method) throws MethodNotAllowedException, NotSupportedException {
         if (controllerClass == null || method == null) {
-            if (hasMethod.get()) {
+            if (hasMethod) {
                 throw new MethodNotAllowedException();
             }
             throw new NotSupportedException();
