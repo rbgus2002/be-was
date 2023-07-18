@@ -31,6 +31,7 @@ public class RequestHandler implements Runnable {
 
             final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse, frontController);
             wasHandler.service();
+            httpWasResponse.doResponse();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

@@ -22,6 +22,7 @@ class HttpWasResponseTest {
 
 		// when
 		httpWasResponse.response404();
+		httpWasResponse.doResponse();
 
 		// then
 		Assertions.assertThat(outputStream.toString()).hasToString(response);
@@ -39,6 +40,7 @@ class HttpWasResponseTest {
 
 		// when
 		httpWasResponse.response302Header(location);
+		httpWasResponse.doResponse();
 
 		// then
 		Assertions.assertThat(outputStream.toString()).hasToString(response);

@@ -27,4 +27,8 @@ public class HttpResponseHeader {
 
 		return sb.toString();
 	}
+
+	public void clearHeader() {
+		headers.clear();
+	}
 }
