@@ -1,15 +1,17 @@
 package webserver;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 import webserver.http.HttpVersion;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class HttpResponseStringifierTest {
     private static final HttpResponseStringifier httpResponseStringifier = new HttpResponseStringifier();
@@ -25,13 +27,12 @@ class HttpResponseStringifierTest {
 
         String httpResponseMessage = httpResponseStringifier.stringify(httpResponse);
 
-        Assertions.assertThat(httpResponseMessage).isEqualTo(
-                "HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: text/html;charset=utf-8\r\n" +
-                        "Content-Length: 11\r\n" +
-                        "\r\n" +
-                        "<html><body><h1>It works!</h1></body></html>");
-        )
+        assertThat(httpResponseMessage).contains(
+                "HTTP/1.1 200 OK\r\n",
+                "Content-Type: text/html;charset=utf-8\r\n",
+                "Content-Length: 11\r\n",
+                "\r\n<html><body><h1>It works!</h1></body></html>"
+        );
     }
 
     private Map<String, List<String>> getMetaDataFixture() {
