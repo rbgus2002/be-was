@@ -3,6 +3,7 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HTTPServletRequest {
@@ -13,10 +14,10 @@ public class HTTPServletRequest {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletRequest.class);
 
 
-    public HTTPServletRequest(String startLine) {
-        method = parseMethod(startLine);
-        url = parseUrl(startLine);
-        version = parseVersion(startLine);
+    public HTTPServletRequest(String method, String url, String version) {
+        this.method = method;
+        this.url = url;
+        this.version = version;
     }
 
     private String parseVersion(String startLine) {
@@ -62,5 +63,11 @@ public class HTTPServletRequest {
 
     public ConcurrentHashMap<String, String> getQuery() {
         return query;
+    }
+
+    public void addQuery(ConcurrentHashMap<String, String> adder) {
+        for (Map.Entry<String, String> entry : adder.entrySet()) {
+            query.put(entry.getKey(), entry.getValue());
+        }
     }
 }

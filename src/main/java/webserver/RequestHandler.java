@@ -7,6 +7,7 @@ import container.Servlet;
 import container.DispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import parser.GetParser;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -25,7 +26,7 @@ public class RequestHandler implements Runnable {
             String line = "";
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
-            HTTPServletRequest request = new HTTPServletRequest(startLine);
+            HTTPServletRequest request = new GetParser().getProperRequest(br);
             while (!(line = br.readLine()).isEmpty()) {
                 logger.debug("line = {}", line);
             }
