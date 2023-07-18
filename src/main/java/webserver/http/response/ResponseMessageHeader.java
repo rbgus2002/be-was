@@ -1,11 +1,11 @@
-package webserver.http;
+package webserver.http.response;
 
 import webserver.server.WebServer;
 
-import static webserver.http.ResponseHeader.*;
-import static webserver.http.StatusLine.*;
+import static webserver.http.response.ResponseHeader.*;
+import static webserver.http.response.StatusLine.*;
 
-public class RequestMessageHeader {
+public class ResponseMessageHeader {
     private static final String KEY_VALUE_PARSER = ": ";
     private static final String SEMI_COLUMN = ";";
     private static final String EQUAL = "=";

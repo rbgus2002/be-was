@@ -4,8 +4,8 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 import java.util.Map;
 
@@ -30,6 +30,6 @@ public class SignupController implements Controller {
         Database.addUser(user);
         logger.info("signup ok, userId : {}", queries.get("userId"));
 
-        return "redirect:/";
+        return "redirect:/index.html";
     }
 }

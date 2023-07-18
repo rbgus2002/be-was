@@ -3,7 +3,7 @@ package controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
 
 
 class HomeControllerTest {

@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.HttpMethod;
 
 import java.util.Map;
 
 class HttpRequestTest {
 
-    private final String METHOD = "GET";
+    private final HttpMethod METHOD = HttpMethod.GET;
     private final String URL = "/user/create";
     private final String VERSION = "HTTP/1.1";
     private final String USERID_VAL = "42";

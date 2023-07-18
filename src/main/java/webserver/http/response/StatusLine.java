@@ -1,4 +1,4 @@
-package webserver.http;
+package webserver.http.response;
 
 public enum StatusLine {
 

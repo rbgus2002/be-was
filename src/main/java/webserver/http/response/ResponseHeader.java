@@ -1,6 +1,6 @@
-package webserver.http;
+package webserver.http.response;
 
-import static webserver.http.StatusLine.HTTP_VERSION;
+import static webserver.http.response.StatusLine.HTTP_VERSION;
 
 public enum ResponseHeader {
 

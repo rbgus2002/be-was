@@ -2,10 +2,11 @@ package webserver.http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.response.ResponseMessageHeader;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RequestMessageHeaderTest {
+class ResponseMessageHeaderTest {
 
 
     @Test
@@ -18,9 +19,9 @@ class RequestMessageHeaderTest {
                 + "Content-Length: " + BODY_OF_LENGTH + "\r\n"
                 + "\r\n";
 
-        RequestMessageHeader requestMessageHeader = new RequestMessageHeader();
+        ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
         //when
-        String header = requestMessageHeader.response200Header(BODY_OF_LENGTH,MimeType.HTML.getMimeType());
+        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, MimeType.HTML.getMimeType());
 
         //then
         assertEquals(expected, header);
@@ -39,8 +40,8 @@ class RequestMessageHeaderTest {
 
         //when
 
-        RequestMessageHeader requestMessageHeader = new RequestMessageHeader();
-        String header = requestMessageHeader.response302Header(url);
+        ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
+        String header = responseMessageHeader.response302Header(url);
 
         //then
         assertEquals(expected, header);
@@ -54,8 +55,8 @@ class RequestMessageHeaderTest {
 
         //when
 
-        RequestMessageHeader requestMessageHeader = new RequestMessageHeader();
-        String header = requestMessageHeader.response404Header();
+        ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
+        String header = responseMessageHeader.response404Header();
 
         //then
         assertEquals(expected, header);
