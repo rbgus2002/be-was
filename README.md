@@ -2,6 +2,9 @@
 
 Java Web Application Server 2023
 
+- [Java Concurrent Package 정리](https://github.com/bumstead-bumstead/be-was/wiki/Java-Concurrent-Package)
+- [Java Thread Model 정리](https://github.com/bumstead-bumstead/be-was/wiki/Thread-&-Java-Thread-Model)
+
 ## step-1 기록 사항
 - 헤더 파싱하는 과정에서 http 헤더의 format에 대한 예외 처리가 있어야 할 것 같다. HTTP 요청이 아닐 경우의 처리 
 - concurrent package를 이용하되, 어떤 스레드풀 객체를 이용할 것인지에 대해서 고민했다. 작업의 발생이 일정하고, 처리하는 작업의 로드도 작고 일정하기 때문에 newFixedThreadPool() 메소드를 이용했다.
