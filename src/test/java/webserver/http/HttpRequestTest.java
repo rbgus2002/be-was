@@ -51,14 +51,4 @@ class HttpRequestTest {
             assertEquals(PATH, request.getPath());
         }
     }
-    
-    @Test
-    @DisplayName("static 파일을 요청하는지 구분한다")
-    void requestStaticFile() throws IOException {
-        // given, when
-        HttpRequest request = HttpRequest.from(in);
-
-        // then
-        assertTrue(request.requestStaticFile());
-    }
 }

@@ -26,8 +26,7 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
             dispatcherServlet.doService(in, out);
-        } catch (IOException | InvocationTargetException | NoSuchMethodException | InstantiationException |
-                 IllegalAccessException e) {
+        } catch (Throwable e) {
             logger.error(e.getMessage());
         }
     }

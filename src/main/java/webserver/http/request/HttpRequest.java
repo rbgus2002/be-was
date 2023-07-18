@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 import static utils.StringUtils.*;
 
 public class HttpRequest {
-    private final HttpRequestLine requestLine; // responseLine과 합쳐서 statusLine이라고 부름
+    private final HttpRequestLine requestLine;
     private final String HTML = "html";
     private final Map<String, String> header = new HashMap<>();
 
@@ -60,7 +60,7 @@ public class HttpRequest {
         return requestLine.getUri().getQuery();
     }
 
-    public boolean requestStaticFile(){
+    public boolean isStaticFileRequested() {
         return getPath().endsWith(HTML);
     }
 }

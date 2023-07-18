@@ -1,28 +1,35 @@
 package controller;
 
 import annotation.GetMapping;
+import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
 import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    @GetMapping(value = "/index.html")
-    public void mainPage()
-    {
-        logger.debug("Get Mapping Call Success!!");
-    }
+    @GetMapping(value = "/user/create")
+    public HttpResponse createUser(Map<String, String> query) throws IOException {
+        logger.debug("GET user/create API START");
 
+        // TODO : Service layer 분리
+        String userId = query.get("userId");
+        String password = query.get("password");
+        String name = query.get("name");
+        String email = query.get("email");
 
-    @GetMapping(value = "users/create")
-    public User createUser(){
-        logger.debug("GET users/create success!");
+        User user = new User(userId, password, name, email);
+        Database.addUser(user);
 
-        return null;
+        logger.debug("user 생성 : {}", Database.findUserById(userId));
+
+        return HttpResponse.redirect();
     }
 }

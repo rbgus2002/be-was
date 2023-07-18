@@ -1,24 +1,31 @@
 package webserver;
 
+import controller.Controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.Uri;
+import webserver.http.response.HttpResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
 
-class HandlerMappingTest {
+class DispatcherServletTest {
     private final String GET = "GET";
-    private final String PATH = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
+    //    private final String PATH = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
+    private final String PATH = "/index.html";
+
     private final Uri URI = Uri.from(PATH);
     private String requestStr;
     private InputStream in;
@@ -34,12 +41,16 @@ class HandlerMappingTest {
     }
 
     @Test
-    @DisplayName("GetMapping 어노테이션이 붙은 메소드를 실행한다")
-    void doDispatch() throws IOException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        // given, when
+    @DisplayName("test")
+    void test() throws Throwable {
+        // given
         HttpRequest request = HttpRequest.from(in);
 
+        //
+        Method method = HandlerMapping.getHandler(request);
+        DispatcherServlet tmp = new DispatcherServlet();
+
         // then
-        HandlerMapping.getHandler(request);
+
     }
 }
