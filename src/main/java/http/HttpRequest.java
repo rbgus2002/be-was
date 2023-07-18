@@ -1,6 +1,6 @@
 package http;
 
-import util.FileUtils;
+import util.StringUtils;
 import util.HttpUtils;
 
 import java.io.BufferedReader;
@@ -108,7 +108,7 @@ public class HttpRequest {
     }
 
     private Mime decideMime(String path) {
-        String extension = FileUtils.getExtension(path);
+        String extension = StringUtils.getExtension(path);
 
         return Arrays.stream(Mime.values())
                 .filter(mime -> mime.getExtension().equals(extension))

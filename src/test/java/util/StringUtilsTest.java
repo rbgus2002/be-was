@@ -3,12 +3,9 @@ package util;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FileUtilsTest {
+public class StringUtilsTest {
 
     @Test
     @DisplayName("html 확장자를 추출한다.")
@@ -17,7 +14,7 @@ public class FileUtilsTest {
         String file = "aa.html";
 
         //when
-        String extension = FileUtils.getExtension(file);
+        String extension = StringUtils.getExtension(file);
 
         //then
         assertThat(extension).isEqualTo("html");
@@ -30,7 +27,7 @@ public class FileUtilsTest {
         String file = "afjknlk/aslkd.js";
 
         //when
-        String extension = FileUtils.getExtension(file);
+        String extension = StringUtils.getExtension(file);
 
         //then
         assertThat(extension).isEqualTo("js");

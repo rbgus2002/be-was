@@ -1,7 +1,8 @@
 package util;
 
-public class FileUtils {
-    private FileUtils() {
+public class StringUtils {
+
+    private StringUtils() {
     }
 
     public static String getExtension(String path) {

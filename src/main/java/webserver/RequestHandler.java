@@ -5,7 +5,7 @@ import http.HttpRequest;
 import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.FileUtils;
+import util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -51,7 +51,7 @@ public class RequestHandler implements Runnable {
 
     private void response(HttpRequest httpRequest) {
         String path = httpRequest.uri().getPath();
-        String extension = FileUtils.getExtension(path);
+        String extension = StringUtils.getExtension(path);
         HttpResponse httpResponse;
         if (!Objects.equals(extension, path)) {
             // 정적 파일 응답
