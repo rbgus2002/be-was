@@ -1,10 +1,5 @@
-package webserver.http.request;
+package webserver.http;
 
-import webserver.http.HttpHeaders;
-import webserver.http.HttpMethod;
-
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 public class HttpRequestImpl extends HttpRequest {
@@ -12,17 +7,15 @@ public class HttpRequestImpl extends HttpRequest {
     private final String uri;
     private final String version;
     private final HttpHeaders headers;
-    private final Map<String, String> requestParameters;
 
     public HttpRequestImpl(HttpMethod httpMethod,
                            String uri,
                            String version,
-                           HttpHeaders headers, Map<String, String> requestParameters) {
-        this.httpMethod = httpMethod;
-        this.uri = uri;
-        this.version = version;
-        this.headers = headers;
-        this.requestParameters = requestParameters;
+                           HttpHeaders headers) {
+            this.httpMethod = httpMethod;
+            this.uri = uri;
+            this.version = version;
+            this.headers = headers;
     }
 
     @Override
@@ -48,11 +41,6 @@ public class HttpRequestImpl extends HttpRequest {
     @Override
     public String getHeader(String headerName) {
         return headers.getHeaderValues(headerName);
-    }
-
-    @Override
-    public Optional<String> getParameter(String parameterName) {
-        return Optional.ofNullable(requestParameters.get(parameterName));
     }
 
     @Override

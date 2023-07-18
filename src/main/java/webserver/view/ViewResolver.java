@@ -1,4 +1,4 @@
-package webserver.myframework.view;
+package webserver.view;
 
 
 public interface ViewResolver {
