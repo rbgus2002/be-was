@@ -26,4 +26,8 @@ public class SessionService {
         Database.updateSession(userId, session);
         return session;
     }
+
+    public static void clearSessionDatabase() {
+        Database.deleteAllSession();
+    }
 }

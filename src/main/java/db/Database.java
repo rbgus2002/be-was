@@ -21,6 +21,9 @@ public class Database {
     public static Collection<User> findAllUser() {
         return users.values();
     }
+    public static void deleteAllUser() {
+        users.clear();
+    }
 
     // Session
     public static Session addSession(String userId) {
@@ -36,5 +39,8 @@ public class Database {
     }
     public static Collection<Session> findAllSession() {
         return sessions.values();
+    }
+    public static void deleteAllSession() {
+        sessions.clear();
     }
 }

@@ -42,4 +42,8 @@ public class UserService {
         // 아이디/비밀번호 검증
         return userId.equals(user.getUserId()) && password.equals(user.getPassword());
     }
+
+    public static void clearUserDatabase() {
+        Database.deleteAllUser();
+    }
 }
