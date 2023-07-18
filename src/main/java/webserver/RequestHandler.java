@@ -29,7 +29,6 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse();
-            String url = request.getUrl();
             FrontController controller = new FrontController();
             controller.service(dos, request, response);
         } catch (IOException e) {
