@@ -27,9 +27,8 @@ public class HttpRequestParser {
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
         String oneLine = bufferedReader.readLine();
         while (oneLine.length() != 0) {
-            // TODO: Host에 : 들어오면 split 이상하게 나뉠 수 있음.
-            String[] header = oneLine.split(":");
-            builder.setHeader(header[0].trim(), header[1].trim());
+            int colonIndex = oneLine.indexOf(":");
+            builder.setHeader(oneLine.substring(0, colonIndex).trim(), oneLine.substring(colonIndex + 1).trim());
 //            logger.info("HEADERS: {}", oneLine);
             oneLine = bufferedReader.readLine();
         }
