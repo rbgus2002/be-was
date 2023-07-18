@@ -2,7 +2,7 @@ package webserver.http.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.util.HeaderParser;
+import webserver.util.Parser;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class ClientConnection {
 
     public void forward(String url) {
         HttpContentType httpContentType = HttpContentType.createHttpContentType();
-        String extension = HeaderParser.getUrlExtension(url);
+        String extension = Parser.getUrlExtension(url);
         String contentType = httpContentType.getContentType(extension);
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         ResponseBody responseBody = httpResponse.getBody();

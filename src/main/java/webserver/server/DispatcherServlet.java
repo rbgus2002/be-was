@@ -10,7 +10,6 @@ import webserver.http.response.HttpResponse;
 import webserver.http.response.ResponseBody;
 
 import java.io.DataOutputStream;
-import java.io.IOException;
 
 public class DispatcherServlet {
 
@@ -18,7 +17,8 @@ public class DispatcherServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    protected void service(HttpRequest req, HttpResponse resp, DataOutputStream dataOutputStream) throws IOException {
+    protected void service(HttpRequest req, HttpResponse resp, DataOutputStream dataOutputStream) {
+        final String REDIRECT = "redirect";
         logger.info("DispatcherServlet service");
         Controller controller = requestMapper.getController(req.getUrl());
         String toUrl;
@@ -29,9 +29,9 @@ public class DispatcherServlet {
         ResponseBody responseBody = new ResponseBody(toUrl);
         resp.setBody(responseBody);
         ClientConnection clientConnection = new ClientConnection(dataOutputStream, resp);
-        if (toUrl.contains("redirect")) {
+        if (toUrl.contains(REDIRECT)) {
             String redirectUrl = toUrl.split(":")[1];
-            if(redirectUrl.contains(" ")) {
+            if(redirectUrl.contains(req.BLANK)) {
                 redirectUrl = redirectUrl.trim();
             }
             clientConnection.sendRedirect(redirectUrl);

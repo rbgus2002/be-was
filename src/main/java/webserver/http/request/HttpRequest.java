@@ -2,7 +2,7 @@ package webserver.http.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.util.HeaderParser;
+import webserver.util.Parser;
 
 import java.util.Map;
 
@@ -15,26 +15,20 @@ public class HttpRequest {
     private final String url;
     private final String version;
     private FormData formData;
+    public final String BLANK = " ";
 
     public HttpRequest(String request, String requestBody) {
-        String[] req = request.split(" ");
+        String[] req = request.split(BLANK);
+        this.formData = null;
         ValidRequest(req);
         method = HttpMethod.valueOf(req[0]);
         String tmpUrl = req[1];
-
-        //todo: 여기 부분 분리
-        if(tmpUrl.contains("?")) {
-            if(method.equals(HttpMethod.GET)) {
-                this.formData = new FormData(HeaderParser.parseQuery(tmpUrl));
-            }
-                this.url = HeaderParser.parseUrl(tmpUrl);
-        } else {
-            this.url = tmpUrl;
+        String[] parseUrlData = Parser.parseUrlData(tmpUrl, method, requestBody);
+        if(parseUrlData[0] != null) {
+            this.formData = new FormData(parseUrlData[0]);
         }
+        this.url = parseUrlData[1];
 
-        if(method.equals(HttpMethod.POST)) {
-            this.formData = new FormData(requestBody);
-        }
         this.version = req[2];
         logger.info("HttpRequest Create end url = " + url);
     }
@@ -55,6 +49,6 @@ public class HttpRequest {
         return version;
     }
     public Map<String, String> getFormDataMap() {
-        return formData.getFormDataMap();
+        return formData == null?null:formData.getFormDataMap();
     }
 }
