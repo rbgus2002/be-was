@@ -35,17 +35,21 @@ public class DispatcherServlet {
                     requestHandlerResolver.resolveHandler(httpRequest.getUri(), httpRequest.getMethod());
             requestHandler.handle(httpRequest, httpResponse);
             uri = httpResponse.getUri();
-        } catch (NotMatchedUriException ignored) {
-        } catch (NotMatchedMethodException e) {
+        } catch (NotMatchedUriException notMatchedUriException) {
+            httpResponse.setStatus(HttpStatus.NOT_FOUND);
+        } catch (NotMatchedMethodException notMatchedMethodException) {
             httpResponse.setStatus(HttpStatus.METHOD_NOT_ALLOW);
         }
 
-        if (httpResponse.getStatus().getStatusNumber() >= 400) {
+        HttpStatus httpResponseStatus = httpResponse.getStatus();
+        if (httpResponseStatus.getStatusNumber() >= 400 &&
+            !httpResponseStatus.equals(HttpStatus.NOT_FOUND)) {
             uri = ERROR_URI + httpResponse.getStatus().getStatusNumber();
         }
 
         if (!uri.equals(HttpResponse.NOT_RENDER_URI)) {
             View view = viewResolver.resolve(uri);
+            httpResponse.setStatus(HttpStatus.OK);
             httpResponse.setContentType(ContentType.getContentType(view.getFileExtension()));
             httpResponse.setBody(view.render());
         }
