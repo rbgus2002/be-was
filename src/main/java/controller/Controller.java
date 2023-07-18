@@ -31,4 +31,16 @@ public class Controller {
         Database.addUser(newUser);
         return HttpResponse.redirect("/index.html");
     }
+
+    @RequestMapping(path = "/user/login", method = HttpUtils.Method.POST)
+    public HttpResponse login(Map<String, String> parameters) {
+        User newUser = ModelConverter.toUser(parameters);
+        User user = Database.findUserById(newUser.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다."));
+        if (!user.getPassword().equals(parameters.get("password"))) {
+            throw new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다.");
+        }
+        Database.addUser(newUser);
+        return HttpResponse.redirect("/index.html");
+    }
 }
