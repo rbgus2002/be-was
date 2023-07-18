@@ -32,6 +32,8 @@ public class HttpUtil {
 			}
 		}
 
+		content.append('\n');
+
 		if (contentLength > 0) {
 			char[] bodyChars = new char[contentLength];
 			reader.read(bodyChars, 0, contentLength);
