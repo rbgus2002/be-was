@@ -25,8 +25,10 @@ public class HttpRequest {
     private final Map<String, String> model;
 
     public HttpRequest(final BufferedReader reader) throws IOException {
-        String content = HttpUtil.getContent(reader);
+        this(HttpUtil.getContent(reader));
+    }
 
+    public HttpRequest(final String content) throws IOException {
         this.header = HttpUtil.extractHeader(content);
         this.body = HttpUtil.extractBody(content);
         this.method = HttpUtil.getMethod(header);

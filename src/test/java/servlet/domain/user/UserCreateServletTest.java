@@ -5,12 +5,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.HashMap;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import db.Database;
 import servlet.domain.user.exception.AlreadyExistUserException;
 
 class UserCreateServletTest {
+
+	@BeforeEach
+	void init() {
+		Database.flush();
+	}
 
 	@Test
 	@DisplayName("회원가입 성공")
