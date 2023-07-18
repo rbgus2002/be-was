@@ -5,14 +5,14 @@ import java.util.Map;
 
 import static utils.StringUtils.NEW_LINE;
 
-public class ResponseMessage {
+public class HttpResponse {
     private final String version = "HTTP/1.1";
     private final String statusCode;
     private final String statusMessage;
     private final Map<String, String> metadata = new HashMap<>();
     private final byte[] body;
 
-    public ResponseMessage(HttpStatus httpStatus) {
+    public HttpResponse(HttpStatus httpStatus) {
         this.statusCode = httpStatus.getCode();
         this.statusMessage = httpStatus.getMessage();
         this.body = "".getBytes();
@@ -20,7 +20,7 @@ public class ResponseMessage {
         setMetadata("Content-Type", "");
     }
 
-    public ResponseMessage(HttpStatus httpStatus, byte[] body) {
+    public HttpResponse(HttpStatus httpStatus, byte[] body) {
         this.statusCode = httpStatus.getCode();
         this.statusMessage = httpStatus.getMessage();
         this.body = body;
