@@ -16,11 +16,11 @@ import static utils.StringUtils.appendNewLine;
 @DisplayName("RequestHeader 테스트")
 class HttpRequestTest {
 
-    String simpleRequestLine = "GET /index.html HTTP/1.1";
-    String SIMPLE_REQUEST_URL = "/index.html";
-    String createRequestLine = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
-    String CREATE_REQUEST_URL = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
-    String CREATE_REQUEST_PATH = "/user/create";
+    final String simpleRequestLine = "GET /index.html HTTP/1.1";
+    final String SIMPLE_REQUEST_URL = "/index.html";
+    final String createRequestLine = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+    final String CREATE_REQUEST_URL = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
+    final String CREATE_REQUEST_PATH = "/user/create";
 
     String headers = appendNewLine("Host: localhost:8080", "Connection: keep-alive", "Accept: */*");
     String body = ""; // 본문 내용을 추가할 수 있습니다.
