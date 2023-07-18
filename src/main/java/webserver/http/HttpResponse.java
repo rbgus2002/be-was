@@ -1,5 +1,7 @@
 package webserver.http;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -9,18 +11,26 @@ public class HttpResponse {
     private final Map<String, List<String>> metaData;
     private final byte[] body;
 
-    public HttpResponse(HttpVersion httpVersion, HttpStatus httpStatus, Map<String, List<String>> metaData) {
-        this.httpVersion = httpVersion;
-        this.httpStatus = httpStatus;
-        this.metaData = metaData;
-        this.body = null;
-    }
-
     public HttpResponse(HttpVersion httpVersion, HttpStatus httpStatus, Map<String, List<String>> metaData, byte[] body) {
         this.httpVersion = httpVersion;
         this.httpStatus = httpStatus;
         this.metaData = metaData;
         this.body = body;
+    }
+
+    public static HttpResponse okWithFile(byte[] file) {
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Content-Type", List.of("text/html;charset=utf-8"));
+        headers.put("Content-Length", List.of(String.valueOf(file.length)));
+        return new HttpResponse(HttpVersion.V1_1, HttpStatus.OK, headers, file);
+    }
+
+    public static HttpResponse notFound() {
+        byte[] notFoundHtml = "<html><body>NOT FOUND</body><html>".getBytes(StandardCharsets.UTF_8);
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Content-Type", List.of("text/html;charset=utf-8"));
+        headers.put("Content-Length", List.of(String.valueOf(notFoundHtml.length)));
+        return new HttpResponse(HttpVersion.V1_1, HttpStatus.NOT_FOUND, headers, notFoundHtml);
     }
 
     public boolean hasBody() {
