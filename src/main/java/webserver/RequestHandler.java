@@ -35,7 +35,7 @@ public class RequestHandler implements Runnable {
                 Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
                 User user = new User(
                         params.get("userId"),
-                        params.get("password"),it
+                        params.get("password"),
                         params.get("name"),
                         params.get("email")
                 );
