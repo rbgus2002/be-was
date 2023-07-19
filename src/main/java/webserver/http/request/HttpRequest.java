@@ -22,8 +22,12 @@ public class HttpRequest {
         return httpRequestLine.getUri();
     }
 
-    public HttpRequestLine getHttpRequestLine() {
-        return httpRequestLine;
+    public String show() {
+        StringBuilder sb = new StringBuilder();
+        httpRequestLine.show(sb);
+        httpHeaders.show(sb);
+
+        return sb.toString();
     }
 
     public static HttpRequest create(InputStream in) throws IOException {
@@ -32,13 +36,5 @@ public class HttpRequest {
         HttpHeaders headers = HttpHeaders.create(br);
 
         return new HttpRequest(requestLine, headers);
-    }
-
-    public String show() {
-        StringBuilder sb = new StringBuilder();
-        httpRequestLine.show(sb);
-        httpHeaders.show(sb);
-
-        return sb.toString();
     }
 }
