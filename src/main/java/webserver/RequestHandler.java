@@ -12,6 +12,8 @@ import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static http.HttpMethod.POST;
+
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connection;
@@ -56,7 +58,7 @@ public class RequestHandler implements Runnable {
             }
 
             String body = "";
-            if ("POST".equals(requestLine[0]) && headers.containsKey("Content-Length")) {
+            if (POST.equals(requestLine[0]) && headers.containsKey("Content-Length")) {
                 int contentLength = Integer.parseInt(headers.get("Content-Length"));
                 char[] bodyChars = new char[contentLength];
                 br.read(bodyChars, 0, contentLength);

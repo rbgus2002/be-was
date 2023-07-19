@@ -38,7 +38,7 @@ class ControllerTest {
     }
 
     @Test
-    @DisplayName("없는 파일을 원하는 잘못된 요청에 NOT_FOUND 404 상태를 반환해야 한다")
+    @DisplayName("존재하지 않는 리소스에 대한 요청 시 NOT_FOUND 404 상태를 반환해야 한다")
     void wrongRequestNoFile() {
         // Given
         HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, "/no_index.html", "HTTP/1.1").build();
@@ -51,7 +51,7 @@ class ControllerTest {
     }
 
     @Test
-    @DisplayName("GET 방식 사용 시: 적절한 uri가 아닌 경우 NOT_FOUND 404 상태를 반환해야 한다")
+    @DisplayName("GET 방식 사용 시: 존재하지 않는 경로인 경우 NOT_FOUND 404 상태를 반환해야 한다")
     void wrongRequestUriUsingGet() {
         // Given
         String uri = "/user/user/create?userId=kimahhh&password=1234&name=김아현&email=kimahyunn132@gmail.com";
@@ -65,7 +65,7 @@ class ControllerTest {
     }
 
     @Test
-    @DisplayName("POST 방식 사용 시: 적절한 uri가 아닌 경우 NOT_FOUND 404 상태를 반환해야 한다")
+    @DisplayName("POST 방식 사용 시: 존재하지 않는 경로인 경우 NOT_FOUND 404 상태를 반환해야 한다")
     void wrongRequestUriUsingPost() {
         // Given
         String uri = "/user/user/create";

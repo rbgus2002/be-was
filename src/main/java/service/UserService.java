@@ -13,14 +13,13 @@ public class UserService {
     private String NAME = "name";
     private String EMAIL = "email";
     public void createUser(Map<String, String> userInfo) {
-        if (isUserAlreadyExist(userInfo.get(USERID))) {
-            throw new IllegalArgumentException(ALREADY_EXIST_USER);
-        }
+        checkUserAlreadyExist(userInfo.get(USERID));
         User user = new User(userInfo.get(USERID), userInfo.get(PASSWORD), userInfo.get(NAME), userInfo.get(EMAIL));
         addUser(user);
     }
 
-    private boolean isUserAlreadyExist(String userId) {
-        return findAll().stream().anyMatch(user -> user.getUserId().equals(userId));
+    private void checkUserAlreadyExist(String userId) {
+        if (findAll().stream().anyMatch(user -> user.getUserId().equals(userId)))
+            throw new IllegalArgumentException(ALREADY_EXIST_USER);
     }
 }
