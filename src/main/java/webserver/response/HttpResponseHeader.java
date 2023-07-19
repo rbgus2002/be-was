@@ -16,14 +16,13 @@ public class HttpResponseHeader {
 	public String getAllHeader() {
 		StringBuilder sb = new StringBuilder();
 
-		for (HttpHeader key : headers.keySet()) {
+		headers.keySet().forEach(key -> {
 			final String value = headers.get(key);
-
 			sb.append(key.getType())
 				.append(": ")
 				.append(value)
 				.append("\r\n");
-		}
+		});
 
 		return sb.toString();
 	}
