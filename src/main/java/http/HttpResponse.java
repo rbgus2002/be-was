@@ -94,4 +94,8 @@ public class HttpResponse {
             logger.error(e.getMessage());
         }
     }
+
+    public HttpStatus getHttpStatus() {
+        return this.httpStatus;
+    }
 }
