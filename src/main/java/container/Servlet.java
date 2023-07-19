@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public interface Servlet {
 
-    void service(HTTPServletRequest request, HTTPServletResponse response, DataOutputStream dos) throws IOException;
+    void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException;
 
 
 }

@@ -8,8 +8,7 @@ import static util.Path.HOME_PATH;
 public class RedirectCreator implements Creator {
     @Override
     public HTTPServletResponse getProperResponse(HTTPServletRequest request) {
-        HTTPServletResponse response = new HTTPServletResponse(null, response302Header());
-        return response;
+        return new HTTPServletResponse(null, response302Header());
     }
 
     private String response302Header() {

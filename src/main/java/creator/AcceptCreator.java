@@ -25,7 +25,7 @@ public class AcceptCreator implements Creator {
         String method = request.getMethod();
         String version = request.getVersion();
         logger.debug("url = {}, method = {}, version = {}", url, method, version);
-        String extension = url.substring(url.lastIndexOf("."), url.length());
+        String extension = url.substring(url.lastIndexOf("."));
         byte[] body = getBody(extension, url);
         String header = response200Header(body.length, findByExtension(extension), version);
 

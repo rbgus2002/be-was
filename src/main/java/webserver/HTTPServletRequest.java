@@ -3,7 +3,6 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HTTPServletRequest {
@@ -38,8 +37,6 @@ public class HTTPServletRequest {
     }
 
     public void addQuery(ConcurrentHashMap<String, String> adder) {
-        for (Map.Entry<String, String> entry : adder.entrySet()) {
-            query.put(entry.getKey(), entry.getValue());
-        }
+        query.putAll(adder);
     }
 }

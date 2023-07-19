@@ -15,12 +15,13 @@ import static webserver.Mime.*;
 public class HTTPServletResponse {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletResponse.class);
 
-    private final String header;
-    private final byte[] body;
+    private String header;
+    private byte[] body;
 
-    public HTTPServletResponse(byte[] body, String header) {
-        this.body = body;
-        this.header = header;
+    private final DataOutputStream dos;
+
+    public HTTPServletResponse(DataOutputStream dos) {
+        this.dos = dos;
     }
 
     public String getHeader() {
@@ -29,5 +30,9 @@ public class HTTPServletResponse {
 
     public byte[] getBody() {
         return body;
+    }
+
+    public DataOutputStream getWriter(){
+        return dos;
     }
 }

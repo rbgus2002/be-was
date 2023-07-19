@@ -33,8 +33,8 @@ public class RequestHandler implements Runnable {
             logger.debug("startLine = {}", startLine);
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             Servlet servlet = DispatcherServlet.findServlet(request);
-            HTTPServletResponse response = creatorFactory.createCreator(servlet).getProperResponse(request);
-            servlet.service(request, response, dos);
+            HTTPServletResponse response = new HTTPServletResponse(dos);
+            servlet.service(request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
