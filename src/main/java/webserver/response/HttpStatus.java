@@ -13,6 +13,6 @@ public enum HttpStatus {
     }
 
     public String getDescription() {
-        return 200 + " " + this.name;
+        return statusCode + " " + this.name;
     }
 }
