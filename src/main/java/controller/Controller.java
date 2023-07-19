@@ -22,7 +22,7 @@ public class Controller {
         return SingletonHelper.INSTANCE;
     }
 
-    @RequestMapping(path = "/user/create", method = HttpUtils.Method.GET)
+    @RequestMapping(path = "/user/create", method = HttpUtils.Method.POST)
     public HttpResponse creatUser(Map<String, String> parameters) {
         User newUser = ModelConverter.toUser(parameters);
         Database.findUserById(newUser.getUserId()).ifPresent(user -> {
@@ -30,5 +30,21 @@ public class Controller {
         });
         Database.addUser(newUser);
         return HttpResponse.redirect("/index.html");
+    }
+
+    @RequestMapping(path = "/user/login", method = HttpUtils.Method.POST)
+    public HttpResponse login(Map<String, String> parameters) {
+        String userId = parameters.get("userId");
+        String password = parameters.get("password");
+        validateLogin(userId, password);
+        return HttpResponse.redirect("/index.html");
+    }
+
+    private void validateLogin(String userId, String password) {
+        User user = Database.findUserById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다."));
+        if (!user.getPassword().equals(password)) {
+            throw new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다.");
+        }
     }
 }

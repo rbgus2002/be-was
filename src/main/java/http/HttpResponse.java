@@ -2,31 +2,35 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.FileUtils;
+import util.StringUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.Objects;
 
-import static util.FileUtils.getExtension;
+import static util.StringUtils.getExtension;
 
 public class HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
     private final String path;
-    private final int httpStatus;
+    private final HttpStatus httpStatus;
     private final Mime contentType;
 
     public static HttpResponse ok(String path, Mime mime) {
-        return new HttpResponse(path, mime, 200);
+        return new HttpResponse(path, mime, HttpStatus.OK);
     }
 
     public static HttpResponse redirect(String path) {
-        return new HttpResponse(path, null, 302);
+        return new HttpResponse(path, null, HttpStatus.FOUND);
     }
 
-    private HttpResponse(String path, Mime mime, int httpStatus) {
+    public static HttpResponse notFound() {
+        return new HttpResponse(null, null, HttpStatus.NOT_FOUND);
+    }
+
+    private HttpResponse(String path, Mime mime, HttpStatus httpStatus) {
         this.path = path;
         this.contentType = mime;
         this.httpStatus = httpStatus;
@@ -36,12 +40,14 @@ public class HttpResponse {
         try (OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
 
-            if (this.httpStatus == 200) {
-                // 정적 파일을 읽는데 문제가 발생하면 /error.html 반환
+            if (this.httpStatus == HttpStatus.OK) {
                 response200(dos);
             }
-            if (this.httpStatus == 302) {
+            if (this.httpStatus == HttpStatus.FOUND) {
                 response302Header(dos);
+            }
+            if (this.httpStatus == HttpStatus.NOT_FOUND) {
+                response404(dos);
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -49,17 +55,14 @@ public class HttpResponse {
     }
 
     private void response200(DataOutputStream dos) throws IOException {
-        byte[] body;
         try {
             InputStream fileInputStream = getResourceAsStream(this.path);
-            body = fileInputStream.readAllBytes();
-
+            byte[] body = fileInputStream.readAllBytes();
+            response200Header(dos, body);
+            responseBody(dos, body);
         } catch (IOException e) {
-            InputStream fileInputStream = getResourceAsStream("/error.html");
-            body = fileInputStream.readAllBytes();
+            response404(dos);
         }
-        response200Header(dos, body);
-        responseBody(dos, body);
     }
 
     private void response200Header(DataOutputStream dos, byte[] body) {
@@ -86,6 +89,29 @@ public class HttpResponse {
         }
     }
 
+    private void response404(DataOutputStream dos) throws IOException {
+        byte[] body;
+        try {
+            InputStream fileInputStream = getResourceAsStream("/error.html");
+            body = fileInputStream.readAllBytes();
+        } catch (IOException e) {
+            body = "<html><body><h1>404 Not Found</h1></body></html>".getBytes();
+        }
+        response404Header(dos, body);
+        responseBody(dos, body);
+    }
+
+    private void response404Header(DataOutputStream dos, byte[] body) {
+        try {
+            dos.writeBytes("HTTP/1.1 404 Not Found\r\n");
+            dos.writeBytes("Content-Type: text/html; charset=UTF-8\r\n");
+            dos.writeBytes("Content-Length: " + body.length + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
     private void responseBody(DataOutputStream dos, byte[] body) {
         try {
             dos.write(body, 0, body.length);
@@ -97,7 +123,7 @@ public class HttpResponse {
 
     private InputStream getResourceAsStream(String path) throws FileNotFoundException {
         String ext = getExtension(path);
-        InputStream fileInputStream = FileUtils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
+        InputStream fileInputStream = StringUtils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
         if (fileInputStream == null) {
             throw new FileNotFoundException(path + "에 파일이 존재하지 않습니다.");
         }

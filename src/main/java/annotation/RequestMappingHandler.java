@@ -4,6 +4,7 @@ import controller.Controller;
 import http.HttpRequest;
 import http.HttpResponse;
 import util.HttpUtils;
+import util.StringUtils;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -57,24 +58,41 @@ public class RequestMappingHandler {
     public static HttpResponse invokeMethod(HttpRequest httpRequest) throws Throwable {
         String path = httpRequest.uri().getPath();
         HttpUtils.Method httpMethod = httpRequest.method();
-        MethodHandle method = methodHandles.get(HttpUtils.Method.GET).get(path);
+        MethodHandle method = methodHandles.get(httpRequest.method()).get(path);
         if (method == null) {
             throw new IllegalAccessException("잘못된 메소드입니다.");
         }
         if (httpMethod.equals(HttpUtils.Method.GET)) {
             return invokeGet(method, httpRequest);
         }
+        if (httpMethod.equals(HttpUtils.Method.POST)) {
+            return invokePost(method, httpRequest);
+        }
         throw new IllegalArgumentException("잘못된 HTTP 요청입니다.");
     }
 
     private static HttpResponse invokeGet(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
-        MethodType methodType = methodHandle.type();
-        if (methodType.parameterCount() == 0) {
+        if (isValidInvoke(methodHandle)) {
             return (HttpResponse) methodHandle.invoke();
         }
-        if (methodType.parameterCount() > 1 || !(methodType.parameterType(0) == Map.class)) {
-            throw new IllegalArgumentException("GET method는 하나의 Map을 인자로 받을 수 있습니다.");
+        return (HttpResponse) methodHandle.invoke(StringUtils.parseParameters(httpRequest.uri().getQuery()));
+    }
+
+    private static HttpResponse invokePost(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
+        if (isValidInvoke(methodHandle)) {
+            return (HttpResponse) methodHandle.invoke();
         }
-        return (HttpResponse) methodHandle.invoke(httpRequest.parameters());
+        return (HttpResponse) methodHandle.invoke(StringUtils.parseParameters(httpRequest.getBody()));
+    }
+
+    private static boolean isValidInvoke(MethodHandle methodHandle) {
+        MethodType methodType = methodHandle.type();
+        if (methodType.parameterCount() == 0) {
+            return true;
+        }
+        if (methodType.parameterCount() > 1 || !(methodType.parameterType(0) == Map.class)) {
+            throw new IllegalArgumentException("하나의 Map을 인자로 받을 수 있습니다.");
+        }
+        return false;
     }
 }
