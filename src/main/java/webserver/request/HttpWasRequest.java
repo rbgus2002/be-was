@@ -12,16 +12,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
 import webserver.utils.HttpHeader;
 
 public class HttpWasRequest {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
 	private static final String BASE64_PATTERN = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
 	private static final String PROTOCOL_VERSION = "ProtocolVersion";
