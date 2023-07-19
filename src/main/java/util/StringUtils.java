@@ -3,7 +3,7 @@ package util;
 import java.util.Map;
 
 public class StringUtils {
-    public static final String NEXTLINE = "\r\n";
+    public static final String NEXTLINE = System.getProperty("line.separator");
     public static final String NO_CONTENT = "";
 
     public static final String SPACE = " ";
@@ -17,7 +17,7 @@ public class StringUtils {
     private StringUtils() {}
 
     public static String[] splitBy(String text, String regex){
-        return text.split(regex);
+        return text.trim().split(regex);
     }
 
     public static String mapToHeaderFormat(Map<String, String> contents){
