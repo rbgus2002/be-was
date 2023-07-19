@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
-import support.annotation.RequestParam;
+import support.annotation.PathVariable;
 import support.exception.BadRequestException;
 import support.exception.MethodNotAllowedException;
 import support.exception.NotSupportedException;
@@ -97,9 +97,9 @@ public abstract class ControllerResolver {
         Parameter[] parameters = method.getParameters();
 
         Object[] args = Arrays.stream(parameters)
-                .filter(parameter -> parameter.isAnnotationPresent(RequestParam.class))
-                .map(parameter -> parameter.getAnnotation(RequestParam.class))
-                .map(RequestParam::value)
+                .filter(parameter -> parameter.isAnnotationPresent(PathVariable.class))
+                .map(parameter -> parameter.getAnnotation(PathVariable.class))
+                .map(PathVariable::value)
                 .map(requestQuery::getValue)
                 .toArray();
 

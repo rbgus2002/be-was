@@ -10,10 +10,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static utils.MathUtils.parseIntOrDefault;
+
 public class RequestHandler extends HttpHandler implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static final int CONTENT_LENGTH = 65535;
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -61,17 +62,17 @@ public class RequestHandler extends HttpHandler implements Runnable {
             requestHeaderBuilder.header(header);
         }
 
+        HttpRequest httpRequest = requestHeaderBuilder.build();
+        int contentLength = parseIntOrDefault(httpRequest.getHeaderValue("Content-Length"), 0);
+
+
         // body 읽기
-        if (br.ready()) {
-            char[] buffer = new char[CONTENT_LENGTH];
-            int read = br.read(buffer, 0, CONTENT_LENGTH);
-            if (read != -1) {
-                requestHeaderBuilder.body(new String(buffer, 0, read));
-            } else {
-                // TODO: body를 받을 수 있는 버퍼 초과
-            }
+        if (contentLength != 0) {
+            char[] buffer = new char[contentLength];
+            br.read(buffer, 0, contentLength);
+            httpRequest.setBody(new String(buffer, 0, contentLength));
         }
-        return requestHeaderBuilder.build();
+        return httpRequest;
     }
 
 }

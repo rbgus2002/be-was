@@ -15,12 +15,11 @@ public class HttpRequest {
     private final Query query;
     private final Header header = new Header();
     private final String version;
-    private final Parameter body;
+    private Parameter body;
 
     public static class RequestHeaderBuilder {
         private String requestLine;
         private final List<String> headers = new ArrayList<>();
-        private String body;
 
         public RequestHeaderBuilder requestLine(String requestLine) {
             this.requestLine = requestLine;
@@ -32,18 +31,13 @@ public class HttpRequest {
             return this;
         }
 
-        public RequestHeaderBuilder body(String body) {
-            this.body = body;
-            return this;
-        }
-
         public HttpRequest build() {
-            return new HttpRequest(requestLine, headers, body);
+            return new HttpRequest(requestLine, headers);
         }
 
     }
 
-    private HttpRequest(String requestLine, List<String> headers, String body) {
+    private HttpRequest(String requestLine, List<String> headers) {
         // 메소드 분리
         String[] tokens = requestLine.split(" ");
         this.method = HttpMethod.valueOf(tokens[0]);
@@ -64,9 +58,6 @@ public class HttpRequest {
                 }
         );
 
-        // body
-        this.body = body != null ? new Parameter(body) : new Parameter();
-
     }
 
     public String getHeaderValue(String key) {
@@ -83,6 +74,10 @@ public class HttpRequest {
 
     public Query getRequestQuery() {
         return query;
+    }
+
+    public void setBody(String body) {
+        this.body = new Parameter(body);
     }
 
     @Override
