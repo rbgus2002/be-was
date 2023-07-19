@@ -13,6 +13,8 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class HttpRequestTest {
 
     @Test
@@ -59,6 +61,26 @@ class HttpRequestTest {
             softAssertions.assertThat(httpRequest.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
             softAssertions.assertThat(httpRequest.mime()).isEqualTo(Mime.PNG);
         });
+    }
+
+    @Test
+    @DisplayName("Http Request에서 쿠키를 배열로 얻는다.")
+    void getCookies() throws URISyntaxException, IOException {
+        //given
+        List<String> strings = List.of("GET /user/create.png HTTP/1.1",
+                "Host: localhost:8080",
+                "Cookie: sid=12345; name=god");
+        BufferedReader bufferedReader = stringListToBufferedReader(strings);
+
+        //when
+        HttpRequest httpRequest = new HttpRequest(bufferedReader);
+        List<Cookie> cookies = httpRequest.getCookies();
+
+        //then
+        Cookie cookie1 = new Cookie("sid", "12345");
+        Cookie cookie2 = new Cookie("name", "god");
+        List<Cookie> expectedCookies = List.of(cookie1, cookie2);
+        assertThat(cookies).usingRecursiveComparison().isEqualTo(expectedCookies);
     }
 
     private BufferedReader stringListToBufferedReader(List<String> strings) {
