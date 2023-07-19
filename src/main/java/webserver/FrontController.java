@@ -1,9 +1,9 @@
 package webserver;
 
-import webserver.httpcontroller.DefaultController;
-import webserver.httpcontroller.HomeController;
-import webserver.httpcontroller.HttpController;
-import webserver.httpcontroller.JoinController;
+import controller.DefaultController;
+import controller.HomeController;
+import controller.HttpController;
+import controller.JoinController;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
