@@ -59,26 +59,6 @@ class HttpUtilsTest {
     }
 
     @Test
-    @DisplayName("http 헤더를 파싱해서 map으로 변환한다.")
-    void parseHeader() throws IOException {
-        //given
-        List<String> requestHeader = List.of("Host: localhost:8080",
-                "Connection: keep-alive",
-                "Accept: */*");
-        BufferedReader bufferedReader = stringListToBufferedReader(requestHeader);
-
-        //when
-        Map<String, String> paredHeader = HttpUtils.parseHeader(bufferedReader);
-
-        //then
-        SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(paredHeader.get("Host")).isEqualTo("localhost:8080");
-            softAssertions.assertThat(paredHeader.get("Connection")).isEqualTo("keep-alive");
-            softAssertions.assertThat(paredHeader.get("Accept")).isEqualTo("*/*");
-        });
-    }
-
-    @Test
     @DisplayName("http body를 추출한다.")
     void parseBody() throws IOException {
         //given

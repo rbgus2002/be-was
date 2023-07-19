@@ -10,8 +10,6 @@ import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class HttpUtils {
@@ -32,21 +30,6 @@ public class HttpUtils {
             return Optional.of(HttpClient.Version.HTTP_2);
         }
         return Optional.empty();
-    }
-
-
-    public static Map<String, String> parseHeader(BufferedReader reader) throws IOException {
-        Map<String, String> map = new HashMap<>();
-        String line;
-        while ((line = reader.readLine()) != null && !line.isEmpty()) {
-            int colonIndex = line.indexOf(':');
-            if (colonIndex != -1) {
-                String headerName = line.substring(0, colonIndex).trim();
-                String headerValue = line.substring(colonIndex + 1).trim();
-                map.put(headerName, headerValue);
-            }
-        }
-        return map;
     }
 
     public static String parseBody(BufferedReader reader, int contentLength, Method method) throws IOException {

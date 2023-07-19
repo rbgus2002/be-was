@@ -1,7 +1,6 @@
 package webserver;
 
 import http.HttpRequest;
-import http.Mime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,7 @@ public class RequestHandler implements Runnable {
 
     private void printLogs(HttpRequest httpRequest) {
         StringBuilder requestBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : httpRequest.getHeaders().entrySet()) {
+        for (Map.Entry<String, String> entry : httpRequest.getHttpHeader().entrySet()) {
             requestBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
         }
         logger.debug("Method : {}, URI : {}, Version : {}", httpRequest.method(), httpRequest.uri(), httpRequest.version());

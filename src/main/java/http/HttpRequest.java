@@ -15,19 +15,19 @@ public class HttpRequest {
     private final URI uri;
     private final HttpClient.Version version;
     private final Mime mime;
-    private final Map<String, String> headers;
+    private final HttpHeader httpHeader;
     private final String body;
 
     public HttpRequest(BufferedReader reader) throws URISyntaxException, IOException {
         String requestLine = reader.readLine();
         String[] requestParts = requestLine.split(" ");
-        this.headers = HttpUtils.parseHeader(reader);
+        this.httpHeader = new HttpHeader(reader);
         this.method = HttpUtils.Method.of(requestParts[0]);
-        this.uri = HttpUtils.constructUri(this.headers.get("Host"), requestParts[1]);
+        this.uri = HttpUtils.constructUri(this.httpHeader.get("Host"), requestParts[1]);
         this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
         this.mime = HttpUtils.decideMime(this.uri.getPath());
 
-        int contentLength = Integer.parseInt(this.headers.getOrDefault("Content-Length", "0"));
+        int contentLength = Integer.parseInt(this.httpHeader.getOrDefault("Content-Length", "0"));
         this.body = HttpUtils.parseBody(reader, contentLength, this.method);
     }
 
@@ -48,11 +48,11 @@ public class HttpRequest {
     }
 
     public String getHeader(String key) {
-        return this.headers.get(key);
+        return this.httpHeader.get(key);
     }
 
-    public Map<String, String> getHeaders() {
-        return this.headers;
+    public Map<String, String> getHttpHeader() {
+        return this.httpHeader.getHeaders();
     }
 
     public String getBody() {
