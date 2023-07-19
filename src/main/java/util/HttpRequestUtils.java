@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpRequestUtils {
 
@@ -43,5 +45,20 @@ public class HttpRequestUtils {
     public static boolean isValidPath(String path) {
         String[] splitPath = path.split("\\.");
         return splitPath[0].startsWith("/") && splitPath[1].equals("html");
+    }
+
+    public static Map<String, String> parseQueryString(String parameters) {
+        Map<String, String> paramsMap = new HashMap<>();
+        if (parameters == null || parameters.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        for (String param : parameters.split("&")) {
+            String key = param.split("=")[0];
+            String value = param.split("=")[1];
+            paramsMap.put(key, value);
+        }
+
+        return paramsMap;
     }
 }
