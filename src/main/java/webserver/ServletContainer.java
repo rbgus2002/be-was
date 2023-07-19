@@ -5,19 +5,20 @@ import java.net.Socket;
 import java.nio.file.Files;
 
 import model.HttpRequest;
+import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RequestHandler implements Runnable {
+public class ServletContainer implements Runnable {
 
     private final String STATIC_PATH = "./src/main/resources/static";
     private final String DYNAMIC_PATH = "./src/main/resources/templates";
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServletContainer.class);
 
     private Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
+    public ServletContainer(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
@@ -27,6 +28,10 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = new HttpRequest(in);
+            HttpResponse response = new HttpResponse(request);
+
+            DispatcherServlet dispatcherServlet = new DispatcherServlet(request, response);
+
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File(DYNAMIC_PATH + request.getRequestURI()).toPath());
             response200Header(dos, body.length);

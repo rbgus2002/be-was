@@ -2,7 +2,7 @@ package model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.RequestHandler;
+import webserver.ServletContainer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 public class HttpRequest {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServletContainer.class);
 
     private final HttpMethod METHOD;
 
@@ -38,6 +38,7 @@ public class HttpRequest {
         URI = startLine[1];
         PROTOCOL = startLine[2];
 
+        //TODO: 일급 컬렉션으로 헤더 별도 저장하기
         while (!(input = bufferedReader.readLine()).equals("")) {
             StringTokenizer tokenizer = new StringTokenizer(input, ":");
 
