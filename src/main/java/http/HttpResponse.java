@@ -79,6 +79,7 @@ public class HttpResponse {
             logger.debug("{} {} {} \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
             logger.debug("Content-Type: {};charset=utf-8\n", contentType);
             logger.debug("Content-Length: {}\r\n", body.length);
+            logger.debug("Location: {}\r\n", location);
             logger.debug("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
