@@ -28,7 +28,7 @@ public class RequestHandler implements Runnable {
             String firstLine = HttpRequestUtils.getFirstLine(in);
             String url = HttpRequestUtils.getUrl(firstLine);
 
-            if (url.contains("/user/create")) {
+            if (url.startsWith("/user/create")) {
                 String[] tokens = url.split("\\?");
                 String path = tokens[0];
                 String queryString = tokens[1];
