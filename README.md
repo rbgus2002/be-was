@@ -2,10 +2,10 @@
 
 Java Web Application Server 2023
 
-## step-3 study plan
+## step-4 POST로 회원 가입
 
-- 다양한 컨텐츠 타입 지원
-- 유효하지 않은 요청(존재하지 않는 파일로의 요청, 잘못된 쿼리 등) 예외 처리
+- 로그인을 GET에서 POST로 수정
+- redirection - 가입을 완료하면 /index.html 페이지로 이동
 
 ### 프로젝트 정보 
 
