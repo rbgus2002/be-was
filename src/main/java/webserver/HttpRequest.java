@@ -1,30 +1,119 @@
 package webserver;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public abstract class HttpRequest {
+public class HttpRequest {
 
-    protected HttpRequest() {}
+    private String method;
+    private String uri;
+    private String path;
+    private String version;
+    private Map<String, String> headers;
+    private Map<String, String> body;
 
-    public interface Builder {
-        public HttpRequest.Builder uri(String uri);
-        public HttpRequest.Builder version(String version);
-        public HttpRequest.Builder setHeader(String name, String value);
-        public HttpRequest.Builder method(String method);
-        public HttpRequest build();
+    HttpRequest(HttpRequest.Builder builder) {
+        this.method = builder.method();
+        this.uri = builder.uri();
+        this.path = builder.path();
+        this.version = builder.version();
+        this.headers = builder.headers();
+        this.body = builder.headers();
+    }
+
+    public static class Builder {
+        private String method;
+        private String uri;
+        private String path;
+        private String version;
+        private Map<String, String> headers;
+        private Map<String, String> body;
+
+        public Builder() {
+            this.headers = new HashMap<>();
+            this.body = new HashMap<>();
+        }
+
+        public HttpRequest.Builder uri(String uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        public HttpRequest.Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public HttpRequest.Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
+        // TODO: header 전체 파싱? headers로 나눠서 header 각자 파싱하도록
+        public HttpRequest.Builder setHeader(String name, String value) {
+            this.headers.put(name, value);
+            return this;
+        }
+
+        public HttpRequest.Builder method(String method) {
+            this.method = method;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(this);
+        }
+
+        String uri() {
+            return uri;
+        }
+
+        String path() {
+            return path;
+        }
+
+        String method() {
+            return method;
+        }
+
+        String version() {
+            return version;
+        }
+
+        Map headers() {
+            return headers;
+        }
+
+        Map body() {
+            return body;
+        }
     }
 
     public static HttpRequest.Builder newBuilder() {
-        return new HttpRequestBuilderImpl();
+        return new Builder();
     }
 
-    public abstract String method();
+    public String method() {
+        return method;
+    }
 
-    public abstract String uri();
+    public String uri() {
+        return uri;
+    }
 
-    public abstract String version();
+    public String path() {
+        return path;
+    }
 
-    public abstract Map headers();
+    public String version() {
+        return version;
+    }
 
-    public abstract Map body();
+    public Map headers() {
+        return headers;
+    }
+
+    public Map body() {
+        return body;
+    }
 }

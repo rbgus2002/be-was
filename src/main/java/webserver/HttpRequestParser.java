@@ -7,13 +7,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 public class HttpRequestParser {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestParser.class);
 
     public static HttpRequest parseHttpRequest(InputStream in) throws IOException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
         String firstLine = bufferedReader.readLine();
         parseFirstLine(builder, firstLine);
@@ -26,9 +27,10 @@ public class HttpRequestParser {
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
         String oneLine = bufferedReader.readLine();
         while (oneLine.length() != 0) {
+            // TODO: Host에 : 들어오면 split 이상하게 나뉠 수 있음.
             String[] header = oneLine.split(":");
             builder.setHeader(header[0].trim(), header[1].trim());
-            logger.info("HEADERS: {}", oneLine);
+//            logger.info("HEADERS: {}", oneLine);
             oneLine = bufferedReader.readLine();
         }
     }
@@ -36,7 +38,8 @@ public class HttpRequestParser {
     private static void parseFirstLine(HttpRequest.Builder builder, String firstLine) {
         String[] tokens = firstLine.split(" ");
         builder.method(tokens[0].trim())
-                .uri("localhost:8080" + tokens[1].trim())
+                .uri(tokens[1].trim())
+                .path(tokens[1].split("\\?")[0])
                 .version(tokens[2].trim());
     }
 }
