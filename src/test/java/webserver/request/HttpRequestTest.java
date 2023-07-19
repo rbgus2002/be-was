@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +16,7 @@ import static webserver.request.HttpRequestParser.parseRequest;
 @DisplayName("요청 메시지 클래스 테스트")
 class HttpRequestTest {
     @Test
-    @DisplayName("body가 없는 응답 메시지 객체가 생성된다.")
+    @DisplayName("body가 없는 Get 응답 메시지 객체가 생성된다.")
     void createWithoutBody() throws IOException {
         // given
         String message = "GET /test HTTP/1.1" + NEW_LINE +
@@ -25,24 +27,22 @@ class HttpRequestTest {
         HttpRequest httpRequest = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
         String method = httpRequest.getMethod();
-        String url = httpRequest.getUrl();
         String version = httpRequest.getVersion();
-        String host = httpRequest.getMetaData("Host");
+        String host = httpRequest.getHeader("Host");
 
         // then
         assertAll(
                 () -> assertEquals("GET", method),
-                () -> assertEquals("/test", url),
                 () -> assertEquals("HTTP/1.1", version),
                 () -> assertEquals("test.com", host)
         );
     }
 
     @Test
-    @DisplayName("body가 존재하는 응답 메시지 객체가 생성된다.")
+    @DisplayName("body가 존재하는 Post 응답 메시지 객체가 생성된다.")
     void createWithBody() throws IOException {
         // given
-        String message = "POST /api/data HTTP/1.1" + NEW_LINE +
+        String message = "POST /api/data.image?user=me&name=김&id=iidd HTTP/1.1" + NEW_LINE +
                 "Host: example.com" + NEW_LINE +
                 "Content-Type: application/json" + NEW_LINE +
                 "Content-Length: 25" + NEW_LINE +
@@ -54,15 +54,60 @@ class HttpRequestTest {
         HttpRequest httpRequest = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
         String method = httpRequest.getMethod();
-        String url = httpRequest.getUrl();
         String version = httpRequest.getVersion();
         String body = httpRequest.getBody();
 
         // then
         assertAll(
                 () -> assertEquals("POST", method),
-                () -> assertEquals("/api/data", url),
+                () -> assertEquals("HTTP/1.1", version),
                 () -> assertEquals(targetBody, body)
         );
+    }
+
+    @Test
+    @DisplayName("헤더가 없는 응답 메시지를 올바르게 생성한다.")
+    void name() throws IOException {
+        // given
+        String method = "GET";
+        String url = "/index.html";
+        String version = "HTTP/1.1";
+        Map<String, String> headers = new HashMap<>();
+        String body = "<!DOCTYPE html>" + NEW_LINE +
+                "<html>" + NEW_LINE +
+                "<head>" + NEW_LINE +
+                "	<title>My First HTML Document</title>" + NEW_LINE +
+                "</head>" + NEW_LINE +
+                "<body>" + NEW_LINE +
+                "	<h1>Hello, World!</h1>" + NEW_LINE +
+                "</body>" + NEW_LINE +
+                "</html>";
+
+        // when
+        HttpRequest httpRequest = HttpRequestParser.parseRequest(createRequestMessage(method, url, version, headers, body));
+
+        // then
+        assertAll(
+                () -> assertEquals(method, httpRequest.getMethod()),
+                () -> assertEquals(version, httpRequest.getVersion()),
+                () -> assertEquals(body, httpRequest.getBody())
+        );
+    }
+
+    private ByteArrayInputStream createRequestMessage(String method, String url, String
+            version, Map<String, String> headers, String body) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(method).append(" ").append(url).append(" ").append(version).append(NEW_LINE);
+        for (String key : headers.keySet()) {
+            stringBuilder.append(key).append(": ").append(headers.get(key)).append(NEW_LINE);
+        }
+        stringBuilder.append(NEW_LINE).append(body);
+        return new ByteArrayInputStream(stringBuilder.toString().getBytes());
+    }
+
+    private String createHeader(String method, String url, String version) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(method).append(" ").append(url).append(" ").append(version).append(NEW_LINE);
+        return stringBuilder.toString();
     }
 }
