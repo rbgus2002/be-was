@@ -41,7 +41,7 @@ public class Controller {
 
     }
 
-    public HttpResponse.ResponseBuilder routeByUriWithQuestion(String uri) {
+    private HttpResponse.ResponseBuilder routeByUriWithQuestion(String uri) {
         String[] apis = uri.split("\\?");
         if (apis[0].equals("/user/create")) {
             return createUser(parseParams(apis[1]));
@@ -49,7 +49,7 @@ public class Controller {
         throw new IllegalArgumentException(INVALID_URI);
     }
 
-    public HttpResponse.ResponseBuilder routeByUriWithBody(HttpRequest httpRequest) {
+    private HttpResponse.ResponseBuilder routeByUriWithBody(HttpRequest httpRequest) {
         String uri = httpRequest.getUri();
         if (uri.equals("/user/create")) {
             return createUser(parseParams(httpRequest.getBody()));
@@ -67,7 +67,7 @@ public class Controller {
         return information;
     }
 
-    public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
+    private HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
         return loadTemplatesFromPath(HttpStatus.FOUND, "/index.html");
     }
