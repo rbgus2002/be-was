@@ -13,6 +13,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class HttpUtils {
+
+    private HttpUtils() {
+    }
+
     public enum Method {
         GET, POST, DELETE, PUT, PATCH, OPTIONS;
 
