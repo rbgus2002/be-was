@@ -12,9 +12,9 @@ public class RequestTarget {
     }
 
     public MIME getMIME() {
-        String result = this.value.substring(this.value.indexOf(EXTENSION_START_TEXT));
+        String result = this.value.substring(this.value.lastIndexOf(EXTENSION_START_TEXT));
         if (result.contains(QueryParameter.DELIMITER)) {
-            result = result.substring(0, result.indexOf(QueryParameter.DELIMITER));
+            result = result.substring(this.value.lastIndexOf(EXTENSION_START_TEXT), result.indexOf(QueryParameter.DELIMITER));
         }
         return MIME.findBy(result);
     }
