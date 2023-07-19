@@ -5,9 +5,7 @@ import java.util.Map;
 public class StringUtils {
     public static final String NEXTLINE = System.getProperty("line.separator");
     public static final String NO_CONTENT = "";
-
     public static final String SPACE = " ";
-
     public static final String QUESTION_MARK = "\\?"; // 정규표현식 예약어
     public static final String AMPERSAND_MARK = "&";
     public static final String EQUAL_MARK = "=";
