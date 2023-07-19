@@ -1,7 +1,11 @@
 package model;
 
-import dto.UserFormRequestDto;
 import model.enums.Method;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static util.StringUtils.*;
 
 public class HttpRequest {
     private final RequestUri requestUri;
@@ -9,6 +13,19 @@ public class HttpRequest {
     private final Method method;
     private final HttpHeader httpHeader;
     private final String body;
+
+    public Map<String, String> getBodyMap() {
+        Map<String, String> map = new HashMap<>();
+        String[] splitByAmpersand = splitBy(body, AMPERSAND_MARK);
+        for(var values: splitByAmpersand) {
+            String[] splitParam = splitBy(values, EQUAL_MARK);
+            if(splitParam.length < 2) continue;
+
+            map.put(splitParam[0], splitParam[1]);
+        }
+
+        return map;
+    }
 
     public static class Builder {
         private RequestUri requestUri;
@@ -78,8 +95,4 @@ public class HttpRequest {
         return requestUri.getUri();
     }
 
-    //지워질 예정
-    public UserFormRequestDto paramsToDto() {
-        return this.requestUri.paramsToDto();
-    }
 }
