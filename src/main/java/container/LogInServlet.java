@@ -6,9 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static util.PathList.HOME_PATH;
 
 public class LogInServlet implements Servlet {
 
@@ -20,7 +23,14 @@ public class LogInServlet implements Servlet {
         User user = new User(query.get("userId"), query.get("password"), query.get("name"), query.get("email"));
         logger.debug("user = {}", user);
         Database.addUser(user);
+        String version = request.getVersion();
+        response.setVersion(version);
+        response.setStatusCode("302");
+        response.setStatusMessage("Found");
+        response.setHeader("Location", HOME_PATH.getPath());
+        DataOutputStream writer = response.getWriter();
+        writer.writeBytes(response.info());
+        writer.flush();
 
-        response.getWriter().writeBytes(response.getHeader());
     }
 }

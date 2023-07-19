@@ -12,7 +12,7 @@ public class PostParser implements Parser {
 
     private static final Logger logger = LoggerFactory.getLogger(PostParser.class);
 
-    private ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
 
     @Override
     public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException {
@@ -43,18 +43,18 @@ public class PostParser implements Parser {
         int postDataI = 0;
         while ((line = br.readLine()) != null && (line.length() != 0)) {
             logger.debug("HTTP-HEADER: " + line);
-            if (line.indexOf("Content-Length:") > -1) {
-                postDataI = new Integer(
+            if (line.contains("Content-Length")) {
+                postDataI = Integer.parseInt(
                         line.substring(
-                                line.indexOf("Content-Length:") + 16,
-                                line.length())).intValue();
+                                line.indexOf("Content-Length:") + 16));
             }
         }
         String postData = "";
         if (postDataI > 0) {
             char[] charArray = new char[postDataI];
-            br.read(charArray, 0, postDataI);
+            int readCount = br.read(charArray, 0, postDataI);
             postData = new String(charArray);
+            logger.debug("readCount = {}", readCount);
         }
 
         String[] tokens = postData.split("&");

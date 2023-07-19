@@ -7,7 +7,7 @@ import webserver.HTTPServletRequest;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DispatcherServlet {
-    private static ConcurrentHashMap<String, Servlet> map = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Servlet> map = new ConcurrentHashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
     private static final String LOGIN_PATH = "/user/create";
 

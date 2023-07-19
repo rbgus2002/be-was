@@ -2,21 +2,22 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Path;
 
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 
-import static util.Path.*;
-import static webserver.Mime.*;
+import static webserver.Mime.findByExtension;
 
 public class HTTPServletResponse {
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletResponse.class);
 
-    private String header;
+    private final Map<String, String> headers = new HashMap<>();
     private byte[] body;
+
+    private String version;
+    private String statusCode = "OK";
+    private String statusMessage = "200";
 
     private final DataOutputStream dos;
 
@@ -24,15 +25,49 @@ public class HTTPServletResponse {
         this.dos = dos;
     }
 
-    public String getHeader() {
-        return header;
-    }
 
     public byte[] getBody() {
         return body;
     }
 
+    public void setHeader(String key, String value) {
+        headers.put(key, value);
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+        headers.put("Content-Length", String.valueOf(body.length));
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setContentType(String extension) {
+        headers.put("Content-Type", findByExtension(extension).getMimeType());
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+
     public DataOutputStream getWriter(){
         return dos;
+    }
+    public String info(){
+        String line = "";
+        line += version + " " + statusCode + " " + statusMessage + "\r\n";
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            line += (header.getKey() + " : " + header.getValue() + "\r\n");
+        }
+        line += "\r\n";
+        if (body==null) {
+            return line;
+        }
+        return line += body.toString();
     }
 }

@@ -1,12 +1,12 @@
 package util;
 
-public enum Path {
+public enum PathList {
     STATIC_PATH("src/main/resources/static"), TEMPLATE_PATH("src/main/resources/templates"),
     HOME_PATH("http://localhost:8080/index.html");
 
     private final String path;
 
-    Path(String path) {
+    PathList(String path) {
         this.path = path;
     }
 
