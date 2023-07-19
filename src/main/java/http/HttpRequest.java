@@ -4,12 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpRequest {
+	private Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 	private HttpMethod method;
 	private String path;
+	private String endPoint;
 	private HttpVersion version;
 	private String body;
+	private Parameter parameter = new Parameter();
 
 	public boolean isGet() {
 		return method.equals(HttpMethod.GET);
@@ -63,7 +67,29 @@ public class HttpRequest {
 		String[] arguments = statusLine.split(" ");
 		method = HttpMethod.typeOf(arguments[0]);
 		path = arguments[1];
+		endPoint = path;
+		logger.debug("[Whole Path] : {}", path);
+		if (path.contains("?")) {
+			String[] pathSplit = path.split("\\?");
+			String parameterLine = pathSplit[1].substring(0, pathSplit[1].indexOf("."));
+			path = pathSplit[0];
+			endPoint = path.substring(path.lastIndexOf("/"));
+			logger.debug("[Clear Path] : {}", path);
+			logger.debug("[End Point] : {}", endPoint);
+			logger.debug("[Params] : {}", parameterLine);
+			parseParameter(parameterLine);
+		}
 		version = HttpVersion.versionOf(arguments[2]);
+	}
+
+	private void parseParameter(String path) {
+		for (String line : path.split("\\&")) {
+			if (line.contains("=")) {
+				logger.debug(line);
+				String[] values = line.split("=");
+				parameter.put(values[0], values[1]);
+			}
+		}
 	}
 
 	public HttpMethod getMethod() {
@@ -80,5 +106,9 @@ public class HttpRequest {
 
 	public String getBody() {
 		return body;
+	}
+
+	public String getEndpoint() {
+		return endPoint;
 	}
 }
