@@ -1,40 +1,41 @@
 package webserver.http;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.OutputStream;
-import java.nio.file.Files;
-
 public class HttpResponse {
 
-    private static final String templatesDirectoryPath = "src/main/resources/templates";
-    private final byte[] body;
-    private final DataOutputStream dos;
+    private String stateCode;
+    private String location;
 
-    private HttpResponse(OutputStream out, String url) throws Exception {
-        dos = new DataOutputStream(out);
-        body = Files.readAllBytes(new File(templatesDirectoryPath + url).toPath());
+    private HttpResponse() {
+
     }
 
-    public static HttpResponse createResponse(OutputStream out, String url) throws Exception {
-        return new HttpResponse(out, url);
+    public static HttpResponse createResponse() {
+        return new HttpResponse();
     }
 
-    public void send() throws Exception {
-        response200Header();
-        responseBody();
+    public void setStateCode(String stateCode) {
+        this.stateCode = stateCode;
     }
 
-    private void response200Header() throws Exception {
-        dos.writeBytes("HTTP/1.1 200 OK \r\n");
-        dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-        dos.writeBytes("Content-Length: " + body.length + "\r\n");
-        dos.writeBytes("\r\n");
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    private void responseBody() throws Exception {
-        dos.write(body, 0, body.length);
-        dos.flush();
+    public String getResponseHead(int bodyLength) {
+        StringBuilder stringBuilder = new StringBuilder();
 
+        if (stateCode.equals("302 Found ")) {
+            stringBuilder.append("HTTP/1.1 ").append(stateCode).append("\r\n");
+            stringBuilder.append("Location: ").append(location).append("\r\n");
+            stringBuilder.append("Content-Type: text/html;charset=utf-8\r\n");
+            stringBuilder.append("Content-Length: ").append(bodyLength).append("\r\n");
+            stringBuilder.append("\r\n");
+        } else {
+            stringBuilder.append("HTTP/1.1 ").append(stateCode).append("\r\n");
+            stringBuilder.append("Content-Type: text/html;charset=utf-8\r\n");
+            stringBuilder.append("Content-Length: ").append(bodyLength).append("\r\n");
+            stringBuilder.append("\r\n");
+        }
+        return stringBuilder.toString();
     }
 }
