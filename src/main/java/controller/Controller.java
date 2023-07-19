@@ -31,7 +31,7 @@ public class Controller {
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (Exception e) {
-            return loadTemplatesFromPath(HttpStatus.OK, "/error.html")
+            return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/error.html")
                     .setContentType(MIME.getMIME().get(HTML));
         }
 
