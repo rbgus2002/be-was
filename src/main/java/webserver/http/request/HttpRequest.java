@@ -1,4 +1,4 @@
-package webserver;
+package webserver.http.request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,11 +10,12 @@ import java.util.StringTokenizer;
 
 import static utils.StringUtils.*;
 
-public class HttpHeader {
+public class HttpRequest {
     private final HttpRequestLine requestLine;
+    private final String HTML = "html";
     private final Map<String, String> header = new HashMap<>();
 
-    private HttpHeader(InputStream in) throws IOException {
+    private HttpRequest(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         String line = br.readLine();
         this.requestLine = HttpRequestLine.from(line);
@@ -29,8 +30,8 @@ public class HttpHeader {
         }
     }
 
-    public static HttpHeader from(InputStream in) throws IOException {
-        return new HttpHeader(in);
+    public static HttpRequest from(InputStream in) throws IOException {
+        return new HttpRequest(in);
     }
 
     private boolean isNullOrBlank(String line) {
@@ -51,7 +52,11 @@ public class HttpHeader {
         return requestLine.getMethod();
     }
 
-    public String getUri() {
-        return requestLine.getUri();
+    public String getPath() {
+        return requestLine.getUri().getPath();
+    }
+
+    public Map<String, String> getQuery(){
+        return requestLine.getUri().getQuery();
     }
 }

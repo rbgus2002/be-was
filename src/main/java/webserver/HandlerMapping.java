@@ -1,13 +1,29 @@
 package webserver;
 
-public class HandlerMapping {
-    /*
-    doDispatch(HttpRequest request)
-    실제 요청을 매핑시켜주는 메소드
-     */
+import annotation.GetMapping;
+import controller.Controller;
+import webserver.http.request.HttpRequest;
 
-    /*
-    getHandler(HttpRequest request?)
-    templates 디렉토리 안에서 파일 찾아주는 메소드
-     */
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+public class HandlerMapping {
+    public static Map<String, Method> GETMap = new HashMap<>();;
+
+    static{
+        Method[] methods = Controller.class.getMethods();
+        for (Method method : methods) {
+            if(method.isAnnotationPresent(GetMapping.class)){
+                GETMap.put(method.getAnnotation(GetMapping.class).value(), method);
+            }
+        }
+    }
+
+    private HandlerMapping() {
+    }
+
+    public static Method getHandler(HttpRequest request){
+        return GETMap.getOrDefault(request.getPath(), null);
+    }
 }
