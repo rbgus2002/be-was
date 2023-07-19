@@ -5,7 +5,7 @@ import model.User;
 import java.util.Map;
 
 import static db.Database.*;
-import static exception.Exception.ALREADY_EXIST_USER;
+import static exception.ExceptionName.ALREADY_EXIST_USER;
 
 public class UserService {
     private String USERID = "userId";
