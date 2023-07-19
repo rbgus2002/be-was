@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import static util.StringUtils.*;
 
@@ -18,7 +21,9 @@ public class Parser {
     private static final int URI_INDEX = 1;
     private static final int PROTOCOL_INDEX = 2;
 
-    public static HttpRequest getHttpRequest(BufferedReader br) throws IOException {
+    public static HttpRequest getHttpRequest(InputStream in) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+
         String requestLine = br.readLine();
 
         logger.debug("request line {}", requestLine);
@@ -39,7 +44,6 @@ public class Parser {
         header = HttpHeader.of(splitMessage);
 
         String body = getBody(br, header.getContentLength());
-
 
         return new HttpRequest.Builder()
                 .requestUri(requestUri)
