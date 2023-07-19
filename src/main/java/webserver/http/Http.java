@@ -2,8 +2,8 @@ package webserver.http;
 
 import java.util.Arrays;
 import webserver.http.response.process.ContentProcessStrategy;
-import webserver.http.response.process.CssProcessStrategy;
 import webserver.http.response.process.HtmlProcessStrategy;
+import webserver.http.response.process.StaticContentProcessStrategy;
 
 public class Http {
     public static final String CRLF = "\r\n";
@@ -103,18 +103,18 @@ public class Http {
     public enum MIME {
         HTM(".htm", "text/html", new HtmlProcessStrategy()),
         HTML(".html", "text/html", new HtmlProcessStrategy()),
-        CSS(".css", "text/css", new CssProcessStrategy()),
-        JS(".js", "text/javascript", new HtmlProcessStrategy()),
-        ICO(".ico", "image/x-icon", new HtmlProcessStrategy()),
-        PNG(".png", "image/png", new HtmlProcessStrategy()),
+        CSS(".css", "text/css", new StaticContentProcessStrategy()),
+        JS(".js", "text/javascript", new StaticContentProcessStrategy()),
+        ICO(".ico", "image/x-icon", new StaticContentProcessStrategy()),
+        PNG(".png", "image/png", new StaticContentProcessStrategy()),
         JSON(".json", "application/json", new HtmlProcessStrategy()),
-        JPG(".jpg", "image/jpeg", new HtmlProcessStrategy()),
-        JPEG(".jpeg", "image/jpg", new HtmlProcessStrategy()),
-        EOT(".eot", "application/vnd.ms-fontobject", new HtmlProcessStrategy()),
-        SVG(".svg", "image/svg+xml", new HtmlProcessStrategy()),
-        TTF(".ttf", "application/x-font-ttf", new HtmlProcessStrategy()),
-        WOFF(".woff", "application/x-font-woff", new HtmlProcessStrategy()),
-        WOFF2(".woff2", "application/font-woff2", new HtmlProcessStrategy()),
+        JPG(".jpg", "image/jpeg", new StaticContentProcessStrategy()),
+        JPEG(".jpeg", "image/jpg", new StaticContentProcessStrategy()),
+        EOT(".eot", "application/vnd.ms-fontobject", new StaticContentProcessStrategy()),
+        SVG(".svg", "image/svg+xml", new StaticContentProcessStrategy()),
+        TTF(".ttf", "application/x-font-ttf", new StaticContentProcessStrategy()),
+        WOFF(".woff", "application/x-font-woff", new StaticContentProcessStrategy()),
+        WOFF2(".woff2", "application/font-woff2", new StaticContentProcessStrategy()),
         NONE("", "", new HtmlProcessStrategy());
 
         private final String extension;

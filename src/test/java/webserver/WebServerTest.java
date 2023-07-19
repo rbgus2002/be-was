@@ -20,7 +20,7 @@ class WebServerTest {
         RestAssured.given().log().all()
                 .when()
                 .contentType(ContentType.HTML)
-                .get("index.html")
+                .get("/index.html")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
@@ -33,10 +33,23 @@ class WebServerTest {
         RestAssured.given().log().all()
                 .when()
                 .contentType("text/css")
-                .get("styles.css")
+                .get("/css/styles.css")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
                 .contentType("text/css");
+    }
+
+    @DisplayName("http://localhost:8080/80-text.png 를 요청했을때 src/main/resources/static/images 디렉토리의 80-text.png 파일을 읽어 클라이언트에 응답한다.")
+    @Test
+    void requestImage() {
+        RestAssured.given().log().all()
+                .when()
+                .contentType("image/png")
+                .get("/images/80-text.png")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType("image/png");
     }
 }
