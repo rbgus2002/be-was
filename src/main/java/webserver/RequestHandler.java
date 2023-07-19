@@ -28,9 +28,11 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
+            
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             Servlet servlet = DispatcherServlet.findServlet(request);
             HTTPServletResponse response = new HTTPServletResponse(dos);
+            
             logger.debug("servlet = {}", servlet);
             servlet.service(request, response);
         } catch (IOException e) {

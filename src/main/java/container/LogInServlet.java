@@ -9,7 +9,7 @@ import webserver.HTTPServletResponse;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import static util.PathList.HOME_PATH;
 
@@ -19,7 +19,7 @@ public class LogInServlet implements Servlet {
 
     @Override
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
-        ConcurrentHashMap<String, String> query = request.getQuery();
+        Map<String, String> query = request.getQuery();
         User user = new User(query.get("userId"), query.get("password"), query.get("name"), query.get("email"));
         logger.debug("user = {}", user);
         Database.addUser(user);
@@ -28,9 +28,9 @@ public class LogInServlet implements Servlet {
         response.setStatusCode("302");
         response.setStatusMessage("Found");
         response.setHeader("Location", HOME_PATH.getPath());
+        
         DataOutputStream writer = response.getWriter();
         writer.writeBytes(response.info());
         writer.flush();
-
     }
 }

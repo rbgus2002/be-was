@@ -31,10 +31,12 @@ public class BaseServlet implements Servlet {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
         logger.debug("path = {}", file.toPath());
+        
         response.setVersion(version);
         response.setContentType(extension);
         response.setBody(body);
         DataOutputStream writer = response.getWriter();
+        
         logger.debug("info = {}", response.info());
         writer.writeBytes(response.info());
         writer.write(body, 0, body.length);

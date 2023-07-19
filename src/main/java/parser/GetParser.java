@@ -3,11 +3,12 @@ package parser;
 import webserver.HTTPServletRequest;
 
 import java.io.BufferedReader;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GetParser implements Parser {
 
-    private final ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
+    private final Map<String, String> query = new ConcurrentHashMap<>();
 
     @Override
     public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) {
