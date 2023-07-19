@@ -6,6 +6,7 @@ import java.util.Map;
 public class URL {
 	private String path;
 	private Map<String, String> queryMap;
+
 	private URL() {
 	}
 
@@ -13,7 +14,9 @@ public class URL {
 		URL url = new URL();
 		String[] tokens = urlString.split("\\?");
 		url.path = tokens[0];
-		url.queryMap = parseQueryString(tokens[1]);
+		if (tokens.length >= 2) {
+			url.queryMap = parseQueryString(tokens[1]);
+		}
 		return url;
 	}
 
