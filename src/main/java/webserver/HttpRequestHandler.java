@@ -3,6 +3,7 @@ package webserver;
 import webserver.handlers.Handler;
 import webserver.handlers.IndexHandler;
 import webserver.handlers.NotFoundHandler;
+import webserver.handlers.UserFormHandler;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
@@ -16,6 +17,7 @@ public class HttpRequestHandler {
 
     {
         routeTables.put(new RouteKey(HttpMethod.GET, "/index.html"), new IndexHandler());
+        routeTables.put(new RouteKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
     }
 
     public HttpResponse handle(HttpRequest httpRequest) {
