@@ -11,15 +11,11 @@ public class HttpStatusLine {
         this.statusText = statusText;
     }
 
-    public String getVersion() {
-        return version;
+    public static HttpStatusLine createStaticStatusLine() {
+        return new HttpStatusLine("HTTP/1.1", 200, "OK");
     }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public String getStatusText() {
-        return statusText;
+    public static HttpStatusLine createRedirectStatusLine() {
+        return new HttpStatusLine("HTTP/1.1", 302, "FOUND");
     }
 }
