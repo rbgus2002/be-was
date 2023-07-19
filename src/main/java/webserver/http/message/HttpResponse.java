@@ -41,6 +41,14 @@ public class HttpResponse {
         return new HttpResponse(HttpVersion.V1_1, HttpStatus.NOT_FOUND, headers, notFoundHtml);
     }
 
+    public static HttpResponse badRequest() {
+        byte[] notFoundHtml = "<html><body>badRequest</body><html>".getBytes(StandardCharsets.UTF_8);
+        Map<String, List<String>> headers = new HashMap<>();
+        headers.put("Content-Type", List.of("text/html;charset=utf-8"));
+        headers.put("Content-Length", List.of(String.valueOf(notFoundHtml.length)));
+        return new HttpResponse(HttpVersion.V1_1, HttpStatus.BAD_REQUEST, headers, notFoundHtml);
+    }
+
     public boolean hasBody() {
         return body != null;
     }

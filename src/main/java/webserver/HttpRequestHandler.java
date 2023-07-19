@@ -27,7 +27,12 @@ public class HttpRequestHandler {
         Handler handler = routeTables.getOrDefault(
                 new RouteKey(httpRequest.getMethod(), httpRequest.getURL().getPath()),
                 new NotFoundHandler());
-        return handler.handle(httpRequest);
+        try {
+            return handler.handle(httpRequest);
+        } catch (RuntimeException e) {
+            logger.warn(e.getMessage());
+            return HttpResponse.badRequest();
+        }
     }
 
     private static class RouteKey {
