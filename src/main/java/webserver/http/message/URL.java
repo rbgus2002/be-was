@@ -1,6 +1,9 @@
 package webserver.http.message;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class URL {
     private final String path;
@@ -47,7 +50,10 @@ public class URL {
 
     private static void add(Map<String, List<String>> queryParams, String key, String[] valuesStrings) {
         List<String> values = queryParams.getOrDefault(key, new ArrayList<>());
-        values.addAll(Arrays.asList(valuesStrings));
+        List<String> decodedValues = Arrays.stream(valuesStrings)
+                .map(value -> URLDecoder.decode(value, StandardCharsets.UTF_8))
+                .collect(Collectors.toList());
+        values.addAll(decodedValues);
         queryParams.put(key, values);
     }
 }

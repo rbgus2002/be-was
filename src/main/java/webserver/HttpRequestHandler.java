@@ -1,8 +1,10 @@
 package webserver;
 
-import webserver.handlers.Handler;
-import webserver.handlers.IndexHandler;
-import webserver.handlers.NotFoundHandler;
+import config.UserConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import service.UserService;
+import webserver.handlers.*;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
@@ -12,17 +14,25 @@ import java.util.Map;
 import java.util.Objects;
 
 public class HttpRequestHandler {
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
     private final Map<RouteKey, Handler> routeTables = new HashMap<>();
 
     {
         routeTables.put(new RouteKey(HttpMethod.GET, "/index.html"), new IndexHandler());
+        routeTables.put(new RouteKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
+        routeTables.put(new RouteKey(HttpMethod.GET, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
     }
 
     public HttpResponse handle(HttpRequest httpRequest) {
         Handler handler = routeTables.getOrDefault(
                 new RouteKey(httpRequest.getMethod(), httpRequest.getURL().getPath()),
                 new NotFoundHandler());
-        return handler.handle(httpRequest);
+        try {
+            return handler.handle(httpRequest);
+        } catch (RuntimeException e) {
+            logger.warn(e.getMessage());
+            return HttpResponse.badRequest();
+        }
     }
 
     private static class RouteKey {

@@ -4,7 +4,7 @@ import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.utils.FileUtils;
 
-public class IndexHandler implements Handler {
+public class UserFormHandler implements Handler{
     @Override
     public HttpResponse handle(HttpRequest request) {
         String path = request.getURL().getPath();
