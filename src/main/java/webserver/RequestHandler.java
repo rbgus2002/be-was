@@ -18,16 +18,20 @@ import org.slf4j.LoggerFactory;
 
 import static model.User.*;
 
+import service.FileService;
+import service.UserService;
 import webserver.model.Request;
 import webserver.model.Request.Method;
 import webserver.model.Response;
 import webserver.model.Response.STATUS;
 import webserver.model.Response.MIME;
+import static webserver.model.Response.HEADER_CONTENT_TYPE;
+import static webserver.model.Response.HEADER_CHARSET;
+import static webserver.model.Response.HEADER_CONTENT_LENGTH;
+import static webserver.model.Response.HEADER_HTTP_VERSION;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static final String STATIC_FILEPATH = "./src/main/resources/static";
-    private static final String TEMPLATE_FILEPATH = "./src/main/resources/templates";
 
     private final Socket connection;
 
@@ -61,7 +65,7 @@ public class RequestHandler implements Runnable {
          */
         String[] tokens = readSingleHTTPLine(br).split(" ");
 
-        Method method = Method.valueOf(tokens[0]);
+        Method method = Method.getMethodByName(tokens[0]);
         String targetUri = tokens[1];
         String version = tokens[2].split("/")[1];
 
@@ -121,46 +125,25 @@ public class RequestHandler implements Runnable {
         String extension = tokens[tokens.length-1];
         MIME mime = MIME.getMimeByExtension(extension);
         if (mime != null) {
-            byte[] body = loadStaticFile(targetUri);
+            byte[] body = FileService.loadStaticFile(targetUri);
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", mime.getMime() + ";charset=utf-8");
-            headerMap.put("Content-Length", String.valueOf(body.length));
+            headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
+            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
 
-            return new Response(STATUS.OK, "1.1", headerMap, body);
+            return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
         }
         if(targetUri.startsWith("/user/create")) {
-            userSignUp(request.getQueryParameterMap());
+            UserService.userSignUp(request.getQueryParameterMap());
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put("Content-Type", MIME.HTML.getMime() + ";charset=utf-8");
-            headerMap.put("Content-Length", String.valueOf(0));
+            headerMap.put(HEADER_CONTENT_TYPE, MIME.HTML.getMime() + HEADER_CHARSET);
+            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(0));
 
-            return new Response(STATUS.CREATED,"1.1", headerMap, null);
+            return new Response(STATUS.CREATED, HEADER_HTTP_VERSION, headerMap, null);
         }
 
         return null;
-    }
-
-    public byte[] loadStaticFile(String route) throws IOException {
-        // 요청 경로의 파일을 반환
-        File f;
-        byte[] body;
-        // 두 가지의 경로 모두를 조회해야 합니다.
-        if (!(f = new File(STATIC_FILEPATH + route)).exists()) {
-            f = new File(TEMPLATE_FILEPATH + route);
-        }
-        body = Files.readAllBytes(f.toPath());
-        return body;
-    }
-    public void userSignUp(Map<String, String> queryParameterMap) throws NullPointerException {
-        // User 객체 생성
-        User user = new User(queryParameterMap.get(USERID),
-                queryParameterMap.get(PASSWORD),
-                queryParameterMap.get(NAME),
-                queryParameterMap.get(EMAIL));
-        // DB 저장
-        Database.addUser(user);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {
@@ -184,25 +167,5 @@ public class RequestHandler implements Runnable {
             dos.write(body, 0, body.length);
         }
         dos.flush();
-    }
-
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
     }
 }

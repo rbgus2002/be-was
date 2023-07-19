@@ -8,7 +8,7 @@ public class Request {
     public enum Method {
         GET, POST, PUT, DELETE;
 
-        public Method getMethodByName(String name) {
+        public static Method getMethodByName(String name) {
             return Arrays.stream(Method.values())
                     .filter(method -> name.equalsIgnoreCase(method.toString()))
                     .collect(Collectors.toList())

@@ -53,6 +53,11 @@ public class Response {
         }
     }
 
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_CHARSET = ";charset=utf-8";
+    public static final String HEADER_CONTENT_LENGTH = "Content-Length";
+    public static final String HEADER_HTTP_VERSION = "1.1";
+
     private final STATUS status;
     private final String version;
     private final Map<String, String> headerMap;
