@@ -1,5 +1,7 @@
 package webserver.request;
 
+import static webserver.utils.HttpContentType.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +48,7 @@ public class HttpWasRequest {
 		}
 		final String bodyData = getBodyData(bufferedReader);
 		final String contentType = map.get(HttpHeader.CONTENT_TYPE.getType());
-		if (StringUtils.contains(contentType, "x-www-form-urlencoded")) {
+		if (StringUtils.contains(contentType, X_WWW_FORM_URLENCODED)) {
 			saveRequestParam(bodyData);
 		}
 		map.put("body", bodyData);
