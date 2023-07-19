@@ -2,17 +2,15 @@ package webserver;
 
 public enum ContentType {
 
-    HTML("text", "html");
+    HTML("text/html;charset=utf-8");
 
-    private final String type;
-    private final String subType;
+    private final String description;
 
-    ContentType(String type, String subType) {
-        this.type = type;
-        this.subType = subType;
+    ContentType(String description) {
+        this.description = description;
     }
 
     public String getDescription() {
-        return type + "/" + subType;
+        return this.description;
     }
 }
