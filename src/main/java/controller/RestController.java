@@ -11,6 +11,7 @@ import service.FileService;
 import service.UserService;
 
 import java.io.FileNotFoundException;
+import java.util.Map;
 
 import static constant.Uri.INDEX_HTML_URI;
 import static constant.Uri.USER_CREATE_URI;
@@ -33,7 +34,7 @@ public class RestController {
             response = sendNotRestfulResponse(httpRequest);
         }
 
-        if (httpRequest.match(Method.GET, USER_CREATE_URI)) {
+        if (httpRequest.match(Method.POST, USER_CREATE_URI)) {
             response = addUserByForm(httpRequest);
         }
         return response;
@@ -45,8 +46,8 @@ public class RestController {
 
     private HttpResponse addUserByForm(HttpRequest request) {
         try {
-            UserFormRequestDto userFormRequestDto = request.paramsToDto();
-            userService.createByForm(userFormRequestDto);
+            Map<String, String> bodyMap = request.getBodyMap();
+            userService.createByForm(new UserFormRequestDto(bodyMap));
             return responseMapper
                     .createRedirectResponse(request, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
         } catch (Exception e) {

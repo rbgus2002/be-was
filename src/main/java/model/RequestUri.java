@@ -64,11 +64,6 @@ public class RequestUri {
         return this.uri;
     }
 
-    // 지워질 예정
-    public UserFormRequestDto paramsToDto() {
-        return new UserFormRequestDto(this.params);
-    }
-
     @Override
     public String toString() {
         String s = "path uri = " + uri + "\n";

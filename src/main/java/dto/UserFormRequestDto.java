@@ -18,7 +18,7 @@ public class UserFormRequestDto {
     }
 
     // 나중에 지워짐
-    public UserFormRequestDto(Map<String, Object> params) {
+    public UserFormRequestDto(Map<String, String> params) {
         for (var entry : params.entrySet()) {
             var key = entry.getKey();
             var val = (String) entry.getValue();

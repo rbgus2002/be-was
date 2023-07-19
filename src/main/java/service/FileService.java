@@ -28,10 +28,10 @@ public class FileService {
     }
 
     private String getFileIn(String relativePath) throws FileNotFoundException {
-        String result = "";
         File targetFile = new File(relativePath);
         Scanner fileScanner = new Scanner(targetFile);
-        result = fileScanner.useDelimiter("\\Z").next();
+
+        String result = fileScanner.useDelimiter("\\Z").next();
         fileScanner.close();
         return result;
     }
