@@ -23,7 +23,7 @@ public class FileIOUtils {
                         .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
             }
             return new HttpResponse.ResponseBuilder()
-                    .setStatus(httpStatus)
+                    .setStatus(HttpStatus.NOT_FOUND)
                     .setLocation("/wrong_access.html")
                     .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
         } catch (IOException e) {
@@ -41,7 +41,7 @@ public class FileIOUtils {
                         .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
             }
             return new HttpResponse.ResponseBuilder()
-                    .setStatus(httpStatus)
+                    .setStatus(HttpStatus.NOT_FOUND)
                     .setLocation("/wrong_access.html")
                     .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
         } catch (IOException e) {
