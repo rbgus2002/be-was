@@ -7,6 +7,8 @@ public enum HttpStatus {
     FORBIDDEN(403, "HTTP/1.1 403 Forbidden"),
     INTERNAL_SERVER_ERROR(500, "HTTP/1.1 500 Internal Server Error"),
     BAD_GATEWAY(502, "HTTP/1.1 502 Bad Gateway"),
+    BAD_REQUEST(400, "HTTP/1.1 400 Bad Request"),
+    CONFLICT(409, "HTTP/1.1 409 Conflict"),
     SERVICE_UNAVAILABLE(503, "HTTP/1.1 503 Service Unavailable");
 
     private int statusCode;

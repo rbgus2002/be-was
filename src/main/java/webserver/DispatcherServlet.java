@@ -2,7 +2,9 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.controller.UserSaveController;
 import webserver.http.HttpConstant;
+import webserver.http.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.FileUtils;
@@ -23,13 +25,18 @@ public class DispatcherServlet implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
-             OutputStream out = connection.getOutputStream()) {
+        try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream()); OutputStream out = connection.getOutputStream()) {
             logRequestMessageAndResetStream(in);
+
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            FileUtils.processFileResponse(httpRequest.getURI(), httpResponse);
+            if (httpRequest.get(HttpConstant.METHOD).equals(HttpMethod.GET.toString()) && httpRequest.getPath().equals("/user/create")) {
+                UserSaveController userSaveController = new UserSaveController();
+                userSaveController.process(httpRequest, httpResponse);
+            } else {
+                FileUtils.processFileResponse(httpRequest.getURI(), httpResponse);
+            }
 
             sendResponse(httpResponse, out);
         } catch (IOException e) {
@@ -51,7 +58,7 @@ public class DispatcherServlet implements Runnable {
 
         in.reset();
 
-        logger.debug("{}", stringBuilder.toString());
+        logger.debug("{}", stringBuilder);
     }
 
     private void sendResponse(HttpResponse httpResponse, OutputStream out) throws IOException {

@@ -52,6 +52,10 @@ public class HttpResponse {
         return stringBuilder.toString();
     }
 
+    public HttpStatus getStatus() {
+        return status;
+    }
+
     public byte[] getHeaderBytes() {
         return getHeaderMessage().getBytes();
     }
