@@ -3,6 +3,7 @@ package webserver.server;
 import com.google.common.collect.ImmutableMap;
 import controller.Controller;
 import controller.HomeController;
+import controller.LoginController;
 import controller.SignupController;
 
 
@@ -15,6 +16,7 @@ public class RequestMapper {
                 .put("/", new HomeController())
                 .put("/index.html", new HomeController())
                 .put("/user/create", new SignupController())
+                .put("/user/login", new LoginController())
                 .build();
     }
 
