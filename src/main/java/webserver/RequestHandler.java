@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class RequestHandler extends HttpHandler implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final int CONTENT_LENGTH = 65535;
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -27,7 +28,7 @@ public class RequestHandler extends HttpHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
 
             // 요청 해석
-            HttpRequest request = buildRequestHeader(in);
+            HttpRequest request = buildHttpRequest(in);
             logger.debug("Request Line & Headers: \n{}", request.toString());
 
             // 요청 수립
@@ -48,7 +49,7 @@ public class RequestHandler extends HttpHandler implements Runnable {
         }
     }
 
-    private static HttpRequest buildRequestHeader(InputStream in) throws IOException {
+    private static HttpRequest buildHttpRequest(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
         HttpRequest.RequestHeaderBuilder requestHeaderBuilder = new HttpRequest.RequestHeaderBuilder();
@@ -58,6 +59,17 @@ public class RequestHandler extends HttpHandler implements Runnable {
         String header;
         while (!"".equals((header = br.readLine()))) {
             requestHeaderBuilder.header(header);
+        }
+
+        // body 읽기
+        if (br.ready()) {
+            char[] buffer = new char[CONTENT_LENGTH];
+            int read = br.read(buffer, 0, CONTENT_LENGTH);
+            if (read != -1) {
+                requestHeaderBuilder.body(new String(buffer, 0, read));
+            } else {
+                // TODO: body를 받을 수 있는 버퍼 초과
+            }
         }
         return requestHeaderBuilder.build();
     }

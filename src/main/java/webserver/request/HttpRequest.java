@@ -16,10 +16,12 @@ public class HttpRequest {
     private final Query query = new Query();
     private final Header header = new Header();
     private final String version;
+    private final String body;
 
     public static class RequestHeaderBuilder {
         private String requestLine;
         private final List<String> headers = new ArrayList<>();
+        private String body;
 
         public RequestHeaderBuilder requestLine(String requestLine) {
             this.requestLine = requestLine;
@@ -31,13 +33,18 @@ public class HttpRequest {
             return this;
         }
 
+        public RequestHeaderBuilder body(String body) {
+            this.body = body;
+            return this;
+        }
+
         public HttpRequest build() {
-            return new HttpRequest(requestLine, headers);
+            return new HttpRequest(requestLine, headers, body);
         }
 
     }
 
-    private HttpRequest(String requestLine, List<String> headers) {
+    private HttpRequest(String requestLine, List<String> headers, String body) {
         // 메소드 분리
         String[] tokens = requestLine.split(" ");
         this.method = HttpMethod.valueOf(tokens[0]);
@@ -63,6 +70,9 @@ public class HttpRequest {
                     this.header.appendHeader(split[0], split[1].trim());
                 }
         );
+
+        // body
+        this.body = body;
 
     }
 
@@ -93,6 +103,7 @@ public class HttpRequest {
                 .append(version)
                 .append(NEW_LINE)
                 .append(header.buildHeader())
+                .append(body)
                 .toString();
     }
 
