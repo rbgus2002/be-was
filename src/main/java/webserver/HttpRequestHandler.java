@@ -12,13 +12,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static db.Database.addUser;
+import static utils.ExceptionUtils.getErrorMessage;
 
 public class HttpRequestHandler {
     private final static Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
     private static final Map<String, Function<HttpRequest, HttpResponse>> requestHandlers = new HashMap<>() {{
-        put("/user/create", request -> {
-            return handleUserCreateRequest(request);
-        });
+        put("/user/create", HttpRequestHandler::handleUserCreateRequest);
     }};
 
     public static HttpResponse handleRequest(HttpRequest request) throws IOException {
@@ -43,10 +42,7 @@ public class HttpRequestHandler {
         try {
             body = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
-            return builder.version(request.version())
-                    .statusCode(404)
-                    .body("요청하신 파일을 찾을 수 없습니다.".getBytes())
-                    .build();
+            return createErrorResponse(request, 404);
         }
 
         builder.version(request.version())
@@ -63,10 +59,7 @@ public class HttpRequestHandler {
 
         // TODO: verifyUser 로직 구현
         if (parameters.values().size() != 4) {
-            return builder.version(request.version())
-                    .statusCode(400)
-                    .body("잘못된 입력입니다.".getBytes())
-                    .build();
+            return createErrorResponse(request, 400);
         }
 
 
@@ -82,17 +75,25 @@ public class HttpRequestHandler {
         return builder.build();
     }
 
+    private static HttpResponse createErrorResponse(HttpRequest request, int statusCode) {
+        HttpResponse.Builder builder = HttpResponse.newBuilder();
+        return builder.version(request.version())
+                .statusCode(statusCode)
+                .body(getErrorMessage(statusCode).getBytes())
+                .build();
+    }
+
     private static Map<String, String> parseUri(String uri) {
         Map<String, String> result = new HashMap<>();
-        if (uri.indexOf("?") < 0 || uri.indexOf("?") == uri.length()-1) {
+        if (!uri.contains("?") || uri.indexOf("?") == uri.length()-1) {
             return result;
         }
         String paramString = uri.substring(uri.indexOf("?") + 1);
 
         String[] parameters = paramString.split("&");
-//        if(parameters.length < 4) {
-//            return result;
-//        }
+        if(parameters.length < 4) {
+            return result;
+        }
         for (String parameter : parameters) {
             int splitIndex = parameter.indexOf("=");
             if (splitIndex < 0 || splitIndex == parameter.length() - 1) break;

@@ -39,8 +39,9 @@ public class RequestHandler implements Runnable {
         try {
             // TODO: \r\n appendNewLine으로 바꾸기?
             dos.writeBytes(String.format("%s %d %s \r\n", response.version(), response.statusCode(), response.statusText()));
-            logger.debug("{} {} {} \r\n", response.version(), response.statusCode(), response.statusText());
+            logger.debug("{} {} {}", response.version(), response.statusCode(), response.statusText());
             dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", response.contentType()));
+            logger.debug("Content-Type: {} ", response.contentType());
             dos.writeBytes("Content-Length: " + response.body().length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
