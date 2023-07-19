@@ -17,6 +17,8 @@ public class ContentTypeResolver {
         MIME_TYPE.put("woff", "application/font-woff");
         MIME_TYPE.put("woff2", "font/woff2");
         MIME_TYPE.put("ico", "image/x-icon");
+        MIME_TYPE.put("jpg", "image/jpeg");
+        MIME_TYPE.put("jpeg", "image/jpeg");
     }
 
     public static String getContentType(String URI) {
