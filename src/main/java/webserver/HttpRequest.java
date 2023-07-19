@@ -11,6 +11,12 @@ public class HttpRequest {
     private final String requestPath;
     private final String version;
 
+    public HttpRequest(String method, String requestPath, String version) {
+        this.method = method;
+        this.requestPath = requestPath;
+        this.version = version;
+    }
+
     public HttpRequest(InputStream in) throws IOException {
         String firstLine = HttpRequestUtils.getFirstLine(in);
         this.method = HttpRequestUtils.getMethod(firstLine);
