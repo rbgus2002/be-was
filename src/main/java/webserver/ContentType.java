@@ -12,7 +12,7 @@ public enum ContentType {
         this.subType = subType;
     }
 
-    public String getMessage() {
+    public String getDescription() {
         return type + "/" + subType;
     }
 }
