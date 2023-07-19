@@ -14,12 +14,14 @@ public class HttpResponse {
     private String version = "HTTP/1.1";
     private HttpStatus httpStatus;
     private String contentType;
+    private String location;
     private byte[] body;
 
     public static class ResponseBuilder {
         private String version = "HTTP/1.1";
         private HttpStatus httpStatus = HttpStatus.OK;
         private String contentType = MIME.getMIME().get(HTML);
+        private String location = "/index.html";
         private byte[] body;
 
         public ResponseBuilder() {
@@ -32,6 +34,11 @@ public class HttpResponse {
 
         public ResponseBuilder setContentType(String contentType) {
             this.contentType = contentType;
+            return this;
+        }
+
+        public ResponseBuilder setLocation(String location) {
+            this.location = location;
             return this;
         }
 
@@ -48,6 +55,7 @@ public class HttpResponse {
     public HttpResponse(ResponseBuilder builder) {
         this.httpStatus = builder.httpStatus;
         this.contentType = builder.contentType;
+        this.location = builder.location;
         this.body = builder.body;
     }
 
@@ -62,9 +70,11 @@ public class HttpResponse {
             String statusLine = version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage();
             String contentTypeLine = "Content-Type: " + contentType + ";charset=utf-8";
             String contentLengthLine = "Content-Length: " + body.length;
+            String locationLine = "Location: " + location;
             dos.writeBytes(appendNewLine(statusLine));
             dos.writeBytes(appendNewLine(contentTypeLine));
             dos.writeBytes(appendNewLine(contentLengthLine));
+            dos.writeBytes(appendNewLine(locationLine));
             dos.writeBytes(appendNewLine(""));
             logger.debug("{} {} {} \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
             logger.debug("Content-Type: {};charset=utf-8\n", contentType);

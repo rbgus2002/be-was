@@ -3,7 +3,6 @@ package controller;
 import http.*;
 import service.UserService;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class Controller {
 
     }
 
-    public HttpResponse.ResponseBuilder routeByUri(String uri) throws IOException {
+    public HttpResponse.ResponseBuilder routeByUri(String uri) {
         String[] apis = uri.split("\\?");
         if (apis[0].equals("/user/create")) {
             return createUser(parseParams(apis[1]));
@@ -55,9 +54,9 @@ public class Controller {
         return information;
     }
 
-    public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) throws IOException {
+    public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.OK, "/user/signup_success.html");
+        return loadTemplatesFromPath(HttpStatus.FOUND, "/index.html");
     }
 
 }

@@ -19,10 +19,12 @@ public class FileIOUtils {
             if (Files.exists(path)) {
                 return new HttpResponse.ResponseBuilder()
                         .setStatus(httpStatus)
+                        .setLocation(uri)
                         .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
             }
             return new HttpResponse.ResponseBuilder()
                     .setStatus(httpStatus)
+                    .setLocation("/wrong_access.html")
                     .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -35,10 +37,12 @@ public class FileIOUtils {
             if (Files.exists(path)) {
                 return new HttpResponse.ResponseBuilder()
                         .setStatus(httpStatus)
+                        .setLocation(uri)
                         .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
             }
             return new HttpResponse.ResponseBuilder()
                     .setStatus(httpStatus)
+                    .setLocation("/wrong_access.html")
                     .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
