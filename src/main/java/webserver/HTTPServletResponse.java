@@ -65,9 +65,6 @@ public class HTTPServletResponse {
             line += (header.getKey() + " : " + header.getValue() + "\r\n");
         }
         line += "\r\n";
-        if (body==null) {
-            return line;
-        }
-        return line += body.toString();
+        return line;
     }
 }

@@ -6,15 +6,14 @@ import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static util.PathList.STATIC_PATH;
 import static util.PathList.TEMPLATE_PATH;
 
-public class PrimaryServlet implements Servlet {
+public class BaseServlet implements Servlet {
 
     private static final Logger logger = LoggerFactory.getLogger(Servlet.class);
 
@@ -23,20 +22,22 @@ public class PrimaryServlet implements Servlet {
         String url = request.getUrl();
         String version = request.getVersion();
         String extension = url.substring(url.lastIndexOf("."));
-        Path path;
+        File file;
         byte[] body;
-        if ((path = Paths.get(STATIC_PATH + url)).isAbsolute() || (path = Paths.get(TEMPLATE_PATH + url)).isAbsolute()) {
-            body = Files.readAllBytes(path);
+        logger.debug("boolean = {}", new File(TEMPLATE_PATH.getPath() + url).exists());
+        if ((file = new File(STATIC_PATH.getPath() + url)).exists() || (file = new File(TEMPLATE_PATH.getPath()+ url)).exists()) {
+            body = Files.readAllBytes(file.toPath());
         }else{
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
-        logger.debug("path = {}", path);
+        logger.debug("path = {}", file.toPath());
         response.setVersion(version);
         response.setContentType(extension);
         response.setBody(body);
         DataOutputStream writer = response.getWriter();
         logger.debug("info = {}", response.info());
         writer.writeBytes(response.info());
+        writer.write(body, 0, body.length);
         writer.flush();
     }
 

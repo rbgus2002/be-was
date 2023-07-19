@@ -20,7 +20,7 @@ public class DispatcherServlet {
             return map.get(request.getUrl());
         }
 
-        map.put(request.getUrl(), new PrimaryServlet());
+        map.put(request.getUrl(), new BaseServlet());
         return map.get(request.getUrl());
     }
 
