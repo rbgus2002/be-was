@@ -42,6 +42,14 @@ public class HttpRequestUtils {
         return url;
     }
 
+    public static String getVersion(String firstLine) {
+        String[] tokens = firstLine.split(" ");
+        String version = tokens[2];
+        logger.debug("request version: {}", version);
+
+        return version;
+    }
+
     public static boolean isValidPath(String path) {
         String[] splitPath = path.split("\\.");
         return splitPath[0].startsWith("/") && splitPath[1].equals("html");

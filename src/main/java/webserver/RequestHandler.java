@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 
 import controller.UserController;
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
@@ -27,6 +28,9 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             String firstLine = HttpRequestUtils.getFirstLine(in);
             String url = HttpRequestUtils.getUrl(firstLine);
+            String method = HttpRequestUtils.getMethod(firstLine);
+            String version = HttpRequestUtils.getVersion(firstLine);
+            HttpRequest httpRequest = new HttpRequest(url, method, version);
 
             if (url.startsWith("/user/create")) {
                 url = UserController.createUser(url);
