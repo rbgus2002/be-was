@@ -12,11 +12,6 @@ public class UserFactory {
 	private static final String EMAIL = "email";
 
 	public static User createUser(Map<String, String> map) {
-		return User.builder()
-			.userId(map.get(USER_ID))
-			.password(map.get(PASSWORD))
-			.name(map.get(NAME))
-			.email(map.get(EMAIL))
-			.build();
+		return new User(map.get(USER_ID), map.get(PASSWORD), map.get(NAME), map.get(EMAIL));
 	}
 }
