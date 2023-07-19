@@ -5,14 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
-import support.annotation.PathVariable;
+import support.annotation.RequestParam;
 import support.exception.BadRequestException;
 import support.exception.MethodNotAllowedException;
 import support.exception.NotSupportedException;
 import support.exception.ServerErrorException;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
-import webserver.request.Query;
+import webserver.request.KeyValue;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -61,7 +61,7 @@ public abstract class ControllerResolver {
         controllers.forEach((s, controllerMethods) -> {
             if (url.startsWith(s)) {
                 ControllerMethodStruct methodStruct = controllerMethods.find(url.substring(s.length()));
-                if(methodStruct != null){
+                if (methodStruct != null) {
                     hasMethod.set(true);
                     if (methodStruct.getHttpMethod() == request.getRequestMethod()) {
                         hasMethod.set(true);
@@ -89,17 +89,19 @@ public abstract class ControllerResolver {
     }
 
     /**
-     * 컨트롤러 메소드에서 요구하는 적합한 쿼리 값을 찾는다.
+     * 컨트롤러 메소드에서 요구하는 적합한 쿼리 또는 파라미터 값을 찾는다.
+     *
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
     private static Object[] transformQuery(HttpRequest request, Method method) throws BadRequestException {
-        Query requestQuery = request.getRequestQuery();
+        KeyValue requestQuery = request.getRequestOrParameter()
+                .orElseThrow(() -> new BadRequestException(ExceptionName.WRONG_ARGUMENT));
         Parameter[] parameters = method.getParameters();
 
         Object[] args = Arrays.stream(parameters)
-                .filter(parameter -> parameter.isAnnotationPresent(PathVariable.class))
-                .map(parameter -> parameter.getAnnotation(PathVariable.class))
-                .map(PathVariable::value)
+                .filter(parameter -> parameter.isAnnotationPresent(RequestParam.class))
+                .map(parameter -> parameter.getAnnotation(RequestParam.class))
+                .map(RequestParam::value)
                 .map(requestQuery::getValue)
                 .toArray();
 

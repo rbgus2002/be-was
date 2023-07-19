@@ -58,15 +58,15 @@ public class HttpHandler {
         } catch (MethodNotAllowedException e) {
             response.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
             response.buildHeader(new NoHeader());
-            return false;
+            return true;
         } catch (BadRequestException e) {
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.buildHeader(new NoHeader());
-            return false;
+            return true;
         } catch (ServerErrorException e) {
             response.setStatus(HttpStatus.SERVER_ERROR);
             response.buildHeader(new NoHeader());
-            return false;
+            return true;
         }
     }
 

@@ -66,8 +66,12 @@ class RequestHandlerTest {
     }
 
     RequestHandler buildRequestHandler(String requestLine) {
+        return buildRequestHandler(requestLine, "");
+    }
+
+    RequestHandler buildRequestHandler(String requestLine, String body) {
         IoSocket socket = new IoSocket();
-        String request = appendNewLine(requestLine, "Host: localhost", "", "");
+        String request = appendNewLine(requestLine, "Host: localhost", "Content-Length: " + body.length(), "", body);
         InputStream inputStream = new ByteArrayInputStream(request.getBytes());
         socket.changeStream(inputStream, outputStream);
         return new RequestHandler(socket);
@@ -179,8 +183,8 @@ class RequestHandlerTest {
         @DisplayName("새로운 유저 등록 요청 처리 테스트")
         void registerUser() {
             //given
-            String request = method + " /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
-            RequestHandler requestHandler = buildRequestHandler(request);
+            String request = method + " /user/create HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi");
 
             //when
             requestHandler.run();
@@ -201,8 +205,8 @@ class RequestHandlerTest {
         @DisplayName("다른(누락) 쿼리 등록 요청 처리 테스트")
         void registerUserDiff() {
             //given
-            String request = method + " /user/create?userId=javajigi&pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
-            RequestHandler requestHandler = buildRequestHandler(request);
+            String request = method + " /user/create HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi");
 
             //when
             requestHandler.run();
@@ -218,8 +222,8 @@ class RequestHandlerTest {
         @DisplayName("다른 순서의 쿼리 등록 요청 처리 테스트")
         void registerDiffSequence() {
             //given
-            String request = method + " /user/create?password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi HTTP/1.1";
-            RequestHandler requestHandler = buildRequestHandler(request);
+            String request = method + " /user/create HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi");
 
             //when
             requestHandler.run();

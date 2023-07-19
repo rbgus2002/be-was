@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.request.HttpRequest;
-import webserver.request.Query;
+import webserver.request.KeyValue;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -64,7 +64,7 @@ class HttpRequestTest {
         HttpRequest httpRequest = buildRequestHeader(createRequestLine);
 
         //when
-        Query query = httpRequest.getRequestQuery();
+        KeyValue query = httpRequest.getRequestOrParameter().orElseThrow();
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();

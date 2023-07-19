@@ -5,6 +5,7 @@ import webserver.Header;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static utils.StringUtils.NEW_LINE;
 
@@ -45,7 +46,7 @@ public class HttpRequest {
         // url 파싱
         String[] pathAndQuery = tokens[1].split("\\?");
         this.path = pathAndQuery[0];
-        query = pathAndQuery.length > 1 ? new Query(pathAndQuery[1]) : new Query();
+        query = pathAndQuery.length > 1 ? new Query(pathAndQuery[1]) : null;
 
 
         this.version = tokens[2];
@@ -72,8 +73,8 @@ public class HttpRequest {
         return path;
     }
 
-    public Query getRequestQuery() {
-        return query;
+    public Optional<KeyValue> getRequestOrParameter() {
+        return body != null ? Optional.of(body) : Optional.ofNullable(query);
     }
 
     public void setBody(String body) {
