@@ -97,7 +97,6 @@ public class HttpWasRequest {
 			final String key = keyValue[0];
 			final String value = base64Decoder(keyValue[1]);
 			requestParam.put(key, value);
-			logger.info("Request Param : key : {}, value : {}", key, value);
 		}
 	}
 
