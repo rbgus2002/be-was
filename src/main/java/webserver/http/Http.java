@@ -128,5 +128,13 @@ public class Http {
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException(text + "에 해당하는 확장자가 없습니다"));
         }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 }

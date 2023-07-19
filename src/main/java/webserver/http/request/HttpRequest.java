@@ -69,10 +69,8 @@ public class HttpRequest implements Serializable {
         return String.valueOf(bufferedReader.read(chars, 0, contentLength));
     }
 
-    public boolean is(final MIME mime) {
-        return this.requestLine.getTarget()
-                .getMIME()
-                .equals(mime);
+    public MIME getMIME() {
+        return this.requestLine.getTarget().getMIME();
     }
 
     public RequestLine getRequestLine() {
