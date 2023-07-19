@@ -14,9 +14,9 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserControllerTest {
+class SignUpControllerTest {
 
-    UserController userController;
+    SignUpController signUpController;
 
     HttpRequest request;
 
@@ -24,7 +24,7 @@ class UserControllerTest {
 
     @BeforeEach
     void init() throws IOException {
-        userController = new UserController();
+        signUpController = new SignUpController();
         request= HttpRequestParser.getInstance().getRequest(new ByteArrayInputStream(("GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1\n" +
                 "Host: localhost:8080\n" +
                 "Connection: keep-alive\n" +
@@ -35,7 +35,7 @@ class UserControllerTest {
     @Test
     @DisplayName("request에 담긴 회원의 정보를 토대로 새로운 회원을 추가해야 한다")
     void signUp(){
-        userController.signUp(request,response);
+        signUpController.execute(request,response);
         User user = Database.findUserById("javajigi");
         assertEquals("javajigi", user.getUserId());
         assertEquals("password", user.getPassword());
