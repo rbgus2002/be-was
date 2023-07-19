@@ -33,6 +33,7 @@ public class WasHandler {
 		if (httpFileHandler.isExistResource(resourcePath)) {
 			final Path filePath = httpFileHandler.getFilePath(resourcePath);
 			httpWasResponse.responseResource(filePath, resourcePath);
+			return;
 		}
 
 		apiService();
@@ -50,6 +51,7 @@ public class WasHandler {
 		final Optional<Method> matchHttpMethod = getMatchHttpMethod(methods, httpMethod);
 		if (matchHttpMethod.isPresent()) {
 			runApiMethod(matchHttpMethod.get());
+			return;
 		}
 
 		httpWasResponse.response405();
