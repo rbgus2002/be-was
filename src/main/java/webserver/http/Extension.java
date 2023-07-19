@@ -3,8 +3,7 @@ package webserver.http;
 public enum Extension {
 
 	HTML("html"), CSS("css"), JS("js"),
-	ICO("ico"), PNG("png"), JPG("jpg"),
-	WOFF("woff"), TTF("ttf");
+	ICO("ico"), PNG("png"), JPG("jpg");
 
 	private final String value;
 

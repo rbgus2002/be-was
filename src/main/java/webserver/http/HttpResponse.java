@@ -4,8 +4,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Map;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,46 +19,37 @@ public class HttpResponse {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final int status;
+	private final DataOutputStream dos;
 	private byte[] body;
 	private String contentType;
 	private String redirectUrl;
-	private Map<String, String> model;
 
-	public HttpResponse(final int status, final byte[] body, final String contentType,
-		final Map<String, String> model) {
+	public HttpResponse(final int status, final DataOutputStream dos, final byte[] body, final String contentType) {
 		this.status = status;
+		this.dos = dos;
 		this.body = body;
 		this.contentType = contentType;
-		this.model = model;
 	}
 
-	public HttpResponse(final int status, final String redirectUrl, final Map<String, String> model) {
+	public HttpResponse(final int status, final DataOutputStream dos, final String redirectUrl) {
 		this.status = status;
+		this.dos = dos;
 		this.redirectUrl = redirectUrl;
-		this.model = model;
 	}
 
-	public static HttpResponse createRedirectResponse(final String resourceUrl, final Map<String, String> model) {
-		final String redirectUrl = resourceUrl.split(":")[1];
-		return new HttpResponse(STATUS_REDIRECT, redirectUrl, model);
+	public static HttpResponse createRedirectResponse(DataOutputStream dos, String resourceUrl) {
+		String redirectUrl = resourceUrl.split(":")[1];
+		return new HttpResponse(STATUS_REDIRECT, dos, redirectUrl);
 	}
 
-	public static HttpResponse createDefaultResponse(
-		final String body,
-		final String contentType,
-		final Map<String, String> model) {
-
-		return new HttpResponse(STATUS_OK, body.getBytes(), contentType, model);
+	public static HttpResponse createDefaultResponse(DataOutputStream dos, String body, String contentType) {
+		return new HttpResponse(STATUS_OK, dos, body.getBytes(), contentType);
 	}
 
-	public static HttpResponse createResourceResponse(
-		final String path,
-		final String contentType,
-		final Map<String, String> model) throws IOException {
-
+	public static HttpResponse createResourceResponse(DataOutputStream dos, String path, String contentType) throws
+		IOException {
 		byte[] body = getResourceBytes(path);
-
-		return new HttpResponse(STATUS_OK, body, contentType, model);
+		return new HttpResponse(STATUS_OK, dos, body, contentType);
 	}
 
 	private static byte[] getResourceBytes(final String url) throws IOException {
@@ -72,60 +61,45 @@ public class HttpResponse {
 		throw InvalidRequestException.Exception;
 	}
 
-	public void doResponse(final DataOutputStream dos) {
-		if (status == STATUS_OK) {
-			response200Header(dos);
+	public void doResponse() {
+		if(status == STATUS_OK) {
+			response200Header();
 		}
 
 		if (status == STATUS_REDIRECT) {
-			response303Header(dos, redirectUrl);
+			response303Header(redirectUrl);
 		}
 
 		responseBody(dos, body);
 	}
 
-	private void response200Header(DataOutputStream dos) {
+	private void response200Header() {
 		try {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
 			dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
 			dos.writeBytes("Content-Length: " + body.length + "\r\n");
-
-			setCookie(dos);
-
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private void response303Header(DataOutputStream dos, String redirectUrl) {
+	private void response303Header(String redirectUrl) {
 		try {
 			dos.writeBytes("HTTP/1.1 303 See Other\r\n");
 			dos.writeBytes("Location: " + redirectUrl + "\r\n");
 			dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
 			dos.writeBytes("Pragma: no-cache\r\n");
 			dos.writeBytes("Expires: 0\r\n");
-
-			setCookie(dos);
-
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private void setCookie(DataOutputStream dos) throws IOException {
-		String cookie = model.get("Cookie");
-		if (Objects.nonNull(cookie)) {
-			dos.writeBytes("Set-Cookie: sid=" + cookie + "; Path=/");
-		}
-	}
-
 	private void responseBody(final DataOutputStream dos, final byte[] body) {
 		try {
-			if(Objects.nonNull(body)) {
-				dos.write(body, 0, body.length);
-			}
+			dos.write(body, 0, body.length);
 			dos.flush();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
