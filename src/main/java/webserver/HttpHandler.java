@@ -3,6 +3,7 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.ControllerResolver;
+import support.annotation.ResponseStatus;
 import support.exception.BadRequestException;
 import support.exception.MethodNotAllowedException;
 import support.exception.NotSupportedException;
@@ -11,8 +12,6 @@ import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 import webserver.response.MIME;
-import webserver.response.strategy.Found;
-import webserver.response.strategy.NoHeader;
 import webserver.response.strategy.NotFound;
 import webserver.response.strategy.OK;
 
@@ -49,23 +48,20 @@ public class HttpHandler {
 
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
         try {
-            ControllerResolver.invoke(path, request);
-            response.setStatus(HttpStatus.FOUND);
-            response.buildHeader(new Found(MAIN_PAGE));
+            ResponseStatus responseStatus = ControllerResolver.invoke(path, request, response);
+            response.setStatus(responseStatus.status());
+            response.appendHeader("Location", responseStatus.redirectionUrl());
             return true;
         } catch (NotSupportedException e) {
             return false;
         } catch (MethodNotAllowedException e) {
             response.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
-            response.buildHeader(new NoHeader());
             return true;
         } catch (BadRequestException e) {
             response.setStatus(HttpStatus.BAD_REQUEST);
-            response.buildHeader(new NoHeader());
             return true;
         } catch (ServerErrorException e) {
             response.setStatus(HttpStatus.SERVER_ERROR);
-            response.buildHeader(new NoHeader());
             return true;
         }
     }

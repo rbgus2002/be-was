@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
+import support.annotation.ResponseStatus;
 import support.exception.BadRequestException;
 import support.exception.MethodNotAllowedException;
 import support.exception.NotSupportedException;
@@ -13,6 +14,7 @@ import support.exception.ServerErrorException;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.KeyValue;
+import webserver.response.HttpResponse;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -52,7 +54,7 @@ public abstract class ControllerResolver {
         });
     }
 
-    public static void invoke(String url, HttpRequest request) throws MethodNotAllowedException, BadRequestException, NotSupportedException, ServerErrorException {
+    public static ResponseStatus invoke(String url, HttpRequest request, HttpResponse response) throws MethodNotAllowedException, BadRequestException, NotSupportedException, ServerErrorException {
         // 요청 url에 해당하는 controller method를 찾는다.
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
@@ -86,6 +88,8 @@ public abstract class ControllerResolver {
         } catch (Exception e) {
             throw new ServerErrorException();
         }
+
+        return method.getAnnotation(ResponseStatus.class);
     }
 
     /**

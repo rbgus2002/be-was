@@ -8,6 +8,8 @@ import support.HttpMethod;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
+import support.annotation.ResponseStatus;
+import webserver.response.HttpStatus;
 
 @Controller(value = "/user")
 public class UserController {
@@ -15,6 +17,7 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping(method = HttpMethod.POST, value = "/login")
+    @ResponseStatus(status = HttpStatus.FOUND, redirectionUrl = "/index.html")
     public void login(@RequestParam("userId") String userId,
                       @RequestParam("password") String password) {
         logger.debug("유저 로그인 요청");
@@ -31,6 +34,7 @@ public class UserController {
     }
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
+    @ResponseStatus(status = HttpStatus.FOUND, redirectionUrl = "/index.html")
     public void create(@RequestParam("userId") String userId,
                        @RequestParam("password") String password,
                        @RequestParam("name") String name,

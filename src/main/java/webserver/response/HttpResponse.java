@@ -38,6 +38,10 @@ public class HttpResponse {
         this.status = status;
     }
 
+    public void appendHeader(String key, String value) {
+        header.appendHeader(key, value);
+    }
+
     public void buildHeader(ResponseHeaderStrategy message) {
         message.buildHeader(header);
     }
