@@ -5,11 +5,11 @@ import webserver.http.Headers;
 import webserver.http.Http.MIME;
 import webserver.http.Http.StatusCode;
 import webserver.http.request.HttpRequest;
-import webserver.http.response.process.HtmlContentProcessStrategy;
+import webserver.http.response.process.ContentProcessStrategy;
 
 public class HttpResponse implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private final ResponseLine responseLine;
     private final Headers headers;
     private final byte[] body;
@@ -20,17 +20,17 @@ public class HttpResponse implements Serializable {
         this.body = body;
     }
 
-    public static HttpResponse notFound() {
-        return new HttpResponse(new ResponseLine(StatusCode.NOT_FOUND), Headers.create(MIME.HTML), null);
+    public static HttpResponse notFound(final MIME mime) {
+        return new HttpResponse(new ResponseLine(StatusCode.NOT_FOUND), Headers.create(mime), null);
     }
 
-    public static HttpResponse internalError() {
-        return new HttpResponse(new ResponseLine(StatusCode.INTERNAL_ERROR), Headers.create(MIME.HTML), null);
+    public static HttpResponse internalError(final MIME mime) {
+        return new HttpResponse(new ResponseLine(StatusCode.INTERNAL_ERROR), Headers.create(mime), null);
     }
 
     public static HttpResponse from(final HttpRequest httpRequest) {
-        HtmlContentProcessStrategy htmlContentProcessStrategy = new HtmlContentProcessStrategy();
-        return htmlContentProcessStrategy.process(httpRequest);
+        ContentProcessStrategy contentProcessStrategy = httpRequest.getMIME().getStrategy();
+        return contentProcessStrategy.process(httpRequest);
     }
 
     public ResponseLine getResponseLine() {

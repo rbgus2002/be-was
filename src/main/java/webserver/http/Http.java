@@ -1,6 +1,9 @@
 package webserver.http;
 
 import java.util.Arrays;
+import webserver.http.response.process.ContentProcessStrategy;
+import webserver.http.response.process.CssContentProcessStrategy;
+import webserver.http.response.process.HtmlContentProcessStrategy;
 
 public class Http {
     public static final String CRLF = "\r\n";
@@ -98,28 +101,30 @@ public class Http {
     }
 
     public enum MIME {
-        HTM(".htm", "text/html"),
-        HTML(".html", "text/html"),
-        CSS(".css", "text/css"),
-        JS(".js", "text/javascript"),
-        ICO(".ico", "image/x-icon"),
-        PNG(".png", "image/png"),
-        JSON(".json", "application/json"),
-        JPG(".jpg", "image/jpeg"),
-        JPEG(".jpeg", "image/jpg"),
-        EOT(".eot", "application/vnd.ms-fontobject"),
-        SVG(".svg", "image/svg+xml"),
-        TTF(".ttf", "application/x-font-ttf"),
-        WOFF(".woff", "application/x-font-woff"),
-        WOFF2(".woff2", "application/font-woff2"),
-        NONE("", "");
+        HTM(".htm", "text/html", new HtmlContentProcessStrategy()),
+        HTML(".html", "text/html", new HtmlContentProcessStrategy()),
+        CSS(".css", "text/css", new CssContentProcessStrategy()),
+        JS(".js", "text/javascript", new HtmlContentProcessStrategy()),
+        ICO(".ico", "image/x-icon", new HtmlContentProcessStrategy()),
+        PNG(".png", "image/png", new HtmlContentProcessStrategy()),
+        JSON(".json", "application/json", new HtmlContentProcessStrategy()),
+        JPG(".jpg", "image/jpeg", new HtmlContentProcessStrategy()),
+        JPEG(".jpeg", "image/jpg", new HtmlContentProcessStrategy()),
+        EOT(".eot", "application/vnd.ms-fontobject", new HtmlContentProcessStrategy()),
+        SVG(".svg", "image/svg+xml", new HtmlContentProcessStrategy()),
+        TTF(".ttf", "application/x-font-ttf", new HtmlContentProcessStrategy()),
+        WOFF(".woff", "application/x-font-woff", new HtmlContentProcessStrategy()),
+        WOFF2(".woff2", "application/font-woff2", new HtmlContentProcessStrategy()),
+        NONE("", "", new HtmlContentProcessStrategy());
 
         private final String extension;
         private final String type;
+        private final ContentProcessStrategy strategy;
 
-        MIME(final String value, final String type) {
+        MIME(final String value, final String type, final ContentProcessStrategy strategy) {
             this.extension = value;
             this.type = type;
+            this.strategy = strategy;
         }
 
         public static MIME findBy(final String text) {
@@ -135,6 +140,10 @@ public class Http {
 
         public String getType() {
             return type;
+        }
+
+        public ContentProcessStrategy getStrategy() {
+            return strategy;
         }
     }
 }
