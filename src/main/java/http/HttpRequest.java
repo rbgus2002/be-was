@@ -2,35 +2,33 @@ package http;
 
 import java.util.Map;
 
-import static http.HttpMethod.GET;
-
 public class HttpRequest {
-    private String method = GET.getMethod();
+    private String method;
     private String uri;
     private String version;
     private Map<String, String> headers;
     private String body = "";
 
     public static class RequestBuilder {
-        private String bMethod = GET.getMethod();
-        private String bUri;
-        private String bVersion;
-        private Map<String, String> bHeaders;
-        private String bBody = "";
+        private String method;
+        private String uri;
+        private String version;
+        private Map<String, String> headers;
+        private String body = "";
 
         public RequestBuilder(String method, String uri, String version) {
-            bMethod = method;
-            bUri = uri;
-            bVersion = version;
+            this.method = method;
+            this.uri = uri;
+            this.version = version;
         }
 
         public RequestBuilder setHeader(Map<String, String> headers) {
-            bHeaders = headers;
+            this.headers = headers;
             return this;
         }
 
         public RequestBuilder setBody(String body) {
-            bBody = body;
+            this.body = body;
             return this;
         }
 
@@ -42,11 +40,11 @@ public class HttpRequest {
 
 
     public HttpRequest(RequestBuilder builder) {
-        this.method = builder.bMethod;
-        this.uri = builder.bUri;
-        this.version = builder.bVersion;
-        this.headers = builder.bHeaders;
-        this.body = builder.bBody;
+        this.method = builder.method;
+        this.uri = builder.uri;
+        this.version = builder.version;
+        this.headers = builder.headers;
+        this.body = builder.body;
     }
 
     public String getUri() {

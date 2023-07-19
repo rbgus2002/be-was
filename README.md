@@ -2,12 +2,10 @@
 
 Java Web Application Server 2023
 
-## step-2 study plan
+## step-3 study plan
 
-- FileIOUtils - static 메서드로 변경
-- GET으로 회원가입 기능 구현
-    - 사용자 입력값 파싱
-    - model.User 클래스에 저장
+- 다양한 컨텐츠 타입 지원
+- 유효하지 않은 요청(존재하지 않는 파일로의 요청, 잘못된 쿼리 등) 예외 처리
 
 ### 프로젝트 정보 
 
