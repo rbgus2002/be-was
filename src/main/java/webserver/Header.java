@@ -7,7 +7,10 @@ import java.util.HashMap;
 
 public class Header {
 
+    private final HashMap<String, String> headers;
+
     private Header(HashMap<String, String> headers) {
+        this.headers = headers;
     }
 
     public static Header of(String string) {
