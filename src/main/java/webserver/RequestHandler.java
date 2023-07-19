@@ -52,7 +52,7 @@ public class RequestHandler implements Runnable {
 			return processServlet((Servlet) mappingClass, httpRequest);
 		}
 
-		return HttpResponse.createResourceResponse(httpRequest.getPath(), httpRequest.getContentType(), httpRequest.getModel());
+		return HttpResponse.createResourceResponse(httpRequest.getPath(), httpRequest.getContentType());
 	}
 
 	private HttpResponse processServlet(Servlet servlet, HttpRequest httpRequest) throws IOException {
@@ -62,14 +62,14 @@ public class RequestHandler implements Runnable {
 		String result = servlet.execute(model);
 
 		if (isResponseBody(declaredAnnotations)) {
-			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), model);
+			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType());
 		}
 
 		if (isRedirect(result)) {
-			return HttpResponse.createRedirectResponse(result, model);
+			return HttpResponse.createRedirectResponse(result);
 		}
 
-		return HttpResponse.createResourceResponse(result, httpRequest.getContentType(), model);
+		return HttpResponse.createResourceResponse(result, httpRequest.getContentType());
 	}
 
 	private static boolean isResponseBody(Annotation[] declaredAnnotations) {
