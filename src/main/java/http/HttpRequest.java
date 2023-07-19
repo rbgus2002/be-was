@@ -23,10 +23,12 @@ public class HttpRequest {
         String[] requestParts = requestLine.split(" ");
         this.headers = HttpUtils.parseHeader(reader);
         this.method = HttpUtils.Method.of(requestParts[0]);
-        this.uri = HttpUtils.constructUri(requestParts[1], headers);
+        this.uri = HttpUtils.constructUri(this.headers.get("Host"), requestParts[1]);
         this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
         this.mime = HttpUtils.decideMime(this.uri.getPath());
-        this.body = HttpUtils.parseBody(reader, this.headers, this.method);
+
+        int contentLength = Integer.parseInt(this.headers.getOrDefault("Content-Length", "0"));
+        this.body = HttpUtils.parseBody(reader, contentLength, this.method);
     }
 
     public HttpUtils.Method method() {

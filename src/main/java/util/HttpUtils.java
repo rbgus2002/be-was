@@ -49,9 +49,8 @@ public class HttpUtils {
         return map;
     }
 
-    public static String parseBody(BufferedReader reader, Map<String, String> headers, Method method) throws IOException {
-        int contentLength = Integer.parseInt(headers.getOrDefault("Content-Length", "0"));
-        if (method.equals(HttpUtils.Method.GET) || contentLength == 0) {
+    public static String parseBody(BufferedReader reader, int contentLength, Method method) throws IOException {
+        if (method.equals(HttpUtils.Method.GET)) {
             return null;
         }
         char[] buffer = new char[contentLength];
@@ -59,8 +58,7 @@ public class HttpUtils {
         return URLDecoder.decode(new String(buffer), StandardCharsets.UTF_8);
     }
 
-    public static URI constructUri(String file, Map<String, String> headers) throws URISyntaxException {
-        String host = headers.get("Host");
+    public static URI constructUri(String host, String file) throws URISyntaxException {
         return new URI("http://" + host + URLDecoder.decode(file, StandardCharsets.UTF_8));
     }
 
