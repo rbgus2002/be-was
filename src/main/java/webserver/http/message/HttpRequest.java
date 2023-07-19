@@ -36,8 +36,8 @@ public class HttpRequest {
 
 		String[] requestLineTokens = startLine.split(SINGLE_SPACE);
 		httpMethod = HttpMethod.from(requestLineTokens[0]);
-		this.url = URL.of(requestLineTokens[1]);
-		this.httpVersion = requestLineTokens[2];
+		url = URL.of(requestLineTokens[1]);
+		httpVersion = requestLineTokens[2];
 	}
 
 	private void parseAndSetHeaderFields(BufferedReader bufferedReader) throws IOException {
