@@ -2,8 +2,8 @@ package webserver.http;
 
 import java.util.Arrays;
 import webserver.http.response.process.ContentProcessStrategy;
-import webserver.http.response.process.CssContentProcessStrategy;
-import webserver.http.response.process.HtmlContentProcessStrategy;
+import webserver.http.response.process.CssProcessStrategy;
+import webserver.http.response.process.HtmlProcessStrategy;
 
 public class Http {
     public static final String CRLF = "\r\n";
@@ -101,21 +101,21 @@ public class Http {
     }
 
     public enum MIME {
-        HTM(".htm", "text/html", new HtmlContentProcessStrategy()),
-        HTML(".html", "text/html", new HtmlContentProcessStrategy()),
-        CSS(".css", "text/css", new CssContentProcessStrategy()),
-        JS(".js", "text/javascript", new HtmlContentProcessStrategy()),
-        ICO(".ico", "image/x-icon", new HtmlContentProcessStrategy()),
-        PNG(".png", "image/png", new HtmlContentProcessStrategy()),
-        JSON(".json", "application/json", new HtmlContentProcessStrategy()),
-        JPG(".jpg", "image/jpeg", new HtmlContentProcessStrategy()),
-        JPEG(".jpeg", "image/jpg", new HtmlContentProcessStrategy()),
-        EOT(".eot", "application/vnd.ms-fontobject", new HtmlContentProcessStrategy()),
-        SVG(".svg", "image/svg+xml", new HtmlContentProcessStrategy()),
-        TTF(".ttf", "application/x-font-ttf", new HtmlContentProcessStrategy()),
-        WOFF(".woff", "application/x-font-woff", new HtmlContentProcessStrategy()),
-        WOFF2(".woff2", "application/font-woff2", new HtmlContentProcessStrategy()),
-        NONE("", "", new HtmlContentProcessStrategy());
+        HTM(".htm", "text/html", new HtmlProcessStrategy()),
+        HTML(".html", "text/html", new HtmlProcessStrategy()),
+        CSS(".css", "text/css", new CssProcessStrategy()),
+        JS(".js", "text/javascript", new HtmlProcessStrategy()),
+        ICO(".ico", "image/x-icon", new HtmlProcessStrategy()),
+        PNG(".png", "image/png", new HtmlProcessStrategy()),
+        JSON(".json", "application/json", new HtmlProcessStrategy()),
+        JPG(".jpg", "image/jpeg", new HtmlProcessStrategy()),
+        JPEG(".jpeg", "image/jpg", new HtmlProcessStrategy()),
+        EOT(".eot", "application/vnd.ms-fontobject", new HtmlProcessStrategy()),
+        SVG(".svg", "image/svg+xml", new HtmlProcessStrategy()),
+        TTF(".ttf", "application/x-font-ttf", new HtmlProcessStrategy()),
+        WOFF(".woff", "application/x-font-woff", new HtmlProcessStrategy()),
+        WOFF2(".woff2", "application/font-woff2", new HtmlProcessStrategy()),
+        NONE("", "", new HtmlProcessStrategy());
 
         private final String extension;
         private final String type;

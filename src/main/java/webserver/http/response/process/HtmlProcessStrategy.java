@@ -9,8 +9,8 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.ResponseLine;
 
-public class CssContentProcessStrategy implements ContentProcessStrategy {
-    private static final String ROOT = "/static/css/";
+public class HtmlProcessStrategy implements ContentProcessStrategy {
+    private static final String ROOT = "/templates/";
 
     @Override
     public HttpResponse process(final HttpRequest httpRequest) {
@@ -18,12 +18,12 @@ public class CssContentProcessStrategy implements ContentProcessStrategy {
             URL url = getURL(ROOT, httpRequest);
             byte[] resource = FileUtil.get(url);
             if (resource == null) {
-                return HttpResponse.notFound(MIME.CSS);
+                return HttpResponse.notFound(MIME.HTML);
             }
-            return new HttpResponse(new ResponseLine(StatusCode.OK), Headers.create(MIME.CSS), resource);
+            return new HttpResponse(new ResponseLine(StatusCode.OK), Headers.create(MIME.HTML), resource);
         } catch (Exception exception) {
             exception.printStackTrace();
-            return HttpResponse.internalError(MIME.CSS);
+            return HttpResponse.internalError(MIME.HTML);
         }
     }
 }
