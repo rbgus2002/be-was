@@ -1,7 +1,6 @@
 package webserver.response;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -17,9 +16,6 @@ import webserver.utils.HttpStatus;
 public class HttpWasResponse {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasResponse.class);
-	private static final String TEMPLATES_PATH = "src/main/resources/templates";
-	private static final String STATIC_PATH = "src/main/resources/static";
-	private static final String SPLIT_DOT = "\\.";
 	private static final String REQUEST_LINE = "HTTP/1.1 %s %s\r\n";
 	private final DataOutputStream dos;
 	private HttpStatus httpStatus = HttpStatus.NOT_FOUND;
@@ -31,9 +27,9 @@ public class HttpWasResponse {
 		this.dos = new DataOutputStream(outputStream);
 	}
 
-	public void responseResource(String resourcePath) {
+	public void responseResource(Path path, String resourcePath) {
 		try {
-			final byte[] files = getFiles(resourcePath);
+			final byte[] files = Files.readAllBytes(path);
 			header.clearHeader();
 			httpStatus = HttpStatus.OK;
 			header.addHeader(HttpHeader.CONTENT_TYPE, HttpMimeType.valueOfResourcePath(resourcePath).getCharsetUtf8());
@@ -43,12 +39,6 @@ public class HttpWasResponse {
 			response404();
 		}
 	}
-
-	private byte[] getFiles(String resourcePath) throws IOException {
-		final Path path = new File(getResourcePath(resourcePath)+ resourcePath).toPath();
-		return Files.readAllBytes(path);
-	}
-
 
 	public void doResponse() {
 		try {
@@ -77,15 +67,6 @@ public class HttpWasResponse {
 		header.addHeader(HttpHeader.CONTENT_TYPE, HttpMimeType.PLAIN.getCharsetUtf8());
 		header.addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(response.getBytes().length));
 		body = response.getBytes();
-	}
-
-	private String getResourcePath(String resourcePath) {
-		final String[] split = resourcePath.split(SPLIT_DOT);
-		final String type = split[split.length - 1].trim();
-		if (type.equals("html")) {
-			return TEMPLATES_PATH;
-		}
-		return STATIC_PATH;
 	}
 
 	public void response405() {

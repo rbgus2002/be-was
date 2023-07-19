@@ -1,7 +1,7 @@
 package webserver;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,7 @@ import controller.Controller;
 import controller.FrontController;
 import controller.annotation.RequestMapping;
 import webserver.request.HttpWasRequest;
+import webserver.response.HttpFileHandler;
 import webserver.response.HttpWasResponse;
 import webserver.utils.HttpMethod;
 
@@ -19,30 +20,42 @@ public class WasHandler {
 	private final HttpWasRequest httpWasRequest;
 	private final HttpWasResponse httpWasResponse;
 	private final FrontController frontController;
+	private final HttpFileHandler httpFileHandler;
 	public WasHandler(final HttpWasRequest httpWasRequest, final HttpWasResponse httpWasResponse, FrontController frontController) {
 		this.httpWasRequest = httpWasRequest;
 		this.httpWasResponse = httpWasResponse;
 		this.frontController = frontController;
+		httpFileHandler = new HttpFileHandler();
 	}
 
-	public void service() throws InvocationTargetException, IllegalAccessException {
+	public void service() throws ReflectiveOperationException {
+		final String resourcePath = httpWasRequest.getResourcePath();
+		if (httpFileHandler.isExistResource(resourcePath)) {
+			final Path filePath = httpFileHandler.getFilePath(resourcePath);
+			httpWasResponse.responseResource(filePath, resourcePath);
+		}
+
+		apiService();
+	}
+
+	private void apiService() throws ReflectiveOperationException{
 		final List<Method> methods = getResourcePathMethod();
 
 		if (methods.isEmpty()) {
-			final String resourcePath = httpWasRequest.getResourcePath();
-			httpWasResponse.responseResource(resourcePath);
+			httpWasResponse.response404();
 			return;
 		}
 
 		final String httpMethod = httpWasRequest.getHttpMethod();
 		final Optional<Method> matchHttpMethod = getMatchHttpMethod(methods, httpMethod);
-		if (matchHttpMethod.isEmpty()) {
-			httpWasResponse.response405();
-			return;
+		if (matchHttpMethod.isPresent()) {
+			runApiMethod(matchHttpMethod.get());
 		}
 
-		final Method method = matchHttpMethod.get();
+		httpWasResponse.response405();
+	}
 
+	private void runApiMethod(final Method method) throws ReflectiveOperationException{
 		final Class<?> methodClass = method.getDeclaringClass();
 		frontController.getInstance(methodClass.getName());
 		method.invoke(frontController.getInstance(methodClass.getName()), httpWasRequest, httpWasResponse);
