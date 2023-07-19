@@ -46,7 +46,7 @@ public class BeanInitializerImpl implements BeanInitializer {
             try {
                 List<Object> parameters = getBeanParameters(beanContainer, beanConstructor);
                 Object bean = getBeanInstance(beanConstructor, parameters);
-                beanContainer.addBean(bean.getClass(), bean);
+                beanContainer.register(bean.getClass(), bean);
             } catch (Exception e) {
                 failInitializedConstructors.add(beanConstructor);
             }
