@@ -1,4 +1,4 @@
-package http;
+package util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-public class HttpRequestParser {
+public class Parser {
 
-    private HttpRequestParser() {
+    private Parser() {
     }
 
     public static String parseUrlFromRequestLine(String requestLine) {
@@ -60,5 +60,10 @@ public class HttpRequestParser {
         }
 
         return headers;
+    }
+
+    public static String getExtension(String path){
+        String[] tokens = path.split("\\.");
+        return tokens[tokens.length - 1];
     }
 }
