@@ -20,12 +20,12 @@ public class UserJoinHandler implements Handler {
     public HttpResponse handle(HttpRequest request) {
         URL url = request.getURL();
         Map<String, List<String>> parameters = url.getQueryParameter();
-        User user = mapUserFrom(parameters);
+        User user = mapToUserFrom(parameters);
         userService.join(user);
         return HttpResponse.created();
     }
 
-    private static User mapUserFrom(Map<String, List<String>> parameters) {
+    private static User mapToUserFrom(Map<String, List<String>> parameters) {
         String userId = parameters.get("userId").get(0);
         String password = parameters.get("password").get(0);
         String name = parameters.get("name").get(0);
