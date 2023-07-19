@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class HttpHeaderTest {
+class HttpRequestHeaderTest {
 
     @Test
     @DisplayName("http 헤더를 파싱해서 HttpHeader를 생성한다.")
@@ -24,10 +24,10 @@ class HttpHeaderTest {
         BufferedReader bufferedReader = stringListToBufferedReader(requestHeader);
 
         //when
-        HttpHeader httpHeader = new HttpHeader(bufferedReader);
+        HttpRequestHeader httpRequestHeader = new HttpRequestHeader(bufferedReader);
 
         //then
-        Map<String, String> headers = httpHeader.getHeaders();
+        Map<String, String> headers = httpRequestHeader.getHeaders();
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(headers.get("Host")).isEqualTo("localhost:8080");
             softAssertions.assertThat(headers.get("Connection")).isEqualTo("keep-alive");
@@ -45,10 +45,10 @@ class HttpHeaderTest {
         BufferedReader bufferedReader = stringListToBufferedReader(requestHeader);
 
         //when
-        HttpHeader httpHeader = new HttpHeader(bufferedReader);
+        HttpRequestHeader httpRequestHeader = new HttpRequestHeader(bufferedReader);
 
         //then
-        Map<String, String> headers = httpHeader.getHeaders();
+        Map<String, String> headers = httpRequestHeader.getHeaders();
         assertThatThrownBy(() -> headers.put("a", "b")).isInstanceOf(UnsupportedOperationException.class);
     }
 

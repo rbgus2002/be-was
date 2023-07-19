@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class HttpHeader {
+public class HttpRequestHeader {
 
     private final Map<String, String> headers;
 
-    public HttpHeader(BufferedReader bufferedReader) throws IOException {
+    public HttpRequestHeader(BufferedReader bufferedReader) throws IOException {
         // 불변 map
-        this.headers = Collections.unmodifiableMap(parseHeader(bufferedReader));
+        this.headers = parseHeader(bufferedReader);
     }
 
     public String get(String key) {
@@ -25,7 +25,7 @@ public class HttpHeader {
     }
 
     public Map<String, String> getHeaders() {
-        return this.headers;
+        return Collections.unmodifiableMap(this.headers);
     }
 
     public Set<Map.Entry<String, String>> entrySet() {

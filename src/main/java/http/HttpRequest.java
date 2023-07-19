@@ -19,19 +19,19 @@ public class HttpRequest {
     private final URI uri;
     private final HttpClient.Version version;
     private final Mime mime;
-    private final HttpHeader httpHeader;
+    private final HttpRequestHeader httpRequestHeader;
     private final String body;
 
     public HttpRequest(BufferedReader reader) throws URISyntaxException, IOException {
         String requestLine = reader.readLine();
         String[] requestParts = requestLine.split(" ");
-        this.httpHeader = new HttpHeader(reader);
+        this.httpRequestHeader = new HttpRequestHeader(reader);
         this.method = HttpUtils.Method.of(requestParts[0]);
-        this.uri = HttpUtils.constructUri(this.httpHeader.get("Host"), requestParts[1]);
+        this.uri = HttpUtils.constructUri(this.httpRequestHeader.get("Host"), requestParts[1]);
         this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
         this.mime = HttpUtils.decideMime(this.uri.getPath());
 
-        int contentLength = Integer.parseInt(this.httpHeader.getOrDefault("Content-Length", "0"));
+        int contentLength = Integer.parseInt(this.httpRequestHeader.getOrDefault("Content-Length", "0"));
         this.body = HttpUtils.parseBody(reader, contentLength, this.method);
     }
 
@@ -52,7 +52,7 @@ public class HttpRequest {
     }
 
     public String getHeader(String key) {
-        return this.httpHeader.get(key);
+        return this.httpRequestHeader.get(key);
     }
 
     public String getBody() {
@@ -61,7 +61,7 @@ public class HttpRequest {
 
     public void printLogs() {
         StringBuilder requestBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : this.httpHeader.entrySet()) {
+        for (Map.Entry<String, String> entry : this.httpRequestHeader.entrySet()) {
             requestBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
         }
         logger.debug("Method : {}, URI : {}, Version : {}", this.method, this.uri, this.version);
