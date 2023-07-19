@@ -10,15 +10,15 @@ Java Web Application Server 2023
 ## 요구사항
 
 ### step1 - index.html 응답
-- [ ] 정적인 html 파일 응답 
+- [x] 정적인 html 파일 응답 
   - http://localhost:8080/index.html 접속시 index.html 파일을 읽어 응답
   
-- [ ] HTTP Request 내용 출력
+- [x] HTTP Request 내용 출력
   - 서버로 들어오는 HTTP Request 내용을 읽고 log.debug로 출력
 
-- [ ] 기존 Thread 기반 프로젝트를 Concurrent 패키지를 사용하도록 수정
+- [x] 기존 Thread 기반 프로젝트를 Concurrent 패키지를 사용하도록 수정
 
-
+---
 ## 학습할 내용
 
 ### step1 - index.html 응답
