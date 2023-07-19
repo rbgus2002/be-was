@@ -3,12 +3,12 @@ package controller;
 import db.Database;
 import model.User;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -28,14 +28,16 @@ class SignupControllerTest {
         signupController = new SignupController();
         ExecutorService service = Executors.newFixedThreadPool(THREADS);
         CountDownLatch latch = new CountDownLatch(THREADS);
-        // when
 
+        // when
         long startTime = System.currentTimeMillis();
         for(int thread = 0; thread < THREADS; thread++) {
             int finalThread = thread;
             service.execute(() -> {
                 try {
-                    HttpRequest httpRequest = new HttpRequest("GET /user/create?userId=" + finalThread + "&password=sss&name=sss" + finalThread + "&email=sss%40naver.com HTTP/1.1");
+                    HttpRequest httpRequest = new HttpRequest("GET /user/create?userId="
+                            + finalThread + "&password=sss&name=sss"
+                            + finalThread + "&email=sss%40naver.com HTTP/1.1", null);
                     signupController.execute(httpRequest, null);
                 } catch(Exception e) {
                     logger.error(e.getMessage());
@@ -50,8 +52,12 @@ class SignupControllerTest {
         // then
         logger.info("걸린 시간 : " + (endTime - startTime));
         Collection<User> users = Database.findAll();
-        Assertions.assertEquals(THREADS, users.size());
-        Assertions.assertEquals("sss10", Database.findUserById("10").getName());
+        SoftAssertions softAssertions = new SoftAssertions();
+
+        softAssertions.assertThat(THREADS).isEqualTo(users.size());
+        softAssertions.assertThat(("sss10")).isEqualTo(Database.findUserById("10").getName());
+
+        softAssertions.assertAll();
     }
 
 }

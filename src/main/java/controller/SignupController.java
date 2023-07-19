@@ -4,8 +4,8 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class SignupController implements Controller {
     @Override
     public String execute(HttpRequest request, HttpResponse response) {
 
-        Map<String, String> queries = request.getQueries();
+        Map<String, String> queries = request.getFormDataMap();
         User user = new User(queries.get(USERID_KEY),
                 queries.get(PASSWORD_KEY),
                 queries.get(NAME_KEY),
@@ -30,6 +30,6 @@ public class SignupController implements Controller {
         Database.addUser(user);
         logger.info("signup ok, userId : {}", queries.get("userId"));
 
-        return "redirect:/";
+        return "redirect:/index.html";
     }
 }

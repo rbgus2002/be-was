@@ -1,20 +1,26 @@
 package webserver.server;
 
+import com.google.common.collect.ImmutableMap;
 import controller.Controller;
 import controller.HomeController;
 import controller.SignupController;
 
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RequestMapper {
-    private final ConcurrentHashMap<String, Controller> map = new ConcurrentHashMap<>();
+    private final ImmutableMap<String, Controller> map;
+    private static final RequestMapper requestMapper = new RequestMapper();
 
-    public RequestMapper() {
-        map.put("/", new HomeController());
-        map.put("/index.html", new HomeController());
-        map.put("/user/create", new SignupController());
+    private RequestMapper() {
+        map = ImmutableMap.<String, Controller>builder()
+                .put("/", new HomeController())
+                .put("/index.html", new HomeController())
+                .put("/user/create", new SignupController())
+                .build();
     }
 
+    public static RequestMapper createRequestMapper() {
+        return requestMapper;
+    }
     public Controller getController(String url) {
         return map.get(url);
     }

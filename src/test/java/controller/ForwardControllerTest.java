@@ -3,7 +3,7 @@ package controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
 
 
 class ForwardControllerTest {
@@ -16,7 +16,7 @@ class ForwardControllerTest {
         // given
         String url = "/sss";
         forwardController = new ForwardController();
-        HttpRequest httpRequest = new HttpRequest("GET " + url + " HTTP/1.1");
+        HttpRequest httpRequest = new HttpRequest("GET " + url + " HTTP/1.1", null);
 
         // when
         String s = forwardController.execute(httpRequest, null);

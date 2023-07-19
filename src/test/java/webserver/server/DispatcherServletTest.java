@@ -3,8 +3,8 @@ package webserver.server;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 import java.io.*;
 
@@ -37,9 +37,9 @@ class DispatcherServletTest {
     private void sendRequest(String url,String expected) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-        HttpResponse httpResponse = new HttpResponse(dataOutputStream);
-        HttpRequest httpRequest = new HttpRequest(url);
-        dispatcherServlet.service(httpRequest, httpResponse);
+        HttpResponse httpResponse = new HttpResponse();
+        HttpRequest httpRequest = new HttpRequest(url, null);
+        dispatcherServlet.service(httpRequest, httpResponse, dataOutputStream);
         String header = outputStream.toString().split("\r\n")[0];
 
 
