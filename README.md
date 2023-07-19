@@ -15,3 +15,7 @@ Java Web Application Server 2023
 - [X] Thread를 고수준 API로 변환
 - [X] HTTP Request, Response 파싱
 - [X] HTTP Response 응답하기 작성
+### Step-2
+- [X] Response, Request 리팩터링
+- [X] 회원가입 기능 구현하기
+- [X] 지금까지의 `public` 메서드들에 대한 테스트 코드 작성
