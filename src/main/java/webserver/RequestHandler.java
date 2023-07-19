@@ -26,10 +26,11 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = new HttpRequest(in);
+            String method = httpRequest.getMethod();
             String url = httpRequest.getRequestPath();
 
-            if (url.startsWith("/user/create")) {
-                url = UserController.createUser(url);
+            if (method.equals("GET") && url.startsWith("/user/create")) {
+                url = UserController.createUser(httpRequest);
             }
 
             DataOutputStream dos = new DataOutputStream(out);
