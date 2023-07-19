@@ -7,8 +7,8 @@ import webserver.HttpResponse;
 
 import java.io.IOException;
 
-public abstract class HttpController {
-    static final Logger logger = LoggerFactory.getLogger(HttpController.class);
+public interface HttpController {
+    Logger logger = LoggerFactory.getLogger(HttpController.class);
 
-    public abstract String process(HttpRequest request, HttpResponse response) throws IOException;
+    String process(HttpRequest request, HttpResponse response) throws IOException;
 }

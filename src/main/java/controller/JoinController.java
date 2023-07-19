@@ -7,7 +7,9 @@ import webserver.HttpResponse;
 
 import java.io.IOException;
 
-public class JoinController extends HttpController {
+public enum JoinController implements HttpController {
+    JOIN_CONTROLLER;
+
     @Override
     public String process(HttpRequest request, HttpResponse response) throws IOException {
         response.setRedirect("/index.html");

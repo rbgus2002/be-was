@@ -13,17 +13,21 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import static controller.DefaultController.DEFAULT_CONTROLLER;
+import static controller.HomeController.HOME_CONTROLLER;
+import static controller.JoinController.JOIN_CONTROLLER;
+
 public class FrontController {
     Map<String, HttpController> controllerMap = new HashMap<>();
 
     public FrontController() {
-        controllerMap.put("/", new HomeController());
-        controllerMap.put("/user/create", new JoinController());
+        controllerMap.put("/", HOME_CONTROLLER);
+        controllerMap.put("/user/create", JOIN_CONTROLLER);
     }
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
         String url = request.getUrl();
-        HttpController controller = controllerMap.getOrDefault(url, new DefaultController());
+        HttpController controller = controllerMap.getOrDefault(url, DEFAULT_CONTROLLER);
         String viewName = controller.process(request, response);
         viewResolve(viewName, response);
         render(dos, response);
@@ -34,12 +38,11 @@ public class FrontController {
             return;
         }
         Path path;
-        byte[] body;
         path = Paths.get("src/main/resources/static" + viewName);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
             path = Paths.get("src/main/resources/templates" + viewName);
         }
-        body = Files.readAllBytes(path);
+        byte[] body = Files.readAllBytes(path);
         String filename = path.getFileName().toString();
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
         response.setBody(body);

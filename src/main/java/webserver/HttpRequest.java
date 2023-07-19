@@ -61,7 +61,7 @@ public class HttpRequest {
             String[] paramTokens = keyValue.split("=");
             params.put(paramTokens[0], paramTokens[1]);
         }
-        logger.debug("{}", params);
+        logger.debug("Parameters {}", params);
     }
 
     public String getParam(String key) {
