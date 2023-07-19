@@ -45,7 +45,8 @@ public class HttpWasRequest {
 			return;
 		}
 		final String bodyData = getBodyData(bufferedReader);
-		if (StringUtils.contains(HttpHeader.CONTENT_TYPE.getType(), "x-www-form-urlencoded")) {
+		final String contentType = map.get(HttpHeader.CONTENT_TYPE.getType());
+		if (StringUtils.contains(contentType, "x-www-form-urlencoded")) {
 			saveRequestParam(bodyData);
 		}
 		map.put("body", bodyData);
