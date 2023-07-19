@@ -22,14 +22,13 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-
             BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
             String line = br.readLine();
             logger.debug("request line: {}", line);
 
             while(!line.equals("")) {
-                logger.debug("header: {}", line);
                 line = br.readLine();
+                logger.debug("header: {}", line);
             }
 
             DataOutputStream dos = new DataOutputStream(out);
