@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +43,7 @@ public class Parser {
 
         for (String param : params) {
             int splitIndex = param.indexOf("=");
-            queryParams.put(param.substring(0, splitIndex), param.substring(splitIndex + 1));
+            queryParams.put(param.substring(0, splitIndex), URLDecoder.decode(param.substring(splitIndex + 1), StandardCharsets.UTF_8));
         }
         return queryParams;
     }
