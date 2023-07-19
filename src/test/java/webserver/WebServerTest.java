@@ -26,4 +26,17 @@ class WebServerTest {
                 .statusCode(HttpStatus.SC_OK)
                 .contentType(ContentType.HTML);
     }
+
+    @DisplayName("http://localhost:8080/styles.css 를 요청했을때 src/main/resources/static/css 디렉토리의 styles.css 파일을 읽어 클라이언트에 응답한다.")
+    @Test
+    void requestCSS() {
+        RestAssured.given().log().all()
+                .when()
+                .contentType("text/css")
+                .get("styles.css")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType("text/css");
+    }
 }
