@@ -1,7 +1,5 @@
-package webserver;
+package webserver.request;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -52,7 +50,7 @@ public class HttpRequestParser {
 
     private String initHeader(BufferedReader br, String line) throws IOException {
         StringBuilder headerBuilder = new StringBuilder();
-        while (!line.equals("")) {
+        while (line != null && !line.equals("")) {
             headerBuilder.append(StringUtils.appendLineSeparator(line));
             line = br.readLine();
         }

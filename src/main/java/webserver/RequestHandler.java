@@ -2,11 +2,12 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.StaticFIleUtils;
+import webserver.request.HttpRequest;
+import webserver.request.HttpRequestParser;
 
 public class RequestHandler implements Runnable {//함수형 인터페이스
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

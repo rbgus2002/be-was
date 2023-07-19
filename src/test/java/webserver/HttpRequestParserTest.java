@@ -3,6 +3,8 @@ package webserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.request.HttpRequest;
+import webserver.request.HttpRequestParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -88,12 +90,7 @@ class HttpRequestParserTest {
         tempMap.put("id","1");
         tempMap.put("password","1234");
 
-
-        request.getParams().keySet()
-                .stream().forEach(key -> verifyParams(key, request.getParams().get(key), tempMap));
-    }
-
-    void verifyParams(String key, String value, Map<String, String> tempMap) {
-        assertTrue(tempMap.get(key).equals(value));
+        assertTrue(tempMap.get("id").equals(request.getParamValueByKey("id")));
+        assertTrue(tempMap.get("password").equals(request.getParamValueByKey("password")));
     }
 }

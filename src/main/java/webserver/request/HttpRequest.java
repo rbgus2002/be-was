@@ -1,4 +1,4 @@
-package webserver;
+package webserver.request;
 
 import java.util.Map;
 
@@ -45,8 +45,8 @@ public class HttpRequest {
         return this.body;
     }
 
-    public Map<String, String> getParams() {
-        return this.paramsMap;
+    public String getParamValueByKey(String key){
+        return paramsMap.get(key);
     }
 
 }
