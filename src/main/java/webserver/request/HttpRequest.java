@@ -87,12 +87,12 @@ public class HttpRequest {
         return stringBuilder.append(method)
                 .append(" ")
                 .append(path)
-                .append(query)
+                .append(query != null ? query : "")
                 .append(" ")
                 .append(version)
                 .append(NEW_LINE)
                 .append(header.buildHeader())
-                .append(body)
+                .append(body != null ? body : "")
                 .toString();
     }
 
