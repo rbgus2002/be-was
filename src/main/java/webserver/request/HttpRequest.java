@@ -4,7 +4,6 @@ import support.HttpMethod;
 import webserver.Header;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static utils.StringUtils.NEW_LINE;
@@ -13,10 +12,10 @@ public class HttpRequest {
 
     private final HttpMethod method;
     private final String path;
-    private final Query query = new Query();
+    private final Query query;
     private final Header header = new Header();
     private final String version;
-    private final String body;
+    private final Parameter body;
 
     public static class RequestHeaderBuilder {
         private String requestLine;
@@ -52,14 +51,8 @@ public class HttpRequest {
         // url 파싱
         String[] pathAndQuery = tokens[1].split("\\?");
         this.path = pathAndQuery[0];
-        if (pathAndQuery.length > 1) {
-            String[] queries = pathAndQuery[1].split("&");
-            Arrays.stream(queries)
-                    .forEach(queryComponent -> {
-                        String[] keyAndValue = queryComponent.split("=");
-                        this.query.appendQuery(keyAndValue[0], keyAndValue[1]);
-                    });
-        }
+        query = pathAndQuery.length > 1 ? new Query(pathAndQuery[1]) : new Query();
+
 
         this.version = tokens[2];
 
@@ -72,7 +65,7 @@ public class HttpRequest {
         );
 
         // body
-        this.body = body;
+        this.body = body != null ? new Parameter(body) : new Parameter();
 
     }
 
