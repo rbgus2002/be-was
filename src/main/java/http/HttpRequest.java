@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
@@ -21,6 +23,7 @@ public class HttpRequest {
     private final Mime mime;
     private final HttpRequestHeader httpRequestHeader;
     private final String body;
+    private final List<Cookie> cookies;
 
     public HttpRequest(BufferedReader reader) throws URISyntaxException, IOException {
         String requestLine = reader.readLine();
@@ -33,6 +36,7 @@ public class HttpRequest {
 
         int contentLength = Integer.parseInt(this.httpRequestHeader.getOrDefault("Content-Length", "0"));
         this.body = HttpUtils.parseBody(reader, contentLength, this.method);
+        this.cookies = Cookie.parseCookie(httpRequestHeader.get("Cookie"));
     }
 
     public HttpUtils.Method method() {
@@ -57,6 +61,10 @@ public class HttpRequest {
 
     public String getBody() {
         return this.body;
+    }
+
+    public List<Cookie> getCookies() {
+        return new ArrayList<>(this.cookies);
     }
 
     public void printLogs() {
