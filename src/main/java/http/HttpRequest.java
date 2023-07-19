@@ -111,4 +111,8 @@ public class HttpRequest {
 	public String getEndpoint() {
 		return endPoint;
 	}
+
+	public Parameter getParameter() {
+		return parameter;
+	}
 }

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import controllers.Controller;
 import http.HttpMethod;
+import http.Parameter;
 
 public class AnnotationMap {
 
@@ -23,8 +24,8 @@ public class AnnotationMap {
 	private AnnotationMap() {
 	}
 
-	public static String run(HttpMethod type, String path) throws InvocationTargetException, IllegalAccessException {
-		return (String)methodMaps.get(type).get(path).invoke(instance);
+	public static String run(HttpMethod type, String path, Parameter parameter) throws InvocationTargetException, IllegalAccessException {
+		return (String)methodMaps.get(type).get(path).invoke(instance, parameter);
 	}
 
 	public static void initialize() {

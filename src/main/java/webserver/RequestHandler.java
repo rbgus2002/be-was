@@ -51,7 +51,7 @@ public class RequestHandler implements Runnable {
 	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint());
+			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint(), httpRequest.getParameter());
 		}
 		HttpResponse httpResponse = new HttpResponse(httpRequest);
 		Path templatePath = new File(TEMPLATES_PATH + path).toPath();
