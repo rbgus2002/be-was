@@ -35,4 +35,16 @@ class ClassListenerTest {
         assertEquals(0, classes.size());
     }
 
+    @Test
+    @DisplayName("루트 package를 포함하여 순회적으로 탐색하여야 합니다.")
+    void scannerRoot() {
+        //given
+
+        //when
+        List<Class<?>> classes = ClassListener.scanClass("");
+
+        //then
+        assertNotEquals(0, classes.size());
+    }
+
 }

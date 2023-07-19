@@ -2,6 +2,7 @@ package webserver;
 
 import db.Database;
 import model.User;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,6 +23,11 @@ import static webserver.HttpHandler.MAIN_PAGE;
 class RequestHandlerTest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
+    SoftAssertions softAssertions;
+
+    String OK = "HTTP/1.1 200 OK";
+    String BAD_REQUEST = "HTTP/1.1 400 Bad Request";
+    String NOT_FOUND = "HTTP/1.1 404 Not Found";
 
     static class IoSocket extends Socket {
 
@@ -51,6 +57,7 @@ class RequestHandlerTest {
     @BeforeEach
     void setUp() {
         Database.clear();
+        softAssertions = new SoftAssertions();
     }
 
     RequestHandler buildRequestHandler(String requestLine) {
@@ -75,12 +82,12 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
             assertNotNull(response);
             assertNotEquals(0, response.length());
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 200 OK", result[0]);
+            assertEquals(OK, result[0]);
         }
 
         @Test
@@ -93,12 +100,12 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
             assertNotNull(response);
             assertNotEquals(0, response.length());
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 404 Not Found", result[0]);
+            assertEquals(NOT_FOUND, result[0]);
         }
 
         @Test
@@ -111,12 +118,12 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
             assertNotNull(response);
             assertNotEquals(0, response.length());
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 200 OK", result[0]);
+            assertEquals(OK, result[0]);
         }
 
         @Test
@@ -129,12 +136,12 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
             assertNotNull(response);
             assertNotEquals(0, response.length());
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 200 OK", result[0]);
+            assertEquals(OK, result[0]);
         }
 
     }
@@ -153,16 +160,17 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
-            assertEquals("javajigi", user.getUserId());
-            assertEquals("password", user.getPassword());
-            assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", user.getName());
-            assertEquals("javajigi%40slipp.net", user.getEmail());
+            softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
+            softAssertions.assertThat(user.getPassword()).isEqualTo("password");
+            softAssertions.assertThat(user.getName()).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
+            softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
+            softAssertions.assertThat(result[0]).isEqualTo("HTTP/1.1 302 Found");
+            softAssertions.assertThat(result[1]).isEqualTo("Location: " + MAIN_PAGE);
+            softAssertions.assertAll();
 
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 302 Found", result[0]);
-            assertEquals("Location: " + MAIN_PAGE, result[1]);
         }
 
         @Test
@@ -175,12 +183,11 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
             assertNull(user);
-
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 400 Bad Request", result[0]);
+            assertEquals(BAD_REQUEST, result[0]);
         }
 
         @Test
@@ -193,16 +200,16 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
+            String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
-            assertEquals("javajigi", user.getUserId());
-            assertEquals("password", user.getPassword());
-            assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", user.getName());
-            assertEquals("javajigi%40slipp.net", user.getEmail());
-
-            String[] result = outputStream.toString().split(NEW_LINE);
-            assertEquals("HTTP/1.1 302 Found", result[0]);
-            assertEquals("Location: " + MAIN_PAGE, result[1]);
+            softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
+            softAssertions.assertThat(user.getPassword()).isEqualTo("password");
+            softAssertions.assertThat(user.getName()).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
+            softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
+            softAssertions.assertThat(result[0]).isEqualTo("HTTP/1.1 302 Found");
+            softAssertions.assertThat(result[1]).isEqualTo("Location: " + MAIN_PAGE);
+            softAssertions.assertAll();
         }
 
     }

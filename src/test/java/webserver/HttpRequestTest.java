@@ -1,5 +1,6 @@
 package webserver;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +16,11 @@ import static utils.StringUtils.appendNewLine;
 @DisplayName("RequestHeader 테스트")
 class HttpRequestTest {
 
-    String simpleRequestLine = "GET /index.html HTTP/1.1";
-    String SIMPLE_REQUEST_URL = "/index.html";
-    String createRequestLine = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
-    String CREATE_REQUEST_URL = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
-    String CREATE_REQUEST_PATH = "/user/create";
+    final String simpleRequestLine = "GET /index.html HTTP/1.1";
+    final String SIMPLE_REQUEST_URL = "/index.html";
+    final String createRequestLine = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+    final String CREATE_REQUEST_URL = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
+    final String CREATE_REQUEST_PATH = "/user/create";
 
     String headers = appendNewLine("Host: localhost:8080", "Connection: keep-alive", "Accept: */*");
     String body = ""; // 본문 내용을 추가할 수 있습니다.
@@ -66,11 +67,13 @@ class HttpRequestTest {
         Query query = httpRequest.getRequestQuery();
 
         //then
-        assertEquals("javajigi", query.getValue("userId"));
-        assertEquals("password", query.getValue("password"));
-        assertEquals("%EB%B0%95%EC%9E%AC%EC%84%B1", query.getValue("name"));
-        assertEquals("javajigi%40slipp.net", query.getValue("email"));
-        assertEquals(4, query.size());
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(query.getValue("userId")).isEqualTo("javajigi");
+        softAssertions.assertThat(query.getValue("password")).isEqualTo("password");
+        softAssertions.assertThat(query.getValue("name")).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
+        softAssertions.assertThat(query.getValue("email")).isEqualTo("javajigi%40slipp.net");
+        softAssertions.assertThat(query.size()).isEqualTo(4);
+        softAssertions.assertAll();
     }
 
 }

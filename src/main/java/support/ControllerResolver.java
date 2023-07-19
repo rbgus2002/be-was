@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static support.DefaultInstanceManager.getManageObjectFactory;
+import static support.DefaultInstanceManager.getInstanceMagager;
 
 public abstract class ControllerResolver {
 
@@ -31,12 +31,6 @@ public abstract class ControllerResolver {
         controllerClasses.forEach(clazz -> {
             Controller annotation = clazz.getAnnotation(Controller.class);
             if (annotation != null) {
-                try {
-                    getManageObjectFactory().addInstance(clazz);
-                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                         IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
                 String path = annotation.value();
 
                 Map<String, Method> controllerMethods = Arrays.stream(clazz.getDeclaredMethods())
@@ -70,7 +64,7 @@ public abstract class ControllerResolver {
         if (controllerClass == null || method == null) {
             return false;
         }
-        Object instance = getManageObjectFactory().getInstance(controllerClass);
+        Object instance = getInstanceMagager().getInstance(controllerClass);
 
         // 헤더 처리
         Query requestQuery = request.getRequestQuery();

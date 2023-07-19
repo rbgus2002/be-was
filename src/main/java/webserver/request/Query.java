@@ -19,4 +19,16 @@ public class Query {
         return this.query.size();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append('?');
+        query.forEach(
+                (s, s2) -> stringBuilder.append(s)
+                        .append("=")
+                        .append(s2)
+                        .append("&")
+        );
+        return stringBuilder.toString().replaceAll(".$", "");
+    }
 }

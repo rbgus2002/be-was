@@ -29,13 +29,12 @@ public class RequestHandler extends HttpHandler implements Runnable {
 
             // 요청 해석
             HttpRequest request = buildRequestHeader(in);
-            logger.debug("Request Headers: \n{}", request.getHeaders());
-            logger.debug("Request Headers End");
+            logger.debug("Request Line & Headers: \n{}", request.toString());
 
             // 요청 수립
             HttpResponse response = new HttpResponse();
 
-            if(request.getRequestMethod() == HttpMethod.GET)
+            if (request.getRequestMethod() == HttpMethod.GET)
                 doGet(request, response);
 
             response.response(dos);
