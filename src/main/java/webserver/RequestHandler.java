@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Map;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -31,20 +30,10 @@ public class RequestHandler implements Runnable {
 
             // 요청 읽기
             HttpRequest httpRequest = new HttpRequest(reader);
-            printLogs(httpRequest);
+            httpRequest.printLogs();
             responseHandler.response(httpRequest);
         } catch (Throwable e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private void printLogs(HttpRequest httpRequest) {
-        StringBuilder requestBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : httpRequest.getHttpHeader().entrySet()) {
-            requestBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
-        }
-        logger.debug("Method : {}, URI : {}, Version : {}", httpRequest.method(), httpRequest.uri(), httpRequest.version());
-        logger.debug("Headers : {}", requestBuilder);
-        logger.debug("Mime : {}, Body : {}", httpRequest.mime(), httpRequest.getBody());
     }
 }

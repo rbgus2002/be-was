@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class HttpHeader {
 
@@ -25,6 +26,10 @@ public class HttpHeader {
 
     public Map<String, String> getHeaders() {
         return this.headers;
+    }
+
+    public Set<Map.Entry<String, String>> entrySet() {
+        return this.headers.entrySet();
     }
 
     private Map<String, String> parseHeader(BufferedReader reader) throws IOException {

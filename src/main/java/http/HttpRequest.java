@@ -1,5 +1,7 @@
 package http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.HttpUtils;
 
 import java.io.BufferedReader;
@@ -10,6 +12,8 @@ import java.net.http.HttpClient;
 import java.util.Map;
 
 public class HttpRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
     private final HttpUtils.Method method;
     private final URI uri;
@@ -51,11 +55,17 @@ public class HttpRequest {
         return this.httpHeader.get(key);
     }
 
-    public Map<String, String> getHttpHeader() {
-        return this.httpHeader.getHeaders();
-    }
-
     public String getBody() {
         return this.body;
+    }
+
+    public void printLogs() {
+        StringBuilder requestBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : this.httpHeader.entrySet()) {
+            requestBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
+        }
+        logger.debug("Method : {}, URI : {}, Version : {}", this.method, this.uri, this.version);
+        logger.debug("Headers : {}", requestBuilder);
+        logger.debug("Mime : {}, Body : {}", this.mime, this.body);
     }
 }
