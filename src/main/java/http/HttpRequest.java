@@ -47,8 +47,16 @@ public class HttpRequest {
         this.body = builder.body;
     }
 
+    public String getMethod() {
+        return this.method;
+    }
+
     public String getUri() {
         return this.uri;
+    }
+
+    public String getBody() {
+        return this.body;
     }
 
 }
