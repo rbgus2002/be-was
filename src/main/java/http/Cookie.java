@@ -1,6 +1,7 @@
 package http;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Cookie {
@@ -19,6 +20,9 @@ public class Cookie {
 
     public static List<Cookie> parseCookie(String cookieString) {
         List<Cookie> cookies = new ArrayList<>();
+        if (cookieString == null) {
+            return Collections.emptyList();
+        }
         String[] cookieParts = cookieString.split("; ");
         for (String cookiePart : cookieParts) {
             String[] keyValue = cookiePart.split("=");
