@@ -1,15 +1,8 @@
 package controller;
 
-import annotations.MyGetMapping;
-import controller.Controller;
-import exception.BadRequestException;
-import global.constant.Headers;
-import global.constant.StatusCode;
-import global.response.ResponseEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,6 +32,20 @@ class ControllerTest {
 
         //when
         String response = controller.getIndexHtml();
+
+        //then
+        assertTrue(response.contains(expectedResponse));
+    }
+
+    @Test
+    @DisplayName("getFormHtml 메서드 테스트")
+    void testGetFormHtml() {
+        //given
+        Controller controller = new Controller();
+        String expectedResponse = "HTTP/1.1 200 OK \n";
+
+        //when
+        String response = controller.getFormHtml();
 
         //then
         assertTrue(response.contains(expectedResponse));

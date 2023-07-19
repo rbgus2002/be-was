@@ -28,4 +28,17 @@ public class Controller {
             throw new BadRequestException();
         }
     }
+
+    @MyGetMapping(path = "/user/form.html")
+    public String getFormHtml() {
+        try {
+            return ResponseEntity
+                    .statusCode(StatusCode.OK)
+                    .addHeaders(Headers.LOCATION, "/user/form.html")
+                    .responseResource("/user/form.html")
+                    .build();
+        } catch (IOException e) {
+            throw new BadRequestException();
+        }
+    }
 }
