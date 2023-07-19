@@ -10,6 +10,10 @@ public class HttpRequestFixture {
         return new HttpRequest(HttpMethod.GET, URL.from("/index.html"), HttpVersion.V1_1, null, null);
     }
 
+    public static HttpRequest getRequestUserForm() {
+        return new HttpRequest(HttpMethod.GET, URL.from("/user/form.html"), HttpVersion.V1_1, null, null);
+    }
+
     public static HttpRequest getStrangeRequest() {
         return new HttpRequest(HttpMethod.GET, URL.from("/afjawifoawef"), HttpVersion.V1_1, null, null);
     }
