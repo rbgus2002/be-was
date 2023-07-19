@@ -6,7 +6,8 @@ import service.UserService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static exception.Exception.INVALID_URI;
+import static exception.ExceptionName.INVALID_URI;
+import static exception.ExceptionName.NOT_ENOUGH_USER_INFORMATION;
 import static http.Extension.HTML;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
@@ -62,6 +63,8 @@ public class Controller {
         Map<String, String> information = new HashMap<>();
         for (String param : params) {
             String[] info = param.split("=");
+            if (info.length != 2)
+                throw new IllegalArgumentException(NOT_ENOUGH_USER_INFORMATION);
             information.put(info[0], info[1]);
         }
         return information;
