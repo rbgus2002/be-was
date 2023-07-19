@@ -12,13 +12,11 @@ import java.util.Map;
 
 public class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
-
-    private String method;
-    private String url;
-    private String version;
-
     private final Map<String, String> headers = new HashMap<>();
     private final Map<String, String> params = new HashMap<>();
+    private final String method;
+    private String url;
+    private final String version;
 
     public HttpRequest(InputStream in) throws IOException {
         String input;

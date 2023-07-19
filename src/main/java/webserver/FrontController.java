@@ -1,9 +1,8 @@
 package webserver;
 
-import controller.DefaultController;
-import controller.HomeController;
 import controller.HttpController;
-import controller.JoinController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import static controller.HomeController.HOME_CONTROLLER;
 import static controller.JoinController.JOIN_CONTROLLER;
 
 public class FrontController {
+    private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
     Map<String, HttpController> controllerMap = new HashMap<>();
 
     public FrontController() {
