@@ -13,6 +13,10 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.jknack.handlebars.internal.lang3.StringUtils;
+
+import webserver.utils.HttpHeader;
+
 public class HttpWasRequest {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
@@ -40,13 +44,20 @@ public class HttpWasRequest {
 		if (!bufferedReader.ready()) {
 			return;
 		}
-		StringBuilder sb = new StringBuilder();
+		final String bodyData = getBodyData(bufferedReader);
+		if (StringUtils.contains(HttpHeader.CONTENT_TYPE.getType(), "x-www-form-urlencoded")) {
+			saveRequestParam(bodyData);
+		}
+		map.put("body", bodyData);
+	}
 
+	private String getBodyData(BufferedReader bufferedReader) throws IOException {
+		StringBuilder sb = new StringBuilder();
 		int data;
 		while(bufferedReader.ready() && (data = bufferedReader.read()) != -1) {
 			sb.append((char) data);
 		}
-		map.put("body", sb.toString());
+		return sb.toString();
 	}
 
 	private void saveAnotherHeader(final BufferedReader bufferedReader) throws IOException {
@@ -87,11 +98,11 @@ public class HttpWasRequest {
 		if (token.length == 1)
 			return;
 
-		final String[] params = token[1].split("&");
-		saveRequestParam(params);
+		saveRequestParam(token[1]);
 	}
 
-	private void saveRequestParam(String[] params) {
+	private void saveRequestParam(String data) {
+		final String[] params = data.split("&");
 		for (String param : params) {
 			final String[] keyValue = param.split("=");
 			final String key = keyValue[0];
