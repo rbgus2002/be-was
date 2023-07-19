@@ -7,13 +7,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Parser {
     private static final Logger log = LoggerFactory.getLogger(Parser.class);
 
     public static Map<String, String> parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
-        Map<String, String> requestLineMap = new HashMap<>();
+        Map<String, String> requestLineMap = new ConcurrentHashMap<>();
         requestLineMap.put("method", tokens[0]);
         requestLineMap.put("uri", tokens[1]);
         requestLineMap.put("version", tokens[2]);
@@ -22,7 +23,7 @@ public class Parser {
 
     public static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
         String line;
-        Map<String, String> requestHeaders = new HashMap<>();
+        Map<String, String> requestHeaders = new ConcurrentHashMap<>();
 
         while ((line = br.readLine()) != null && !line.isEmpty()) {
             String[] header = line.split(":");
@@ -34,7 +35,7 @@ public class Parser {
 
     public static Map<String, String> parseQueryParameters(String requestUri) {
         log.debug("requestUri = {}", requestUri);
-        Map<String, String> queryParams = new HashMap<>();
+        Map<String, String> queryParams = new ConcurrentHashMap<>();
         String queryString = requestUri.substring(requestUri.indexOf("?") + 1);
         String[] params = queryString.split("&");
 
