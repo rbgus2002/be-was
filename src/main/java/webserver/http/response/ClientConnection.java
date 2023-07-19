@@ -2,6 +2,8 @@ package webserver.http.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.response.body.ResponseBody;
+import webserver.http.response.header.HttpContentType;
 import webserver.util.Parser;
 
 import java.io.DataOutputStream;

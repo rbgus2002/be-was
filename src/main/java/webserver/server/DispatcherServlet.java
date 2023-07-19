@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import webserver.http.response.ClientConnection;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
-import webserver.http.response.ResponseBody;
+import webserver.http.response.body.ResponseBody;
 
 import java.io.DataOutputStream;
 

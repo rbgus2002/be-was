@@ -1,6 +1,8 @@
 package webserver.http.response;
 
 
+import webserver.http.response.body.ResponseBody;
+
 public class HttpResponse {
 
     private final ResponseMessageHeader responseMessageHeader;

@@ -1,4 +1,4 @@
-package webserver.http.response;
+package webserver.http.response.header;
 
 
 public enum ResponseHeader {

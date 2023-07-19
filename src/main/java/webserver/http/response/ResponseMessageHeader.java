@@ -2,8 +2,8 @@ package webserver.http.response;
 
 import webserver.server.WebServer;
 
-import static webserver.http.response.ResponseHeader.*;
-import static webserver.http.response.StatusLine.*;
+import static webserver.http.response.header.ResponseHeader.*;
+import static webserver.http.response.header.StatusLine.*;
 
 public class ResponseMessageHeader {
     private static final String KEY_VALUE_PARSER = ":";

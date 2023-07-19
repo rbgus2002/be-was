@@ -1,7 +1,6 @@
-package webserver.http.response;
+package webserver.http.response.header;
 
 import com.google.common.collect.ImmutableMap;
-import webserver.http.MimeType;
 
 import java.util.HashMap;
 import java.util.Map;
