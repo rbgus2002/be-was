@@ -3,16 +3,16 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.util.Map;
 
-import model.User;
+import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
 
 
 public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+
+    private final static Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
 
@@ -29,18 +29,7 @@ public class RequestHandler implements Runnable {
             String url = HttpRequestUtils.getUrl(firstLine);
 
             if (url.startsWith("/user/create")) {
-                String[] tokens = url.split("\\?");
-                String path = tokens[0];
-                String queryString = tokens[1];
-                Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
-                User user = new User(
-                        params.get("userId"),
-                        params.get("password"),
-                        params.get("name"),
-                        params.get("email")
-                );
-                logger.debug("User: {}", user);
-                url = "/index.html";
+                url = UserController.createUser(url);
             }
 
             DataOutputStream dos = new DataOutputStream(out);
