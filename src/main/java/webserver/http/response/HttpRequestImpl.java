@@ -1,11 +1,13 @@
 package webserver.http.response;
 
+import webserver.http.ContentType;
 import webserver.http.HttpHeaders;
 
 public class HttpRequestImpl extends HttpResponse {
     private static final String redirectionHeader = "Location";
     private String uri = HttpResponse.NOT_RENDER_URI;
     private HttpStatus httpStatus = HttpStatus.OK;
+    private ContentType contentType = ContentType.HTML;
     private final HttpHeaders headers = new HttpHeaders();
     private byte[] body = new byte[0];
 
@@ -47,6 +49,16 @@ public class HttpRequestImpl extends HttpResponse {
     @Override
     public void setBody(byte[] body) {
         this.body = body;
+    }
+
+    @Override
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
+    }
+
+    @Override
+    public ContentType getContentType() {
+        return this.contentType;
     }
 
     @Override
