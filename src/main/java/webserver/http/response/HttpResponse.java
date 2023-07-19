@@ -25,7 +25,7 @@ public class HttpResponse {
         return new HttpResponse();
     }
 
-    public void response(OutputStream out){
+    public void writeResponseToOutputStream(OutputStream out){
         DataOutputStream dos = new DataOutputStream(out);
 
         if(status == OK){

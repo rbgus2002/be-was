@@ -83,6 +83,6 @@ public class DispatcherServlet {
     }
 
     public void processDispatchServlet(OutputStream out, HttpResponse response) {
-        response.response(out);
+        response.writeResponseToOutputStream(out);
     }
 }
