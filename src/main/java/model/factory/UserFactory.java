@@ -1,4 +1,4 @@
-package model.dto;
+package model.factory;
 
 import model.User;
 

@@ -24,10 +24,14 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            DispatcherServlet dispatcherServlet = new DispatcherServlet();
-            dispatcherServlet.doService(in, out);
+            HttpRequest request = HttpRequest.from(in);
+            HttpResponse response = HttpResponse.init();
+
+            DispatcherServlet dispatcherServlet = DispatcherServlet.init();
+            dispatcherServlet.doService(request, response);
+            dispatcherServlet.processDispatchServlet(out, response);
         } catch (IOException e){
-            // TODO : Redirect 로직 다시 구성 (여기서 리다이렉트 시킬 수 있게 하기)
+            logger.debug("readAllBytes ERROR");
         }
         catch (Throwable e) {
             logger.error(e.getMessage());

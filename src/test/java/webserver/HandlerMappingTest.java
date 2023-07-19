@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
@@ -42,7 +39,7 @@ class HandlerMappingTest {
         HttpRequest request = HttpRequest.from(in);
 
         // then
-        HandlerMapping.getHandler(request);
+        HandlerMapping.getMethodMapped(request);
     }
 
     @Test
@@ -52,7 +49,7 @@ class HandlerMappingTest {
         HttpRequest request = HttpRequest.from(in);
 
         // when
-        Method method = HandlerMapping.getHandler(request);
+        Method method = HandlerMapping.getMethodMapped(request);
 
         // then
         assertEquals("createUser", method.getName());

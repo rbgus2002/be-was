@@ -23,7 +23,7 @@ public class HandlerMapping {
     private HandlerMapping() {
     }
 
-    public static Method getHandler(HttpRequest request){
+    public static Method getMethodMapped(HttpRequest request){
         return GETMap.getOrDefault(request.getPath(), null);
     }
 }

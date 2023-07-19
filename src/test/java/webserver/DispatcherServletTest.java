@@ -1,24 +1,15 @@
 package webserver;
 
-import controller.Controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.Uri;
-import webserver.http.response.HttpResponse;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.appendNewLine;
 
 class DispatcherServletTest {
@@ -47,8 +38,8 @@ class DispatcherServletTest {
         HttpRequest request = HttpRequest.from(in);
 
         //
-        Method method = HandlerMapping.getHandler(request);
-        DispatcherServlet tmp = new DispatcherServlet();
+        Method method = HandlerMapping.getMethodMapped(request);
+        DispatcherServlet tmp = DispatcherServlet.init();
 
         // then
 

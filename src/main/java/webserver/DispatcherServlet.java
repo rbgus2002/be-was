@@ -13,50 +13,76 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
 import static java.lang.invoke.MethodType.methodType;
+import static webserver.http.HttpStatus.*;
 
 public class DispatcherServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    public void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
-        Method method = HandlerMapping.getHandler(request);
-        HttpResponse response = getHttpResponse(request, method);
-        doResponse(out, response);
+    private DispatcherServlet() {
     }
 
-    private HttpResponse getHttpResponse(HttpRequest request, Method method) throws Throwable {
-        return (method == null) ? HttpResponse.findStatic(request.getPath()) : callMethod(request, method);
+    public static DispatcherServlet init() {
+        return new DispatcherServlet();
     }
 
-    private HttpResponse callMethod(HttpRequest request, Method method) throws Throwable {
+    public void doService(HttpRequest request, HttpResponse response) throws Throwable {
+        logger.debug("{}", request);
+
+        doDispatch(request, response);
+    }
+
+    public void doDispatch(HttpRequest request, HttpResponse response) throws Throwable {
+        Method method = HandlerMapping.getMethodMapped(request);
+        handle(request, response, method);
+    }
+
+    private void handle(HttpRequest request, HttpResponse response, Method method) throws Throwable {
+        String path = request.getPath();
+        if (hasRequestPathMapped(method)) {
+            path = executeRequest(request, method);
+        }
+        findStaticFile(response, path);
+    }
+
+    private static boolean hasRequestPathMapped(Method method) {
+        return method != null;
+    }
+
+    private String executeRequest(HttpRequest request, Method method) throws Throwable {
         MethodHandle methodHandle = getMethodHandle(method);
-        Object response = (hasParameter(methodHandle.type())) ? methodHandle.invoke(request.getQuery()) : methodHandle.invoke();
-        return (HttpResponse) response;
+        String path;
+        if (hasParameter(methodHandle.type())) {
+            path = (String) methodHandle.invoke(request.getQuery());;
+        } else {
+            path = (String) methodHandle.invoke();
+        }
+        return path;
     }
 
-    private boolean hasParameter(MethodType methodType){
-        return methodType.parameterCount() != 0;
-    }
-
-    private boolean hasParameter(Method method){
-        return method.getParameterCount() != 0;
+    private void findStaticFile(HttpResponse response, String filePath) {
+        try {
+            response.setResults(filePath, OK);
+        } catch (IOException e) {
+            logger.debug("readAllBytes ERROR");
+        }
     }
 
     private MethodHandle getMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException {
-        MethodType methodType = (hasParameter(method)) ? methodType(HttpResponse.class, method.getParameterTypes()) : methodType(HttpResponse.class);
+        MethodType methodType = (hasParameter(method)) ? methodType(String.class, method.getParameterTypes()) : methodType(String.class);
         return MethodHandles.lookup()
                 .findVirtual(Controller.class, method.getName(), methodType)
                 .bindTo(new Controller());
     }
 
-    public void doService(InputStream in, OutputStream out) throws Throwable {
-        // request
-        HttpRequest request = HttpRequest.from(in);
-        logger.debug("{}", request);
-
-        doDispatch(request, out);
+    private boolean hasParameter(MethodType methodType) {
+        return methodType.parameterCount() != 0;
     }
 
-    private void doResponse(OutputStream out, HttpResponse httpResponse){
-        httpResponse.response(out);
+    private boolean hasParameter(Method method) {
+        return method.getParameterCount() != 0;
+    }
+
+    public void processDispatchServlet(OutputStream out, HttpResponse response) {
+        response.response(out);
     }
 }
