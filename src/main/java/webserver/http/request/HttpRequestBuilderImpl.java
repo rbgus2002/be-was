@@ -1,14 +1,17 @@
-package webserver.http;
+package webserver.http.request;
+
+import webserver.http.HttpHeaders;
+import webserver.http.HttpMethod;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpRequestBuilderImpl implements HttpRequest.Builder {
-    private HttpMethod method;
-    private String uri;
-    private String version;
-    private final HttpHeaders headers;
-
-    public HttpRequestBuilderImpl() {
-        this.headers = new HttpHeaders();
-    }
+    private HttpMethod method = HttpMethod.GET;
+    private String uri = "/";
+    private String version = "1.1";
+    private final HttpHeaders headers = new HttpHeaders();
+    private final Map<String, String> requestParameters = new HashMap<>();
 
     @Override
     public HttpRequest.Builder method(HttpMethod method) {
@@ -35,7 +38,13 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     }
 
     @Override
+    public HttpRequest.Builder addParameter(String parameterName, String value) {
+        requestParameters.put(parameterName, value);
+        return this;
+    }
+
+    @Override
     public HttpRequest build() {
-        return new HttpRequestImpl(method, uri, version, headers);
+        return new HttpRequestImpl(method, uri, version, headers, requestParameters);
     }
 }
