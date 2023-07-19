@@ -12,11 +12,13 @@ import java.util.Map;
 
 public class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
-    private final Map<String, String> headers = new HashMap<>();
-    private final Map<String, String> params = new HashMap<>();
+
     private final String method;
     private String url;
     private final String version;
+
+    private final Map<String, String> headers = new HashMap<>();
+    private final Map<String, String> params = new HashMap<>();
 
     public HttpRequest(InputStream in) throws IOException {
         String input;
@@ -59,7 +61,7 @@ public class HttpRequest {
             String[] paramTokens = keyValue.split("=");
             params.put(paramTokens[0], paramTokens[1]);
         }
-        logger.debug("Parameters {}", params);
+        logger.debug("{}", params);
     }
 
     public String getParam(String key) {
