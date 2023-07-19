@@ -7,6 +7,7 @@ public class HttpResponse {
     private String version;
     private int statusCode;
     private String statusText;
+    private String contentType;
     private Map<String, String> headers;
     private byte[] body;
 
@@ -20,6 +21,7 @@ public class HttpResponse {
         this.version = builder.version();
         this.statusCode = builder.statusCode();
         this.statusText = statusMap.get(statusCode);
+        this.contentType = builder.contentType();
         this.headers = builder.headers();
         this.body = builder.body();
     }
@@ -27,6 +29,7 @@ public class HttpResponse {
     public static class Builder {
         private String version;
         private int statusCode;
+        private String contentType = "text/plain";
         private Map<String, String> headers;
         private byte[] body;
 
@@ -41,6 +44,11 @@ public class HttpResponse {
 
         public HttpResponse.Builder statusCode(int statusCode) {
             this.statusCode = statusCode;
+            return this;
+        }
+
+        public HttpResponse.Builder contentType(String contentType) {
+            this.contentType = contentType;
             return this;
         }
 
@@ -64,6 +72,10 @@ public class HttpResponse {
 
         int statusCode() {
             return statusCode;
+        }
+
+        String contentType() {
+            return contentType;
         }
 
         Map headers() {
@@ -92,6 +104,8 @@ public class HttpResponse {
     public String statusText() {
         return this.statusText;
     }
+
+    public String contentType() { return this.contentType; }
 
     public Map headers() {
         return headers;

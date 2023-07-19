@@ -9,6 +9,7 @@ public class HttpRequest {
     private String uri;
     private String path;
     private String version;
+    private String contentType = "text/plain";
     private Map<String, String> headers;
     private Map<String, String> body;
 
@@ -17,6 +18,7 @@ public class HttpRequest {
         this.uri = builder.uri();
         this.path = builder.path();
         this.version = builder.version();
+        this.contentType = builder.contentType();
         this.headers = builder.headers();
         this.body = builder.headers();
     }
@@ -26,6 +28,7 @@ public class HttpRequest {
         private String uri;
         private String path;
         private String version;
+        private String contentType = "text/plain";
         private Map<String, String> headers;
         private Map<String, String> body;
 
@@ -51,6 +54,9 @@ public class HttpRequest {
 
         // TODO: header 전체 파싱? headers로 나눠서 header 각자 파싱하도록
         public HttpRequest.Builder setHeader(String name, String value) {
+            if (name.equals("Accept")) {
+                this.contentType = value.split("[,;]")[0];
+            }
             this.headers.put(name, value);
             return this;
         }
@@ -80,6 +86,10 @@ public class HttpRequest {
             return version;
         }
 
+        String contentType() {
+            return contentType;
+        }
+
         Map headers() {
             return headers;
         }
@@ -107,6 +117,10 @@ public class HttpRequest {
 
     public String version() {
         return version;
+    }
+
+    public String contentType() {
+        return contentType;
     }
 
     public Map headers() {
