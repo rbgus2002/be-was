@@ -3,22 +3,29 @@ package webserver.http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.HttpRequestParser;
+import webserver.http.request.HttpRequestParserImpl;
+import webserver.http.request.exception.IllegalRequestParameterException;
 
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
 
 @DisplayName("HttpRequestParserImpl 테스트")
 class HttpRequestParserImplTest {
-    HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
-    static String httpMessage =
-            "GET /index.html HTTP/1.1\r\n" +
+    final HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
+    static final String httpMessage =
+            "GET /index.html?parameter1=hello1&parameter2=hello2 HTTP/1.1\r\n" +
             "Host: localhost:8080\r\n" +
             "Connection: keep-alive\r\n" +
             "sec-ch-ua: \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"\r\n" +
@@ -42,7 +49,7 @@ class HttpRequestParserImplTest {
     class parse {
         @Test
         @DisplayName("HTTP 요청 메세지의 정보를 담고있는 HttpRequest 객체를 반환한다")
-        void returnHttpRequest() throws IOException {
+        void returnHttpRequest() throws IOException, IllegalRequestParameterException {
             //given
             HashMap<String, String> expectHeaders = getExpectHeaders();
             InputStream inputStream = new ByteArrayInputStream(httpMessage.getBytes());
@@ -51,19 +58,80 @@ class HttpRequestParserImplTest {
             HttpRequest httpRequest = httpRequestParser.parse(inputStream);
 
             //then
-            verifyStartLine(httpRequest, HttpMethod.GET, "/index.html", "1.1");
+            verifyRequestLine(httpRequest, HttpMethod.GET, "/index.html", "1.1");
             verifyHeaders(httpRequest, expectHeaders);
         }
     }
 
+    @Nested
+    @DisplayName("parseRequestParameter method")
+    class ParseRequestParameter {
+        @Nested
+        @DisplayName("파라미터 문자열이 잘못되었을 경우")
+        class IsParameterStringWrong {
+            @Test
+            @DisplayName("IllegalRequestParameterException 예외가 발생한다")
+            void throwIllegalRequestParameterException() throws ReflectiveOperationException {
+                //given
+                HttpRequest.Builder builder = HttpRequest.builder();
+                String wrongParameters = "wrong";
+                Method parseRequestParameterMethod = HttpRequestParserImpl.class
+                        .getDeclaredMethod("parseRequestParameter", HttpRequest.Builder.class, String.class);
+                parseRequestParameterMethod.setAccessible(true);
+
+                //when
+                //then
+                try {
+                    parseRequestParameterMethod.invoke(httpRequestParser, builder, wrongParameters);
+                    throw new RuntimeException("에러가 발생해야됨");
+                } catch (InvocationTargetException e) {
+                    assertThat(e.getTargetException())
+                            .isInstanceOf(IllegalRequestParameterException.class);
+                }
+            }
+        }
+
+        @Nested
+        @DisplayName("파라미터 문자열이 올바른 경우")
+        class IsParameterStringCorrect {
+            @Test
+            @DisplayName("아무 일도 발생하지 않는다")
+            void NottingOccurred() throws ReflectiveOperationException {
+                //given
+                HttpRequest.Builder builder = HttpRequest.builder();
+                String wrongParameters = "correct=correct";
+                Method parseRequestParameterMethod = HttpRequestParserImpl.class
+                        .getDeclaredMethod("parseRequestParameter", HttpRequest.Builder.class, String.class);
+                parseRequestParameterMethod.setAccessible(true);
+
+                //when
+                //then
+                parseRequestParameterMethod.invoke(httpRequestParser, builder, wrongParameters);
+            }
+        }
+    }
+
     @SuppressWarnings("SameParameterValue")
-    private static void verifyStartLine(HttpRequest httpRequest,
-                                        HttpMethod method,
-                                        String uri,
-                                        String version) {
+    private static void verifyRequestLine(HttpRequest httpRequest,
+                                          HttpMethod method,
+                                          String uri,
+                                          String version) {
         assertThat(httpRequest.getMethod()).isEqualTo(method);
         assertThat(httpRequest.getUri()).isEqualTo(uri);
         assertThat(httpRequest.getVersion()).isEqualTo(version);
+
+        verifyParameter(httpRequest, "parameter1", "hello1");
+        verifyParameter(httpRequest, "parameter2", "hello2");
+
+        Optional<String> notExist = httpRequest.getParameter("notExist");
+        assertThat(notExist.isEmpty()).isTrue();
+    }
+
+    private static void verifyParameter(HttpRequest httpRequest, String parameterName, String hello2) {
+        String parameter = httpRequest.getParameter(parameterName)
+                .orElseThrow(RuntimeException::new);
+        assertThat(parameter).isNotNull();
+        assertThat(parameter).isEqualTo(hello2);
     }
 
     private static void verifyHeaders(HttpRequest httpRequest,
