@@ -11,7 +11,7 @@ public class ResponseHandler {
 
     public static HttpResponse createResponse(HttpRequest request) {
         try {
-            byte[] body = FileService.getResource(request.getPath());
+            byte[] body = FileService.getStaticResource(request.getPath());
             return HttpResponse.of(request.getVersion(), HttpStatusCode.OK, body);
         } catch (IOException exception) {
             return HttpResponse.of(request.getVersion(), HttpStatusCode.NOT_FOUND, new byte[0]);

@@ -19,7 +19,7 @@ class FileServiceTest {
         byte[] expected = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
 
         // when
-        byte[] file = FileService.getResource(path);
+        byte[] file = FileService.getStaticResource(path);
 
         // then
         assertArrayEquals(expected, file);
