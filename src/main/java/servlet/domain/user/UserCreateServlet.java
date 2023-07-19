@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import container.Servlet;
 import container.annotation.MyMapping;
 import db.Database;
@@ -11,10 +14,12 @@ import lock.NamedLock;
 import model.user.User;
 import model.user.factory.UserFactory;
 import servlet.domain.user.exception.AlreadyExistUserException;
+import webserver.RequestHandler;
 
-//@ResponseBody
 @MyMapping("/user/create")
 public class UserCreateServlet implements Servlet {
+
+	private static final Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);
 
 	@Override
 	public String execute(Map<String, String> model) {
@@ -29,7 +34,7 @@ public class UserCreateServlet implements Servlet {
 			verifyCreateUser(findUser);
 			Database.addUser(user);
 
-			System.out.println(Database.findUserById(user.getUserId()));
+			logger.info("Registered UserId: {}", Database.findUserById(user.getUserId()));
 		} finally {
 			lock.unlock();
 		}
