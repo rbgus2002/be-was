@@ -1,5 +1,7 @@
 package webserver;
 
+import controller.FileController;
+import controller.ServiceController;
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,49 +90,16 @@ public class RequestHandler implements Runnable {
     }
 
     private Response generateResponse(Request request) throws Exception {
-        String targetUri = request.getTargetUri();
+        Response response;
 
-        // Static Files
-        String[] tokens = targetUri.split("\\.");
-        String extension = tokens[tokens.length-1];
-        MIME mime = MIME.getMimeByExtension(extension);
-        if (mime != null) {
-            byte[] body = FileService.loadStaticFile(targetUri);
-
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-            return new Response(STATUS.OK, headerMap, body);
+        response = FileController.genereateResponse(request);
+        if(response != null) {
+            return response;
         }
-        // Service Logic
-        if(targetUri.startsWith("/user/create")) {
-            Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
-            UserService.userSignUp(bodyParameterMap);
 
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-
-            return new Response(STATUS.SEE_OTHER, headerMap, null);
-        }
-        if(targetUri.startsWith("/user/login")){
-            Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
-            String userId = bodyParameterMap.get(USERID);
-            String password = bodyParameterMap.get(PASSWORD);
-            // ID/PW 검증
-            if(!UserService.validateUser(userId, password)) {
-                Map<String, String> headerMap = new HashMap<>();
-                headerMap.put(HEADER_REDIRECT_LOCATION, LOGIN_FAILED_URL);
-                return new Response(STATUS.SEE_OTHER, headerMap, null);
-            }
-
-            // Session ID 추가
-            Session session = SessionService.getSession(userId);
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-            headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + session.getSessionId() + HEADER_COOKIE_PATH);
-
-            return new Response(STATUS.SEE_OTHER, headerMap, null);
+        response = ServiceController.generateResponse(request);
+        if(response != null) {
+            return response;
         }
 
         return new Response(STATUS.NOT_FOUND, null, null);
