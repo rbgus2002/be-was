@@ -10,12 +10,12 @@ import webserver.utils.FileUtils;
 import java.io.*;
 import java.net.Socket;
 
-public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+public class DispatcherServlet implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
     private final Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
+    public DispatcherServlet(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
