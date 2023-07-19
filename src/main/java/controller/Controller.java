@@ -36,10 +36,23 @@ public class Controller {
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (Exception e) {
-            return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/error.html")
+            String errorPage = getErrorPage(e.getMessage());
+            return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
                     .setContentType(MIME.getMIME().get(HTML));
         }
 
+    }
+
+    public String getErrorPage(String errorMessage) {
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<title>Error Page</title>" +
+                "</head>" +
+                "<body>" +
+                "<h1>Error: " + errorMessage + "</h1>" +
+                "</body>" +
+                "</html>";
     }
 
     private HttpResponse.ResponseBuilder routeByUriWithQuestion(String uri) {
