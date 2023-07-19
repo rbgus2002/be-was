@@ -1,13 +1,13 @@
 package webserver.response;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import webserver.utils.HttpHeader;
 
 public class HttpResponseHeader {
 
-	private final Map<HttpHeader, String> headers = new HashMap<>();
+	private final Map<HttpHeader, String> headers = new EnumMap<>(HttpHeader.class);
 
 	public void addHeader(HttpHeader header, String value) {
 		headers.put(header, value);
