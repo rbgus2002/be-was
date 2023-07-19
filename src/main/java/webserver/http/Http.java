@@ -98,25 +98,28 @@ public class Http {
     }
 
     public enum MIME {
-        HTML(".html"),
-        CSS(".css"),
-        JS(".js"),
-        ICO(".ico"),
-        PNG(".png"),
-        JSON(".json"),
-        JPG(".jpg"),
-        JPEG(".jpeg"),
-        EOT(".eot"),
-        SVG(".svg"),
-        TTF(".ttf"),
-        WOFF(".woff"),
-        WOFF2(".woff2"),
-        NONE("");
+        HTM(".htm", "text/html"),
+        HTML(".html", "text/html"),
+        CSS(".css", "text/css"),
+        JS(".js", "text/javascript"),
+        ICO(".ico", "image/x-icon"),
+        PNG(".png", "image/png"),
+        JSON(".json", "application/json"),
+        JPG(".jpg", "image/jpeg"),
+        JPEG(".jpeg", "image/jpg"),
+        EOT(".eot", "application/vnd.ms-fontobject"),
+        SVG(".svg", "image/svg+xml"),
+        TTF(".ttf", "application/x-font-ttf"),
+        WOFF(".woff", "application/x-font-woff"),
+        WOFF2(".woff2", "application/font-woff2"),
+        NONE("", "");
 
         private final String extension;
+        private final String type;
 
-        MIME(final String value) {
+        MIME(final String value, final String type) {
             this.extension = value;
+            this.type = type;
         }
 
         public static MIME findBy(final String text) {
