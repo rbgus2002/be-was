@@ -22,13 +22,17 @@ public class UserRepository {
         return Optional.ofNullable(users.get(userId));
     }
 
+    public Collection<User> findAll() {
+        return users.values();
+    }
+
     public void deleteUserById(String userId) {
         Optional<User> optionalUser = findUserById(userId);
         if (optionalUser.isEmpty()) throw new RuntimeException(NO_SUCH_PRIMARY_KEY);
         users.remove(userId);
     }
 
-    public Collection<User> findAll() {
-        return users.values();
+    public void deleteAll() {
+        users.clear();
     }
 }
