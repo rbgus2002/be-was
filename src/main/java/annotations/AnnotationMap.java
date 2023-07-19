@@ -10,12 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controllers.Controller;
-import webserver.MethodType;
+import http.HttpMethod;
 
 public class AnnotationMap {
 
 	private static Object instance;
-	private static Map<MethodType, Map<String, Method>> methodMaps = new HashMap<>();
+	private static Map<HttpMethod, Map<String, Method>> methodMaps = new HashMap<>();
 	private static Map<String, Method> getMethods = new HashMap<>();
 	private static Map<String, Method> postMethods = new HashMap<>();
 	private static final Logger logger = LoggerFactory.getLogger(AnnotationMap.class);
@@ -23,7 +23,7 @@ public class AnnotationMap {
 	private AnnotationMap() {
 	}
 
-	public static String run(MethodType type, String path) throws InvocationTargetException, IllegalAccessException {
+	public static String run(HttpMethod type, String path) throws InvocationTargetException, IllegalAccessException {
 		return (String)methodMaps.get(type).get(path).invoke(instance);
 	}
 
@@ -46,8 +46,8 @@ public class AnnotationMap {
 				postMethods.put(declaredMethod.getAnnotation(PostMapping.class).path(), declaredMethod);
 			}
 		}
-		methodMaps.put(MethodType.GET, getMethods);
-		methodMaps.put(MethodType.POST, postMethods);
+		methodMaps.put(HttpMethod.GET, getMethods);
+		methodMaps.put(HttpMethod.POST, postMethods);
 	}
 
 	private static void initInstance() throws ReflectiveOperationException {
@@ -55,7 +55,7 @@ public class AnnotationMap {
 		instance = constructor.newInstance();
 	}
 
-	public static boolean exists(MethodType methodType, String path) {
+	public static boolean exists(HttpMethod methodType, String path) {
 		return methodMaps.get(methodType).containsKey(path);
 	}
 }

@@ -1,30 +1,27 @@
 package webserver;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import annotations.AnnotationMap;
-import annotations.GetMapping;
-import controllers.Controller;
+import http.HttpMethod;
+import http.HttpRequest;
+import http.HttpResponse;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+	private static final String TEMPLATES_PATH = "src/main/resources/templates/";
+	private static final String STATIC_PATH = "src/main/resources/static";
 
 	private Socket connection;
 
@@ -37,75 +34,31 @@ public class RequestHandler implements Runnable {
 			connection.getPort());
 
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-
-			String line;
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			while ((line = reader.readLine()) != null) {
-				logger.debug(line);
-				try {
-					if (line.startsWith("GET")) {
-						handleGetRequest(line, out);
-						return;
-					}
-				} catch (ReflectiveOperationException exception) {
-					logger.warn("ReflectiveOperationException");
-					logger.warn(exception.getMessage());
-				}
+			HttpRequest httpRequest = new HttpRequest(reader);
+			logger.debug("{} httpRequest created", httpRequest.getMethod());
+			if (httpRequest.isGet()) {
+				HttpResponse httpResponse = handleGetRequest(httpRequest);
+				logger.debug("httpResponse created");
+				httpResponse.response(out);
+				logger.debug("httpResponse sended");
 			}
-
-		} catch (IOException e) {
+		} catch (IOException | ReflectiveOperationException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private void handleGetRequest(String line, OutputStream out) throws ReflectiveOperationException, IOException {
-		String[] arguments;
-		if (line.startsWith("GET")) {
-			arguments = line.split(" ");
-			if (AnnotationMap.exists(MethodType.GET, arguments[1])) {
-				String path = AnnotationMap.run(MethodType.GET, arguments[1]);
-				sendResourceResponse(path, out);
-				return;
-			}
-			sendResourceResponse(arguments[1], out);
+	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException {
+		String path = httpRequest.getPath();
+		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getPath())) {
+			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getPath());
 		}
-	}
-
-	private void sendResourceResponse(String fileName, OutputStream out) throws IOException {
-		Path templatePath = new File("src/main/resources/templates/" + fileName).toPath();
-		Path staticPath = new File("src/main/resources/static" + fileName).toPath();
-		if (Files.exists(templatePath)) {
-			responseForPath(out, templatePath);
-			return;
-		}
-		responseForPath(out, staticPath);
-	}
-
-	private void responseForPath(OutputStream out, Path path) throws IOException {
-		DataOutputStream dos = new DataOutputStream(out);
-		byte[] body = Files.readAllBytes(path);
-		String mimeType = Files.probeContentType(path);
-		response200Header(dos, body.length, mimeType);
-		responseBody(dos, body);
-	}
-
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String mimeType) {
-		try {
-			dos.writeBytes("HTTP/1.1 200 OK \r\n");
-			dos.writeBytes("Content-Type: " + mimeType + ";charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	private void responseBody(DataOutputStream dos, byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
+		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		Path templatePath = new File(TEMPLATES_PATH + path).toPath();
+		Path staticPath = new File(STATIC_PATH + path).toPath();
+		logger.debug("{} path created", path);
+		httpResponse.addFile(Files.exists(templatePath) ? templatePath : staticPath);
+		logger.debug("{} added", path);
+		return httpResponse;
 	}
 }
