@@ -36,3 +36,4 @@ Java Web Application Server 2023
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
 #### Web Server step-3
+- [ ] MIME 타입 이해하기
