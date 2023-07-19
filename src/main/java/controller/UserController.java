@@ -9,6 +9,7 @@ import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.annotation.ResponseStatus;
+import support.exception.FoundException;
 import webserver.response.HttpStatus;
 
 @Controller(value = "/user")
@@ -19,13 +20,13 @@ public class UserController {
     @RequestMapping(method = HttpMethod.POST, value = "/login")
     @ResponseStatus(status = HttpStatus.FOUND, redirectionUrl = "/index.html")
     public void login(@RequestParam("userId") String userId,
-                      @RequestParam("password") String password) {
+                      @RequestParam("password") String password) throws FoundException {
         logger.debug("유저 로그인 요청");
 
         User user = Database.findUserById(userId);
         if (user == null || !user.getPassword().equals(password)) {
             logger.debug("유저 없거나 비밀번호 불일치");
-            return;
+            throw new FoundException("/user/login_failed.html");
         }
         logger.debug("유저 로그인 성공~");
 

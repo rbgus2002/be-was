@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.ControllerResolver;
 import support.annotation.ResponseStatus;
-import support.exception.BadRequestException;
-import support.exception.MethodNotAllowedException;
-import support.exception.NotSupportedException;
-import support.exception.ServerErrorException;
+import support.exception.*;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -54,14 +51,12 @@ public class HttpHandler {
             return true;
         } catch (NotSupportedException e) {
             return false;
-        } catch (MethodNotAllowedException e) {
-            response.setStatus(HttpStatus.METHOD_NOT_ALLOWED);
+        } catch (FoundException e) {
+            response.setStatus(e.getHttpStatus());
+            response.appendHeader("Location", e.getRedirectionUrl());
             return true;
-        } catch (BadRequestException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            return true;
-        } catch (ServerErrorException e) {
-            response.setStatus(HttpStatus.SERVER_ERROR);
+        } catch (HttpException e) {
+            response.setStatus(e.getHttpStatus());
             return true;
         }
     }

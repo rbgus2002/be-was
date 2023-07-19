@@ -7,15 +7,13 @@ import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.annotation.ResponseStatus;
-import support.exception.BadRequestException;
-import support.exception.MethodNotAllowedException;
-import support.exception.NotSupportedException;
-import support.exception.ServerErrorException;
+import support.exception.*;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.KeyValue;
 import webserver.response.HttpResponse;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -54,7 +52,7 @@ public abstract class ControllerResolver {
         });
     }
 
-    public static ResponseStatus invoke(String url, HttpRequest request, HttpResponse response) throws MethodNotAllowedException, BadRequestException, NotSupportedException, ServerErrorException {
+    public static ResponseStatus invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
         // 요청 url에 해당하는 controller method를 찾는다.
         AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
         AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
@@ -85,7 +83,10 @@ public abstract class ControllerResolver {
         Object instance = getInstanceMagager().getInstance(controllerClass);
         try {
             method.invoke(instance, args);
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
+            Throwable throwable = e.getTargetException();
+            throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();
+        } catch (IllegalAccessException e) {
             throw new ServerErrorException();
         }
 
