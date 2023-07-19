@@ -4,7 +4,7 @@ import controller.Controller;
 import controller.ForwardController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.response.ClientConnection;
+import webserver.http.response.ResponseWriter;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.body.ResponseBody;
@@ -21,6 +21,7 @@ public class DispatcherServlet {
 
     protected void service(HttpRequest req, HttpResponse resp, DataOutputStream dataOutputStream) {
         final String REDIRECT = "redirect";
+
         logger.info("DispatcherServlet service");
         Controller controller = requestMapper.getController(req.getUrl());
         String toUrl;
@@ -30,15 +31,15 @@ public class DispatcherServlet {
         toUrl = controller.execute(req, resp);
         ResponseBody responseBody = new ResponseBody(toUrl);
         resp.setBody(responseBody);
-        ClientConnection clientConnection = new ClientConnection(dataOutputStream, resp);
+        ResponseWriter responseWriter = new ResponseWriter(dataOutputStream, resp);
         if (toUrl.contains(REDIRECT)) {
             String redirectUrl = toUrl.split(":")[1];
             if(redirectUrl.contains(BLANK)) {
                 redirectUrl = redirectUrl.trim();
             }
-            clientConnection.sendRedirect(redirectUrl);
+            responseWriter.sendRedirect(redirectUrl);
             return;
         }
-        clientConnection.forward(toUrl);
+        responseWriter.forward(toUrl);
     }
 }

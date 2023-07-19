@@ -9,15 +9,15 @@ import webserver.util.Parser;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ClientConnection {
+public class ResponseWriter {
 
 
     private final DataOutputStream dos;
     private final HttpResponse httpResponse;
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResponseWriter.class);
 
-    public ClientConnection(DataOutputStream dos, HttpResponse httpResponse) {
+    public ResponseWriter(DataOutputStream dos, HttpResponse httpResponse) {
         this.dos = dos;
         this.httpResponse = httpResponse;
     }
