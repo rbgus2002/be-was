@@ -1,44 +1,41 @@
 package webserver.http.message;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpResponse {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
+	private String httpVersion;
+	private HttpStatus status;
+	private byte[] body;
 
-	private final DataOutputStream dos;
-
-	private HttpResponse(DataOutputStream dos) {
-		this.dos = dos;
+	private HttpResponse() {
 	}
 
-	public static HttpResponse from(OutputStream outputStream) {
-		return new HttpResponse(new DataOutputStream(outputStream));
+	public static HttpResponse from(HttpRequest request) {
+		HttpResponse httpResponse = new HttpResponse();
+		httpResponse.httpVersion = request.getHttpVersion();
+		return httpResponse;
 	}
 
-	public void writeResponse200Header(int lengthOfBodyContent) {
-		try {
-			dos.writeBytes("HTTP/1.1 200 OK \r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
+	public List<String> getStatusLineTokens() {
+		List<String> tokens = new ArrayList<>();
+		tokens.add(httpVersion);
+		tokens.add(status.getCode());
+		tokens.add(status.getMessage());
+		return tokens;
 	}
 
-	public void writeResponseBody(byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
+	public byte[] getBody() {
+		return body;
+	}
+
+	public void writeStatus(HttpStatus status) {
+		this.status = status;
+	}
+
+	public void writeBody(byte[] body) {
+		this.body = body;
 	}
 
 }
