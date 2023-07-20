@@ -43,22 +43,38 @@ public class RequestHandler implements Runnable {
 				httpResponse.response(out);
 				logger.debug("httpResponse sent");
 			}
-		} catch (IOException | ReflectiveOperationException e) {
+		} catch (IOException | ReflectiveOperationException | IllegalArgumentException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException {
+	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException, IllegalArgumentException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getEndpoint())) {
 			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint(), httpRequest.getParameter());
 		}
+		return getHttpResponse(httpRequest, path);
+	}
+
+	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws IOException, IllegalArgumentException {
 		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		httpResponse.addFile(getValidPath(path));
+		logger.debug("{} added", path);
+		return httpResponse;
+	}
+
+	private Path getValidPath(final String path) throws IllegalArgumentException {
 		Path templatePath = new File(TEMPLATES_PATH + path).toPath();
 		Path staticPath = new File(STATIC_PATH + path).toPath();
 		logger.debug("{} path created", path);
-		httpResponse.addFile(Files.exists(templatePath) ? templatePath : staticPath);
-		logger.debug("{} added", path);
-		return httpResponse;
+
+		if (Files.exists(templatePath)) {
+			return templatePath;
+		}
+		if (Files.exists(staticPath)) {
+			return staticPath;
+		}
+
+		throw new IllegalArgumentException("지원하지 않는 경로를 입력했습니다.");
 	}
 }
