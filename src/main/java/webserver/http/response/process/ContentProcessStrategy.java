@@ -23,7 +23,7 @@ public interface ContentProcessStrategy {
             return new HttpResponse(new ResponseLine(StatusCode.OK), Headers.create(mime), resource);
         } catch (Exception exception) {
             exception.printStackTrace();
-            return HttpResponse.internalError(MIME.CSS);
+            return HttpResponse.internalError(httpRequest.getMIME());
         }
     }
 

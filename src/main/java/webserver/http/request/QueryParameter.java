@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class QueryParameter {
     public static final String DELIMITER = "?";
+    public static final String REGEX = "\\?";
     private static final String ENTRY_SEPARATOR = "&";
     private static final String ENTRY_DELIMITER = "=";
 
@@ -31,5 +32,9 @@ public class QueryParameter {
 
     public String get(final String key) {
         return map.get(key);
+    }
+
+    public Map<String, String> getMap() {
+        return map;
     }
 }

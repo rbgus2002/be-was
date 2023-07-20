@@ -1,9 +1,10 @@
 package webserver.http;
 
+import static webserver.http.response.process.ProcessStrategy.*;
+
 import java.util.Arrays;
 import webserver.http.response.process.ContentProcessStrategy;
-import webserver.http.response.process.HtmlProcessStrategy;
-import webserver.http.response.process.StaticContentProcessStrategy;
+import webserver.http.response.process.ProcessStrategy;
 
 public class Http {
     public static final String CRLF = "\r\n";
@@ -101,27 +102,27 @@ public class Http {
     }
 
     public enum MIME {
-        HTM(".htm", "text/html", new HtmlProcessStrategy()),
-        HTML(".html", "text/html", new HtmlProcessStrategy()),
-        CSS(".css", "text/css", new StaticContentProcessStrategy()),
-        JS(".js", "text/javascript", new StaticContentProcessStrategy()),
-        ICO(".ico", "image/x-icon", new StaticContentProcessStrategy()),
-        PNG(".png", "image/png", new StaticContentProcessStrategy()),
-        JSON(".json", "application/json", new HtmlProcessStrategy()),
-        JPG(".jpg", "image/jpeg", new StaticContentProcessStrategy()),
-        JPEG(".jpeg", "image/jpg", new StaticContentProcessStrategy()),
-        EOT(".eot", "application/vnd.ms-fontobject", new StaticContentProcessStrategy()),
-        SVG(".svg", "image/svg+xml", new StaticContentProcessStrategy()),
-        TTF(".ttf", "application/x-font-ttf", new StaticContentProcessStrategy()),
-        WOFF(".woff", "application/x-font-woff", new StaticContentProcessStrategy()),
-        WOFF2(".woff2", "application/font-woff2", new StaticContentProcessStrategy()),
-        NONE("", "", new HtmlProcessStrategy());
+        HTM(".htm", "text/html", TEMPLATE),
+        HTML(".html", "text/html", TEMPLATE),
+        CSS(".css", "text/css", STATIC),
+        JS(".js", "text/javascript", STATIC),
+        ICO(".ico", "image/x-icon", STATIC),
+        PNG(".png", "image/png", STATIC),
+        JSON(".json", "application/json", APPLICATION),
+        JPG(".jpg", "image/jpeg", STATIC),
+        JPEG(".jpeg", "image/jpg", STATIC),
+        EOT(".eot", "application/vnd.ms-fontobject", STATIC),
+        SVG(".svg", "image/svg+xml", STATIC),
+        TTF(".ttf", "application/x-font-ttf", STATIC),
+        WOFF(".woff", "application/x-font-woff", STATIC),
+        WOFF2(".woff2", "application/font-woff2", STATIC),
+        NONE("", "", APPLICATION);
 
         private final String extension;
         private final String type;
-        private final ContentProcessStrategy strategy;
+        private final ProcessStrategy strategy;
 
-        MIME(final String value, final String type, final ContentProcessStrategy strategy) {
+        MIME(final String value, final String type, final ProcessStrategy strategy) {
             this.extension = value;
             this.type = type;
             this.strategy = strategy;
@@ -143,7 +144,7 @@ public class Http {
         }
 
         public ContentProcessStrategy getStrategy() {
-            return strategy;
+            return strategy.strategy;
         }
     }
 }

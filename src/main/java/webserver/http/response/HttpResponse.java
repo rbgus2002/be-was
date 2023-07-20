@@ -28,6 +28,10 @@ public class HttpResponse implements Serializable {
         return new HttpResponse(new ResponseLine(StatusCode.INTERNAL_ERROR), Headers.create(mime), null);
     }
 
+    public static HttpResponse badRequest(final MIME mime) {
+        return new HttpResponse(new ResponseLine(StatusCode.BAD_REQUEST), Headers.create(mime), null);
+    }
+
     public static HttpResponse from(final HttpRequest httpRequest) {
         ContentProcessStrategy contentProcessStrategy = httpRequest.getMIME().getStrategy();
         return contentProcessStrategy.process(httpRequest);

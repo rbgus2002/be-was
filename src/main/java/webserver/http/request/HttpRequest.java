@@ -69,6 +69,10 @@ public class HttpRequest implements Serializable {
         return String.valueOf(bufferedReader.read(chars, 0, contentLength));
     }
 
+    public String getPath() {
+        return this.requestLine.getTarget().getPath();
+    }
+
     public MIME getMIME() {
         return this.requestLine.getTarget().getMIME();
     }
