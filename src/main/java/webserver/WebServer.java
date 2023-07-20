@@ -34,6 +34,5 @@ public class WebServer {
         } catch(Exception e) {
             logger.debug(e.getMessage());
         }
-
     }
 }

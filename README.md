@@ -18,12 +18,18 @@ Java Web Application Server 2023
   - HTTP RequestURI, Request, Response, Header 캡슐화
   - REST API Controller 생성
   - 404 에러, 400 에러 처리
+  - request uri, resource path 상수 분리하여 관리
+  -> 요청 경로와 실제 경로가 같다는 가정하에 정적인 파일 response 할 수 있도
+  - Thread -> concurrent 메소드로 이동
+  - request line에서의 query parameter 저장
+  - MIME enum 클래스 추가
+  - 다양한 Content-Type 지원하도록
 
 - 해야 할 일
-  - Thread -> concurrent 패키지로 옮기기
-  - CSS 잘 나오게 수정
   - HTTP wiki에 정리
   - HttpResponse Builder 패턴 적용하기
-  - HttpResponse Header 생성하는 부분 어떻게 깔끔하게 구현할지 생각하기
+  - IO stream 읽고 쓰는 방식 처리할 방법 고민
+  - 테스트 코드 작성..
 
 ### 메모
+- request body 읽어오도록 수정

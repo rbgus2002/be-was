@@ -4,7 +4,6 @@ import dto.UserFormRequestDto;
 import model.enums.Method;
 
 public class HttpRequest {
-    public static final String HTML_FILE_FORMAT = ".html";
     private final RequestUri requestUri;
     private final String protocol;
     private final Method method;
@@ -27,16 +26,12 @@ public class HttpRequest {
         return this.method == method;
     }
 
-    public HttpHeader getHeader() {
-        return httpHeader.newInstance();
-    }
-
     public String getProtocol() {
         return this.protocol;
     }
 
-    public boolean endsWithHtml() {
-        return requestUri.uriEndsWith(HTML_FILE_FORMAT);
+    public boolean isUriStaticFile() {
+        return requestUri.isUriStaticFile();
     }
 
     public String getUri() {
