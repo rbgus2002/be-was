@@ -2,6 +2,9 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +31,8 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = HttpRequest.of(in);
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+            Path filePath = Paths.get("/Users/lbc/Desktop/softeer_mission/be-was/src/main/resources/templates/index.html");
+            byte[] body = Files.readAllBytes(filePath);
 
             HttpResponse httpResponse = new HttpResponse(HttpStatus.OK, ContentType.HTML, body.length, body);
             httpResponse.sendResponse(dos);
