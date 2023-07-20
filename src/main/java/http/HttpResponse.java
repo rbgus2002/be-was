@@ -33,11 +33,11 @@ public class HttpResponse {
 
 	public void response(OutputStream out) {
 		DataOutputStream dos = new DataOutputStream(out);
-		response200Header(dos, body.length);
+		responseHeader(dos, body.length);
 		responseBody(dos, body);
 	}
 
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+	private void responseHeader(DataOutputStream dos, int lengthOfBodyContent) {
 		try {
 			dos.writeBytes(version + " " + statusCode + " \r\n");
 			dos.writeBytes("Content-Type: " + mimeType.extension + ";charset=utf-8\r\n");
