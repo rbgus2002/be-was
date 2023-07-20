@@ -1,12 +1,11 @@
 package webserver;
 
+import controller.UserController;
 import db.Database;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import support.DefaultInstanceManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +16,6 @@ import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.NEW_LINE;
 import static utils.StringUtils.appendNewLine;
-import static webserver.HttpHandler.MAIN_PAGE;
 
 @DisplayName("RequestHandler 테스트")
 class RequestHandlerTest {
@@ -25,9 +23,11 @@ class RequestHandlerTest {
     OutputStream outputStream = new ByteArrayOutputStream();
     SoftAssertions softAssertions;
 
-    String OK = "HTTP/1.1 200 OK";
-    String BAD_REQUEST = "HTTP/1.1 400 Bad Request";
-    String NOT_FOUND = "HTTP/1.1 404 Not Found";
+    final String OK = "HTTP/1.1 200 OK";
+    final String Found = "HTTP/1.1 302 Found";
+    final String BAD_REQUEST = "HTTP/1.1 400 Bad Request";
+    final String NOT_FOUND = "HTTP/1.1 404 Not Found";
+    final String METHOD_NOT_ALLOWED = "HTTP/1.1 405 Method Not Allowed";
 
     static class IoSocket extends Socket {
 
@@ -54,6 +54,11 @@ class RequestHandlerTest {
 
     }
 
+    @BeforeAll
+    static void prepare() {
+        DefaultInstanceManager.getInstanceMagager().addInstance(UserController.class);
+    }
+
     @BeforeEach
     void setUp() {
         Database.clear();
@@ -61,8 +66,12 @@ class RequestHandlerTest {
     }
 
     RequestHandler buildRequestHandler(String requestLine) {
+        return buildRequestHandler(requestLine, "");
+    }
+
+    RequestHandler buildRequestHandler(String requestLine, String body) {
         IoSocket socket = new IoSocket();
-        String request = appendNewLine(requestLine, "Host: localhost", "", "");
+        String request = appendNewLine(requestLine, "Host: localhost", "Content-Length: " + body.length(), "", body);
         InputStream inputStream = new ByteArrayInputStream(request.getBytes());
         socket.changeStream(inputStream, outputStream);
         return new RequestHandler(socket);
@@ -150,12 +159,32 @@ class RequestHandlerTest {
     @DisplayName("유저 생성 테스트")
     class Create {
 
+        private final String method = "POST";
+
+        @Test
+        @DisplayName("GET, POST 메소드 분리 테스트")
+        void methodSeparate() {
+            //given
+            String request = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request);
+
+            //when
+            requestHandler.run();
+            User user = Database.findUserById("javajigi");
+            String[] result = outputStream.toString().split(NEW_LINE);
+
+            //then
+            softAssertions.assertThat(user).isNull();
+            softAssertions.assertThat(result[0]).isEqualTo(METHOD_NOT_ALLOWED);
+            softAssertions.assertAll();
+        }
+
         @Test
         @DisplayName("새로운 유저 등록 요청 처리 테스트")
         void registerUser() {
             //given
-            String request = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
-            RequestHandler requestHandler = buildRequestHandler(request);
+            String request = method + " /user/create HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi");
 
             //when
             requestHandler.run();
@@ -167,8 +196,7 @@ class RequestHandlerTest {
             softAssertions.assertThat(user.getPassword()).isEqualTo("password");
             softAssertions.assertThat(user.getName()).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
             softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
-            softAssertions.assertThat(result[0]).isEqualTo("HTTP/1.1 302 Found");
-            softAssertions.assertThat(result[1]).isEqualTo("Location: " + MAIN_PAGE);
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
             softAssertions.assertAll();
 
         }
@@ -177,8 +205,8 @@ class RequestHandlerTest {
         @DisplayName("다른(누락) 쿼리 등록 요청 처리 테스트")
         void registerUserDiff() {
             //given
-            String request = "GET /user/create?userId=javajigi&pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1";
-            RequestHandler requestHandler = buildRequestHandler(request);
+            String request = method + " /user/create HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "pass=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi");
 
             //when
             requestHandler.run();
@@ -194,8 +222,8 @@ class RequestHandlerTest {
         @DisplayName("다른 순서의 쿼리 등록 요청 처리 테스트")
         void registerDiffSequence() {
             //given
-            String request = "GET /user/create?password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi HTTP/1.1";
-            RequestHandler requestHandler = buildRequestHandler(request);
+            String request = method + " /user/create HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net&userId=javajigi");
 
             //when
             requestHandler.run();
@@ -203,12 +231,15 @@ class RequestHandlerTest {
             String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
+            softAssertions.assertThat(user).isNotNull();
+            softAssertions.assertAll();
+
             softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
             softAssertions.assertThat(user.getPassword()).isEqualTo("password");
             softAssertions.assertThat(user.getName()).isEqualTo("%EB%B0%95%EC%9E%AC%EC%84%B1");
             softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
-            softAssertions.assertThat(result[0]).isEqualTo("HTTP/1.1 302 Found");
-            softAssertions.assertThat(result[1]).isEqualTo("Location: " + MAIN_PAGE);
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
             softAssertions.assertAll();
         }
 

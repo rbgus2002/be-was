@@ -1,14 +1,13 @@
 package support;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
-public class ControllerMethods {
+public class ControllerMethod {
 
     private final Class<?> controller;
-    private final Map<String, Method> methodList;
+    private final Map<String, ControllerMethodStruct> methodList;
 
-    public ControllerMethods(Class<?> controller, Map<String, Method> methodList) {
+    public ControllerMethod(Class<?> controller, Map<String, ControllerMethodStruct> methodList) {
         this.controller = controller;
         this.methodList = methodList;
     }
@@ -17,7 +16,7 @@ public class ControllerMethods {
         return controller;
     }
 
-    public Method find(String path) {
+    public ControllerMethodStruct find(String path) {
         return methodList.get(path);
     }
 

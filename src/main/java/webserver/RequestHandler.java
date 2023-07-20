@@ -2,7 +2,6 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.HttpMethod;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
@@ -10,6 +9,8 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+
+import static utils.MathUtils.parseIntOrDefault;
 
 public class RequestHandler extends HttpHandler implements Runnable {
 
@@ -28,14 +29,20 @@ public class RequestHandler extends HttpHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
 
             // 요청 해석
-            HttpRequest request = buildRequestHeader(in);
+            HttpRequest request = buildHttpRequest(in);
             logger.debug("Request Line & Headers: \n{}", request.toString());
 
             // 요청 수립
             HttpResponse response = new HttpResponse();
 
-            if (request.getRequestMethod() == HttpMethod.GET)
-                doGet(request, response);
+            switch (request.getRequestMethod()) {
+                case GET:
+                    doGet(request, response);
+                    break;
+                case POST:
+                    doPost(request, response);
+                    break;
+            }
 
             response.response(dos);
         } catch (IOException | InvocationTargetException | IllegalAccessException e) {
@@ -43,7 +50,7 @@ public class RequestHandler extends HttpHandler implements Runnable {
         }
     }
 
-    private static HttpRequest buildRequestHeader(InputStream in) throws IOException {
+    private static HttpRequest buildHttpRequest(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
         HttpRequest.RequestHeaderBuilder requestHeaderBuilder = new HttpRequest.RequestHeaderBuilder();
@@ -54,7 +61,18 @@ public class RequestHandler extends HttpHandler implements Runnable {
         while (!"".equals((header = br.readLine()))) {
             requestHeaderBuilder.header(header);
         }
-        return requestHeaderBuilder.build();
+
+        HttpRequest httpRequest = requestHeaderBuilder.build();
+        int contentLength = parseIntOrDefault(httpRequest.getHeaderValue("Content-Length"), 0);
+
+
+        // body 읽기
+        if (contentLength != 0) {
+            char[] buffer = new char[contentLength];
+            br.read(buffer, 0, contentLength);
+            httpRequest.setBody(new String(buffer, 0, contentLength));
+        }
+        return httpRequest;
     }
 
 }
