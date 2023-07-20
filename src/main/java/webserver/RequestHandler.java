@@ -48,9 +48,8 @@ public class RequestHandler implements Runnable {
     private Request parseRequest(Socket connection) throws IOException, IllegalArgumentException {
         InputStream in = connection.getInputStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        /*
-         StartLine
-         */
+
+        // Status Line
         String[] tokens = readSingleHTTPLine(br).split(" ");
 
         Method method = Method.getMethodByName(tokens[0]);
@@ -59,9 +58,7 @@ public class RequestHandler implements Runnable {
 
         Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
 
-        /*
-         Headers
-         */
+        // Headers
         Map<String, String> headerMap = new HashMap<>();
         String line = readSingleHTTPLine(br).replace(" ", "");
         while(!line.equals("")) {
@@ -69,10 +66,12 @@ public class RequestHandler implements Runnable {
             headerMap.put(tokens[0], tokens[1]);
             line = readSingleHTTPLine(br).replace(" ", "");
         }
+        String sid = null;
+        if(headerMap.containsKey(HEADER_COOKIE)) {
+            sid = headerMap.get(HEADER_COOKIE).split("=")[1];
+        }
 
-        /*
-         Body
-         */
+        // Body
         String body = "";
         if(method == Method.PUT || method == Method.POST) {
             int contentLength = Integer.parseInt(headerMap.get(HEADER_CONTENT_LENGTH));
@@ -82,7 +81,7 @@ public class RequestHandler implements Runnable {
             body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
         }
 
-        return new Request(method, version, targetUri, queryParameterMap, headerMap, body);
+        return new Request(method, version, targetUri, queryParameterMap, headerMap, sid, body);
     }
 
     private Response generateResponse(Request request) throws Exception {

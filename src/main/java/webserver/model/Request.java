@@ -64,6 +64,10 @@ public class Request {
         return headerMap.get(key);
     }
 
+    public String getSid() {
+        return sid;
+    }
+
     public String getBody() {
         return body;
     }
