@@ -1,21 +1,29 @@
 package parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class GetParser implements Parser {
 
-    private final Map<String, String> query = new ConcurrentHashMap<>();
+    private final Map<String, String> query = new HashMap<>();
+    private final Map<String, String> headers = new HashMap<>();
+
+    private static final Logger logger = LoggerFactory.getLogger(GetParser.class);
 
     @Override
-    public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) {
+    public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException {
         String url = parseUrl(startLine);
         String method = parseMethod(startLine);
         String version = parseVersion(startLine);
         HTTPServletRequest request = new HTTPServletRequest(method, url, version);
+        parseHeader(br);
+        request.addHeader(headers);
         request.addQuery(query);
         return request;
     }
@@ -45,6 +53,15 @@ public class GetParser implements Parser {
             String key = token.substring(0, token.indexOf("="));
             String value = token.substring(token.indexOf("=") + 1);
             query.put(key, value);
+        }
+    }
+
+    private void parseHeader(BufferedReader br) throws IOException {
+        String header;
+        while ((header = br.readLine()) != null && (header.length() != 0)) {
+            logger.debug("header = {}", header);
+            String[] token = header.split(" ");
+            headers.put(token[0].trim(), token[1].trim());
         }
     }
 }
