@@ -1,7 +1,12 @@
 package webserver.http;
 
+import webserver.http.enums.ContentType;
+import webserver.http.enums.HttpResponseStatus;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static webserver.http.enums.ContentType.PLAIN;
 
 public class HttpResponse {
     private String version;
@@ -11,26 +16,19 @@ public class HttpResponse {
     private Map<String, String> headers;
     private byte[] body;
 
-    private static final Map<Integer, String> statusMap = new HashMap() {{
-        put(200, "OK");
-        put(302, "Found");
-        put(400, "Bad Request");
-        put(404, "Not Found");
-    }};
-
     public HttpResponse(HttpResponse.Builder builder) {
         this.version = builder.version();
-        this.statusCode = builder.statusCode();
-        this.statusText = statusMap.get(statusCode);
-        this.contentType = builder.contentType();
+        this.statusCode = builder.status().getStatusCode();
+        this.statusText = builder.status().getStatusText();
+        this.contentType = builder.contentType().getContentType();
         this.headers = builder.headers();
         this.body = builder.body();
     }
 
     public static class Builder {
         private String version;
-        private int statusCode;
-        private String contentType = "text/plain";
+        private HttpResponseStatus status;
+        private ContentType contentType = PLAIN;
         private Map<String, String> headers;
         private byte[] body = new byte[0];
 
@@ -43,12 +41,12 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse.Builder statusCode(int statusCode) {
-            this.statusCode = statusCode;
+        public HttpResponse.Builder status(HttpResponseStatus status) {
+            this.status = status;
             return this;
         }
 
-        public HttpResponse.Builder contentType(String contentType) {
+        public HttpResponse.Builder contentType(ContentType contentType) {
             this.contentType = contentType;
             return this;
         }
@@ -71,11 +69,11 @@ public class HttpResponse {
             return version;
         }
 
-        int statusCode() {
-            return statusCode;
+        HttpResponseStatus status() {
+            return status;
         }
 
-        String contentType() {
+        ContentType contentType() {
             return contentType;
         }
 

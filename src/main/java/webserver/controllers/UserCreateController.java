@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static service.UserService.addUser;
+import static webserver.http.enums.ContentType.HTML;
+import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
+import static webserver.http.enums.HttpResponseStatus.FOUND;
 
 public class UserCreateController implements Controller {
     private final static Logger logger = LoggerFactory.getLogger(UserCreateController.class);
@@ -21,29 +24,28 @@ public class UserCreateController implements Controller {
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
         if (parameters.values().size() != 4) {
-            return Controller.createErrorResponse(request, 400);
+            return Controller.createErrorResponse(request, BAD_REQUEST);
         }
 
         if (parameters.get("userId") == null || parameters.get("password") == null
                 || parameters.get("name") == null || parameters.get("email") == null)
-            return Controller.createErrorResponse(request, 400);
+            return Controller.createErrorResponse(request, BAD_REQUEST);
 
 
         User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
-        if(!addUser(user)) {
+        if (!addUser(user)) {
             return builder.version(request.version())
-                    .statusCode(302)
-                    .contentType(request.contentType())
+                    .status(FOUND)
+                    .contentType(HTML)
                     .setHeader("Location", "http://".concat(request.getHeader("Host").concat("/user/form.html")))
                     .build();
         }
 
-        // todo: redirection
         return builder.version(request.version())
-                .statusCode(302)
-                .contentType(request.contentType())
+                .status(FOUND)
+                .contentType(HTML)
                 .setHeader("Location", "http://".concat(request.getHeader("Host").concat("/index.html")))
                 .build();
     }

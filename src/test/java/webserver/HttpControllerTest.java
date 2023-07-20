@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static webserver.http.enums.HttpResponseStatus.*;
+
 class HttpControllerTest {
     SoftAssertions s = new SoftAssertions();
 
@@ -34,7 +36,7 @@ class HttpControllerTest {
 
         String template_path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
         HttpResponse actual = HttpResponse.newBuilder()
-                .statusCode(200)
+                .status(OK)
                 .version("HTTP/1.1")
                 .body(Files.readAllBytes(Paths.get(template_path)))
                 .build();
@@ -63,7 +65,7 @@ class HttpControllerTest {
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .version("HTTP/1.1")
-                .statusCode(404)
+                .status(NOT_FOUND)
                 .body("요청하신 파일을 찾을 수 없습니다.".getBytes())
                 .build();
 
@@ -88,7 +90,7 @@ class HttpControllerTest {
 
         User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
         HttpResponse actual = HttpResponse.newBuilder()
-                .statusCode(200)
+                .status(OK)
                 .version("HTTP/1.1")
                 .body(actualUser.toString().getBytes())
                 .build();
@@ -117,7 +119,7 @@ class HttpControllerTest {
         HttpResponse response = controller.handle(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
-                .statusCode(400)
+                .status(BAD_REQUEST)
                 .version("HTTP/1.1")
                 .build();
 

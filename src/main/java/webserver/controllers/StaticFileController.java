@@ -1,38 +1,52 @@
 package webserver.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
+import webserver.http.enums.ContentType;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static webserver.http.enums.ContentType.HTML;
+import static webserver.http.enums.ContentType.getContentTypeByExtension;
+import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
+import static webserver.http.enums.HttpResponseStatus.OK;
+
 public class StaticFileController implements Controller {
+    private final static Logger logger = LoggerFactory.getLogger(StaticFileController.class);
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        String fileName = request.uri();
-
-        String path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
-        if (!request.contentType().equals("text/html"))
-            // .html이 아닌 경우 static 쪽을 살펴보아야 한다.
-            path = System.getProperty("user.dir") + "/src/main/resources/static" + fileName;
+        String extension = request.uri().substring(request.uri().lastIndexOf("."));
+        ContentType contentType = getContentTypeByExtension(extension);
+        String path = getPathString(request, contentType);
 
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
-        // TODO: file이 존재하지 않는 경우 404 response return
         byte[] body;
         try {
             body = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
-            return Controller.createErrorResponse(request, 404);
+            return Controller.createErrorResponse(request, NOT_FOUND);
         }
 
         builder.version(request.version())
-                .statusCode(200)
-                .contentType(request.contentType())
+                .status(OK)
+                .contentType(contentType)
                 .body(body);
 
         return builder.build();
+    }
+
+    private String getPathString(HttpRequest request, ContentType contentType) {
+        String fileName = request.uri();
+
+        if(contentType == HTML) {
+            return System.getProperty("user.dir").concat("/src/main/resources/templates").concat(fileName);
+        }
+        return System.getProperty("user.dir").concat("/src/main/resources/static").concat(fileName);
     }
 }
