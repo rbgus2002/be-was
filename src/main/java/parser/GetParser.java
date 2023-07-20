@@ -3,15 +3,15 @@ package parser;
 import webserver.HTTPServletRequest;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GetParser implements Parser {
 
-    private ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
+    private final Map<String, String> query = new ConcurrentHashMap<>();
 
     @Override
-    public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) throws IOException {
+    public HTTPServletRequest getProperRequest(String startLine, BufferedReader br) {
         String url = parseUrl(startLine);
         String method = parseMethod(startLine);
         String version = parseVersion(startLine);
@@ -43,7 +43,7 @@ public class GetParser implements Parser {
         String[] tokens = parameter.split("&");
         for (String token : tokens) {
             String key = token.substring(0, token.indexOf("="));
-            String value = token.substring(token.indexOf("=") + 1, token.length());
+            String value = token.substring(token.indexOf("=") + 1);
             query.put(key, value);
         }
     }

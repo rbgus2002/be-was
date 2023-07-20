@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HTTPServletRequest {
     private final String method;
     private final String url;
-    private final ConcurrentHashMap<String, String> query = new ConcurrentHashMap<>();
+    private final Map<String, String> query = new ConcurrentHashMap<>();
     private final String version;
     private static final Logger logger = LoggerFactory.getLogger(HTTPServletRequest.class);
 
@@ -18,10 +18,7 @@ public class HTTPServletRequest {
         this.method = method;
         this.url = url;
         this.version = version;
-    }
-
-    public String getMethod() {
-        return method;
+        logger.debug("method = {}, url = {}, version = {}", method, url, version);
     }
 
     public String getUrl() {
@@ -32,13 +29,11 @@ public class HTTPServletRequest {
         return version;
     }
 
-    public ConcurrentHashMap<String, String> getQuery() {
+    public Map<String, String> getQuery() {
         return query;
     }
 
-    public void addQuery(ConcurrentHashMap<String, String> adder) {
-        for (Map.Entry<String, String> entry : adder.entrySet()) {
-            query.put(entry.getKey(), entry.getValue());
-        }
+    public void addQuery(Map<String, String> adder) {
+        query.putAll(adder);
     }
 }
