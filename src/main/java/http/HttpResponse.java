@@ -2,6 +2,7 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Parser;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -15,22 +16,29 @@ public class HttpResponse {
     private static final String STATIC_PATH = "src/main/resources/static";
 
     private String path;
+    private MIME mime;
     private Map<String, String> headers;
     private byte[] body;
     private HttpStatusCode statusCode;
 
-    public HttpResponse(String path, HttpStatusCode statusCode) throws IOException {
+    public HttpResponse(String path, HttpStatusCode statusCode, MIME mime) throws IOException {
         this.path = path;
         this.statusCode = statusCode;
-        this.body = Files.readAllBytes(new File(TEMPLATE_PATH + path).toPath());
+        this.mime = mime;
+
+        if (path.equals("/index.html") || mime == null) {
+            this.body = Files.readAllBytes(new File(TEMPLATE_PATH + path).toPath());
+        } else {
+            this.body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
+        }
     }
 
-    public static HttpResponse ok(String path) throws IOException {
-        return new HttpResponse(path, HttpStatusCode.OK);
+    public static HttpResponse ok(String path, MIME mime) throws IOException {
+        return new HttpResponse(path, HttpStatusCode.OK, mime);
     }
 
-    public static HttpResponse redirect(String path) throws IOException {
-        return new HttpResponse(path, HttpStatusCode.FOUND);
+    public static HttpResponse redirect(String path, MIME mime) throws IOException {
+        return new HttpResponse(path, HttpStatusCode.FOUND, mime);
     }
 
     public void response(DataOutputStream dos) {
@@ -41,7 +49,7 @@ public class HttpResponse {
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + mime.getContentType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
