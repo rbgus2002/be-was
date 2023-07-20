@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static controller.DefaultController.DEFAULT_CONTROLLER;
 import static controller.HomeController.HOME_CONTROLLER;
 import static controller.JoinController.JOIN_CONTROLLER;
 
@@ -28,14 +27,20 @@ public class FrontController {
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
         String url = request.getUrl();
-        HttpController controller = controllerMap.getOrDefault(url, DEFAULT_CONTROLLER);
-        String viewName = controller.process(request, response);
-        viewResolve(viewName, response);
+        HttpController controller = controllerMap.get(url);
+        if (controller == null) {
+            viewResolve(url, response);
+        } else {
+            String viewName = controller.process(request, response);
+            viewResolve(viewName, response);
+        }
         render(dos, response);
     }
 
     private void viewResolve(String viewName, HttpResponse response) throws IOException {
-        if (viewName == null) {
+        if (viewName.startsWith("redirect:")) {
+            String url = viewName.substring("redirect:".length());
+            response.setRedirect(url);
             return;
         }
         Path path;

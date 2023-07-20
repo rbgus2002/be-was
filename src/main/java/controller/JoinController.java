@@ -14,12 +14,11 @@ public enum JoinController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
-        response.setRedirect("/index.html");
         Database.addUser(new User(request.getParams()));
         for (User user : Database.findAll()) {
             logger.debug("{}", user);
         }
-        return null;
+        return "redirect:/index.html";
     }
 
 
