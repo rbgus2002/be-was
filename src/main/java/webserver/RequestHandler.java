@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static model.User.*;
+import static webserver.model.Response.*;
 
 import service.FileService;
 import service.UserService;
@@ -25,10 +26,6 @@ import webserver.model.Request.Method;
 import webserver.model.Response;
 import webserver.model.Response.STATUS;
 import webserver.model.Response.MIME;
-import static webserver.model.Response.HEADER_CONTENT_TYPE;
-import static webserver.model.Response.HEADER_CHARSET;
-import static webserver.model.Response.HEADER_CONTENT_LENGTH;
-import static webserver.model.Response.HEADER_HTTP_VERSION;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -75,24 +72,24 @@ public class RequestHandler implements Runnable {
          Headers
          */
         Map<String, String> headerMap = new HashMap<>();
-        String line = readSingleHTTPLine(br);
+        String line = readSingleHTTPLine(br).replace(" ", "");
         while(!line.equals("")) {
-            tokens = line.split(": ");
+            tokens = line.split(":");
             headerMap.put(tokens[0], tokens[1]);
-            line = readSingleHTTPLine(br);
+            line = readSingleHTTPLine(br).replace(" ", "");
         }
 
         /*
          Body
          */
-        StringBuilder sb = new StringBuilder();
+        String body = "";
         if(method == Method.PUT || method == Method.POST) {
-            line = readSingleHTTPLine(br);
-            while(!line.equals("")) {
-                sb.append(line);
-            }
+            int contentLength = Integer.parseInt(headerMap.get(HEADER_CONTENT_LENGTH));
+            char[] bodyCharacters = new char[contentLength];
+            br.read(bodyCharacters);
+
+            body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
         }
-        String body = sb.toString();
 
         return new Request(method, version, targetUri, queryParameterMap, headerMap, body);
     }
@@ -117,6 +114,18 @@ public class RequestHandler implements Runnable {
 
         return queryParameterMap;
     }
+    public Map<String, String> parseBodyParameter(String body) {
+        // &를 기준으로 파라미터 분할
+        String[] bodyParameterList = body.split("&");
+        // Map에 key-value 저장
+        Map<String, String> bodyParameterMap = new HashMap<>();
+        for(String bodyParameter: bodyParameterList) {
+            bodyParameterMap.put(bodyParameter.split("=")[0],
+                    bodyParameter.split("=")[1]);
+        }
+
+        return bodyParameterMap;
+    }
 
     private Response generateResponse(Request request) throws Exception {
         String targetUri = request.getTargetUri();
@@ -134,16 +143,16 @@ public class RequestHandler implements Runnable {
             return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
         }
         if(targetUri.startsWith("/user/create")) {
-            UserService.userSignUp(request.getQueryParameterMap());
+            Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
+            UserService.userSignUp(bodyParameterMap);
 
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_CONTENT_TYPE, MIME.HTML.getMime() + HEADER_CHARSET);
-            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(0));
+            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
 
-            return new Response(STATUS.CREATED, HEADER_HTTP_VERSION, headerMap, null);
+            return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
         }
 
-        return null;
+        return new Response(STATUS.NOT_FOUND, HEADER_HTTP_VERSION, null, null);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {

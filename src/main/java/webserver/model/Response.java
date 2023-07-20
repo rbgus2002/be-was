@@ -35,6 +35,7 @@ public class Response {
     public enum STATUS {
         OK(200, "OK"),
         CREATED(201, "Created"),
+        TEMPORARY_MOVED(302, "Found"),
         BAD_REQUEST(400, "Bad Request"),
         NOT_FOUND(404, "Not Found");
 
@@ -57,6 +58,8 @@ public class Response {
     public static final String HEADER_CHARSET = ";charset=utf-8";
     public static final String HEADER_CONTENT_LENGTH = "Content-Length";
     public static final String HEADER_HTTP_VERSION = "1.1";
+    public static final String HEADER_REDIRECT_LOCATION = "Location";
+    public static final String INDEX_URL = "/index.html";
 
     private final STATUS status;
     private final String version;
