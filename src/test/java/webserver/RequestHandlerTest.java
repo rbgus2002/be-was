@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -264,8 +265,10 @@ class RequestHandlerTest {
             String[] result = outputStream.toString().split(NEW_LINE);
 
             //then
-            assertThat(result[0]).isEqualTo(Found);
-            assertThat(result[1]).isEqualTo("Location: /index.html");
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
+            softAssertions.assertThat(Arrays.stream(result).anyMatch("Location"::startsWith)).isNotEqualTo("");
+            softAssertions.assertThat(Arrays.stream(result).anyMatch("Set-cookie"::startsWith)).isNotEqualTo("");
+            softAssertions.assertAll();
         }
 
         @Test

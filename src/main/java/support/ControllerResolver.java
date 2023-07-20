@@ -16,7 +16,10 @@ import webserver.response.HttpResponse;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -119,7 +122,6 @@ public abstract class ControllerResolver {
                     }
                     return null;
                 })
-                .filter(Objects::nonNull)
                 .toArray();
 
         logger.debug("요청 인자 크기 : {}", args.length);

@@ -10,6 +10,8 @@ import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.annotation.ResponseStatus;
 import support.exception.FoundException;
+import webserver.Cookie;
+import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 
 @Controller(value = "/user")
@@ -20,7 +22,8 @@ public class UserController {
     @RequestMapping(method = HttpMethod.POST, value = "/login")
     @ResponseStatus(status = HttpStatus.FOUND, redirectionUrl = "/index.html")
     public void login(@RequestParam("userId") String userId,
-                      @RequestParam("password") String password) throws FoundException {
+                      @RequestParam("password") String password,
+                      HttpResponse response) throws FoundException {
         logger.debug("유저 로그인 요청");
 
         User user = Database.findUserById(userId);
@@ -30,8 +33,13 @@ public class UserController {
         }
         logger.debug("유저 로그인 성공~");
 
-        // TODO set-Cookie
-
+        // 쿠키 세팅
+        Cookie.CookieBuilder cookieBuilder = new Cookie.CookieBuilder();
+        cookieBuilder.key("sid");
+        cookieBuilder.value("123456");
+        cookieBuilder.path("/");
+        Cookie cookie = cookieBuilder.build();
+        response.appendHeader("Set-Cookie", cookie.buildCookie());
     }
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
