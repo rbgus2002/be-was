@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import webserver.Main;
 import webserver.http.Headers;
@@ -68,7 +69,7 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
         }
     }
 
-    public List<Class> findByHasAnnotationClasses(final Class annotation) {
+    private List<Class> findByHasAnnotationClasses(final Class annotation) {
         return getAllClass().stream()
                 .filter(clazz -> clazz.isAnnotationPresent(annotation))
                 .collect(Collectors.toList());
@@ -94,7 +95,7 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
     private List<String> getList(final String root, final String path) {
         List<String> result = new ArrayList<>();
         File file = new File(path);
-        for (String s : file.list()) {
+        for (String s : Objects.requireNonNull(file.list())) {
             if (s.contains(".class")) {
                 result.add(path.split(root)[1] + "/" + s.replace(".class", ""));
             }
