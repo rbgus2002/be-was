@@ -10,7 +10,7 @@ import static utils.StringUtils.getDecodedString;
 public class SignUpController implements Controller {
 
     @Override
-    public void execute(HttpRequest request, HttpResponse response) {
+    public void execute(HttpRequest request) {
         Database.addUser(new User(getDecodedString(request.getParamValueByKey("userId")), getDecodedString(request.getParamValueByKey("password")),
                 getDecodedString(request.getParamValueByKey("name")), getDecodedString(request.getParamValueByKey("email"))));
     }
@@ -21,8 +21,8 @@ public class SignUpController implements Controller {
     }
 
     @Override
-    public void manageResponse(HttpResponse response){
-
+    public void manageResponse(HttpResponse response) {
+        response.setBodyByText("SIGN UP SUCCESS");
     }
 
 

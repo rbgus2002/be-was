@@ -29,13 +29,12 @@ class SignUpControllerTest {
                 "Host: localhost:8080\n" +
                 "Connection: keep-alive\n" +
                 "Accept: */*").getBytes()));
-        response = new HttpResponse();
     }
 
     @Test
     @DisplayName("request에 담긴 회원의 정보를 토대로 새로운 회원을 추가해야 한다")
     void signUp(){
-        signUpController.execute(request,response);
+        signUpController.execute(request);
         User user = Database.findUserById("javajigi");
         assertEquals("javajigi", user.getUserId());
         assertEquals("password", user.getPassword());
