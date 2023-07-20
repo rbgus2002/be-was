@@ -1,7 +1,16 @@
 package common.http;
 
+import common.enums.ContentType;
+import common.enums.ResponseCode;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static webserver.ServerConfig.STATIC_PATH;
 
 public class HttpResponse {
     private ResponseLine responseLine;
@@ -38,4 +47,29 @@ public class HttpResponse {
     public void setBody(byte[] body) {
         this.body = body;
     }
+
+    public void setStaticContentResponse(ContentType type, String version, String path) {
+        byte[] body = new byte[0];
+        ResponseLine responseLine = new ResponseLine();
+        HashMap<String, String> headers = new HashMap<>();
+
+        try {
+            body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
+
+            responseLine.setVersion(version);
+            responseLine.setResponseCode(ResponseCode.OK);
+
+            headers.put("Content-Type", type.getDescription());
+            headers.put("Content-Length", String.valueOf(body.length));
+
+        } catch (IOException e) {
+            responseLine = new ResponseLine(version, ResponseCode.NOT_FOUND);
+
+        } finally {
+            this.responseLine = responseLine;
+            this.headers = headers;
+            this.body = body;
+        }
+    }
+
 }

@@ -1,25 +1,52 @@
 package modelview;
 
+import common.enums.ContentType;
+import common.enums.ResponseCode;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModelView {
-    private final String viewName;
-    private Map<String, Object> model = new HashMap<>();
+    private final String view;
+    private final Map<String, Object> model;
+    private ResponseCode responseCode;
+    private final ContentType contentType;
 
-    public ModelView(String viewName) {
-        this.viewName = viewName;
+    public ModelView(String view, ResponseCode responseCode) {
+        this.view = view;
+        this.model = new HashMap<>();
+        this.responseCode = responseCode;
+
+        if (ContentType.isHtmlContent(view)) {
+            contentType = ContentType.HTML;
+        }
+        else {
+            contentType = ContentType.PLAIN;
+        }
+    }
+
+    public ModelView(String view) {
+        this(view, ResponseCode.OK);
     }
 
     public String getViewName() {
-        return viewName;
+        return view;
     }
 
     public Map<String, Object> getModel() {
         return model;
     }
 
-    public void setModel(Map<String, Object> model) {
-        this.model = model;
+    public ContentType getContentType() {
+        return contentType;
     }
+
+    public ResponseCode getResponseCode() {
+        return responseCode;
+    }
+
+    public void setAttribute(String key, Object value) {
+        model.put(key, value);
+    }
+
 }

@@ -1,27 +1,27 @@
 package common.http;
 
 import common.enums.ContentType;
-import common.enums.Method;
+import common.enums.RequestMethod;
 
 import java.util.Map;
 
 public class RequestLine {
-    private final Method method;
+    private final RequestMethod requestMethod;
     private final String path;
     private final String version;
     private final ContentType contentType;
     private final Map<String, String> params;
 
-    public RequestLine(Method method, String path, String version, ContentType contentType, Map<String, String> params) {
-        this.method = method;
+    public RequestLine(RequestMethod requestMethod, String path, String version, ContentType contentType, Map<String, String> params) {
+        this.requestMethod = requestMethod;
         this.path = path;
         this.version = version;
         this.contentType = contentType;
         this.params = params;
     }
 
-    public Method getMethod() {
-        return method;
+    public RequestMethod getRequestMethod() {
+        return requestMethod;
     }
 
     public String getPath() {

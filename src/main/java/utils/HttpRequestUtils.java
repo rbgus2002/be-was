@@ -2,7 +2,7 @@ package utils;
 
 import common.enums.ContentType;
 import common.http.HttpRequest;
-import common.enums.Method;
+import common.enums.RequestMethod;
 import common.http.RequestLine;
 
 import java.io.BufferedReader;
@@ -68,7 +68,7 @@ public class HttpRequestUtils {
             }
         }
 
-        return new RequestLine(Method.valueOf(method), path, version, contentType, params);
+        return new RequestLine(RequestMethod.valueOf(method), path, version, contentType, params);
     }
 
     private static ContentType parseContentType(String uri) {
@@ -89,6 +89,21 @@ public class HttpRequestUtils {
         }
         if (uri.endsWith(".jpg")) {
             return JPG;
+        }
+        if (uri.endsWith(".eot")) {
+            return EOT;
+        }
+        if (uri.endsWith(".svg")) {
+            return SVG;
+        }
+        if (uri.endsWith(".ttf")) {
+            return TTF;
+        }
+        if (uri.endsWith(".woff")) {
+            return WOFF;
+        }
+        if (uri.endsWith(".woff2")) {
+            return WOFF2;
         }
         return NONE;
     }

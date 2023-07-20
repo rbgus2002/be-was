@@ -1,6 +1,5 @@
 package webserver;
 
-import controller.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,8 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static common.enums.Method.GET;
 
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
@@ -24,7 +21,8 @@ public class WebServer {
             port = Integer.parseInt(args[0]);
         }
 
-        initializeMapper();
+        // 컨트롤러에 등록된 매핑을 찾아서 ControllerMapper에 등록한다.
+        ControllerMapper.getInstance().initialize();
 
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {
@@ -36,15 +34,5 @@ public class WebServer {
                 executorService.submit(new RequestHandler(connection));
             }
         }
-    }
-
-    private static void initializeMapper() {
-        RequestControllerMapper mapper = RequestControllerMapper.getInstance();
-
-        mapper.put("/static", GET, new StaticController());
-        mapper.put("/error", GET, new ErrorController());
-        mapper.put("/index.html", GET, new IndexController());
-        mapper.put("/user/form.html", GET, new GetUserFormController());
-        mapper.put("/user/create", GET, new CreateUserController());
     }
 }

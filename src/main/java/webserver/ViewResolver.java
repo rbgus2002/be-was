@@ -1,22 +1,29 @@
 package webserver;
 
 import common.enums.ContentType;
+import common.enums.ResponseCode;
+import modelview.ModelView;
+import view.HtmlView;
+import view.TextView;
 import view.View;
 
-import static webserver.ServerConfig.STATIC_PATH;
 import static webserver.ServerConfig.TEMPLATE_PATH;
 
 public class ViewResolver {
-    public static View resolve(ContentType contentType, String viewName) {
-        if (viewName == null) {
-            return new View(null);
-        }
-        if (contentType.isStaticContent()) {
-            return new View(STATIC_PATH + viewName);
-        }
+
+    public static View resolve(ModelView mv) {
+        ContentType contentType = mv.getContentType();
+        ResponseCode responseCode = mv.getResponseCode();
+
         if (contentType.isHtmlContent()) {
-            return new View(TEMPLATE_PATH + viewName);
+            return new HtmlView(TEMPLATE_PATH + mv.getViewName());
         }
-        return new View(TEMPLATE_PATH + "/error.html");
+
+        if (contentType.isPlainContent()) {
+            return new TextView(mv.getViewName());
+        }
+
+        return new HtmlView(TEMPLATE_PATH + "/error.html");
     }
+
 }

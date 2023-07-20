@@ -1,7 +1,7 @@
 package common.http;
 
 import common.enums.ContentType;
-import common.enums.Method;
+import common.enums.RequestMethod;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,8 +19,8 @@ public class HttpRequest {
         this.body = body;
     }
 
-    public Method getMethod() {
-        return requestLine.getMethod();
+    public RequestMethod getRequestMethod() {
+        return requestLine.getRequestMethod();
     }
 
     public String getPath() {
@@ -52,7 +52,7 @@ public class HttpRequest {
         StringBuilder sb = new StringBuilder();
 
         sb.append(NEW_LINE)
-                .append("[Method] ").append(getMethod()).append(NEW_LINE)
+                .append("[RequestMethod] ").append(getRequestMethod()).append(NEW_LINE)
                 .append("[URL] ").append(getPath()).append(NEW_LINE)
                 .append("[Version] ").append(getVersion()).append(NEW_LINE);
 

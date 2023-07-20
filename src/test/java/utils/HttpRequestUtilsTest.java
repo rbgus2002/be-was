@@ -1,7 +1,7 @@
 package utils;
 
+import common.enums.RequestMethod;
 import common.http.HttpRequest;
-import common.enums.Method;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static common.enums.Method.*;
+import static common.enums.RequestMethod.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpRequestUtilsTest {
@@ -104,14 +104,15 @@ class HttpRequestUtilsTest {
 
     private void verifyRequestLine(
             HttpRequest request,
-            Method expectedMethod,
+            RequestMethod expectedRequestMethod,
             String expectedPath,
             String expectedBody,
             Map<String, String> expectedParams
     ) {
-        assertEquals(expectedMethod, request.getMethod());
+        assertEquals(expectedRequestMethod, request.getRequestMethod());
         assertEquals(expectedPath, request.getPath());
         assertEquals(expectedBody, request.getBody());
         assertEquals(expectedParams, request.getParams());
     }
+
 }

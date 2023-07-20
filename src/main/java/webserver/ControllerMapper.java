@@ -2,7 +2,7 @@ package webserver;
 
 import annotation.RequestMapping;
 import common.enums.RequestMethod;
-import exception.NotFoundControllerException;
+import exception.NoSuchControllerMethodException;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -45,6 +45,6 @@ public class ControllerMapper {
         if (map.containsKey(requestMethod) && map.get(requestMethod).containsKey(path)) {
             return map.get(requestMethod).get(path);
         }
-        throw new NotFoundControllerException("처리할 컨트롤러 없음");
+        throw new NoSuchControllerMethodException("처리할 컨트롤러 없음");
     }
 }
