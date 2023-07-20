@@ -9,6 +9,5 @@ public enum HomeController implements HttpController {
     @Override
     public String process(HttpRequest request, HttpResponse response) {
         return "/index.html";
-
     }
 }

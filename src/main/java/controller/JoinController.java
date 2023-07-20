@@ -21,5 +21,4 @@ public enum JoinController implements HttpController {
         return "redirect:/index.html";
     }
 
-
 }
