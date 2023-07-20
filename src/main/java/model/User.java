@@ -1,5 +1,7 @@
 package model;
 
+import utils.exception.ExceptionMessage;
+
 public class User {
     private String userId;
     private String password;
@@ -16,13 +18,13 @@ public class User {
 
     public void verifyUser() {
        if (userId == null || userId.isBlank())
-           throw new IllegalArgumentException("User의 ID는 null이 될 수 없습니다");
+           throw new IllegalArgumentException(String.format(ExceptionMessage.USER_INFO_IS_NOT_EMPTY, "userId"));
        if (password == null || password.isBlank())
-           throw new IllegalArgumentException("Password는 값이 비어있을 수 없습니다.");
+           throw new IllegalArgumentException(String.format(ExceptionMessage.USER_INFO_IS_NOT_EMPTY, "password"));
        if (name == null || name.isBlank())
-           throw new IllegalArgumentException("name은 값이 비어 있을 수 없습니다.");
+           throw new IllegalArgumentException(String.format(ExceptionMessage.USER_INFO_IS_NOT_EMPTY, "name"));
        if (email == null || email.isBlank())
-           throw new IllegalArgumentException("email은 값이 비어 있을 수 없습니다.");
+           throw new IllegalArgumentException(String.format(ExceptionMessage.USER_INFO_IS_NOT_EMPTY, "email"));
     }
 
     public String getUserId() {
