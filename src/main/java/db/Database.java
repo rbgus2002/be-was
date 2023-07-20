@@ -18,6 +18,10 @@ public class Database {
         return users.get(userId);
     }
 
+    public static void clear() {
+        users.clear();
+    }
+
     public static Collection<User> findAll() {
         return users.values();
     }

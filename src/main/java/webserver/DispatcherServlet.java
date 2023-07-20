@@ -2,7 +2,9 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.controller.UserSaveController;
 import webserver.http.HttpConstant;
+import webserver.http.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.FileUtils;
@@ -10,12 +12,12 @@ import webserver.utils.FileUtils;
 import java.io.*;
 import java.net.Socket;
 
-public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+public class DispatcherServlet implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
     private final Socket connection;
 
-    public RequestHandler(Socket connectionSocket) {
+    public DispatcherServlet(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
@@ -23,13 +25,18 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
-             OutputStream out = connection.getOutputStream()) {
+        try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream()); OutputStream out = connection.getOutputStream()) {
             logRequestMessageAndResetStream(in);
+
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            FileUtils.processFileResponse(httpRequest.getURI(), httpResponse);
+            if (httpRequest.get(HttpConstant.METHOD).equals(HttpMethod.GET.toString()) && httpRequest.getPath().equals("/user/create")) {
+                UserSaveController userSaveController = new UserSaveController();
+                userSaveController.process(httpRequest, httpResponse);
+            } else {
+                FileUtils.processFileResponse(httpRequest.getURI(), httpResponse);
+            }
 
             sendResponse(httpResponse, out);
         } catch (IOException e) {
@@ -51,7 +58,7 @@ public class RequestHandler implements Runnable {
 
         in.reset();
 
-        logger.debug("{}", stringBuilder.toString());
+        logger.debug("{}", stringBuilder);
     }
 
     private void sendResponse(HttpResponse httpResponse, OutputStream out) throws IOException {
