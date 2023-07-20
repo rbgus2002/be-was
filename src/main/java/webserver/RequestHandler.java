@@ -103,7 +103,6 @@ public class RequestHandler implements Runnable {
 
     private static void writeCookies(DataOutputStream dos, List<Cookie> cookies) throws IOException {
         for (Cookie cookie : cookies) {
-            //TODO: 쿠키 뭔가 문제 있음
             String stringBuilder = "Set-Cookie: " +
                                    cookie.getName() + "=" + cookie.getValue() + "; " +
                                    "Max-Age=" + cookie.getMaxAge() + "; " +

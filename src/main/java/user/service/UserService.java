@@ -4,10 +4,6 @@ import db.Database;
 import model.User;
 import webserver.myframework.requesthandler.annotation.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 @Service
