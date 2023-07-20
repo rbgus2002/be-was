@@ -19,3 +19,8 @@ Java Web Application Server 2023
 - [X] Response, Request 리팩터링
 - [X] 회원가입 기능 구현하기
 - [X] 지금까지의 `public` 메서드들에 대한 테스트 코드 작성
+### Step-3
+- [X] HttpWasResponse 클래스가 하드코딩으로 하지 않고 여러개의 값을 조합해서 Response를 하도록 리팩토링
+- [X] Mime 타입 지원하도록 관리하는 핸들러나 로직 구현
+- [X] 상수로 포장할 수 있는 값들 변경
+- [X] 단위 테스트 작성

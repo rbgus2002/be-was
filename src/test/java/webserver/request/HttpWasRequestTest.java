@@ -1,4 +1,4 @@
-package webserver;
+package webserver.request;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -40,11 +40,11 @@ class HttpWasRequestTest {
 
 		// then
 		SoftAssertions softAssertions = new SoftAssertions();
-		softAssertions.assertThat(httpWasRequest.getParameter("userId")).isEqualTo("haechan");
-		softAssertions.assertThat(httpWasRequest.getParameter("password")).isEqualTo("password");
-		softAssertions.assertThat(httpWasRequest.getParameter("name")).isEqualTo("유해찬");
-		softAssertions.assertThat(httpWasRequest.getParameter("email")).isEqualTo("a@naver.com");
-		softAssertions.assertThat(httpWasRequest.getAttribute("Host")).isEqualTo("localhost:8080");
-		softAssertions.assertThat(httpWasRequest.getAttribute("Accept")).isEqualTo("*/*");
+		softAssertions.assertThat(httpWasRequest.getParameter("userId")).as("userId 테스트").isEqualTo("haechan");
+		softAssertions.assertThat(httpWasRequest.getParameter("password")).as("password 테스트").isEqualTo("password");
+		softAssertions.assertThat(httpWasRequest.getParameter("name")).as("name 테스트").isEqualTo("유해찬");
+		softAssertions.assertThat(httpWasRequest.getParameter("email")).as("email 테스트").isEqualTo("a@naver.com");
+		softAssertions.assertThat(httpWasRequest.getAttribute("Host")).as("host 테스트").isEqualTo("localhost:8080");
+		softAssertions.assertThat(httpWasRequest.getAttribute("Accept")).as("Accept 테스트").isEqualTo("*/*");
 	}
 }

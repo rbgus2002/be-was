@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controller.FrontController;
+import webserver.request.HttpWasRequest;
+import webserver.response.HttpWasResponse;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,6 +31,7 @@ public class RequestHandler implements Runnable {
 
             final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse, frontController);
             wasHandler.service();
+            httpWasResponse.doResponse();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

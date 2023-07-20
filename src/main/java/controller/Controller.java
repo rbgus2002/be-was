@@ -3,8 +3,8 @@ package controller;
 import controller.annotation.RequestMapping;
 import db.Database;
 import model.User;
-import webserver.HttpWasRequest;
-import webserver.HttpWasResponse;
+import webserver.request.HttpWasRequest;
+import webserver.response.HttpWasResponse;
 import webserver.utils.HttpMethod;
 
 public class Controller {
