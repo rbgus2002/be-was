@@ -45,7 +45,12 @@ public class ControllerTest {
 			SoftAssertions softAssertions = new SoftAssertions();
 			softAssertions.assertThatThrownBy(() -> {
 				controller.createUser(parameter);
-			}).isInstanceOf(Exception.class).hasMessage("이미 동일한 사용자 ID가 존재합니다.");
+			}).isInstanceOf(Exception.class).hasMessage(Database.USERID_ALREADY_EXISTS_MESSAGE);
+
+			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword()).isEqualTo(existingUser.getPassword());
+			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getName()).isEqualTo(existingUser.getName());
+			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getEmail()).isEqualTo(existingUser.getEmail());
+			softAssertions.assertThat(Database.findAll().size()).isEqualTo(1);
 
 			softAssertions.assertAll();
 		}
