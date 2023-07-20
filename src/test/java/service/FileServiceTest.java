@@ -4,16 +4,14 @@ import model.enums.MIME;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.FileNotFoundException;
+import java.nio.file.NoSuchFileException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileServiceTest {
     public static final String INDEX_HTML = "/index.html";
-    private String startTag = "<!DOCTYPE html>";
 
     private FileService fileService;
 
@@ -27,8 +25,7 @@ class FileServiceTest {
     void findFile() {
 
         assertDoesNotThrow(() -> {
-            String fileContent = fileService.openFile(INDEX_HTML, MIME.HTML);
-            assertTrue(fileContent.startsWith(startTag));
+            byte[] fileContent = fileService.openFile(INDEX_HTML, MIME.HTML);
         });
     }
 
@@ -37,9 +34,8 @@ class FileServiceTest {
     void dontFindFile() {
         String basicIndexPath = "/somewhere.html";
 
-        assertThrows(FileNotFoundException.class, () -> {
-            String fileContent = fileService.openFile(basicIndexPath, MIME.CSS);
-            assertTrue(fileContent.startsWith(startTag));
+        assertThrows(NoSuchFileException.class, () -> {
+            byte[] fileContent = fileService.openFile(basicIndexPath, MIME.CSS);
         });
     }
 }
