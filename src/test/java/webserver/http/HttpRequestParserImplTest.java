@@ -8,7 +8,6 @@ import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpRequestParser;
 import webserver.http.request.HttpRequestParserImpl;
 import webserver.http.request.exception.IllegalRequestParameterException;
-import webserver.myframework.session.Session;
 import webserver.myframework.session.SessionManager;
 import webserver.myframework.session.SessionManagerImpl;
 

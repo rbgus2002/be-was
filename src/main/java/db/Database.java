@@ -15,8 +15,8 @@ public class Database {
         users.put(user.getUserId(), user);
     }
 
-    public static Optional<User> findUserById(String userId) {
-        return Optional.ofNullable(users.get(userId));
+    public static User findUserById(String userId) {
+        return users.get(userId);
     }
 
     public static Collection<User> findAll() {

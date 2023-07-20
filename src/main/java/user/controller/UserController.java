@@ -1,5 +1,6 @@
 package user.controller;
 
+import model.User;
 import user.service.UserService;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
@@ -7,6 +8,7 @@ import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.requesthandler.annotation.Controller;
 import webserver.myframework.requesthandler.annotation.RequestMapping;
+import webserver.myframework.session.Session;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,37 +25,56 @@ public class UserController {
 
     @RequestMapping(value = "/create", method = HttpMethod.POST)
     public void signUp(HttpRequest httpRequest, HttpResponse httpResponse) {
-        Map<String, String> parameterMap = getParameterMap(httpRequest.getBodyToString());
         try {
-            verifySignUpParameters(parameterMap);
+            Map<String, String> parameterMap = getParameterMap(httpRequest.getBodyToString(), 4);
             userService.signUp(
                     parameterMap.get("userId"),
                     parameterMap.get("password"),
                     parameterMap.get("name"),
                     parameterMap.get("email"));
+            httpResponse.sendRedirection("/index.html");
         } catch (IllegalArgumentException exception) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
-            return;
         }
-
-        httpResponse.sendRedirection("/index.html");
     }
 
-    private static void verifySignUpParameters(Map<String, String> parameterMap) {
-        if (parameterMap.values().size() != 4 ||
+    @RequestMapping(value = "/login", method = HttpMethod.POST)
+    public void signIn(HttpRequest httpRequest, HttpResponse httpResponse) {
+        try {
+            Map<String, String> parameterMap = getParameterMap(httpRequest.getBodyToString(), 2);
+            User user = userService.signIn(parameterMap.get("userId"), parameterMap.get("password"));
+            if (user == null) {
+                httpResponse.sendRedirection("/user/login_failed.html");
+                return;
+            }
+            Session session = httpRequest.getSession();
+            session.setAttribute("userId", user.getUserId());
+            httpResponse.sendRedirection("/index.html");
+
+        } catch (IllegalArgumentException exception) {
+            httpResponse.setStatus(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private static void verifyParameters(Map<String, String> parameterMap, int size) {
+        if (parameterMap.values().size() != size ||
             parameterMap.values().stream()
                     .anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private static Map<String, String> getParameterMap(String body) {
+    private static Map<String, String> getParameterMap(String body, int size) {
         Map<String, String> parameterMap = new HashMap<>();
-        String[] parameters = body.split("&");
-        for (String parameter : parameters) {
+        for (String parameter : body.split("&")) {
             String[] keyValue = parameter.split("=");
-            parameterMap.put(keyValue[0].trim(), keyValue[0].trim());
+            if (keyValue.length != 2) {
+                throw new IllegalArgumentException();
+            }
+            parameterMap.put(keyValue[0].trim(), keyValue[1].trim());
         }
+
+        verifyParameters(parameterMap, size);
         return parameterMap;
     }
 }

@@ -58,7 +58,7 @@ class DatabaseTest {
                 Database.addUser(user);
 
                 //when
-                User resultUser = Database.findUserById("userId").orElseThrow(RuntimeException::new);
+                User resultUser = Database.findUserById("userId");
 
                 //then
                 assertThat(resultUser).isEqualTo(user);
@@ -73,10 +73,10 @@ class DatabaseTest {
             void returnEmptyOptional() {
                 //given
                 //when
-                Optional<User> notExist = Database.findUserById("notExist");
+                User notExist = Database.findUserById("notExist");
 
                 //then
-                assertThat(notExist.isEmpty()).isTrue();
+                assertThat(notExist).isNull();
             }
         }
     }
