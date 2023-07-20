@@ -32,11 +32,7 @@ public class Uri {
         return stringBuilder.toString();
     }
 
-    private void appendQueryString(StringBuilder stringBuilder) {
-        if (!query.isEmpty()) {
-            stringBuilder.append("?");
-            query.forEach((key, value) -> stringBuilder.append(key + EQUAL + value + AMPERSAND));
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
+    public boolean isSamePath(String path) {
+        return this.path.equals(path);
     }
 }

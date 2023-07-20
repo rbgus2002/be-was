@@ -58,4 +58,8 @@ public class HttpRequest {
         stringBuilder.append(body);
         return stringBuilder.toString();
     }
+
+    public boolean isMatchHandler(HttpMethod method, String path) {
+        return requestLine.isMatchHandler(method, path);
+    }
 }
