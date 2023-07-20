@@ -2,12 +2,12 @@ package utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.Path;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,5 +46,18 @@ public class Parser {
             queryParams.put(param.substring(0, splitIndex), URLDecoder.decode(param.substring(splitIndex + 1), StandardCharsets.UTF_8));
         }
         return queryParams;
+    }
+
+    public static String parseExtension(String requestUri) {
+        String extension = requestUri.substring(requestUri.lastIndexOf(".") + 1);
+        return extension.toUpperCase();
+    }
+
+    public static String parsePath(String requestUri) {
+        String extension = parseExtension(requestUri);
+        if (extension.equals("HTML")) {
+            return Path.TEMPLATES.getPath() + requestUri;
+        }
+        return Path.STATIC.getPath() + requestUri;
     }
 }
