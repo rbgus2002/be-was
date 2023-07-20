@@ -1,7 +1,7 @@
 package webserver.http.request;
 
-import java.util.HashMap;
-import java.util.Map;
+import model.User;
+
 
 import static utils.StringUtils.*;
 
@@ -22,6 +22,10 @@ public class Uri {
 
     public String getPath() {
         return this.path;
+    }
+
+    public User createUserFromQuery() {
+        return this.query.createUser();
     }
 
     @Override

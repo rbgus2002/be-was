@@ -1,6 +1,7 @@
 package webserver.http.request;
 
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.HttpMethod;
@@ -32,6 +33,10 @@ public class RequestLine {
 
     public String toString() {
         return method.name() + " " + uri.toString() + " " + version;
+    }
+
+    public User createUserFromQuery() {
+        return uri.createUserFromQuery();
     }
 
     public String getVersion() {
