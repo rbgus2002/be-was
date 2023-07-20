@@ -22,9 +22,8 @@ public class RequestMapper {
 
     public String response() throws Exception {
         final HttpMethod httpMethod = requestLine.getHttpMethod();
-        final String uri = requestLine.getUri();
         final Handler handler = findHandler(httpMethod);
-        return handler.startController(uri, controller);
+        return handler.startController(requestLine, controller);
     }
 
     private Handler findHandler(HttpMethod httpMethod) {

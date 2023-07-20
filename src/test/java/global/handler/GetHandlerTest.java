@@ -3,6 +3,7 @@ package global.handler;
 import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
+import global.request.RequestLine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,10 +34,10 @@ public class GetHandlerTest {
     @Test
     public void testStartControllerWithMatchingMapping() throws Exception {
         //given
-        String url = "/";
+        RequestLine requestLine = new RequestLine("GET / HTTP/1.1 ");
 
         //when
-        String result = getHandler.startController(url, controller);
+        String result = getHandler.startController(requestLine, controller);
 
         //then
         assertTrue(result.contains("Hello world!"));
@@ -44,7 +45,10 @@ public class GetHandlerTest {
 
     @Test
     public void testStartControllerWithNonMatchingMapping() {
-        //given&when&then
-        assertThrows(BadRequestException.class, () -> getHandler.startController("/invalid", controller));
+        //given
+        RequestLine requestLine = new RequestLine("GET /invalid HTTP/1.1 ");
+
+        //when&then
+        assertThrows(BadRequestException.class, () -> getHandler.startController(requestLine, controller));
     }
 }

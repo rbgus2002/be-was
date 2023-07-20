@@ -4,6 +4,7 @@ import annotations.MyGetMapping;
 import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
+import global.request.RequestLine;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -20,16 +21,16 @@ public class GetHandler implements Handler {
         return this.httpMethod == httpMethod;
     }
 
-    public String startController(String uri, Controller controller) throws Exception {
+    public String startController(RequestLine requestLine, Controller controller) throws Exception {
         for (Method method : Controller.class.getDeclaredMethods()) {
-            if (isGetMapping(method, uri)) {
-                return (String) method.invoke(controller);
+            if (isGetMapping(method, requestLine.getUri())) {
+                return (String) method.invoke(controller, requestLine.getQueryParams());
             }
         }
 
         Set<String> GetMappingsSet = getDeclaredGetMappings();
-        if (GetMappingsSet.contains(uri)) {
-            return uri;
+        if (GetMappingsSet.contains(requestLine.getUri())) {
+            return requestLine.getUri();
         }
         throw new BadRequestException();
     }
