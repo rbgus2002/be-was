@@ -7,7 +7,6 @@ Java Web Application Server 2023
 이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was
 를 참고하여 작성되었습니다.
 
-# Summary
 
 ---
 
@@ -31,6 +30,13 @@ Java Web Application Server 2023
   - [x] ico
   - [x] png
   - [x] jpg 
+#### Web Server step-4
+- [ ] POST를 통한 회원가입 구현
+  - [ ] HttpRequest 객체에 body 추가&적용 
+- [ ] redirection 기능 구현
+  - [ ] 회원가입 완료하면 "/index.html'로 redirection
+  - [ ] http status code 302 사용
+
 
 ## To Study List
 #### Web Server step-1
@@ -42,4 +48,6 @@ Java Web Application Server 2023
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
 #### Web Server step-3
-- [x] MIME 타입 이해하기
+- [x] MIME 타가입 이해하기
+#### Web Server step-4
+- [ ] 자주 사용하는 status code 정리
