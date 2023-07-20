@@ -20,7 +20,7 @@ public class FileController {
         String extension = tokens[tokens.length-1];
         HttpUtil.MIME mime = HttpUtil.MIME.getMimeByExtension(extension);
         if (mime != null) {
-            byte[] body = FileService.loadStaticFile(targetUri);
+            byte[] body = FileService.loadFile(request);
 
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
