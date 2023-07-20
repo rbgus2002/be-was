@@ -10,7 +10,6 @@ import webserver.http.HttpHeaders;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpRequestParser;
 import webserver.http.request.HttpRequestParserImpl;
-import webserver.http.request.exception.IllegalRequestParameterException;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.servlet.DispatcherServlet;
 
@@ -42,7 +41,7 @@ public class RequestHandler implements Runnable {
 
             DataOutputStream dos = new DataOutputStream(outputStream);
             sendResponse(dos, httpResponse);
-        } catch (IOException | IllegalRequestParameterException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
@@ -54,16 +53,11 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    //TODO: text/html 외의 다른 Content-Type도 지원되도록 해야함
     private void sendResponse(DataOutputStream dos, HttpResponse httpResponse) {
         try {
             writeResponseLine(dos, httpResponse);
             writeContentType(dos, httpResponse);
-
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + httpResponse.getBody().length + "\r\n");
             writeHeaders(dos, httpResponse);
-            dos.writeBytes("\r\n");
             writeBody(dos, httpResponse);
             dos.flush();
         } catch (IOException e) {
@@ -95,6 +89,8 @@ public class RequestHandler implements Runnable {
         for (String headerName : headers.getHeaderNames()) {
             dos.writeBytes(headerName + ": " + headers.getHeaderValues(headerName));
         }
+        dos.writeBytes("Content-Length: " + httpResponse.getBody().length + "\r\n");
+        dos.writeBytes("\r\n");
     }
 
     private static void writeBody(DataOutputStream dos, HttpResponse httpResponse) throws IOException {

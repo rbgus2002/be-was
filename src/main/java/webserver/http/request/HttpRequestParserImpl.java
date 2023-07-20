@@ -3,22 +3,27 @@ package webserver.http.request;
 import webserver.http.HttpMethod;
 import webserver.http.request.exception.IllegalRequestParameterException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class HttpRequestParserImpl implements HttpRequestParser {
+    private static final String CONTENT_LENGTH = "Content-Length";
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public HttpRequest parse(InputStream inputStream) throws IOException, IllegalRequestParameterException {
         HttpRequest.Builder builder = HttpRequest.builder();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
         parseRequestLine(builder, bufferedReader);
-        parseHeaders(builder, bufferedReader);
+        int bodyLength = parseHeaders(builder, bufferedReader);
 
+        char[] chars = new char[bodyLength];
+        bufferedReader.read(chars);
+        builder.body(charArrayToByteArray(chars));
         return builder.build();
     }
 
@@ -51,11 +56,25 @@ public class HttpRequestParserImpl implements HttpRequestParser {
         builder.addParameter(keyValue[0].trim(), keyValue[1].trim());
     }
 
-    private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
+    private static int parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
+        int contentLength = 0;
         String line;
         while(!(line = bufferedReader.readLine()).isBlank()) {
             String[] header = line.split(": ");
             builder.addHeader(header[0].trim(), header[1].trim());
+            if(header[0].trim().equals(CONTENT_LENGTH)) {
+                contentLength = Integer.parseInt(header[1].trim());
+            }
         }
+        return contentLength;
+    }
+
+    private static byte[] charArrayToByteArray(char[] chars) {
+        if (chars == null) return null;
+        CharBuffer charBuffer = CharBuffer.wrap(chars);
+        ByteBuffer byteBuffer = StandardCharsets.UTF_8.encode(charBuffer);
+        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(), byteBuffer.position(), byteBuffer.limit());
+        Arrays.fill(byteBuffer.array(), (byte) 0);
+        return bytes;
     }
 }

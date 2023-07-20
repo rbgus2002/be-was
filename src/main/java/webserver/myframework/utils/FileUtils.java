@@ -20,8 +20,8 @@ public class FileUtils {
         return "";
     }
 
-    public static File getFilesInDirectory(URL directoryURI) throws FileNotFoundException {
-        File packageDirectory = new File(directoryURI.getFile());
+    public static File getPackageDirectory(URL directoryURL) throws FileNotFoundException {
+        File packageDirectory = new File(directoryURL.getFile());
         if (!packageDirectory.exists()) {
             throw new FileNotFoundException("디렉토리를 가져오는데 실패하였습니다");
         }

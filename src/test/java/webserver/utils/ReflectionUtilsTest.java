@@ -1,4 +1,4 @@
-package utils;
+package webserver.utils;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,18 +18,36 @@ import static webserver.myframework.utils.ReflectionUtils.*;
 
 class ReflectionUtilsTest {
     @Nested
-    @DisplayName("getAllLoadedClasses method")
-    class GetAllLoadedClasses {
-        @Test
-        @DisplayName("특정 패키지의 모든 애플리케이션 클래스들을 가져온다")
-        void getAllLoadedApplicationClass() throws ReflectiveOperationException, FileNotFoundException {
-            //given
-            //when
-            List<Class<?>> allLoadedClasses = getClassesInPackage("utils");
+    @DisplayName("getClassesInPackage method")
+    class GetClassesInPackage {
+        @Nested
+        @DisplayName("주어진 문자열의 패키지가 존재하는 경우")
+        class IsPackageOfGivenStringExist {
+            @Test
+            @DisplayName("주어진 패키지의 모든 애플리케이션 클래스들을 가져온다")
+            void getClassesInGivenPackage() throws ReflectiveOperationException, FileNotFoundException {
+                //given
+                //when
+                List<Class<?>> allLoadedClasses = ReflectionUtils.getClassesInPackage("webserver");
 
-            //then
-            assertThat(allLoadedClasses).containsAll(
-                    List.of(getClass(), ComponentClass.class, ExtendComponentClass.class, ControllerClass.class));
+                //then
+                assertThat(allLoadedClasses).containsAll(
+                        List.of(getClass(), ComponentClass.class, ExtendComponentClass.class, ControllerClass.class));
+            }
+        }
+
+        @Nested
+        @DisplayName("주어진 문자열의 패키지가 존재하지 않는 경우")
+        class IsPackageOfGivenStringNotExist {
+            @Test
+            @DisplayName("주어진 패키지의 모든 애플리케이션 클래스들을 가져온다")
+            void getClassesInGivenPackage() {
+                //given
+                //when
+                //then
+                assertThatThrownBy(() -> ReflectionUtils.getClassesInPackage("notExist"))
+                        .isInstanceOf(FileNotFoundException.class);
+            }
         }
     }
 
