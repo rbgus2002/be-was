@@ -11,10 +11,9 @@ import util.HttpRequestUtils;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
-
 public class RequestHandler implements Runnable {
 
-    private final static Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
 
@@ -28,43 +27,9 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = new HttpRequest(in);
-            String method = httpRequest.getMethod();
-            String url = httpRequest.getRequestPath();
 
-            if (method.equals("GET") && url.startsWith("/user/create")) {
-                url = UserController.createUser(httpRequest);
-            }
-
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = getBody(url);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private byte[] getBody(String path) throws IOException {
-        return HttpRequestUtils.isValidPath(path) ?
-                Files.readAllBytes(new File("src/main/resources/templates" + path).toPath()) :
-                "Invalid Path".getBytes();
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
+            dispatcherServlet.doDispatch(httpRequest, out);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

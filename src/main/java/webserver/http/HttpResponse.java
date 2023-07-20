@@ -1,7 +1,5 @@
 package webserver.http;
 
-import java.io.DataOutputStream;
-
 public class HttpResponse {
     private final String status;
     private final byte[] body;
