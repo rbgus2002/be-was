@@ -7,19 +7,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static http.Extension.HTML;
-import static utils.StringUtils.appendNewLine;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private String version = "HTTP/1.1";
     private HttpStatus httpStatus;
     private String contentType;
+    private String location;
     private byte[] body;
 
     public static class ResponseBuilder {
         private String version = "HTTP/1.1";
         private HttpStatus httpStatus = HttpStatus.OK;
         private String contentType = MIME.getMIME().get(HTML);
+        private String location = "/index.html";
         private byte[] body;
 
         public ResponseBuilder() {
@@ -32,6 +33,11 @@ public class HttpResponse {
 
         public ResponseBuilder setContentType(String contentType) {
             this.contentType = contentType;
+            return this;
+        }
+
+        public ResponseBuilder setLocation(String location) {
+            this.location = location;
             return this;
         }
 
@@ -48,6 +54,7 @@ public class HttpResponse {
     public HttpResponse(ResponseBuilder builder) {
         this.httpStatus = builder.httpStatus;
         this.contentType = builder.contentType;
+        this.location = builder.location;
         this.body = builder.body;
     }
 
@@ -59,17 +66,19 @@ public class HttpResponse {
 
     private void responseHeader(DataOutputStream dos) {
         try {
-            String statusLine = version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage();
-            String contentTypeLine = "Content-Type: " + contentType + ";charset=utf-8";
-            String contentLengthLine = "Content-Length: " + body.length;
-            dos.writeBytes(appendNewLine(statusLine));
-            dos.writeBytes(appendNewLine(contentTypeLine));
-            dos.writeBytes(appendNewLine(contentLengthLine));
-            dos.writeBytes(appendNewLine(""));
-            logger.debug("{} {} {} \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
-            logger.debug("Content-Type: {};charset=utf-8\n", contentType);
-            logger.debug("Content-Length: {}\r\n", body.length);
-            logger.debug("\r\n");
+            String statusLine = String.format("%s %d %s \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
+            String contentTypeLine = String.format("Content-Type: %s;charset=utf-8 \r\n", contentType);
+            String contentLengthLine = String.format("Content-Length: %d \r\n", body.length);
+            String locationLine = String.format("Location: %s \r\n", location);
+            dos.writeBytes(statusLine);
+            dos.writeBytes(contentTypeLine);
+            dos.writeBytes(contentLengthLine);
+            dos.writeBytes(locationLine);
+            dos.writeBytes("\r\n");
+            logger.debug(statusLine);
+            logger.debug(contentTypeLine);
+            logger.debug(contentLengthLine);
+            logger.debug(locationLine);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -82,5 +91,9 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public HttpStatus getHttpStatus() {
+        return this.httpStatus;
     }
 }

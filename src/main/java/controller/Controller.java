@@ -3,11 +3,13 @@ package controller;
 import http.*;
 import service.UserService;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static exception.ExceptionName.INVALID_URI;
+import static exception.ExceptionName.NOT_ENOUGH_USER_INFORMATION;
 import static http.Extension.HTML;
+import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
 
 public class Controller {
@@ -15,9 +17,12 @@ public class Controller {
 
     public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) {
         try {
+            if (httpRequest.getMethod().equals(POST)) {
+                return routeByUriWithBody(httpRequest);
+            }
             String uri = httpRequest.getUri();
             if (uri.contains("?")) {
-                return routeByUri(uri);
+                return routeByUriWithQuestion(uri);
             }
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
@@ -31,18 +36,39 @@ public class Controller {
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (Exception e) {
-            return loadTemplatesFromPath(HttpStatus.OK, "/error.html")
+            String errorPage = getErrorPage(e.getMessage());
+            return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
                     .setContentType(MIME.getMIME().get(HTML));
         }
 
     }
 
-    public HttpResponse.ResponseBuilder routeByUri(String uri) throws IOException {
+    public String getErrorPage(String errorMessage) {
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<title>Error Page</title>" +
+                "</head>" +
+                "<body>" +
+                "<h1>Error: " + errorMessage + "</h1>" +
+                "</body>" +
+                "</html>";
+    }
+
+    private HttpResponse.ResponseBuilder routeByUriWithQuestion(String uri) {
         String[] apis = uri.split("\\?");
         if (apis[0].equals("/user/create")) {
             return createUser(parseParams(apis[1]));
         }
-        return null;
+        throw new IllegalArgumentException(INVALID_URI);
+    }
+
+    private HttpResponse.ResponseBuilder routeByUriWithBody(HttpRequest httpRequest) {
+        String uri = httpRequest.getUri();
+        if (uri.equals("/user/create")) {
+            return createUser(parseParams(httpRequest.getBody()));
+        }
+        throw new IllegalArgumentException(INVALID_URI);
     }
 
     private Map<String, String> parseParams(String parameter) {
@@ -50,14 +76,16 @@ public class Controller {
         Map<String, String> information = new HashMap<>();
         for (String param : params) {
             String[] info = param.split("=");
+            if (info.length != 2)
+                throw new IllegalArgumentException(NOT_ENOUGH_USER_INFORMATION);
             information.put(info[0], info[1]);
         }
         return information;
     }
 
-    public HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) throws IOException {
+    private HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.OK, "/user/signup_success.html");
+        return loadTemplatesFromPath(HttpStatus.FOUND, "/index.html");
     }
 
 }

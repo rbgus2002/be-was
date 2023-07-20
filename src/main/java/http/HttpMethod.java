@@ -1,19 +1,9 @@
 package http;
 
-public enum HttpMethod {
-    GET("GET"),
-    POST("POST"),
-    PUT("PUT"),
-    PATCH("PATCH"),
-    DELETE("DELETE");
-
-    private final String method;
-
-    HttpMethod(String method) {
-        this.method = method;
-    }
-
-    public String getMethod() {
-        return this.method;
-    }
+public class HttpMethod {
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String PUT = "PUT";
+    public static final String PATCH = "PATCH";
+    public static final String DELETE = "DELETE";
 }

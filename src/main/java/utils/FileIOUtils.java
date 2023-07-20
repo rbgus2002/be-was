@@ -5,6 +5,7 @@ import http.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,10 +20,12 @@ public class FileIOUtils {
             if (Files.exists(path)) {
                 return new HttpResponse.ResponseBuilder()
                         .setStatus(httpStatus)
+                        .setLocation(uri)
                         .setBody(Files.readAllBytes(new File(STATIC_RESOURCES + uri).toPath()));
             }
             return new HttpResponse.ResponseBuilder()
-                    .setStatus(httpStatus)
+                    .setStatus(HttpStatus.NOT_FOUND)
+                    .setLocation("/wrong_access.html")
                     .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -35,14 +38,23 @@ public class FileIOUtils {
             if (Files.exists(path)) {
                 return new HttpResponse.ResponseBuilder()
                         .setStatus(httpStatus)
+                        .setLocation(uri)
                         .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + uri).toPath()));
             }
             return new HttpResponse.ResponseBuilder()
-                    .setStatus(httpStatus)
+                    .setStatus(HttpStatus.NOT_FOUND)
+                    .setLocation("/wrong_access.html")
                     .setBody(Files.readAllBytes(new File(TEMPLATES_RESOURCES + "/wrong_access.html").toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static HttpResponse.ResponseBuilder loadErrorFromPath(HttpStatus httpStatus, String html) {
+        return new HttpResponse.ResponseBuilder()
+                .setStatus(httpStatus)
+                .setLocation("/error.html")
+                .setBody(html.getBytes(StandardCharsets.UTF_8));
     }
 
 }
