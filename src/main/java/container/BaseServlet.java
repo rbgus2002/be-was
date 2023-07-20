@@ -25,6 +25,7 @@ public class BaseServlet implements Servlet {
         String extension = url.substring(url.lastIndexOf("."));
         File file;
         byte[] body;
+        logger.debug("url = {}", url);
         logger.debug("boolean = {}", new File(TEMPLATE_PATH.getPath() + url).exists());
         if ((file = new File(STATIC_PATH.getPath() + url)).exists() || (file = new File(TEMPLATE_PATH.getPath()+ url)).exists()) {
             body = Files.readAllBytes(file.toPath());
@@ -35,7 +36,6 @@ public class BaseServlet implements Servlet {
 
         response.setVersion(version);
         response.setContentType(extension);
-        response.setHeader("Set-Cookie", "asd");
         response.setBody(body);
         DataOutputStream writer = response.getWriter();
 

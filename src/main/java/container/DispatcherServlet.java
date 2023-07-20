@@ -20,6 +20,11 @@ public class DispatcherServlet {
             return map.get(request.getUrl());
         }
 
+        if (request.getUrl().equals("/user/login")) {
+            map.put("/user/login", new LogInTestServlet());
+            return map.get("/user/login");
+        }
+
         map.put(request.getUrl(), new BaseServlet());
         return map.get(request.getUrl());
     }
