@@ -7,10 +7,9 @@ import java.net.Socket;
 import controller.UserController;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.MIME;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Parser;
-
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -28,16 +27,16 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = new HttpRequest(in);
             logger.debug("{}", httpRequest);
+            String path = httpRequest.getPath();
+            MIME mime = httpRequest.getMime();
 
             HttpResponse httpResponse;
-            String path = httpRequest.getPath();
-            String extension = Parser.getExtension(path);
 
-            if (extension.equals("html")) {
-                httpResponse = HttpResponse.ok(path);
-            } else {
-                Method method = HandlerMapping.getHandler(httpRequest);
+            Method method = HandlerMapping.getHandler(httpRequest);
+            if (method != null) {
                 httpResponse = (HttpResponse) method.invoke(new UserController(), httpRequest);
+            } else {
+                httpResponse = HttpResponse.ok(path, mime);
             }
 
             httpResponse.response(new DataOutputStream(out));
