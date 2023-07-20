@@ -28,7 +28,7 @@ public class LogInServlet implements Servlet {
         response.setStatusCode("302");
         response.setStatusMessage("Found");
         response.setHeader("Location", HOME_PATH.getPath());
-        
+
         DataOutputStream writer = response.getWriter();
         writer.writeBytes(response.info());
         writer.flush();
