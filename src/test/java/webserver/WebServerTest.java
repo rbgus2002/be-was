@@ -52,4 +52,15 @@ class WebServerTest {
                 .statusCode(HttpStatus.SC_OK)
                 .contentType("image/png");
     }
+
+    @DisplayName("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net 를 요청했을때 회원가입한다.")
+    @Test
+    void createUser() {
+        RestAssured.given().log().all()
+                .when()
+                .get("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK);
+    }
 }
