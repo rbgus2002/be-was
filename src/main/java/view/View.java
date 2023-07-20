@@ -5,48 +5,26 @@ import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.http.ResponseLine;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
-import static common.enums.ContentType.PLAIN;
+public interface View {
 
-public class View {
-    private final String viewPath;
+    String getContentType();
 
-    public View(String viewPath) {
-        this.viewPath = viewPath;
+    void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception;
+
+    // TODO : 뷰에서 reponse를 세팅하면 안 되지 싶다. 개선하자
+    default void decorateResponse(HttpRequest request, HttpResponse response, ResponseCode responseCode, byte[] body) {
+        ResponseLine responseLine = new ResponseLine(request.getVersion(), responseCode);
+
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", getContentType());
+        header.put("Content-Length", String.valueOf(body.length));
+
+        response.setResponseLine(responseLine);
+        response.setHeaders(header);
+        response.setBody(body);
     }
 
-    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) {
-        ResponseLine responseLine = new ResponseLine(request.getVersion());
-        Map<String, String> headers = new HashMap<>();
-        byte[] body = new byte[0];
-
-        if (viewPath == null) {
-            responseLine.setResponseCode(ResponseCode.OK);
-            response.setResponseLine(responseLine);
-            return;
-        }
-
-        try {
-            body = Files.readAllBytes(new File(viewPath).toPath());
-            responseLine.setResponseCode(ResponseCode.OK);
-
-            headers.put("Content-Type", request.getContentType().getDescription());
-            headers.put("Content-Length", String.valueOf(body.length));
-        } catch (IOException e) {
-            body = new byte[0];
-            responseLine.setResponseCode(ResponseCode.BAD_REQUEST);
-
-            headers.put("Content-Type", PLAIN.getDescription());
-            headers.put("Content-Length", String.valueOf(body.length));
-        } finally {
-            response.setResponseLine(responseLine);
-            response.setHeaders(headers);
-            response.setBody(body);
-        }
-    }
 }
