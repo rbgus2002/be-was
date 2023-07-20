@@ -1,20 +1,21 @@
 package webserver.http.response;
 
-import webserver.service.FileService;
-import webserver.http.HttpStatusCode;
+import webserver.controller.Controller;
+import webserver.controller.HandlerMapper;
 import webserver.http.request.HttpRequest;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ResponseHandler {
-    private ResponseHandler() {}
+    private ResponseHandler() {
+    }
 
-    public static HttpResponse createResponse(HttpRequest request) {
-        try {
-            byte[] body = FileService.getStaticResource(request.getPath());
-            return HttpResponse.of(request.getVersion(), HttpStatusCode.OK, body);
-        } catch (IOException exception) {
-            return HttpResponse.of(request.getVersion(), HttpStatusCode.NOT_FOUND, new byte[0]);
-        }
+    public static void response(OutputStream out, HttpRequest request) throws InvocationTargetException, IllegalAccessException, IOException {
+        Method handler = HandlerMapper.getHandler(request);
+        HttpResponse response = (HttpResponse) handler.invoke(new Controller(), request);
+        response.response(out);
     }
 }
