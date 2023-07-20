@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import webserver.http.controller.FrontController;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.http.utils.StringUtils;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -52,9 +54,10 @@ public class RequestHandler implements Runnable {
 
 	private void writeResponseHeader(DataOutputStream outputStream, HttpResponse response) {
 		try {
-			outputStream.writeBytes(String.join(SINGLE_SPACE, response.getStatusLineTokens()) + CRLF);
-			outputStream.writeBytes("Content-Type: text/html;charset=utf-8" + CRLF);
-			outputStream.writeBytes("Content-Length: " + response.getBody().length + CRLF);
+			outputStream.writeBytes(StringUtils.joinStatusLine(response.getStatusLineTokens()));
+			for (Map.Entry<String, String> headerField : response.getHeaderFieldsEntry()) {
+				outputStream.writeBytes(StringUtils.joinHeaderFields(headerField.getKey(), headerField.getValue()));
+			}
 			outputStream.writeBytes(CRLF);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
