@@ -41,7 +41,7 @@ public class DispatcherServlet {
         if (hasRequestPathMapped(method)) {
             path = executeRequest(request, method);
         }
-        findStaticFile(response, path);
+        findResources(response, path);
     }
 
     private static boolean hasRequestPathMapped(Method method) {
@@ -59,8 +59,10 @@ public class DispatcherServlet {
         return path;
     }
 
-    private void findStaticFile(HttpResponse response, String filePath) {
+    private void findResources(HttpResponse response, String filePath) {
         try {
+            ContentType type = ContentType.findBy(filePath);
+            filePath = type.mapResourceFolders(filePath);
             response.setResults(filePath, OK);
         } catch (IOException e) {
             logger.debug("readAllBytes ERROR");
@@ -82,7 +84,8 @@ public class DispatcherServlet {
         return method.getParameterCount() != 0;
     }
 
-    public void processDispatchServlet(OutputStream out, HttpResponse response) {
-        response.writeResponseToOutputStream(out);
+    public void processDispatchServlet(HttpRequest request, HttpResponse response, OutputStream out) {
+        ContentType type = ContentType.findBy(request.getPath());
+        response.writeResponseToOutputStream(out, type);
     }
 }

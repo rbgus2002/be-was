@@ -29,7 +29,7 @@ public class RequestHandler implements Runnable {
 
             DispatcherServlet dispatcherServlet = DispatcherServlet.init();
             dispatcherServlet.doService(request, response);
-            dispatcherServlet.processDispatchServlet(out, response);
+            dispatcherServlet.processDispatchServlet(request, response, out);
         } catch (IOException e){
             logger.debug("readAllBytes ERROR");
         }

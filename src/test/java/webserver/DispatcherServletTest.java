@@ -14,7 +14,6 @@ import static utils.StringUtils.appendNewLine;
 
 class DispatcherServletTest {
     private final String GET = "GET";
-    //    private final String PATH = "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
     private final String PATH = "/index.html";
 
     private final Uri URI = Uri.from(PATH);
@@ -30,18 +29,16 @@ class DispatcherServletTest {
                 "";
         in = new ByteArrayInputStream(requestStr.getBytes());
     }
-
-    @Test
-    @DisplayName("test")
-    void test() throws Throwable {
-        // given
-        HttpRequest request = HttpRequest.from(in);
-
-        //
-        Method method = HandlerMapping.getMethodMapped(request);
-        DispatcherServlet tmp = DispatcherServlet.init();
-
-        // then
-
-    }
+    
+//    @Test
+//    @DisplayName("컨텐츠 타입이 html인 경우, templates 폴더 안에서 파일을 가져온다")
+//    void doDispatchHtmlFile(){
+//        // given
+//
+//
+//        // when
+//
+//        // then
+//
+//    }
 }

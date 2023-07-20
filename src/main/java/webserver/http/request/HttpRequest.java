@@ -13,7 +13,6 @@ import static utils.StringUtils.*;
 
 public class HttpRequest {
     private final HttpRequestLine requestLine;
-    private final String HTML = "html";
     private final Map<String, String> header = new HashMap<>();
 
     private HttpRequest(InputStream in) throws IOException {

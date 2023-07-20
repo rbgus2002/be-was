@@ -24,7 +24,13 @@ Java Web Application Server 2023
 - [x] GET을 통한 회원가입 구현
   - [x] Dispatcher Servlet 구현
 #### Web Server step-3
-- [ ] 다양한 Content-Type 지원하도록 구현
+- 다양한 Content-Type 지원하도록 구현
+  - [ ] html
+  - [ ] css
+  - [ ] js
+  - [ ] ico
+  - [ ] png
+  - [ ] jpg 
 
 ## To Study List
 #### Web Server step-1
@@ -36,4 +42,4 @@ Java Web Application Server 2023
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
 #### Web Server step-3
-- [ ] MIME 타입 이해하기
+- [x] MIME 타입 이해하기
