@@ -31,30 +31,10 @@ public class ServletContainer implements Runnable {
             HttpResponse response = new HttpResponse(request);
 
             DispatcherServlet dispatcherServlet = new DispatcherServlet(request, response);
-
+            dispatcherServlet.doService(request, response);
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File(DYNAMIC_PATH + request.getRequestURI()).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
+            dos.write(response.write());
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
