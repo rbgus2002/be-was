@@ -40,7 +40,7 @@ public class ServiceController {
             }
 
             // Session ID 추가
-            Session session = SessionService.getSession(userId);
+            Session session = SessionService.getSessionByUserId(userId);
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
             headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + session.getSessionId() + HEADER_COOKIE_PATH);
