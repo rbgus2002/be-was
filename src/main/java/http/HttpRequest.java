@@ -11,6 +11,7 @@ import static util.StringUtil.*;
 public class HttpRequest {
     private String method;
     private String path;
+    private MIME mime;
     private Map<String, String> params;
     private Map<String, String> headers;
     private String httpVersion;
@@ -18,33 +19,48 @@ public class HttpRequest {
     public HttpRequest(InputStream in) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         String requestLine = br.readLine();
-
         String[] tokens = requestLine.split(" ");
+
         this.method = tokens[0];
         this.path = parsePathFromUrl(tokens[1]);
+        this.mime = convertExtensionToMime(getExtension(path));
         this.params = parseParamsFromUrl(tokens[1]);
         this.httpVersion = tokens[2];
         this.headers = parseHeaders(br);
     }
 
+    private MIME convertExtensionToMime(String extension) {
+        for(MIME mime : MIME.values()) {
+            if(mime.getExtension().equals(extension)) {
+                return mime;
+            }
+        }
+        return null;
+//        // TODO: 적절한 예외 찾기
+//        throw new IllegalStateException("지원하지 않는 확장자입니다.");
+    }
+
     public String getMethod() {
-        return method;
+        return this.method;
     }
 
     public String getPath() {
-        return path;
+        return this.path;
+    }
+    public MIME getMime() {
+        return this.mime;
     }
 
     public Map<String, String> getParams() {
-        return params;
+        return this.params;
     }
 
     public Map<String, String> getHeaders() {
-        return headers;
+        return this.headers;
     }
 
     public String getVersion() {
-        return httpVersion;
+        return this.httpVersion;
     }
 
     @Override
@@ -78,5 +94,9 @@ public class HttpRequest {
         }
 
         return sb.toString();
+    }
+
+    public boolean hasExtension() {
+        return !getExtension(path).equals(path);
     }
 }
