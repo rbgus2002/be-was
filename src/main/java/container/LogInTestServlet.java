@@ -2,6 +2,9 @@ package container;
 
 import db.Database;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import parser.GetParser;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
@@ -12,16 +15,21 @@ import java.util.Map;
 import static util.PathList.FAILED_PATH;
 import static util.PathList.HOME_PATH;
 
-public class LogInTestServlet implements Servlet{
+public class LogInTestServlet implements Servlet {
+
+    private static final Logger logger = LoggerFactory.getLogger(LogInTestServlet.class);
+
     @Override
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
         Map<String, String> query = request.getQuery();
         String userId = query.get("userId");
-        try {
-            Database.findUserById(userId);
-            response.setHeader("Location", HOME_PATH.getPath());
-        } catch (Exception e) {
+        User findUser = Database.findUserById(userId);
+        logger.debug("findUser = {}", findUser);
+        if(findUser == null){
+            logger.debug("failed");
             response.setHeader("Location", FAILED_PATH.getPath());
+        }else {
+            response.setHeader("Location", HOME_PATH.getPath());
         }
 
         String version = request.getVersion();
