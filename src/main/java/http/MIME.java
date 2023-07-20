@@ -19,8 +19,8 @@ public class MIME {
         MIME.put("txt", "text/plain");
         MIME.put("eot", "application/vnd.ms-fontobject");
         MIME.put("svg", "image/svg+xml");
-        MIME.put("ttf", "application/x-font-ttf");    // OR font/ttf
-        MIME.put("woff", "application/font-woff");    // OR font/woff
+        MIME.put("ttf", "font/ttf");    // OR application/x-font-ttf
+        MIME.put("woff", "font/woff");    // OR application/font-woff
         MIME.put("woff2", "font/woff2");
     }
 
