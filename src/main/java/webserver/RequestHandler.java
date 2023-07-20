@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,11 +50,16 @@ public class RequestHandler implements Runnable {
 	}
 
 	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException, IllegalArgumentException {
+		String path = runController(httpRequest);
+		return getHttpResponse(httpRequest, path);
+	}
+
+	private static String runController(final HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getEndpoint())) {
 			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint(), httpRequest.getParameter());
 		}
-		return getHttpResponse(httpRequest, path);
+		return path;
 	}
 
 	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws IOException, IllegalArgumentException {
