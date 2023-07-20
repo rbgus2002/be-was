@@ -23,6 +23,6 @@ public class UserController {
         Database.addUser(user);
 
         logger.debug("user create");
-        return HttpResponse.redirect("/index.html");
+        return HttpResponse.redirect("/index.html", request.getMime());
     }
 }
