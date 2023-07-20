@@ -11,7 +11,7 @@ public class SessionManagerImpl implements SessionManager {
 
     @Override
     public Session createSession(String sessionId) {
-        Session session = new SessionImpl();
+        Session session = new SessionImpl(sessionId);
         sessionMap.put(sessionId, session);
         return session;
     }

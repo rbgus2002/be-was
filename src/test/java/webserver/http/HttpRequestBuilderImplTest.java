@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpRequestBuilderImpl;
+import webserver.myframework.session.SessionManager;
+import webserver.myframework.session.SessionManagerImpl;
 
 import java.lang.reflect.Field;
 
@@ -14,11 +16,13 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("HttpRequestBuilderImpl 테스트")
 class HttpRequestBuilderImplTest {
+    SessionManager sessionManager;
     HttpRequest.Builder builder;
 
     @BeforeEach
     void setup() {
-        builder = new HttpRequestBuilderImpl();
+        sessionManager = new SessionManagerImpl();
+        builder = new HttpRequestBuilderImpl(sessionManager);
     }
 
     @Nested

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
+import webserver.myframework.session.SessionManagerImpl;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -22,7 +23,7 @@ class RequestHandlerImplTest {
             RequestHandlerImpl requestHandler = new RequestHandlerImpl(new TestClass(),
                     TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class));
             HttpResponse httpResponse = HttpResponse.getInstance();
-            HttpRequest httpRequest = HttpRequest.builder()
+            HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                     .uri("uri")
                     .build();
 

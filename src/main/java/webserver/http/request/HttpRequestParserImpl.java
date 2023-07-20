@@ -2,6 +2,8 @@ package webserver.http.request;
 
 import webserver.http.HttpMethod;
 import webserver.http.request.exception.IllegalRequestParameterException;
+import webserver.myframework.bean.annotation.Component;
+import webserver.myframework.session.SessionManager;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -10,14 +12,21 @@ import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+@Component
 public class HttpRequestParserImpl implements HttpRequestParser {
     private static final String CONTENT_LENGTH = "Content-Length";
+    private final SessionManager sessionManager;
+
+    public HttpRequestParserImpl(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public HttpRequest parse(InputStream inputStream) throws IOException, IllegalRequestParameterException {
-        HttpRequest.Builder builder = HttpRequest.builder();
+        HttpRequest.Builder builder = HttpRequest.builder(sessionManager);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
         parseRequestLine(builder, bufferedReader);
         int bodyLength = parseHeaders(builder, bufferedReader);
 

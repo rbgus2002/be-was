@@ -3,6 +3,9 @@ package webserver.http.response;
 import webserver.http.ContentType;
 import webserver.http.HttpHeaders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class HttpResponseImpl extends HttpResponse {
     private static final String redirectionHeader = "Location";
@@ -10,6 +13,7 @@ public class HttpResponseImpl extends HttpResponse {
     private HttpStatus httpStatus = HttpStatus.OK;
     private ContentType contentType = ContentType.HTML;
     private final HttpHeaders headers = new HttpHeaders();
+    private final List<Cookie> cookies = new ArrayList<>();
     private byte[] body = new byte[0];
 
     @Override
@@ -40,6 +44,16 @@ public class HttpResponseImpl extends HttpResponse {
     @Override
     public void setHeader(String headerName, String value) {
         headers.addHeader(headerName, value);
+    }
+
+    @Override
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
+
+    @Override
+    public List<Cookie> getCookies() {
+        return cookies;
     }
 
     @Override

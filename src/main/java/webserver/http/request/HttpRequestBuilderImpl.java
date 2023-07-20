@@ -2,6 +2,7 @@ package webserver.http.request;
 
 import webserver.http.HttpHeaders;
 import webserver.http.HttpMethod;
+import webserver.myframework.session.SessionManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,12 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, String> requestParameters = new HashMap<>();
     private byte[] body;
+    private final SessionManager sessionManager;
+
+    public HttpRequestBuilderImpl(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
 
     @Override
     public HttpRequest.Builder method(HttpMethod method) {
@@ -54,6 +61,6 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     @Override
     public HttpRequest build() {
         return new HttpRequestImpl(
-                method, uri, version, headers, requestParameters, body);
+                method, uri, version, headers, requestParameters, body, sessionManager);
     }
 }
