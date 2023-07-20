@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static http.HttpUtil.*;
+import static http.HttpParser.*;
 import static model.User.PASSWORD;
 import static model.User.USERID;
 

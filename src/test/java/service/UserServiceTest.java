@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static http.HttpUtil.parseQueryParameter;
+import static http.HttpParser.*;
 import static model.User.PASSWORD;
 
 class UserServiceTest {

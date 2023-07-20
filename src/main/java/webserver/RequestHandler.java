@@ -2,12 +2,8 @@ package webserver;
 
 import controller.FileController;
 import controller.ServiceController;
-import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.FileService;
-import service.SessionService;
-import service.UserService;
 import webserver.model.Request;
 import webserver.model.Request.Method;
 import webserver.model.Response;
@@ -20,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static http.HttpUtil.*;
-import static model.User.*;
+import static http.HttpParser.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
