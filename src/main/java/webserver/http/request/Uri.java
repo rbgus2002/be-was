@@ -6,30 +6,18 @@ import java.util.Map;
 import static utils.StringUtils.*;
 
 public class Uri {
-    String path;
-    Map<String, String> query;
+    private String path;
+    private Query query;
 
-    private Uri(String path, Map<String, String> query) {
+    private Uri(String path, Query query) {
         this.path = path;
         this.query = query;
     }
 
     public static Uri from(String uri) {
         String[] tokens = uri.split(QUESTION_MARK);
-        Map<String, String> query = new HashMap<>();
-
-        if (hasQuery(tokens)) {
-            String[] pairs = tokens[1].split(AMPERSAND);
-            for (String pair : pairs) {
-                String[] keyValue = pair.split(EQUAL);
-                query.put(keyValue[0], keyValue[1]);
-            }
-        }
+        Query query = Query.from(tokens);
         return new Uri(tokens[0], query);
-    }
-
-    private static boolean hasQuery(String[] tokens) {
-        return tokens.length > 1;
     }
 
     public String getPath() {
@@ -40,7 +28,7 @@ public class Uri {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(path);
-        appendQueryString(stringBuilder);
+        query.appendQueryString(stringBuilder);
         return stringBuilder.toString();
     }
 
