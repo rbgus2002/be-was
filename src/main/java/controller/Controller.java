@@ -2,6 +2,7 @@ package controller;
 
 import http.*;
 import service.UserService;
+import view.Page;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import static utils.FileIOUtils.*;
 
 public class Controller {
     private final UserService userService = new UserService();
+    private final Page page = new Page();
 
     public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) {
         try {
@@ -36,23 +38,11 @@ public class Controller {
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (Exception e) {
-            String errorPage = getErrorPage(e.getMessage());
+            String errorPage = page.getErrorPage(e.getMessage());
             return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
                     .setContentType(MIME.getMIME().get(HTML));
         }
 
-    }
-
-    public String getErrorPage(String errorMessage) {
-        return "<!DOCTYPE html>" +
-                "<html>" +
-                "<head>" +
-                "<title>Error Page</title>" +
-                "</head>" +
-                "<body>" +
-                "<h1>Error: " + errorMessage + "</h1>" +
-                "</body>" +
-                "</html>";
     }
 
     private HttpResponse.ResponseBuilder routeByUriWithQuestion(String uri) {
