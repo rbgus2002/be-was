@@ -1,5 +1,6 @@
 package service;
 
+import exception.BadRequestException;
 import model.User;
 
 import java.util.Map;
@@ -20,6 +21,6 @@ public class UserService {
 
     private void checkUserAlreadyExist(String userId) {
         if (findAll().stream().anyMatch(user -> user.getUserId().equals(userId)))
-            throw new IllegalArgumentException(ALREADY_EXIST_USER);
+            throw new BadRequestException(ALREADY_EXIST_USER);
     }
 }

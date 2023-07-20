@@ -1,5 +1,6 @@
 package controller;
 
+import exception.BadRequestException;
 import http.*;
 import service.UserService;
 import view.Page;
@@ -50,7 +51,7 @@ public class Controller {
         if (apis[0].equals("/user/create")) {
             return createUser(parseParams(apis[1]));
         }
-        throw new IllegalArgumentException(INVALID_URI);
+        throw new BadRequestException(INVALID_URI);
     }
 
     private HttpResponse.ResponseBuilder routeByUriWithBody(HttpRequest httpRequest) {
@@ -58,7 +59,7 @@ public class Controller {
         if (uri.equals("/user/create")) {
             return createUser(parseParams(httpRequest.getBody()));
         }
-        throw new IllegalArgumentException(INVALID_URI);
+        throw new BadRequestException(INVALID_URI);
     }
 
     private Map<String, String> parseParams(String parameter) {
@@ -67,7 +68,7 @@ public class Controller {
         for (String param : params) {
             String[] info = param.split("=");
             if (info.length != 2)
-                throw new IllegalArgumentException(NOT_ENOUGH_USER_INFORMATION);
+                throw new BadRequestException(NOT_ENOUGH_USER_INFORMATION);
             information.put(info[0], info[1]);
         }
         return information;
