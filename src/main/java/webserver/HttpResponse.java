@@ -24,25 +24,7 @@ public class HttpResponse {
     }
 
     public void setContentType(String type) {
-        String contentType;
-        if (type.equals("css")) {
-            contentType = "text/css";
-        } else if (type.equals("js")) {
-            contentType = "text/javascript";
-        } else if (type.equals("html")) {
-            contentType = "text/html; charset=utf-8";
-        } else if (type.equals("ico")) {
-            contentType = "image/x-icon";
-        } else if (type.equals("jpg") || type.equals("jpeg")) {
-            contentType = "image/jpeg";
-        } else if (type.equals("png")) {
-            contentType = "image/png";
-        } else if (type.equals("txt")) {
-            contentType = "text/plain";
-        } else {
-            contentType = type;
-        }
-        headers.put("Content-Type", contentType);
+        headers.put("Content-Type", type);
     }
 
     public void setHeader(String key, String value) {

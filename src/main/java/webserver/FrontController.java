@@ -3,6 +3,7 @@ package webserver;
 import controller.HttpController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Utils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,10 +44,9 @@ public class FrontController {
             path = Paths.get("src/main/resources/templates" + viewName);
         }
         byte[] body = Files.readAllBytes(path);
-        String filename = path.getFileName().toString();
-        String extension = filename.substring(filename.lastIndexOf(".") + 1);
+        String type = Utils.getMimeType(path);
         response.setBody(body);
-        response.setContentType(extension);
+        response.setContentType(type);
     }
 
     private void render(DataOutputStream dos, HttpResponse response) throws IOException {
