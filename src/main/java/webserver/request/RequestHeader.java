@@ -1,19 +1,19 @@
-package webserver;
+package webserver.request;
 
 import utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Header {
+public class RequestHeader {
 
     private final HashMap<String, String> headers;
 
-    private Header(HashMap<String, String> headers) {
+    private RequestHeader(HashMap<String, String> headers) {
         this.headers = headers;
     }
 
-    public static Header of(String string) {
+    public static RequestHeader of(String string) {
         String[] tokens = string.split(StringUtils.NEWLINE);
 
         HashMap<String, String> headers = new HashMap<>();
@@ -22,6 +22,6 @@ public class Header {
                 .map(token -> token.split(":"))
                 .forEach(header -> headers.put(header[0].trim(), header[1].trim()));
 
-        return new Header(headers);
+        return new RequestHeader(headers);
     }
 }

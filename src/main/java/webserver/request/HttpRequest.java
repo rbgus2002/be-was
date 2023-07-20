@@ -3,7 +3,6 @@ package webserver.request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.StringUtils;
-import webserver.Header;
 import webserver.RequestHandler;
 
 import java.io.BufferedReader;
@@ -20,7 +19,7 @@ public class HttpRequest {
     private final HttpMethod httpMethod;
     private final String version;
     private final String path;
-    private final Header header;
+    private final RequestHeader requestHeader;
 
     private HttpRequest(String requestLine, String header) {
 
@@ -29,7 +28,7 @@ public class HttpRequest {
         this.httpMethod = HttpMethod.valueOf(tokens[0]);
         this.path = tokens[1];
         this.version = tokens[2];
-        this.header = Header.of(header);
+        this.requestHeader = RequestHeader.of(header);
     }
 
     public static HttpRequest of (InputStream in) throws IOException {
