@@ -37,4 +37,8 @@ public class RequestLine {
     public String getVersion() {
         return version;
     }
+
+    public boolean isMatchHandler(HttpMethod method, String path) {
+        return this.method == method && uri.isSamePath(path);
+    }
 }
