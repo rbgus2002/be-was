@@ -2,6 +2,12 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.controllers.Controller;
+import webserver.http.HttpRequest;
+import webserver.http.HttpRequestParser;
+import webserver.http.HttpResponse;
+import webserver.controllers.ResolveController;
+import webserver.http.HttpResponseRenderer;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -27,32 +33,11 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = HttpRequestParser.parseHttpRequest(in);
 
-            HttpResponse response = HttpRequestHandler.handleRequest(request);
-            responseHeader(dos, response);
-            responseBody(dos, response);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
+            Controller handler = ResolveController.getInstance().resolveRequest(request);
 
-    private void responseHeader(DataOutputStream dos, HttpResponse response) {
-        try {
-            // TODO: \r\n appendNewLine으로 바꾸기?
-            dos.writeBytes(String.format("%s %d %s \r\n", response.version(), response.statusCode(), response.statusText()));
-            logger.debug("{} {} {}", response.version(), response.statusCode(), response.statusText());
-            dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", response.contentType()));
-            logger.debug("Content-Type: {} ", response.contentType());
-            dos.writeBytes("Content-Length: " + response.body().length + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
+            HttpResponse response = handler.handle(request);
 
-    private void responseBody(DataOutputStream dos, HttpResponse response) {
-        try {
-            dos.write(response.body(), 0, response.body().length);
-            dos.flush();
+            HttpResponseRenderer.getInstance().responseRender(dos, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

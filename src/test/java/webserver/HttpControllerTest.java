@@ -6,12 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import webserver.controllers.Controller;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.controllers.ResolveController;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-class HttpRequestHandlerTest {
+class HttpControllerTest {
     SoftAssertions s = new SoftAssertions();
 
     @ParameterizedTest
@@ -24,7 +28,9 @@ class HttpRequestHandlerTest {
                 .path(fileName)
                 .version("HTTP/1.1")
                 .build();
-        HttpResponse response = HttpRequestHandler.handleRequest(testRequest);
+
+        Controller controller = ResolveController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = controller.handle(testRequest);
 
         String template_path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
         HttpResponse actual = HttpResponse.newBuilder()
@@ -49,7 +55,9 @@ class HttpRequestHandlerTest {
                 .path(fileName)
                 .version("HTTP/1.1")
                 .build();
-        HttpResponse response = HttpRequestHandler.handleRequest(testRequest);
+
+        Controller controller = ResolveController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = controller.handle(testRequest);
 
         String template_path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
 
@@ -74,7 +82,9 @@ class HttpRequestHandlerTest {
                 .path("/user/create")
                 .version("HTTP/1.1")
                 .build();
-        HttpResponse response = HttpRequestHandler.handleRequest(testRequest);
+
+        Controller controller = ResolveController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = controller.handle(testRequest);
 
         User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
         HttpResponse actual = HttpResponse.newBuilder()
@@ -102,7 +112,9 @@ class HttpRequestHandlerTest {
                 .path("/user/create")
                 .version("HTTP/1.1")
                 .build();
-        HttpResponse response = HttpRequestHandler.handleRequest(testRequest);
+
+        Controller controller = ResolveController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = controller.handle(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .statusCode(400)
