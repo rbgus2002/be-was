@@ -23,7 +23,7 @@ public class RequestHandler implements Runnable {
 	private static final String TEMPLATES_PATH = "src/main/resources/templates/";
 	private static final String STATIC_PATH = "src/main/resources/static";
 
-	private Socket connection;
+	private final Socket connection;
 
 	public RequestHandler(Socket connectionSocket) {
 		this.connection = connectionSocket;
@@ -41,7 +41,7 @@ public class RequestHandler implements Runnable {
 				HttpResponse httpResponse = handleGetRequest(httpRequest);
 				logger.debug("httpResponse created");
 				httpResponse.response(out);
-				logger.debug("httpResponse sended");
+				logger.debug("httpResponse sent");
 			}
 		} catch (IOException | ReflectiveOperationException e) {
 			logger.error(e.getMessage());
