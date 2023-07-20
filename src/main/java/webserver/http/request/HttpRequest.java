@@ -1,4 +1,6 @@
-package webserver.http;
+package webserver.http.request;
+
+import webserver.http.HttpHeaders;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,16 +18,8 @@ public class HttpRequest {
         this.httpHeaders = httpHeaders;
     }
 
-    public HttpRequestLine getHttpRequestLine() {
-        return httpRequestLine;
-    }
-
-    public static HttpRequest create(InputStream in) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
-        HttpRequestLine requestLine = HttpRequestLine.create(br.readLine());
-        HttpHeaders headers = HttpHeaders.create(br);
-
-        return new HttpRequest(requestLine, headers);
+    public String getRequestUri() {
+        return httpRequestLine.getUri();
     }
 
     public String show() {
@@ -34,5 +28,13 @@ public class HttpRequest {
         httpHeaders.show(sb);
 
         return sb.toString();
+    }
+
+    public static HttpRequest create(InputStream in) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
+        HttpRequestLine requestLine = HttpRequestLine.create(br.readLine());
+        HttpHeaders headers = HttpHeaders.create(br);
+
+        return new HttpRequest(requestLine, headers);
     }
 }
