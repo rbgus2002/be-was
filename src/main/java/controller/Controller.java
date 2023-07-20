@@ -14,13 +14,13 @@ public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @GetMapping(value = "/user/create")
-    public String createUser(Map<String, String> query) throws IOException {
+    public String createUser(Map<String, String> query){
         logger.debug("GET user/create API START");
 
         User user = UserFactory.createUserFrom(query);
         Database.addUser(user);
         logger.debug("user 생성 : {}", Database.findUserById(query.get("userId")));
 
-        return "/index.html"; // TODO String으로 변경 (reflection)
+        return "/index.html";
     }
 }
