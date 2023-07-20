@@ -1,6 +1,7 @@
 package webserver.http.response;
 
 
+import webserver.http.ContentType;
 import webserver.http.HttpHeaders;
 
 public abstract class HttpResponse {
@@ -22,8 +23,11 @@ public abstract class HttpResponse {
 
     public abstract void setBody(byte[] body);
 
-    public abstract void sendRedirection(String uri);
+    public abstract void setContentType(ContentType contentType);
 
+    public abstract ContentType getContentType();
+
+    public abstract void sendRedirection(String uri);
 
     public static HttpResponse getInstance() {
         return new HttpRequestImpl();

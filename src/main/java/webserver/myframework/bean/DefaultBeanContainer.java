@@ -12,7 +12,7 @@ public class DefaultBeanContainer implements BeanContainer {
     private final Map<Class<?>, Object> beanMap = new HashMap<>();
 
     @Override
-    public void addBean(Class<?> clazz, Object bean) throws DuplicateBeanException {
+    public void register(Class<?> clazz, Object bean) throws DuplicateBeanException {
         Object resultBean = beanMap.get(clazz);
         if(resultBean != null) {
             throw new DuplicateBeanException();

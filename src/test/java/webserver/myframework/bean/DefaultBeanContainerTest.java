@@ -32,11 +32,11 @@ class DefaultBeanContainerTest {
             @DisplayName("DuplicateBeanException 예외를 발생시킨다")
             void throwDuplicateBeanException() throws DuplicateBeanException {
                 //given
-                beanContainer.addBean(ExtendBean.class, new ExtendBean());
+                beanContainer.register(ExtendBean.class, new ExtendBean());
 
                 //when
                 //then
-                assertThatThrownBy(() -> beanContainer.addBean(ExtendBean.class, new ExtendBean()))
+                assertThatThrownBy(() -> beanContainer.register(ExtendBean.class, new ExtendBean()))
                         .isInstanceOf(DuplicateBeanException.class);
 
             }
@@ -50,7 +50,7 @@ class DefaultBeanContainerTest {
             void registerBean() throws DuplicateBeanException, BeanNotFoundException {
                 //given
                 //when
-                beanContainer.addBean(ExtendBean.class, new ExtendBean());
+                beanContainer.register(ExtendBean.class, new ExtendBean());
 
                 //then
                 Object bean = beanContainer.findBean(ExtendBean.class);
@@ -64,7 +64,7 @@ class DefaultBeanContainerTest {
     class FindBean {
         @BeforeEach
         void setup() throws DuplicateBeanException {
-            beanContainer.addBean(ExtendBean.class, new ExtendBean());
+            beanContainer.register(ExtendBean.class, new ExtendBean());
         }
 
         @Nested
@@ -123,8 +123,8 @@ class DefaultBeanContainerTest {
         @DisplayName("주어진 어노테이션이 붙은 빈의 클래스들을 반환한다")
         void returnBeanHasGivenAnnotation() throws DuplicateBeanException {
             //given
-            beanContainer.addBean(SuperBean.class, new SuperBean());
-            beanContainer.addBean(ExtendBean.class, new ExtendBean());
+            beanContainer.register(SuperBean.class, new SuperBean());
+            beanContainer.register(ExtendBean.class, new ExtendBean());
 
             //when
             List<Class<?>> resultBeans = beanContainer.getBeanClassHasAnnotation(Component.class);

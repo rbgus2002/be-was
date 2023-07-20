@@ -10,7 +10,7 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.requesthandler.annotation.Controller;
 import webserver.myframework.requesthandler.annotation.RequestMapping;
-import webserver.myframework.requesthandler.exception.CannotResolveHandlerException;
+import webserver.myframework.requesthandler.exception.NotMatchedUriException;
 import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
 import webserver.myframework.requesthandler.exception.RequestHandlerException;
 
@@ -77,7 +77,7 @@ class RequestHandlerResolverImplTest {
                 //when
                 //then
                 assertThatThrownBy(() -> requestHandlerResolver.resolveHandler("/test", HttpMethod.DELETE))
-                        .isInstanceOf(CannotResolveHandlerException.class);
+                        .isInstanceOf(NotMatchedUriException.class);
             }
         }
 
@@ -86,7 +86,7 @@ class RequestHandlerResolverImplTest {
         class IsMatchedHandlerExist {
             @Test
             @DisplayName("핸들러를 반환한다")
-            void returnHandler() throws DuplicateRequestHandlerException, CannotResolveHandlerException, ReflectiveOperationException {
+            void returnHandler() throws RequestHandlerException, ReflectiveOperationException {
                 //given
                 requestHandlerResolver.registerHandler(getRequestInfo(), getHandler());
 

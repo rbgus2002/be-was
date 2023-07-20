@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import webserver.myframework.bean.annotation.Autowired;
 import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.bean.exception.BeanConstructorException;
+import webserver.myframework.bean.exception.BeanNotFoundException;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
@@ -67,25 +68,43 @@ class BeanInitializerImplTest {
             beanInitializer.initialize("webserver.myframework.bean");
 
             //then
-            Object bean1 = beanContainer.findBean(NotInjectedBean.class);
-            assertThat(bean1)
-                    .isNotNull()
-                    .isInstanceOf(NotInjectedBean.class);
+            verifyBean(InjectedBean.class);
+            verifyBean(NotInjectedBean.class);
+            verifyBean(MultiParameterBean.class);
 
-            Object bean2 = beanContainer.findBean(InjectedBean.class);
-            assertThat(bean2)
-                    .isNotNull()
-                    .isInstanceOf(InjectedBean.class);
-
-            NotInjectedBean injectedBean = ((InjectedBean) bean2).getNotInjectedBean();
-            assertThat(injectedBean).isNotNull()
+            Object injectedBean = beanContainer.findBean(InjectedBean.class);
+            NotInjectedBean injectedParameter = ((InjectedBean) injectedBean).getNotInjectedBean();
+            assertThat(injectedParameter).isNotNull()
                     .isInstanceOf(NotInjectedBean.class);
         }
+    }
+
+    private void verifyBean(Class<?> beanClass) throws BeanNotFoundException {
+        Object bean = beanContainer.findBean(beanClass);
+        assertThat(bean).isNotNull().isInstanceOf(beanClass);
     }
 
     @Component
     static class NotInjectedBean {
 
+    }
+
+    @SuppressWarnings("unused")
+    @Component
+    static class MultiParameterBean {
+        private final InjectedBean injectedBean;
+        private final String test;
+
+        @Autowired
+        MultiParameterBean(InjectedBean injectedBean) {
+            this.injectedBean = injectedBean;
+            this.test = "";
+        }
+
+        public MultiParameterBean(InjectedBean injectedBean, String test) {
+            this.injectedBean = injectedBean;
+            this.test = test;
+        }
     }
 
     @Component

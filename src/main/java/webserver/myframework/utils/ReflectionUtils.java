@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static webserver.myframework.utils.FileUtils.*;
+
 public class ReflectionUtils {
     private ReflectionUtils() {
     }
@@ -19,7 +21,7 @@ public class ReflectionUtils {
     public static List<Class<?>> getClassesInPackage(String packageName) throws ReflectiveOperationException, FileNotFoundException {
         List<Class<?>> classes = new ArrayList<>();
         URL packageURL = getPackageURL(packageName);
-        processDirectory(getPackageDirectory(packageURL), packageName, classes);
+        processDirectory(getFilesInDirectory(packageURL), packageName, classes);
         return classes;
     }
 
@@ -65,14 +67,6 @@ public class ReflectionUtils {
             throw new FileNotFoundException("패키지 URL을 가져오는데 실패하였습니다");
         }
         return packageURL;
-    }
-
-    private static File getPackageDirectory(URL packageURL) throws FileNotFoundException {
-        File packageDirectory = new File(packageURL.getFile());
-        if (!packageDirectory.exists()) {
-            throw new FileNotFoundException("패키지 디렉토리를 가져오는데 실패하였습니다");
-        }
-        return packageDirectory;
     }
 
     //TODO: 메소드 길이 줄이기
