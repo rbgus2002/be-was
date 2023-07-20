@@ -25,12 +25,12 @@ Java Web Application Server 2023
   - [x] Dispatcher Servlet 구현
 #### Web Server step-3
 - 다양한 Content-Type 지원하도록 구현
-  - [ ] html
-  - [ ] css
-  - [ ] js
-  - [ ] ico
-  - [ ] png
-  - [ ] jpg 
+  - [x] html
+  - [x] css
+  - [x] js
+  - [x] ico
+  - [x] png
+  - [x] jpg 
 
 ## To Study List
 #### Web Server step-1
