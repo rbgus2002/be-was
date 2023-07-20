@@ -9,16 +9,16 @@ public class HttpResponse {
     private final String protocol;
     private final HttpStatusCode statusCode;
     private final HttpHeader httpHeader;
-    private final String body;
+    private final byte[] body;
 
-    private HttpResponse(String protocol, HttpStatusCode statusCode, HttpHeader header, String body) {
+    private HttpResponse(String protocol, HttpStatusCode statusCode, HttpHeader header, byte[] body) {
         this.protocol = protocol;
         this.statusCode = statusCode;
         this.httpHeader = header;
         this.body = body;
     }
 
-    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header, String body) {
+    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header, byte[] body) {
         return new HttpResponse(
                 httpRequest.getProtocol(),
                 statusCode,
@@ -41,7 +41,7 @@ public class HttpResponse {
     }
 
     public byte[] getByteArrayOfBody() {
-        return body.getBytes();
+        return body;
     }
 }
 

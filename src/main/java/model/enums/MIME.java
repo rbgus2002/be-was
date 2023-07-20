@@ -9,6 +9,9 @@ public enum MIME {
     JPG("image/jpg"),
     JSON("application/json"),
     URL_ENCODED("application/x-www-form-urlencoded"),
+    TTF("font/ttf"),
+    WOFF("font/woff"),
+    WOFF2("application/x-font-woff2"),
     ;
 
     private final String contentType;

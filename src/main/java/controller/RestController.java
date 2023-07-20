@@ -10,12 +10,13 @@ import model.enums.Method;
 import service.FileService;
 import service.UserService;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Map;
 
 import static constant.Uri.INDEX_HTML_URI;
 import static constant.Uri.USER_CREATE_URI;
-import static util.StringUtils.*;
+import static util.StringUtils.COMMA_MARK;
+import static util.StringUtils.splitBy;
 
 public class RestController {
     private final FileService fileService;
@@ -39,7 +40,7 @@ public class RestController {
                 response = addUserByForm(httpRequest);
             }
             return response;
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             return responseMapper.createBadRequestResponse(httpRequest);
         }
     }
@@ -51,7 +52,7 @@ public class RestController {
                 .createRedirectResponse(request, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
     }
 
-    private HttpResponse sendNotRestfulResponse(HttpRequest httpRequest) throws FileNotFoundException {
+    private HttpResponse sendNotRestfulResponse(HttpRequest httpRequest) throws IOException {
         String uri = httpRequest.getUri();
         String[] extension = splitBy(uri, COMMA_MARK);
 
@@ -60,8 +61,8 @@ public class RestController {
         return getHttpResponse(httpRequest, httpRequest.getUri(), mime);
     }
 
-    private HttpResponse getHttpResponse(HttpRequest request, String path, MIME extension) throws FileNotFoundException {
-        String fileContents = fileService.openFile(path, extension);
+    private HttpResponse getHttpResponse(HttpRequest request, String path, MIME extension) throws IOException {
+        byte[] fileContents = fileService.openFile(path, extension);
         return responseMapper
                 .createHttpResponse(request, HttpStatusCode.OK, fileContents, extension);
     }

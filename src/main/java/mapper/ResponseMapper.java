@@ -19,8 +19,8 @@ public class ResponseMapper {
     public static final int KEY_INDEX = 0;
     public static final int VALUE_INDEX = 1;
 
-    public HttpResponse createHttpResponse(HttpRequest request, HttpStatusCode statusCode, String body, MIME extension) {
-        int lengthOfBody = body.getBytes().length;
+    public HttpResponse createHttpResponse(HttpRequest request, HttpStatusCode statusCode, byte[] body, MIME extension) {
+        int lengthOfBody = body.length;
 
         HttpHeader httpHeader = createHeader(
                 List.of(HttpHeaders.CONTENT_TYPE, extension.getContentType()),
@@ -33,7 +33,7 @@ public class ResponseMapper {
         HttpHeader httpHeader = createHeader(
                 List.of(HttpHeaders.LOCATION, redirectPath)
         );
-        return HttpResponse.of(request, statusCode, httpHeader, NO_CONTENT);
+        return HttpResponse.of(request, statusCode, httpHeader, NO_CONTENT.getBytes());
     }
 
     @SafeVarargs
@@ -48,10 +48,10 @@ public class ResponseMapper {
     }
 
     public HttpResponse createNotFoundResponse(HttpRequest httpRequest) {
-        return createHttpResponse(httpRequest, HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND, MIME.JSON);
+        return createHttpResponse(httpRequest, HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND.getBytes(), MIME.JSON);
     }
 
     public HttpResponse createBadRequestResponse(HttpRequest httpRequest) {
-        return createHttpResponse(httpRequest, HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST, MIME.JSON);
+        return createHttpResponse(httpRequest, HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST.getBytes(), MIME.JSON);
     }
 }

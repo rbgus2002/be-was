@@ -2,37 +2,37 @@ package service;
 
 import model.enums.MIME;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static constant.SourcePath.RESOURCE_STATIC_RELATIVE_PATH;
 import static constant.SourcePath.RESOURCE_TEMPLATE_RELATIVE_PATH;
 
 public class FileService {
-    public String openFile(String path, MIME extension) throws FileNotFoundException {
+    public byte[] openFile(String path, MIME extension) throws IOException {
         if (extension.isHTML()) {
             return openTemplate(path);
         }
         return openStatic(path);
     }
 
-    private String openStatic(String path) throws FileNotFoundException {
+    private byte[] openStatic(String path) throws IOException {
         String resourcePath = RESOURCE_STATIC_RELATIVE_PATH + path;
         return getFileIn(resourcePath);
     }
 
-    private String openTemplate(String path) throws FileNotFoundException {
+    private byte[] openTemplate(String path) throws IOException {
         String resourcePath = RESOURCE_TEMPLATE_RELATIVE_PATH + path;
         return getFileIn(resourcePath);
     }
 
-    private String getFileIn(String relativePath) throws FileNotFoundException {
-        File targetFile = new File(relativePath);
-        Scanner fileScanner = new Scanner(targetFile);
+    private byte[] getFileIn(String relativePath) throws IOException {
+        Path path = Paths.get(relativePath);
 
-        String result = fileScanner.useDelimiter("\\Z").next();
-        fileScanner.close();
-        return result;
+        byte[] bytes = Files.readAllBytes(path);
+
+        return bytes;
     }
 }
