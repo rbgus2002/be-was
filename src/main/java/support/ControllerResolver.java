@@ -83,12 +83,14 @@ public abstract class ControllerResolver {
         Object instance = getInstanceMagager().getInstance(controllerClass);
         try {
             method.invoke(instance, args);
+            logger.debug(String.valueOf(instance == null));
         } catch (InvocationTargetException e) {
             Throwable throwable = e.getTargetException();
             throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();
         } catch (IllegalAccessException e) {
             throw new ServerErrorException();
         }
+
 
         return method.getAnnotation(ResponseStatus.class);
     }

@@ -1,16 +1,14 @@
 package support.annotation;
 
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * {@link support.DefaultInstanceManager}의 관리 대상이 되는 클래스에 사용합니다. <br />
  * Note: Singleton Instance로 관리됩니다.
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+@Inherited
 public @interface Container {
 }
