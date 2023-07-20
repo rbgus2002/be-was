@@ -27,6 +27,10 @@ public class HttpResponse {
         return new HttpResponse(version, statusCode, body, Headers.createDefaultHeaders(body.length));
     }
 
+    public static HttpResponse of(String version, HttpStatusCode statusCode) {
+        return new HttpResponse(version, statusCode, new byte[0], Headers.createDefaultHeaders(0));
+    }
+
     public void response(OutputStream out) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
 
