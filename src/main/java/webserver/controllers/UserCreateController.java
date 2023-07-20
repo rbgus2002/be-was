@@ -6,13 +6,11 @@ import org.slf4j.LoggerFactory;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
-import java.net.URI;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import static db.Database.addUser;
+import static service.UserService.addUser;
 
 public class UserCreateController implements Controller {
     private final static Logger logger = LoggerFactory.getLogger(UserCreateController.class);
@@ -22,7 +20,6 @@ public class UserCreateController implements Controller {
         Map<String, String> parameters = parseUri(request.uri());
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
-        // TODO: verifyUser 로직 구현
         if (parameters.values().size() != 4) {
             return Controller.createErrorResponse(request, 400);
         }
@@ -34,27 +31,38 @@ public class UserCreateController implements Controller {
 
         User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
-        addUser(user);
 
-        builder.version(request.version())
-                .statusCode(200)
+        if(!addUser(user)) {
+            return builder.version(request.version())
+                    .statusCode(302)
+                    .contentType(request.contentType())
+                    .setHeader("Location", "http://".concat(request.getHeader("Host").concat("/user/form.html")))
+                    .build();
+        }
+
+        // todo: redirection
+        return builder.version(request.version())
+                .statusCode(302)
                 .contentType(request.contentType())
-                .body(user.toString().getBytes());
-
-        return builder.build();
+                .setHeader("Location", "http://".concat(request.getHeader("Host").concat("/index.html")))
+                .build();
     }
 
     private Map<String, String> parseUri(String uri) {
         Map<String, String> result = new HashMap<>();
+
         if (!uri.contains("?") || uri.indexOf("?") == uri.length() - 1) {
             return result;
         }
+
         String paramString = uri.substring(uri.indexOf("?") + 1);
 
         String[] parameters = paramString.split("&");
+
         if (parameters.length < 4) {
             return result;
         }
+
         for (String parameter : parameters) {
             int splitIndex = parameter.indexOf("=");
             if (splitIndex < 0 || splitIndex == parameter.length() - 1) break;

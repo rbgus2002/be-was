@@ -25,8 +25,13 @@ public class HttpResponseRenderer {
             dos.writeBytes(String.format("%s %d %s \r\n", response.version(), response.statusCode(), response.statusText()));
             logger.debug("{} {} {}", response.version(), response.statusCode(), response.statusText());
             dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", response.contentType()));
-            logger.debug("Content-Type: {} ", response.contentType());
+//            logger.debug("Content-Type: {} ", response.contentType());
             dos.writeBytes("Content-Length: " + response.body().length + "\r\n");
+//            logger.debug("response headers: {}", response.headers().toString());
+            for(String header: response.headers().keySet()) {
+                dos.writeBytes(String.format("%s: %s\r\n", header, response.headers().get(header)));
+                logger.debug("{}: {}", header, response.headers().get(header));
+            }
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());

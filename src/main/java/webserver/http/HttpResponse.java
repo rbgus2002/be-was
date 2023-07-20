@@ -13,6 +13,7 @@ public class HttpResponse {
 
     private static final Map<Integer, String> statusMap = new HashMap() {{
         put(200, "OK");
+        put(302, "Found");
         put(400, "Bad Request");
         put(404, "Not Found");
     }};
@@ -31,7 +32,7 @@ public class HttpResponse {
         private int statusCode;
         private String contentType = "text/plain";
         private Map<String, String> headers;
-        private byte[] body;
+        private byte[] body = new byte[0];
 
         public Builder() {
             this.headers = new HashMap<>();
@@ -107,7 +108,7 @@ public class HttpResponse {
 
     public String contentType() { return this.contentType; }
 
-    public Map headers() {
+    public Map<String, String> headers() {
         return headers;
     }
 

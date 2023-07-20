@@ -127,6 +127,8 @@ public class HttpRequest {
         return headers;
     }
 
+    public String getHeader(String field) { return headers.get(field); }
+
     public Map body() {
         return body;
     }
