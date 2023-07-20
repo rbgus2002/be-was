@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static http.Extension.HTML;
-import static utils.StringUtils.appendNewLine;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
@@ -67,20 +66,19 @@ public class HttpResponse {
 
     private void responseHeader(DataOutputStream dos) {
         try {
-            String statusLine = version + " " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage();
-            String contentTypeLine = "Content-Type: " + contentType + ";charset=utf-8";
-            String contentLengthLine = "Content-Length: " + body.length;
-            String locationLine = "Location: " + location;
-            dos.writeBytes(appendNewLine(statusLine));
-            dos.writeBytes(appendNewLine(contentTypeLine));
-            dos.writeBytes(appendNewLine(contentLengthLine));
-            dos.writeBytes(appendNewLine(locationLine));
-            dos.writeBytes(appendNewLine(""));
-            logger.debug("{} {} {} \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
-            logger.debug("Content-Type: {};charset=utf-8\n", contentType);
-            logger.debug("Content-Length: {}\r\n", body.length);
-            logger.debug("Location: {}\r\n", location);
-            logger.debug("\r\n");
+            String statusLine = String.format("%s %d %s \r\n", version, httpStatus.getStatusCode(), httpStatus.getStatusMessage());
+            String contentTypeLine = String.format("Content-Type: %s;charset=utf-8 \r\n", contentType);
+            String contentLengthLine = String.format("Content-Length: %d \r\n", body.length);
+            String locationLine = String.format("Location: %s \r\n", location);
+            dos.writeBytes(statusLine);
+            dos.writeBytes(contentTypeLine);
+            dos.writeBytes(contentLengthLine);
+            dos.writeBytes(locationLine);
+            dos.writeBytes("\r\n");
+            logger.debug(statusLine);
+            logger.debug(contentTypeLine);
+            logger.debug(contentLengthLine);
+            logger.debug(locationLine);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
