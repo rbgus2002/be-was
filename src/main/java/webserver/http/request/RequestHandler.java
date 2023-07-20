@@ -1,12 +1,11 @@
-package webserver;
+package webserver.http.request;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.request.HttpRequest;
-import webserver.http.response.HttpResponse;
 import webserver.http.response.ResponseHandler;
 
 public class RequestHandler implements Runnable {
@@ -24,10 +23,11 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = HttpRequest.from(in);
-            HttpResponse response = ResponseHandler.createResponse(request);
-            response.response(out);
+            ResponseHandler.response(out, request);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

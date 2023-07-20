@@ -2,7 +2,7 @@ package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.service.FileService;
+import service.FileService;
 
 import java.io.File;
 import java.io.IOException;
