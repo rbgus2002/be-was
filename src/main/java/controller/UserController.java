@@ -14,7 +14,7 @@ import static http.Extension.HTML;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
 
-public class Controller {
+public class UserController extends Controller {
     private final UserService userService = new UserService();
     private final Page page = new Page();
 

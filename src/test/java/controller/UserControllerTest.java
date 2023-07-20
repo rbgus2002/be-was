@@ -11,16 +11,15 @@ import static http.HttpMethod.GET;
 import static http.HttpMethod.POST;
 import static http.HttpStatus.NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-class ControllerTest {
+class UserControllerTest {
 
-    Controller controller;
+    UserController userController;
     SoftAssertions softAssertions;
 
     @BeforeEach
     void setup() {
-        controller = new Controller();
+        userController = new UserController();
         softAssertions = new SoftAssertions();
     }
 
@@ -36,7 +35,7 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, "/no_index.html", "HTTP/1.1").build();
 
         // When
-        HttpResponse httpResponse = controller.loadFileByRequest(httpRequest).build();
+        HttpResponse httpResponse = userController.loadFileByRequest(httpRequest).build();
 
         // Then
         assertThat(httpResponse.getHttpStatus()).isEqualTo(NOT_FOUND);
@@ -50,7 +49,7 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, uri, "HTTP/1.1").build();
 
         // When
-        HttpResponse httpResponse = controller.loadFileByRequest(httpRequest).build();
+        HttpResponse httpResponse = userController.loadFileByRequest(httpRequest).build();
 
         // Then
         assertThat(httpResponse.getHttpStatus()).isEqualTo(NOT_FOUND);
@@ -66,7 +65,7 @@ class ControllerTest {
                 .build();
 
         // When
-        HttpResponse httpResponse = controller.loadFileByRequest(httpRequest).build();
+        HttpResponse httpResponse = userController.loadFileByRequest(httpRequest).build();
 
         // Then
         assertThat(httpResponse.getHttpStatus()).isEqualTo(NOT_FOUND);
@@ -82,10 +81,10 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest.RequestBuilder("POST", uri, "HTTP/1.1")
                 .setBody(body)
                 .build();
-        Controller controller = new Controller();
+        UserController userController = new UserController();
 
         // When
-        controller.loadFileByRequest(httpRequest);
+        userController.loadFileByRequest(httpRequest);
 
         // Then
         softAssertions.assertThat(Database.findAll().size())
@@ -103,10 +102,10 @@ class ControllerTest {
         HttpRequest httpRequest = new HttpRequest.RequestBuilder("POST", uri, "HTTP/1.1")
                 .setBody(body)
                 .build();
-        Controller controller = new Controller();
+        UserController userController = new UserController();
 
         // When
-        HttpResponse httpResponse = controller.loadFileByRequest(httpRequest).build();
+        HttpResponse httpResponse = userController.loadFileByRequest(httpRequest).build();
 
         // Then
         softAssertions.assertThat(httpResponse.getHttpStatus())
