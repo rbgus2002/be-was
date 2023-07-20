@@ -2,7 +2,7 @@ package controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.HttpRequest;
+import webserver.http.HttpRequest;
 
 import java.io.IOException;
 
