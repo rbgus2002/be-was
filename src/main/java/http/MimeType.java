@@ -8,6 +8,7 @@ public enum MimeType {
 	JS("text/javascript", Set.of(".js")),
 	TXT("text/plain", Set.of(".txt", ".text")),
 	JPG("image/jpg", Set.of(".jpg", ".jpe", ".jpeg")),
+	PNG("image/png", Set.of("png")),
 	ICO("image/vnd.microsoft.icon", Set.of(".ico")),
 	WOFF("font/woff", Set.of(".woff")),
 	TTF("font/ttf", Set.of(".ttf"));
