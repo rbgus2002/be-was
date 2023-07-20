@@ -8,10 +8,13 @@ public class HttpResponse {
     private final ResponseMessageHeader responseMessageHeader;
     private ResponseBody responseBody;
 
+    private String cookie;
+
 
     public HttpResponse() {
         this.responseMessageHeader = new ResponseMessageHeader();
         responseBody = null;
+        cookie = null;
     }
 
     public ResponseMessageHeader getHeader() {
@@ -27,4 +30,11 @@ public class HttpResponse {
     }
 
 
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
 }

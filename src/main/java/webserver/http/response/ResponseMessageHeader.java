@@ -5,6 +5,8 @@ import webserver.server.WebServer;
 import static webserver.http.response.header.ResponseHeader.*;
 import static webserver.http.response.header.StatusLine.*;
 
+
+//todo: 나중에 빌더 타입으로 수정
 public class ResponseMessageHeader {
     private static final String KEY_VALUE_PARSER = ":";
     private static final String SEMI_COLUMN = ";";
@@ -12,13 +14,17 @@ public class ResponseMessageHeader {
     private static final String CHARSET = "charset";
     private static final String UTF_8 = "utf-8";
     private static final String NEW_LINE = "\r\n";
+    private static final String PATH = "Path";
 
     public static final String BLANK = " ";
 
-    public String response200Header(int bodyOfLength, String contentType) {
+    public String response200Header(int bodyOfLength, String contentType, String cookie) {
         String header = "";
         header += getStatusHeader(RESPONSE_200)+ NEW_LINE;
         header += getContentTypeHeader(contentType);
+        if(cookie != null) {
+            header += setCookie(cookie);
+        }
         header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + BLANK + bodyOfLength + NEW_LINE;
         header += NEW_LINE;
 
@@ -26,23 +32,33 @@ public class ResponseMessageHeader {
 
     }
 
-    public String response302Header(String redirectUrl) {
+    public String response302Header(String redirectUrl, String cookie) {
         String header = "";
         header += getStatusHeader(RESPONSE_302)+ NEW_LINE;
         header += LOCATION.getConstant() + KEY_VALUE_PARSER + BLANK + WebServer.HOME_URL + redirectUrl + NEW_LINE;
+        if(cookie != null) {
+            header += setCookie(cookie);
+        }
         header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + BLANK + "0" + NEW_LINE;
         header += NEW_LINE;
 
         return header;
     }
 
-    public String response404Header() {
-        return getStatusHeader(RESPONSE_404)+ NEW_LINE;
+    public String response404Header(String cookie) {
+        String header = "";
+        header += getStatusHeader(RESPONSE_404) + NEW_LINE;
+        if(cookie != null) {
+            header += setCookie(cookie);
+        }
+        return header;
     }
 
+    private String setCookie(String cookie) {
+        return SET_COOKIE.getConstant() + KEY_VALUE_PARSER + BLANK + cookie + SEMI_COLUMN + BLANK + PATH + EQUAL + "/" + NEW_LINE;
+    }
     private String getContentTypeHeader(String contentType) {
         return CONTENT_TYPE.getConstant() + KEY_VALUE_PARSER + BLANK + contentType + SEMI_COLUMN + CHARSET + EQUAL + UTF_8 + NEW_LINE;
     }
-
 
 }

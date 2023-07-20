@@ -25,7 +25,7 @@ public class ResponseWriter {
     public void sendRedirect(String redirectUrl) {
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         try {
-            writeHeader(responseMessageHeader.response302Header(redirectUrl));
+            writeHeader(responseMessageHeader.response302Header(redirectUrl, httpResponse.getCookie()));
         } catch(IOException e) {
             logger.error(e.getMessage());
         }
@@ -45,7 +45,7 @@ public class ResponseWriter {
                 dos.flush();
                 return;
             }
-            writeHeader(responseMessageHeader.response404Header());
+            writeHeader(responseMessageHeader.response404Header(httpResponse.getCookie()));
             dos.flush();
         } catch(IOException e) {
             logger.error(e.getMessage());
@@ -55,7 +55,7 @@ public class ResponseWriter {
     }
 
     private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, ResponseBody responseBody) throws IOException {
-        writeHeader(responseMessageHeader.response200Header(responseBody.getLength(), contentType));
+        writeHeader(responseMessageHeader.response200Header(responseBody.getLength(), contentType, httpResponse.getCookie()));
         writeBody(responseBody);
 
     }

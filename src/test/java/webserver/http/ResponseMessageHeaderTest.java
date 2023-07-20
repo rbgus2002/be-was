@@ -22,7 +22,7 @@ class ResponseMessageHeaderTest {
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
         //when
-        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, MimeType.HTML.getMimeType());
+        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, MimeType.HTML.getMimeType(), null);
 
         //then
         assertEquals(expected, header);
@@ -42,7 +42,7 @@ class ResponseMessageHeaderTest {
         //when
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
-        String header = responseMessageHeader.response302Header(url);
+        String header = responseMessageHeader.response302Header(url, null);
 
         //then
         assertEquals(expected, header);
@@ -57,7 +57,7 @@ class ResponseMessageHeaderTest {
         //when
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
-        String header = responseMessageHeader.response404Header();
+        String header = responseMessageHeader.response404Header(null);
 
         //then
         assertEquals(expected, header);
