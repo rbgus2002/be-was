@@ -19,6 +19,10 @@ public class Parser {
     }
 
     public static String parsePathFromUrl(String url) {
+        if(url.equals("/")) {
+            return "/index.html";
+        }
+
         int queryIndex = url.indexOf("?");
         if(queryIndex == -1) {
             return url;
