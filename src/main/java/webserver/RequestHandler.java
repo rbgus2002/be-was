@@ -48,7 +48,9 @@ public class RequestHandler extends HttpHandler implements Runnable {
             logger.debug("Response... : \n{}", responseString);
             dos.writeBytes(responseString);
 
-            dos.write(response.getBody(), 0, response.getBody().length);
+            if(response.getBody() != null){
+                dos.write(response.getBody(), 0, response.getBody().length);
+            }
             dos.flush();
         } catch (IOException | InvocationTargetException | IllegalAccessException e) {
             logger.error(e.getMessage());
