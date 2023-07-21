@@ -5,16 +5,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HttpResponse {
 	private static Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-	private MimeType mimeType;
 	private HttpVersion version;
-	private byte[] body;
 	private StatusCode statusCode;
+	private byte[] body;
+	private Map<String, String> header = new HashMap<>();
 
 	public HttpResponse(HttpRequest httpRequest) {
 		version = httpRequest.getVersion();
@@ -24,24 +26,22 @@ public class HttpResponse {
 		body = Files.readAllBytes(path);
 		String fileName = path.getFileName().toString();
 		String extension = fileName.substring(fileName.lastIndexOf("."));
-		mimeType = MimeType.typeOf(extension);
-	}
-
-	public void setStatus(StatusCode statusCode) {
-		this.statusCode = statusCode;
+		header.put("Content-Type", MimeType.typeOf(extension).extension + ";charset=utf-8");
+		header.put("Content-Length", String.valueOf(body.length));
 	}
 
 	public void response(OutputStream out) {
 		DataOutputStream dos = new DataOutputStream(out);
-		responseHeader(dos, body.length);
+		responseHeader(dos);
 		responseBody(dos, body);
 	}
 
-	private void responseHeader(DataOutputStream dos, int lengthOfBodyContent) {
+	private void responseHeader(DataOutputStream dos) {
 		try {
 			dos.writeBytes(version + " " + statusCode + " \r\n");
-			dos.writeBytes("Content-Type: " + mimeType.extension + ";charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+			for (String key : header.keySet()) {
+				dos.writeBytes(key + ": " + header.get(key) + "\r\n");
+			}
 			dos.writeBytes("\r\n");
 		} catch (IOException e) {
 			logger.error(e.getMessage());
@@ -55,5 +55,10 @@ public class HttpResponse {
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
+	}
+
+	public void setRedirect(final String redirectPath, StatusCode statusCode) {
+		this.statusCode = statusCode;
+		header.put("Location", redirectPath);
 	}
 }
