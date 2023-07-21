@@ -31,19 +31,23 @@ public class HttpRequest {
         this.requestHeader = RequestHeader.of(header);
     }
 
-    public static HttpRequest of (InputStream in) throws IOException {
+    public static HttpRequest of(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
         String line = br.readLine();
         String requestLine = line;
-        logger.debug("request line: {}",requestLine);
+        logger.debug("request line: {}", requestLine);
 
         StringBuilder header = new StringBuilder();
-        while(!line.equals("")) {
+        while (!line.equals("")) {
             line = br.readLine();
-            logger.debug("header: {}",line);
+            logger.debug("header: {}", line);
             header.append(line).append(StringUtils.NEWLINE);
         }
 
         return new HttpRequest(requestLine, header.toString());
+    }
+
+    public String getPath() {
+        return path;
     }
 }

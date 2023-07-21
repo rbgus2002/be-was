@@ -16,7 +16,7 @@ import webserver.response.HttpStatus;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -34,7 +34,7 @@ public class RequestHandler implements Runnable {
             Path filePath = Paths.get("/Users/lbc/Desktop/softeer_mission/be-was/src/main/resources/templates/index.html");
             byte[] body = Files.readAllBytes(filePath);
 
-            HttpResponse httpResponse = new HttpResponse(HttpStatus.OK, ContentType.HTML, body.length, body);
+            HttpResponse httpResponse = new HttpResponse(HttpStatus.OK, ContentType.HTML, body);
             httpResponse.sendResponse(dos);
         } catch (IOException e) {
             logger.error(e.getMessage());
