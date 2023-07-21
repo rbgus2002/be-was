@@ -14,6 +14,7 @@ public class RequestLine {
 
     private final String httpMethod;
     private final String path;
+    //TODO class 뺴기
     private final Map<String, String> queryParams;
 
     public RequestLine(String requestLine) {

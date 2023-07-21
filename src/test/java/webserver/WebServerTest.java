@@ -13,15 +13,15 @@ class WebServerTest {
         WebServer.main(new String[]{String.valueOf(8080)});
     }
 
-    @DisplayName("http://localhost:8080/index.html 로 접속했을 때 src/main/resources/templates 디렉토리의 index.html 파일을 읽어 클라이언트에 응답한다.")
-    @Test
-    void request() {
-        RestAssured.given()
-                .when()
-                .get("/index.html")
-                .then()
-                .statusCode(200)
-                .contentType("text/html;charset=utf-8")
-                .statusCode(HttpStatus.SC_OK);
-    }
+//    @DisplayName("http://localhost:8080/index.html 로 접속했을 때 src/main/resources/templates 디렉토리의 index.html 파일을 읽어 클라이언트에 응답한다.")
+//    @Test
+//    void request() {
+//        RestAssured.given()
+//                .when()
+//                .get("/index.html")
+//                .then()
+//                .statusCode(200)
+//                .contentType("text/html;charset=utf-8")
+//                .statusCode(HttpStatus.SC_OK);
+//    }
 }

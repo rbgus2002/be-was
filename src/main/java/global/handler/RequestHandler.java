@@ -27,9 +27,9 @@ public class RequestHandler implements Runnable {
             String response = httpUtil.getResponse();
             logger.debug("request = {}", response);
             byte[] body = response.getBytes();
-
-            out.write(body);
-            out.flush();
+            DataOutputStream dos = new DataOutputStream(out);
+            dos.write(body);
+            dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
