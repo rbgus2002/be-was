@@ -2,12 +2,12 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.controller.FileController;
 import webserver.controller.UserSaveController;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.utils.FileUtils;
-import webserver.utils.HttpField;
 import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
 import webserver.utils.HttpMethod;
 
 import java.io.BufferedInputStream;
@@ -36,7 +36,8 @@ public class DispatcherServlet implements Runnable {
                 UserSaveController userSaveController = new UserSaveController();
                 userSaveController.process(httpRequest, httpResponse);
             } else {
-                FileUtils.processFileResponse(httpRequest.get(HttpField.URI), httpResponse);
+                FileController fileController = new FileController();
+                fileController.process(httpRequest, httpResponse);
             }
 
             sendResponse(httpResponse, out);
