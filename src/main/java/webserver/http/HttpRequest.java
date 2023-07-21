@@ -45,6 +45,10 @@ public class HttpRequest {
         return requestPath;
     }
 
+    public Map<String, String> getParams() {
+        return params;
+    }
+
     public static String method(String firstLine) {
         String[] tokens = firstLine.split(" ");
         String method = tokens[0];
