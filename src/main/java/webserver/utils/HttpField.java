@@ -9,6 +9,7 @@ public final class HttpField {
     public static final String CONTENT_LENGTH = "Content-Length";
     public static final String AUTHORIZATION = "Authorization";
     public static final String PATH = "Path";
+    public static final String LOCATION = "Location";
 
     private HttpField() {
     }

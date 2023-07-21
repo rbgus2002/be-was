@@ -8,6 +8,7 @@ import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
+import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
 
 public class UserSaveController {
@@ -29,7 +30,8 @@ public class UserSaveController {
             User user = new User(userId, password, name, email);
             Database.addUser(user);
 
-            httpResponse.setStatus(HttpStatus.OK);
+            httpResponse.setStatus(HttpStatus.FOUND);
+            httpResponse.set(HttpField.LOCATION, "/index.html");
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (ConflictException e) {
