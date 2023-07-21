@@ -1,6 +1,8 @@
 package db;
 
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
@@ -10,16 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
 
-    private static final String SESSION_COOKIE_NAME = "mySessionId";
-    private final Map<String, User> store = new ConcurrentHashMap<>();
+    private static final String SESSION_COOKIE_NAME = "sessionId";
+    public static final Map<String, User> store = new ConcurrentHashMap<>();
+    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
 
-    public void createSession(User user, HTTPServletResponse response) {
+    public static void createSession(User user, HTTPServletResponse response) {
         String sessionId = UUID.randomUUID().toString();
         store.put(sessionId, user);
         response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + sessionId);
+        logger.debug("Cookie = {}", SESSION_COOKIE_NAME + "=" + sessionId);
     }
 
-    public User getSession(HTTPServletRequest request) {
+    public static User getSession(HTTPServletRequest request) {
         String sessionId = request.getHeader("Cookie");
         if (sessionId == null) {
             throw new IllegalArgumentException("없는 쿠키입니다.");

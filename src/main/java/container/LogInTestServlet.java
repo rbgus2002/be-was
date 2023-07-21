@@ -1,6 +1,7 @@
 package container;
 
 import db.Database;
+import db.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ public class LogInTestServlet implements Servlet {
             response.setHeader("Location", FAILED_PATH.getPath());
         }else {
             response.setHeader("Location", HOME_PATH.getPath());
+            SessionManager.createSession(findUser, response);
         }
 
         String version = request.getVersion();
