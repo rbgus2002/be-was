@@ -1,6 +1,21 @@
 # java-was-2023
 Java Web Application Server 2023
 
+# Step3
+## 미션 수행 목표
+- [ ] : HTTP Response 학습 및 위키 정리
+- [X] : MIME 타입 이해하고 적용하기 (서버의 static 폴더에 있는 정적 컨텐츠들에 대한 요청 정상 처리)
+
+## 미션 수행 기록
+- MIME 타입 관리하는 Enum 클래스 생성
+- Path에 대해서도 static 경로와 templates 경로를 관리하는 Enum 클래스 생성
+- requestUri 정보의 확장자를 파싱하고 해당 확장자에 알맞는 경로를 설정
+- 요청 파일에 알맞는 body와 header를 담아 응답하도록 처리
+
+## 변경 필요 사항
+- FrontController 부분에 대한 예외 처리 및 확장성 고려 필요
+- UserController 의 doGet 방식도 별로 좋진 않은 것 같다.
+- 테스트 코드 추가 해야한다! 
 
 # Step2
 ## 미션 수행 목표

@@ -2,6 +2,7 @@ package webserver.http.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Parser;
 import webserver.http.HttpHeaders;
 
 import java.io.DataOutputStream;
@@ -33,7 +34,7 @@ public class HttpResponse {
     private void response200Header(DataOutputStream dos) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + httpHeaders.getContentType() +  "\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
@@ -63,10 +64,10 @@ public class HttpResponse {
     }
 
     public static HttpResponse createStatic(String requestUri) throws IOException {
-        byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + requestUri).toPath());
+        byte[] body = Files.readAllBytes(new File(Parser.parsePath(requestUri)).toPath());
         return new HttpResponse(
                 HttpStatusLine.createStaticStatusLine(),
-                HttpHeaders.createStaticStatusHeaders(body.length),
+                HttpHeaders.createStaticStatusHeaders(body.length, requestUri),
                 body
         );
     }

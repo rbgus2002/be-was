@@ -10,10 +10,12 @@ import java.util.Map;
 import static utils.StringUtils.NEW_LINE;
 
 public class HttpHeaders {
-
     private final Map<String, String> headers;
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+    public String getContentType() {
+        return headers.get("Content-Type");
     }
 
     public void show(StringBuilder sb) {
@@ -29,9 +31,10 @@ public class HttpHeaders {
         return new HttpHeaders(Parser.parseHeaders(br));
     }
 
-    public static HttpHeaders createStaticStatusHeaders(int bodyLength) {
+    public static HttpHeaders createStaticStatusHeaders(int bodyLength, String requestUri) {
         Map<String, String> responseHeaders = new HashMap<>();
-        responseHeaders.put("Content-Type", "text/html;charset=utf-8");
+        MIME mime = MIME.findMIME(requestUri);
+        responseHeaders.put("Content-Type", createStaticContentType(mime));
         responseHeaders.put("Content-Length", String.valueOf(bodyLength));
         return new HttpHeaders(responseHeaders);
     }
@@ -42,5 +45,9 @@ public class HttpHeaders {
         responseHeaders.put("Content-Length", "0");
         responseHeaders.put("Location", "http://localhost:8080/index.html");
         return new HttpHeaders(responseHeaders);
+    }
+
+    private static String createStaticContentType(MIME mime) {
+        return mime.getContentType() + ";charset=utf-8";
     }
 }
