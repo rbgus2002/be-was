@@ -3,7 +3,8 @@ package webserver.http.response;
 import webserver.http.ContentType;
 import webserver.http.HttpHeaders;
 
-public class HttpRequestImpl extends HttpResponse {
+
+public class HttpResponseImpl extends HttpResponse {
     private static final String redirectionHeader = "Location";
     private String uri = HttpResponse.NOT_RENDER_URI;
     private HttpStatus httpStatus = HttpStatus.OK;

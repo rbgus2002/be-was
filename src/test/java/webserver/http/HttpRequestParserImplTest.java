@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -28,6 +26,7 @@ class HttpRequestParserImplTest {
             "GET /index.html?parameter1=hello1&parameter2=hello2 HTTP/1.1\r\n" +
             "Host: localhost:8080\r\n" +
             "Connection: keep-alive\r\n" +
+            "Content-Length: 12\r\n" +
             "sec-ch-ua: \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"\r\n" +
             "sec-ch-ua-mobile: ?0\r\n" +
             "sec-ch-ua-platform: \"macOS\"\r\n" +
@@ -41,8 +40,8 @@ class HttpRequestParserImplTest {
             "Accept-Encoding: gzip, deflate, br\r\n" +
             "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\r\n" +
             "Cookie: Idea-13020a74=01685f19-8588-4907-88e8-60ee76288f21\r\n"
-            +"\r\n" +
-            "BodyBodyBody\r\n";
+            + "\r\n" +
+            "BodyBodyBody";
 
     @Nested
     @DisplayName("parse method")
@@ -59,7 +58,14 @@ class HttpRequestParserImplTest {
 
             //then
             verifyRequestLine(httpRequest, HttpMethod.GET, "/index.html", "1.1");
+            assertThat(httpRequest.getHeaderNames()
+                    .containsAll(List.of("Host", "Accept-Encoding", "Accept-Language")))
+                    .isTrue();
             verifyHeaders(httpRequest, expectHeaders);
+
+            byte[] body = httpRequest.getBody();
+            String resultBody = new String(body);
+            assertThat(resultBody).isEqualTo("BodyBodyBody");
         }
     }
 
@@ -135,7 +141,7 @@ class HttpRequestParserImplTest {
     }
 
     private static void verifyHeaders(HttpRequest httpRequest,
-                                        Map<String, String> headerInfos) {
+                                      Map<String, String> headerInfos) {
         for (String headerName : headerInfos.keySet()) {
             verifyHeader(httpRequest, headerInfos, headerName);
         }

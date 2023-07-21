@@ -19,8 +19,9 @@ public abstract class HttpRequest {
 
     public abstract Optional<String> getParameter(String parameterName);
 
-    //TODO: Object 나중에 바꿀 것
-    public abstract Object getBody();
+    public abstract byte[] getBody();
+
+    public abstract String getBodyToString();
 
     public static Builder builder() {
         return new HttpRequestBuilderImpl();
@@ -37,6 +38,8 @@ public abstract class HttpRequest {
 
         @SuppressWarnings("UnusedReturnValue")
         Builder addParameter(String parameterName, String value);
+
+        Builder body(byte[] body);
 
         HttpRequest build();
     }

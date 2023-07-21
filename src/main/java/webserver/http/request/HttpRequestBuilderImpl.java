@@ -12,6 +12,7 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     private String version = "1.1";
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, String> requestParameters = new HashMap<>();
+    private byte[] body;
 
     @Override
     public HttpRequest.Builder method(HttpMethod method) {
@@ -44,7 +45,15 @@ public class HttpRequestBuilderImpl implements HttpRequest.Builder {
     }
 
     @Override
+    public HttpRequest.Builder body(byte[] body) {
+        this.body = body;
+        return this;
+    }
+
+
+    @Override
     public HttpRequest build() {
-        return new HttpRequestImpl(method, uri, version, headers, requestParameters);
+        return new HttpRequestImpl(
+                method, uri, version, headers, requestParameters, body);
     }
 }

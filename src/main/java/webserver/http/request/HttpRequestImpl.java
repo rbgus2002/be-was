@@ -3,6 +3,8 @@ package webserver.http.request;
 import webserver.http.HttpHeaders;
 import webserver.http.HttpMethod;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -13,16 +15,20 @@ public class HttpRequestImpl extends HttpRequest {
     private final String version;
     private final HttpHeaders headers;
     private final Map<String, String> requestParameters;
+    private final byte[] body;
 
     public HttpRequestImpl(HttpMethod httpMethod,
                            String uri,
                            String version,
-                           HttpHeaders headers, Map<String, String> requestParameters) {
+                           HttpHeaders headers,
+                           Map<String, String> requestParameters,
+                           byte[] body) {
         this.httpMethod = httpMethod;
         this.uri = uri;
         this.version = version;
         this.headers = headers;
         this.requestParameters = requestParameters;
+        this.body = body;
     }
 
     @Override
@@ -56,7 +62,14 @@ public class HttpRequestImpl extends HttpRequest {
     }
 
     @Override
-    public Object getBody() {
-        return null;
+    public byte[] getBody() {
+        return this.body;
+    }
+
+    @Override
+    public String getBodyToString() {
+        return URLDecoder.decode(
+                new String(getBody(), StandardCharsets.UTF_8),
+                StandardCharsets.UTF_8);
     }
 }

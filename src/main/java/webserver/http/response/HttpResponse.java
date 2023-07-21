@@ -30,6 +30,6 @@ public abstract class HttpResponse {
     public abstract void sendRedirection(String uri);
 
     public static HttpResponse getInstance() {
-        return new HttpRequestImpl();
+        return new HttpResponseImpl();
     }
 }
