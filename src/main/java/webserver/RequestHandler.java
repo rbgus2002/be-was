@@ -39,7 +39,7 @@ public class RequestHandler implements Runnable {
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			HttpRequest httpRequest = new HttpRequest(reader);
-			logger.debug("{} httpRequest created", httpRequest.getMethod());
+			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
 			if (httpRequest.isGet()) {
 				HttpResponse httpResponse = handleGetRequest(httpRequest);
 				logger.debug("httpResponse created");

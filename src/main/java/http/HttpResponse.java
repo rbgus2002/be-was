@@ -10,7 +10,7 @@ import java.nio.file.Path;
 public class HttpResponse {
 	private StatusLine statusLine = new StatusLine();
 	private Header header = new Header();
-	private byte[] body;
+	private byte[] body = new byte[0];
 
 	public HttpResponse(HttpRequest httpRequest) {
 		statusLine.setVersion(httpRequest.getVersion());
@@ -38,7 +38,7 @@ public class HttpResponse {
 	}
 
 	private void responseStatusLine(DataOutputStream dos) throws IOException {
-		dos.writeBytes(statusLine.getStatusLineForHeader());
+		dos.writeBytes(statusLine.getStatusLineForHeader() + "\r\n");
 	}
 
 	private void responseHeader(DataOutputStream dos) throws IOException {

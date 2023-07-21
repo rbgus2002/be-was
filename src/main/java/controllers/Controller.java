@@ -20,7 +20,7 @@ public class Controller {
 	public String createUser(Parameter parameter) {
 		Database.addUser(parameterToUser(parameter));
 		logger.debug("[Database] User {} added", Database.findUserById(parameter.getParameter("userId")).getName());
-		return "redirect:/";
+		return "redirect:http://localhost:8080/";
 	}
 
 	private User parameterToUser(Parameter parameter) {
