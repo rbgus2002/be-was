@@ -10,7 +10,7 @@ import webserver.utils.HttpMethod;
 public class Controller {
 
 
-	@RequestMapping(method = HttpMethod.GET, path = "/user/create")
+	@RequestMapping(method = HttpMethod.POST, path = "/user/create")
 	public void saveUser(HttpWasRequest request, HttpWasResponse response) {
 		final String userId = request.getParameter("userId");
 		final String password = request.getParameter("password");
