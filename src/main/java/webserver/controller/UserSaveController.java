@@ -8,11 +8,12 @@ import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
+import webserver.utils.HttpParametersParser;
 
 public class UserSaveController {
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            HttpParameters httpParameters = httpRequest.getParameters();
+            HttpParameters httpParameters = HttpParametersParser.parse(httpRequest.getBody());
 
             verifyParametersCount(httpParameters);
 

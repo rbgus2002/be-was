@@ -32,7 +32,7 @@ public class DispatcherServlet implements Runnable {
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            if (httpRequest.get(HttpField.METHOD).equals(HttpMethod.GET) && httpRequest.get(HttpField.PATH).equals("/user/create")) {
+            if (httpRequest.get(HttpField.METHOD).equals(HttpMethod.POST) && httpRequest.get(HttpField.PATH).equals("/user/create")) {
                 UserSaveController userSaveController = new UserSaveController();
                 userSaveController.process(httpRequest, httpResponse);
             } else {

@@ -31,11 +31,14 @@ class UserSaveControllerTest {
     @DisplayName("회원가입 요청 시, Database에 회원 정보가 저장되어야 한다.")
     void userSaveTest() throws Exception {
         //given
-        String requestMessage = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1\r\n" +
+        String requestMessage = "POST /user/create HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Connection: keep-alive\r\n" +
+                "Content-Length: 93\r\n" +
+                "Content-Type: application/x-www-form-urlencoded\r\n" +
                 "Accept: */*\r\n" +
-                "\r\n";
+                "\r\n" +
+                "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         HttpRequest httpRequest = createHttpRequest(requestMessage);
 
@@ -58,11 +61,14 @@ class UserSaveControllerTest {
     @DisplayName("회원가입 요청 시, 누락된 URL 파라미터가 있으면 BAD REQUESET로 응답한다")
     void userSaveRequestWithMissingParameter() throws Exception {
         //given
-        String requestMessageWithoutUserIdParameter = "GET /user/create?&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1\r\n" +
+        String requestMessageWithoutUserIdParameter = "POST /user/create HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Connection: keep-alive\r\n" +
+                "Content-Length: 78\r\n" +
+                "Content-Type: application/x-www-form-urlencoded\r\n" +
                 "Accept: */*\r\n" +
-                "\r\n";
+                "\r\n" +
+                "&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         HttpRequest httpRequest = createHttpRequest(requestMessageWithoutUserIdParameter);
 
@@ -77,11 +83,14 @@ class UserSaveControllerTest {
     @DisplayName("회원가입 요청 시, 입력하지 않은 회원정보가 있으면 BAD REQUEST로 응답한다")
     void userSaveRequestWithEmptyParameter() throws Exception {
         //given
-        String requestMessageWithEmptyUserId = "GET /user/create?userId=&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1\r\n" +
+        String requestMessageWithEmptyUserId = "POST /user/create HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Connection: keep-alive\r\n" +
+                "Content-Length: 85\r\n" +
+                "Content-Type: application/x-www-form-urlencoded\r\n" +
                 "Accept: */*\r\n" +
-                "\r\n";
+                "\r\n" +
+                "userId=&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         HttpRequest httpRequest = createHttpRequest(requestMessageWithEmptyUserId);
 
@@ -100,11 +109,14 @@ class UserSaveControllerTest {
         Database.addUser(user);
 
         //when
-        String requestMessage = "GET /user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net HTTP/1.1\r\n" +
+        String requestMessage = "POST /user/create HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Connection: keep-alive\r\n" +
+                "Content-Length: 93\r\n" +
+                "Content-Type: application/x-www-form-urlencoded\r\n" +
                 "Accept: */*\r\n" +
-                "\r\n";
+                "\r\n" +
+                "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         HttpRequest httpRequest = createHttpRequest(requestMessage);
 
