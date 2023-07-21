@@ -18,10 +18,11 @@ public class HttpRequest {
 
     private Map<String, String> params = new HashMap<>();
 
-    public HttpRequest(String method, String requestPath, String version) {
+    public HttpRequest(String method, String requestPath, String version, String queryString) {
         this.method = method;
         this.requestPath = requestPath;
         this.version = version;
+        this.params = HttpRequestUtils.parseQueryString(queryString);
     }
 
     public HttpRequest(InputStream in) throws IOException {

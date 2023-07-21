@@ -16,10 +16,11 @@ class ControllerTest {
     void createUser() throws IOException {
         // given
         String method = "GET";
-        String requestPath = "/user/create?userId=wjddus9132&password=1234&name=김정연&email=wjddus9132@gmail.com";
+        String requestPath = "/user/create";
         String version = "HTTP/1.1";
+        String queryString = "userId=wjddus9132&password=1234&name=김정연&email=wjddus9132@gmail.com";
 
-        HttpRequest httpRequest = new HttpRequest(method, requestPath, version);
+        HttpRequest httpRequest = new HttpRequest(method, requestPath, version, queryString);
 
         // when
         String url = Controller.createUser(httpRequest);
