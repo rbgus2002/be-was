@@ -4,16 +4,15 @@ import db.Database;
 import model.User;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.ConflictException;
+import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 
-import java.util.Map;
-
 public class UserSaveController {
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            Map<String, String> parametersMap = httpRequest.getParametersMap();
+            HttpParameters parametersMap = httpRequest.getParameters();
 
             verifyParametersCount(parametersMap);
 
@@ -40,7 +39,7 @@ public class UserSaveController {
         }
     }
 
-    private void verifyParametersCount(Map<String, String> parametersMap) throws BadRequestException {
+    private void verifyParametersCount(HttpParameters parametersMap) throws BadRequestException {
         if (parametersMap.size() != 4) {
             throw new BadRequestException();
         }
