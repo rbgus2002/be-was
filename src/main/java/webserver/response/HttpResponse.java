@@ -13,10 +13,14 @@ public class HttpResponse {
     private final ContentType contentType;
     private final byte[] body;
 
-    public HttpResponse(HttpStatus httpStatus, ContentType contentType, int lengthOfBodyContent, byte[] body) {
+    private HttpResponse(HttpStatus httpStatus, ContentType contentType, byte[] body) {
         this.httpStatus = httpStatus;
         this.contentType = contentType;
         this.body = body;
+    }
+
+    public static HttpResponse of (HttpStatus httpStatus, ContentType contentType, byte[] body) {
+        return new HttpResponse(httpStatus, contentType, body);
     }
 
     private String getStatusLine() {
