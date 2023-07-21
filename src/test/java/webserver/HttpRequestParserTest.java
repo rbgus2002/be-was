@@ -3,15 +3,18 @@ package webserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.request.HttpRequest;
+import webserver.request.HttpRequestParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class HttpRequestParserTest {
-    String requestInput = "GET /favicon.ico HTTP/1.1\n" +
+    String requestInput = "GET /url?id=1&password=1234 HTTP/1.1\n" +
             "Host: localhost:8080\n" +
             "Connection: keep-alive\n" +
             "sec-ch-ua: \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"\n" +
@@ -32,7 +35,7 @@ class HttpRequestParserTest {
             "  \"age\": 30\n" +
             "}\n";
 
-    String header = "GET /favicon.ico HTTP/1.1\n" +
+    String header = "GET /url?id=1&password=1234 HTTP/1.1\n" +
             "Host: localhost:8080\n" +
             "Connection: keep-alive\n" +
             "sec-ch-ua: \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"\n" +
@@ -78,5 +81,16 @@ class HttpRequestParserTest {
     @DisplayName("http request byte 값이 들어오면 해당 request의 body를 추출해야 한다.")
     void body() {
         assertEquals(body, request.getBody());
+    }
+
+    @Test
+    @DisplayName("http request byte 값이 들어오면 해당 request url 내의 파라미터를 추출해야 한다.")
+    void params(){
+        Map<String, String> tempMap = new HashMap<>();
+        tempMap.put("id","1");
+        tempMap.put("password","1234");
+
+        assertTrue(tempMap.get("id").equals(request.getParamValueByKey("id")));
+        assertTrue(tempMap.get("password").equals(request.getParamValueByKey("password")));
     }
 }
