@@ -10,12 +10,15 @@ public class HttpHeaders {
         this.headers = new HashMap<>();
     }
 
-    public String get(String field) {
-        return new String(headers.get(field));
+    public String get(String name) {
+        if (headers.containsKey(name)) {
+            return new String(headers.get(name));
+        }
+        return null;
     }
 
-    public void put(String field, String value) {
-        headers.put(field, value);
+    public void put(String name, String value) {
+        headers.put(name, value);
     }
 
 }

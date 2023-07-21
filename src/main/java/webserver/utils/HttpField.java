@@ -8,6 +8,8 @@ public final class HttpField {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String CONTENT_LENGTH = "Content-Length";
     public static final String AUTHORIZATION = "Authorization";
+    public static final String PATH = "Path";
 
-    private HttpField() {}
+    private HttpField() {
+    }
 }

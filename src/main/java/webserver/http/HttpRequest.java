@@ -1,6 +1,5 @@
 package webserver.http;
 
-import webserver.utils.HttpConstants;
 import webserver.utils.HttpField;
 
 import java.io.BufferedReader;
@@ -9,106 +8,95 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.StringTokenizer;
-import java.util.stream.Collectors;
 
 public class HttpRequest {
+    private final BufferedReader bufferedReader;
+
     private final HttpHeaders httpHeaders;
     private final HttpParameters httpParameters;
-    private String path;
+    private String body = "";
+
 
     public HttpRequest(InputStream in) throws IOException {
+        bufferedReader = new BufferedReader(new InputStreamReader(in));
+
         httpHeaders = new HttpHeaders();
         httpParameters = new HttpParameters();
 
-        parseRequestMessage(in);
+        parseRequestMessage();
     }
 
-    public void parseRequestMessage(InputStream in) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-
-        if (!bufferedReader.ready()) {
-            throw new IOException("Received Empty Request Message");
-        }
-
-        parseHeader(bufferedReader);
-        parseBody(bufferedReader);
+    public void parseRequestMessage() throws IOException {
+        parseHeader();
+        parseBody();
     }
 
-    private void parseHeader(BufferedReader bufferedReader) throws IOException {
-        parseRequestLine(bufferedReader);
-        parseOtherHeaders(bufferedReader);
+    private void parseHeader() throws IOException {
+        parseRequestLine();
+        parseHeaderFields();
     }
 
-    private void parseRequestLine(BufferedReader bufferedReader) throws IOException {
-        String requestLine = bufferedReader.readLine();
-        StringTokenizer stringTokenizer = new StringTokenizer(requestLine);
+    private void parseRequestLine() throws IOException {
+        String[] requestLineTokens = bufferedReader.readLine().split(" ");
 
-        httpHeaders.put(HttpField.METHOD, stringTokenizer.nextToken());
-        httpHeaders.put(HttpField.URI, URLDecoder.decode(stringTokenizer.nextToken(), StandardCharsets.UTF_8));
-        httpHeaders.put(HttpField.VERSION, stringTokenizer.nextToken());
+        httpHeaders.put(HttpField.METHOD, requestLineTokens[0]);
+        httpHeaders.put(HttpField.URI, URLDecoder.decode(requestLineTokens[1], StandardCharsets.UTF_8));
+        httpHeaders.put(HttpField.VERSION, requestLineTokens[2]);
 
         parsePathAndParameters(httpHeaders.get(HttpField.URI));
     }
 
     private void parsePathAndParameters(String URI) {
-        if (!URI.contains("?")) {
-            path = URI;
-            return;
-        }
+        String[] uriTokens = URI.split("\\?");
 
-        int separatorIndex = URI.indexOf("?");
+        httpHeaders.put(HttpField.PATH, uriTokens[0]);
 
-        path = URI.substring(0, separatorIndex);
-        String parametersString = URI.substring(separatorIndex + 1);
-
-        StringTokenizer stringTokenizer = new StringTokenizer(parametersString, "&");
-
-        while (stringTokenizer.hasMoreTokens()) {
-            String parameter = stringTokenizer.nextToken();
-            separatorIndex = parameter.indexOf("=");
-            String name = parameter.substring(0, separatorIndex);
-            String value = parameter.substring(separatorIndex + 1);
-            httpParameters.put(name, value);
+        if (uriTokens.length == 2) {
+            parseParameters(uriTokens[1]);
         }
     }
 
-    private void parseOtherHeaders(BufferedReader bufferedReader) throws IOException {
+    private void parseParameters(String parameters) {
+        for (String parameter : parameters.split("&")) {
+            String[] tokens = parameter.split("=");
+
+            if (tokens.length == 2) {
+                httpParameters.put(tokens[0], tokens[1]);
+            }
+        }
+    }
+
+    private void parseHeaderFields() throws IOException {
         String line;
         while (!(line = bufferedReader.readLine()).isEmpty()) {
-            int colonIndex = line.indexOf(":");
-            String field = line.substring(0, colonIndex);
-            String value = line.substring(colonIndex + 1).trim();
-            httpHeaders.put(field, value);
+            int separatorIndex = line.indexOf(":");
+            String fieldName = line.substring(0, separatorIndex);
+            String fieldValue = line.substring(separatorIndex + 1).trim();
+            httpHeaders.put(fieldName, fieldValue);
         }
     }
 
-    private void parseBody(BufferedReader bufferedReader) throws IOException {
-        if (bufferedReader.ready()) {
-            String body = bufferedReader.lines().collect(Collectors.joining(HttpConstants.CRLF));
-            httpHeaders.put("body", body);
-            return;
+    private void parseBody() throws IOException {
+        String contentLength = httpHeaders.get(HttpField.CONTENT_LENGTH);
+        int bodyLength;
+
+        if (contentLength != null && (bodyLength = Integer.parseInt(contentLength)) > 0) {
+            char[] requestBody = new char[bodyLength];
+
+            bufferedReader.read(requestBody, 0, bodyLength);
+            this.body = URLDecoder.decode(new String(requestBody), StandardCharsets.UTF_8);
         }
-        httpHeaders.put("body", "");
     }
 
-    public String get(String fieldName) {
-        return httpHeaders.get(fieldName);
-    }
-
-    public String getBody() {
-        return httpHeaders.get("body");
-    }
-
-    public String getURI() {
-        return httpHeaders.get(HttpField.URI);
-    }
-
-    public String getPath() {
-        return path;
+    public String get(String name) {
+        return httpHeaders.get(name);
     }
 
     public HttpParameters getParameters() {
         return httpParameters;
+    }
+
+    public String getBody() {
+        return body;
     }
 }

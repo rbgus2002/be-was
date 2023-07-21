@@ -3,14 +3,17 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controller.UserSaveController;
-import webserver.utils.HttpConstants;
-import webserver.utils.HttpField;
-import webserver.utils.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.FileUtils;
+import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
+import webserver.utils.HttpMethod;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class DispatcherServlet implements Runnable {
@@ -29,11 +32,11 @@ public class DispatcherServlet implements Runnable {
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            if (httpRequest.get(HttpField.METHOD).equals(HttpMethod.GET) && httpRequest.getPath().equals("/user/create")) {
+            if (httpRequest.get(HttpField.METHOD).equals(HttpMethod.GET) && httpRequest.get(HttpField.PATH).equals("/user/create")) {
                 UserSaveController userSaveController = new UserSaveController();
                 userSaveController.process(httpRequest, httpResponse);
             } else {
-                FileUtils.processFileResponse(httpRequest.getURI(), httpResponse);
+                FileUtils.processFileResponse(httpRequest.get(HttpField.URI), httpResponse);
             }
 
             sendResponse(httpResponse, out);
