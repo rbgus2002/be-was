@@ -18,9 +18,11 @@ import annotations.AnnotationMap;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.StatusCode;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+	private final String REDIRECT = "redirect:";
 	private static final String TEMPLATES_PATH = "src/main/resources/templates/";
 	private static final String STATIC_PATH = "src/main/resources/static";
 
@@ -51,10 +53,19 @@ public class RequestHandler implements Runnable {
 
 	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException, IllegalArgumentException {
 		String path = runController(httpRequest);
+		if (path.contains(REDIRECT)) {
+			return redirectHttpResponse(httpRequest, path);
+		}
 		return getHttpResponse(httpRequest, path);
 	}
 
-	private static String runController(final HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
+	private HttpResponse redirectHttpResponse(final HttpRequest httpRequest, final String path) {
+		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		httpResponse.setRedirect(path.replace("redirect:", ""), StatusCode.FOUND);
+		return httpResponse;
+	}
+
+	private String runController(final HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getEndpoint())) {
 			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint(), httpRequest.getParameter());
