@@ -1,6 +1,7 @@
 package webserver.http;
 
 import webserver.utils.HttpField;
+import webserver.utils.HttpParametersParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class HttpRequest {
     private final BufferedReader bufferedReader;
 
     private final HttpHeaders httpHeaders;
-    private final HttpParameters httpParameters;
+    private HttpParameters httpParameters;
     private String body = "";
 
 
@@ -52,17 +53,7 @@ public class HttpRequest {
         httpHeaders.put(HttpField.PATH, uriTokens[0]);
 
         if (uriTokens.length == 2) {
-            parseParameters(uriTokens[1]);
-        }
-    }
-
-    private void parseParameters(String parameters) {
-        for (String parameter : parameters.split("&")) {
-            String[] tokens = parameter.split("=");
-
-            if (tokens.length == 2) {
-                httpParameters.put(tokens[0], tokens[1]);
-            }
+            httpParameters = HttpParametersParser.parse(uriTokens[1]);
         }
     }
 
