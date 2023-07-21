@@ -1,5 +1,8 @@
 package webserver.http;
 
+import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,11 +43,11 @@ public class HttpRequest {
         String requestLine = bufferedReader.readLine();
         StringTokenizer stringTokenizer = new StringTokenizer(requestLine);
 
-        httpHeaders.put(HttpConstant.METHOD, stringTokenizer.nextToken());
-        httpHeaders.put(HttpConstant.URI, URLDecoder.decode(stringTokenizer.nextToken()));
-        httpHeaders.put(HttpConstant.VERSION, stringTokenizer.nextToken());
+        httpHeaders.put(HttpField.METHOD, stringTokenizer.nextToken());
+        httpHeaders.put(HttpField.URI, URLDecoder.decode(stringTokenizer.nextToken()));
+        httpHeaders.put(HttpField.VERSION, stringTokenizer.nextToken());
 
-        parsePathAndParameters(httpHeaders.get(HttpConstant.URI));
+        parsePathAndParameters(httpHeaders.get(HttpField.URI));
     }
 
     private void parsePathAndParameters(String URI) {
@@ -81,7 +84,7 @@ public class HttpRequest {
 
     private void parseBody(BufferedReader bufferedReader) throws IOException {
         if (bufferedReader.ready()) {
-            String body = bufferedReader.lines().collect(Collectors.joining(HttpConstant.CRLF));
+            String body = bufferedReader.lines().collect(Collectors.joining(HttpConstants.CRLF));
             httpHeaders.put("body", body);
             return;
         }
@@ -97,7 +100,7 @@ public class HttpRequest {
     }
 
     public String getURI() {
-        return httpHeaders.get(HttpConstant.URI);
+        return httpHeaders.get(HttpField.URI);
     }
 
     public String getPath() {

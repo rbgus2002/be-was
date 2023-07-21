@@ -1,5 +1,8 @@
 package webserver.http;
 
+import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,11 +24,11 @@ public class HttpResponse {
     }
 
     public void setContentType(String contentType) {
-        headers.put(HttpConstant.CONTENT_TYPE, contentType);
+        headers.put(HttpField.CONTENT_TYPE, contentType);
     }
 
     public void setContentLength(int contentLength) {
-        headers.put(HttpConstant.CONTENT_LENGTH, String.valueOf(contentLength));
+        headers.put(HttpField.CONTENT_LENGTH, String.valueOf(contentLength));
     }
 
     public void setBody(byte[] body) {
@@ -40,13 +43,13 @@ public class HttpResponse {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(status.getStatusLine())
-                .append(HttpConstant.CRLF);
+                .append(HttpConstants.CRLF);
 
         for (String key : headers.keySet()) {
             stringBuilder.append(key)
                     .append(": ")
                     .append(headers.get(key))
-                    .append(HttpConstant.CRLF);
+                    .append(HttpConstants.CRLF);
         }
 
         return stringBuilder.toString();

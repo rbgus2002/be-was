@@ -3,8 +3,9 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controller.UserSaveController;
-import webserver.http.HttpConstant;
-import webserver.utils.HttpMethodName;
+import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
+import webserver.utils.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.FileUtils;
@@ -14,7 +15,6 @@ import java.net.Socket;
 
 public class DispatcherServlet implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
-
     private final Socket connection;
 
     public DispatcherServlet(Socket connectionSocket) {
@@ -31,7 +31,7 @@ public class DispatcherServlet implements Runnable {
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            if (httpRequest.get(HttpConstant.METHOD).equals(HttpMethodName.GET) && httpRequest.getPath().equals("/user/create")) {
+            if (httpRequest.get(HttpField.METHOD).equals(HttpMethod.GET) && httpRequest.getPath().equals("/user/create")) {
                 UserSaveController userSaveController = new UserSaveController();
                 userSaveController.process(httpRequest, httpResponse);
             } else {
@@ -65,7 +65,7 @@ public class DispatcherServlet implements Runnable {
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(out);
 
         bufferedOutputStream.write(httpResponse.getHeaderBytes());
-        bufferedOutputStream.write(HttpConstant.CRLF.getBytes());
+        bufferedOutputStream.write(HttpConstants.CRLF.getBytes());
         if (!httpResponse.isBodyEmpty()) {
             bufferedOutputStream.write(httpResponse.getBodyBytes());
         }

@@ -3,6 +3,7 @@ package webserver.http;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.utils.HttpField;
 
 class HttpResponseTest {
     @Test
@@ -20,7 +21,7 @@ class HttpResponseTest {
         httpResponse.setStatus(HttpStatus.OK);
         httpResponse.setContentType("text/html;charset=utf-8");
         httpResponse.setContentLength(0);
-        httpResponse.setHeader(HttpConstant.AUTHORIZATION, "Bearer ABCD1234");
+        httpResponse.setHeader(HttpField.AUTHORIZATION, "Bearer ABCD1234");
 
         //then
         Assertions.assertEquals(responseMessage, httpResponse.getHeaderMessage());
