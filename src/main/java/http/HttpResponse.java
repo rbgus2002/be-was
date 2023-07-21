@@ -8,18 +8,21 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HttpResponse {
-	private static Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-	private HttpVersion version;
-	private StatusCode statusCode;
-	private byte[] body;
+	private StatusLine statusLine = new StatusLine();
+	private byte[] body = new byte[0];
 	private Map<String, String> header = new HashMap<>();
 
 	public HttpResponse(HttpRequest httpRequest) {
-		version = httpRequest.getVersion();
+		statusLine.setVersion(httpRequest.getVersion());
+	}
+
+	public void response(OutputStream out) throws IOException {
+		DataOutputStream dos = new DataOutputStream(out);
+		responseStatusLine(dos);
+		responseHeader(dos);
+		responseBody(dos, body);
 	}
 
 	public void addFile(Path path) throws IOException, IllegalArgumentException {
@@ -30,35 +33,24 @@ public class HttpResponse {
 		header.put("Content-Length", String.valueOf(body.length));
 	}
 
-	public void response(OutputStream out) {
-		DataOutputStream dos = new DataOutputStream(out);
-		responseHeader(dos);
-		responseBody(dos, body);
-	}
-
-	private void responseHeader(DataOutputStream dos) {
-		try {
-			dos.writeBytes(version + " " + statusCode + " \r\n");
-			for (String key : header.keySet()) {
-				dos.writeBytes(key + ": " + header.get(key) + "\r\n");
-			}
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	private void responseBody(DataOutputStream dos, byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
 	public void setRedirect(final String redirectPath, StatusCode statusCode) {
-		this.statusCode = statusCode;
+		statusLine.setStatusCode(statusCode);
 		header.put("Location", redirectPath);
+	}
+
+	private void responseStatusLine(DataOutputStream dos) throws IOException {
+		dos.writeBytes(statusLine.getStatusLineForHeader());
+	}
+
+	private void responseHeader(DataOutputStream dos) throws IOException {
+		for (String key : header.keySet()) {
+			dos.writeBytes(key + ": " + header.get(key) + "\r\n");
+		}
+		dos.writeBytes("\r\n");
+	}
+
+	private void responseBody(DataOutputStream dos, byte[] body) throws IOException {
+		dos.write(body, 0, body.length);
+		dos.flush();
 	}
 }
