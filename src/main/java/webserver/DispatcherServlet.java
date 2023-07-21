@@ -26,8 +26,6 @@ public class DispatcherServlet implements Runnable {
                 connection.getPort());
 
         try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream()); OutputStream out = connection.getOutputStream()) {
-            logRequestMessageAndResetStream(in);
-
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
@@ -42,23 +40,6 @@ public class DispatcherServlet implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private void logRequestMessageAndResetStream(BufferedInputStream in) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        String line;
-
-        in.mark(0);
-
-        while (bufferedReader.ready()) {
-            line = bufferedReader.readLine();
-            stringBuilder.append(line).append('\n');
-        }
-
-        in.reset();
-
-        logger.debug("{}", stringBuilder);
     }
 
     private void sendResponse(HttpResponse httpResponse, OutputStream out) throws IOException {
