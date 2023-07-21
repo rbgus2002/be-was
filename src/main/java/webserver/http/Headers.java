@@ -41,7 +41,7 @@ public class Headers {
         return headers;
     }
 
-    public void put(String key, String value) {
+    private void put(String key, String value) {
         headers.put(key, value);
     }
 

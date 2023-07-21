@@ -1,5 +1,7 @@
 package webserver.http.request;
+import model.User;
 import webserver.http.Headers;
+import webserver.http.HttpMethod;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,6 +51,10 @@ public class HttpRequest {
         return this.requestLine.getVersion();
     }
 
+    public User createUserFromQuery() {
+        return requestLine.createUserFromQuery();
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -57,5 +63,9 @@ public class HttpRequest {
         stringBuilder.append(appendNewLine(""));
         stringBuilder.append(body);
         return stringBuilder.toString();
+    }
+
+    public boolean isMatchHandler(HttpMethod method, String path) {
+        return requestLine.isMatchHandler(method, path);
     }
 }

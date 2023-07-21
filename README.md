@@ -18,6 +18,13 @@ Java Web Application Server 2023
 
 - [x] 기존 Thread 기반 프로젝트를 Concurrent 패키지를 사용하도록 수정
 
+### step2 - GET으로 회원가입
+- [x] '회원가입' 클릭시 회원가입 폼 표시
+- [x] 회원가입 폼에서 '가입' 클릭시 전달되는 사용자 입력값을 파싱해 model.User 클래스에 저장
+  - HTML과 URL을 비교 후 파싱할 것
+  - 유지보수가 편하도록!
+- [x] Junit을 활용한 단위테스트
+
 ---
 ## 학습할 내용
 
