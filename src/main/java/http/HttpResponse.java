@@ -5,17 +5,16 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class HttpResponse {
 	private StatusLine statusLine = new StatusLine();
-	private byte[] body = new byte[0];
-	private Map<String, String> header = new HashMap<>();
+	private Header header = new Header();
+	private byte[] body;
 
 	public HttpResponse(HttpRequest httpRequest) {
 		statusLine.setVersion(httpRequest.getVersion());
+		statusLine.setStatusCode(StatusCode.OK);
 	}
 
 	public void response(OutputStream out) throws IOException {
@@ -29,13 +28,13 @@ public class HttpResponse {
 		body = Files.readAllBytes(path);
 		String fileName = path.getFileName().toString();
 		String extension = fileName.substring(fileName.lastIndexOf("."));
-		header.put("Content-Type", MimeType.typeOf(extension).extension + ";charset=utf-8");
-		header.put("Content-Length", String.valueOf(body.length));
+		header.addHeader("Content-Type", MimeType.typeOf(extension).extension + ";charset=utf-8");
+		header.addHeader("Content-Length", String.valueOf(body.length));
 	}
 
 	public void setRedirect(final String redirectPath, StatusCode statusCode) {
 		statusLine.setStatusCode(statusCode);
-		header.put("Location", redirectPath);
+		header.addHeader("Location", redirectPath);
 	}
 
 	private void responseStatusLine(DataOutputStream dos) throws IOException {
@@ -43,10 +42,7 @@ public class HttpResponse {
 	}
 
 	private void responseHeader(DataOutputStream dos) throws IOException {
-		for (String key : header.keySet()) {
-			dos.writeBytes(key + ": " + header.get(key) + "\r\n");
-		}
-		dos.writeBytes("\r\n");
+		dos.writeBytes(header.getHeaderLines());
 	}
 
 	private void responseBody(DataOutputStream dos, byte[] body) throws IOException {

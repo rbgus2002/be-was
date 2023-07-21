@@ -5,7 +5,7 @@ public class StatusLine {
 	private StatusCode statusCode;
 
 	public String getStatusLineForHeader() {
-		return version + " " + statusCode + " \r\n";
+		return version.representation + " " + statusCode.message;
 	}
 
 	public void setVersion(final HttpVersion version) {
