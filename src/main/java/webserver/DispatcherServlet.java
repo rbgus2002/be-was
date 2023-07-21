@@ -18,7 +18,7 @@ public class DispatcherServlet {
         this.httpRequest = httpRequest;
     }
 
-    public void dispatch(DataOutputStream dos) throws IOException {
+    public void dispatch(final DataOutputStream dos) throws IOException {
 
         StaticViewResolver staticViewResolver = new StaticViewResolver();
         Optional<View> view = staticViewResolver.resolve(httpRequest.getPath());

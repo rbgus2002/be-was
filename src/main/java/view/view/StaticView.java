@@ -19,7 +19,7 @@ public class StaticView implements View {
     }
 
     @Override
-    public void render(Map<String, Object> model, DataOutputStream dos) throws IOException {
+    public void render(final Map<String, Object> model, final DataOutputStream dos) throws IOException {
 
         byte[] body = Files.readAllBytes(Paths.get(filePath));
 
