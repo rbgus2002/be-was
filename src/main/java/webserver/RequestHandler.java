@@ -1,31 +1,22 @@
 package webserver;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import db.Database;
-import model.User;
+import controller.FileController;
+import controller.ServiceController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static model.User.*;
-import static webserver.model.Response.*;
-
-import service.FileService;
-import service.UserService;
 import webserver.model.Request;
 import webserver.model.Request.Method;
 import webserver.model.Response;
-import webserver.model.Response.STATUS;
-import webserver.model.Response.MIME;
+
+import java.io.*;
+import java.net.Socket;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import static http.HttpUtil.*;
+import static http.HttpParser.*;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -93,66 +84,21 @@ public class RequestHandler implements Runnable {
 
         return new Request(method, version, targetUri, queryParameterMap, headerMap, body);
     }
-    private String readSingleHTTPLine(BufferedReader br) throws IOException, NullPointerException {
-        return URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
-    }
-    public Map<String, String> parseQueryParameter(String route) {
-        // ?를 기준으로 쿼리 스트링 분할
-        String[] tokens = route.split("\\?");
-        if(tokens.length < 2) {
-            return null;
-        }
-        String queryString = tokens[1];
-        // &를 기준으로 파라미터 분할
-        String[] queryParameterList = queryString.split("&");
-        // Map에 key-value 저장
-        Map<String, String> queryParameterMap = new HashMap<>();
-        for(String queryParameter: queryParameterList) {
-            queryParameterMap.put(queryParameter.split("=")[0],
-                    queryParameter.split("=")[1]);
-        }
-
-        return queryParameterMap;
-    }
-    public Map<String, String> parseBodyParameter(String body) {
-        // &를 기준으로 파라미터 분할
-        String[] bodyParameterList = body.split("&");
-        // Map에 key-value 저장
-        Map<String, String> bodyParameterMap = new HashMap<>();
-        for(String bodyParameter: bodyParameterList) {
-            bodyParameterMap.put(bodyParameter.split("=")[0],
-                    bodyParameter.split("=")[1]);
-        }
-
-        return bodyParameterMap;
-    }
 
     private Response generateResponse(Request request) throws Exception {
-        String targetUri = request.getTargetUri();
+        Response response;
 
-        String[] tokens = targetUri.split("\\.");
-        String extension = tokens[tokens.length-1];
-        MIME mime = MIME.getMimeByExtension(extension);
-        if (mime != null) {
-            byte[] body = FileService.loadStaticFile(targetUri);
-
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-            headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-            return new Response(STATUS.OK, HEADER_HTTP_VERSION, headerMap, body);
-        }
-        if(targetUri.startsWith("/user/create")) {
-            Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
-            UserService.userSignUp(bodyParameterMap);
-
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-
-            return new Response(STATUS.TEMPORARY_MOVED, HEADER_HTTP_VERSION, headerMap, null);
+        response = FileController.genereateResponse(request);
+        if(response != null) {
+            return response;
         }
 
-        return new Response(STATUS.NOT_FOUND, HEADER_HTTP_VERSION, null, null);
+        response = ServiceController.generateResponse(request);
+        if(response != null) {
+            return response;
+        }
+
+        return new Response(STATUS.NOT_FOUND, null, null);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {
@@ -161,7 +107,7 @@ public class RequestHandler implements Runnable {
 
         // StatusLine
         STATUS status = response.getStatus();
-        dos.writeBytes("HTTP/" + response.getVersion() + " " +
+        dos.writeBytes(HEADER_HTTP + response.getVersion() + " " +
                 status.getStatusCode() + " " + status.getStatusMessage() + "\r\n");
         // Headers
         for (Map.Entry<String, String> entry : response.getHeaderMap().entrySet()) {

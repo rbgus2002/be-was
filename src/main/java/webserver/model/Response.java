@@ -1,75 +1,17 @@
 package webserver.model;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static http.HttpUtil.*;
 
 public class Response {
-    public enum MIME {
-        HTML("text/html"),
-        CSS("text/css"),
-        JS("text/javascript"),
-        ICO("image/vnd.microsoft.icon"),
-        PNG("image/png"),
-        JPG("image/jpeg"),
-        WOFF("application/x-font-woff"),
-        TTF("application/x-font-ttf");
-
-        private final String mime;
-        MIME(String mime) {
-            this.mime = mime;
-        }
-
-        public String getMime() {
-            return this.mime;
-        }
-
-        public static MIME getMimeByExtension(String extension) {
-            return Arrays.stream(MIME.values())
-                    .filter(mime -> extension.equalsIgnoreCase(mime.toString()))
-                    .findFirst()
-                    .orElse(null);
-        }
-    }
-    public enum STATUS {
-        OK(200, "OK"),
-        CREATED(201, "Created"),
-        TEMPORARY_MOVED(302, "Found"),
-        BAD_REQUEST(400, "Bad Request"),
-        NOT_FOUND(404, "Not Found");
-
-        private final int statusCode;
-        private final String statusMessage;
-        STATUS(int statusCode, String statusMessage) {
-            this.statusCode = statusCode;
-            this.statusMessage = statusMessage;
-        }
-
-        public int getStatusCode() {
-            return statusCode;
-        }
-        public String getStatusMessage() {
-            return statusMessage;
-        }
-    }
-
-    public static final String HEADER_CONTENT_TYPE = "Content-Type";
-    public static final String HEADER_CHARSET = ";charset=utf-8";
-    public static final String HEADER_CONTENT_LENGTH = "Content-Length";
-    public static final String HEADER_HTTP_VERSION = "1.1";
-    public static final String HEADER_REDIRECT_LOCATION = "Location";
-    public static final String INDEX_URL = "/index.html";
-
     private final STATUS status;
-    private final String version;
+    private final String version = HEADER_HTTP_VERSION;
     private final Map<String, String> headerMap;
     private final byte[] body;
 
-    public Response(STATUS status, String version,
-                    Map<String, String> headerMap, byte[] body) {
+    public Response(STATUS status, Map<String, String> headerMap, byte[] body) {
         this.status = status;
-        this.version = version;
         this.headerMap = headerMap;
         this.body = body;
     }
