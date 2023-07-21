@@ -13,7 +13,7 @@ public class StaticViewResolver implements ViewResolver {
     private static final String resourcePath = "src/main/resources/templates/";
 
     @Override
-    public Optional<View> resolve(String viewName) {
+    public Optional<View> resolve(final String viewName) {
         Path filePath = Paths.get(resourcePath, viewName);
 
         if (!Files.exists(filePath)) {

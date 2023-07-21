@@ -5,5 +5,5 @@ import view.view.View;
 import java.util.Optional;
 
 public interface ViewResolver {
-    Optional<View> resolve(String viewName) throws Exception;
+    Optional<View> resolve(final String viewName) throws Exception;
 }

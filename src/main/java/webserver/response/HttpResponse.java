@@ -33,7 +33,7 @@ public class HttpResponse {
                 NEWLINE;
     }
 
-    public void sendResponse(DataOutputStream dos) throws IOException {
+    public void sendResponse(final DataOutputStream dos) throws IOException {
         dos.writeBytes(getStatusLine() + getHeader());
         dos.write(body, 0, body.length);
         dos.flush();
