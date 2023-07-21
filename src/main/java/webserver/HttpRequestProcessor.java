@@ -47,16 +47,6 @@ public class HttpRequestProcessor {
         return requestMessage.equals("");
     }
 
-    private HttpResponse getHomeHttpResponse() throws IOException {
-        HttpVersion httpVersion = HttpVersion.V1_1;
-        HttpStatus httpStatus = HttpStatus.OK;
-        byte[] body = Files.readAllBytes(new File("src/main/resources/templates/index.html").toPath());
-        Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Content-Type", List.of("text/html;charset=utf-8"));
-        headers.put("Content-Length", List.of(String.valueOf(body.length)));
-        return new HttpResponse(httpVersion, httpStatus, headers, body);
-    }
-
     private void sendResponse(OutputStream outputStream, String responseMessage) {
         try {
             DataOutputStream dos = new DataOutputStream(outputStream);
@@ -69,6 +59,6 @@ public class HttpRequestProcessor {
     }
 
     private String getRequestMessage(InputStream inputStream) throws IOException {
-        return ByteReader.readInputStream(inputStream);
+            return ByteReader.readInputStream(inputStream);
     }
 }
