@@ -13,9 +13,7 @@ public class Controller {
     private final static Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public static String createUser(HttpRequest httpRequest) {
-        String requestPath = httpRequest.getRequestPath();
-        String queryString = requestPath.split("\\?")[1];
-        Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
+        Map<String, String> params = httpRequest.getParams();
 
         User user = new User(
                 params.get("userId"),
@@ -25,8 +23,6 @@ public class Controller {
         );
         logger.debug("User: {}", user);
 
-        requestPath = "/index.html";
-
-        return requestPath;
+        return "/index.html";
     }
 }
