@@ -2,6 +2,7 @@ package webserver.http.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.ContentType;
 import webserver.http.HttpStatus;
 
 import java.io.DataOutputStream;
@@ -14,31 +15,22 @@ import static webserver.http.HttpStatus.*;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-    private final String PATH = "src/main/resources/templates";
-
+    private final String PATH = "src/main/resources";
+    private byte[] body;
     private HttpStatus status;
-    private final String filePath;
-    private final byte[] body;
 
-    private HttpResponse(HttpStatus status, String filePath) throws IOException {
-        this.status = status;
-        this.filePath = filePath;
-        this.body = Files.readAllBytes(new File(PATH + filePath).toPath());
+    private HttpResponse() {
     }
 
-    public static HttpResponse redirect() throws IOException {
-        return new HttpResponse(OK, "/index.html");
+    public static HttpResponse init() {
+        return new HttpResponse();
     }
 
-    public static HttpResponse findStatic(String resource) throws IOException {
-        return new HttpResponse(OK, resource);
-    }
-
-    public void response(OutputStream out){
+    public void writeResponseToOutputStream(OutputStream out, ContentType type){
         DataOutputStream dos = new DataOutputStream(out);
 
         if(status == OK){
-            response200Header(dos);
+            response200Header(dos, type);
         }
 //        else if(status == BAD_REQUEST){
 //            response400Header(dos);
@@ -49,17 +41,17 @@ public class HttpResponse {
         responseBody(dos);
     }
 
-    private void response404Header(DataOutputStream dos) {
-    }
+//    private void response404Header(DataOutputStream dos) {
+//    }
+//
+//    private void response400Header(DataOutputStream dos) {
+//
+//    }
 
-    private void response400Header(DataOutputStream dos) {
-    
-    }
-
-    private void response200Header(DataOutputStream dos) {
+    private void response200Header(DataOutputStream dos, ContentType type) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", type.getMime()));
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
@@ -74,5 +66,15 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public void setResults(String filePath, HttpStatus status) throws IOException {
+        byte[] body = convertFilePathToBody(filePath);
+        this.body = body;
+        this.status = status;
+    }
+
+    private byte[] convertFilePathToBody(String filePath) throws IOException {
+        return Files.readAllBytes(new File(PATH + filePath).toPath());
     }
 }
