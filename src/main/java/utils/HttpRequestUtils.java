@@ -1,8 +1,9 @@
 package utils;
 
-import common.HttpRequest;
-import common.Method;
-import common.RequestLine;
+import common.enums.ContentType;
+import common.http.HttpRequest;
+import common.enums.RequestMethod;
+import common.http.RequestLine;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import static common.enums.ContentType.*;
 
 public class HttpRequestUtils {
 
@@ -29,7 +32,7 @@ public class HttpRequestUtils {
 
         StringBuilder bodyBuilder = new StringBuilder();
         while (br.ready()) {
-            parseBody(br.readLine(), bodyBuilder);
+            parseBody((char) br.read(), bodyBuilder);
         }
 
         return new HttpRequest(requestLine, headers, bodyBuilder.toString());
@@ -44,6 +47,8 @@ public class HttpRequestUtils {
         if (!uri.matches("^/([a-zA-Z0-9\\-._~:/?#\\[\\]@!$&'()*+,;=%]+)?$")) {
             throw new RuntimeException("잘못된 URI 형식");
         }
+
+        ContentType contentType = parseContentType(uri);
 
         Map<String, String> params = new HashMap<>();
         String[] parts = uri.split("\\?");
@@ -63,7 +68,44 @@ public class HttpRequestUtils {
             }
         }
 
-        return new RequestLine(Method.valueOf(method), path, version, params);
+        return new RequestLine(RequestMethod.valueOf(method), path, version, contentType, params);
+    }
+
+    private static ContentType parseContentType(String uri) {
+        if (uri.endsWith(".html")) {
+            return HTML;
+        }
+        if (uri.endsWith(".css")) {
+            return CSS;
+        }
+        if (uri.endsWith(".js")) {
+            return JS;
+        }
+        if (uri.endsWith(".ico")) {
+            return ICO;
+        }
+        if (uri.endsWith(".png")) {
+            return PNG;
+        }
+        if (uri.endsWith(".jpg")) {
+            return JPG;
+        }
+        if (uri.endsWith(".eot")) {
+            return EOT;
+        }
+        if (uri.endsWith(".svg")) {
+            return SVG;
+        }
+        if (uri.endsWith(".ttf")) {
+            return TTF;
+        }
+        if (uri.endsWith(".woff")) {
+            return WOFF;
+        }
+        if (uri.endsWith(".woff2")) {
+            return WOFF2;
+        }
+        return NONE;
     }
 
     private static void parseHeader(String line, Map<String, String> headers) {
@@ -71,7 +113,7 @@ public class HttpRequestUtils {
         headers.put(headerForm[0], headerForm[1]);
     }
 
-    private static void parseBody(String line, StringBuilder bodyBuilder) {
-        bodyBuilder.append(line);
+    private static void parseBody(char text, StringBuilder bodyBuilder) {
+        bodyBuilder.append(text);
     }
 }

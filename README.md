@@ -16,11 +16,20 @@ Java Web Application Server 2023
 2. HTTP Request 내용 출력
     - 서버로 들어오는 HTTP Request의 내용을 읽고 로거(log.debug)를 이용해 출력한다.
 
-### 기능 구현 커밋
+## step 2
+### 기능 요구사항
+1. GET으로 회원가입 기능 구현
+
+## step 3
+### 기능 요구사항
+1. stylesheet와 파비콘 등 다양한 컨텐츠 타입을 지원하도록 개선
+
+## 기능 구현 커밋
 - [X] HTTP Request Message 출력
 - [X] /index.html 요청 시 응답
 - [X] Thread -> Concurrent 패키지 사용
 - [X] GET으로 회원가입하기
+- [X] 다양한 컨텐츠 타입 지원
 
 ## Wiki page
 https://github.com/plusjob70/be-was/wiki
