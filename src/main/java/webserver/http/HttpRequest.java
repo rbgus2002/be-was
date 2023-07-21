@@ -1,6 +1,7 @@
 package webserver.http;
 
-import util.HttpRequestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 public class HttpRequest {
 
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private final String method;
     private final String requestPath;
     private final String version;
@@ -22,16 +24,17 @@ public class HttpRequest {
         this.method = method;
         this.requestPath = requestPath;
         this.version = version;
-        this.params = HttpRequestUtils.parseQueryString(queryString);
+        this.params = parseQueryString(queryString);
     }
 
     public HttpRequest(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String firstLine = bufferedReader.readLine();
-        this.method = HttpRequestUtils.getMethod(firstLine);
-        this.requestPath = HttpRequestUtils.getUrl(firstLine);
-        this.version = HttpRequestUtils.getVersion(firstLine);
-        this.headers = getHeaders(bufferedReader);
+        this.method = (firstLine);
+        this.requestPath = requestPath(firstLine);
+        this.version = version(firstLine);
+        this.params = parseQueryString(firstLine);
+        this.headers = headers(bufferedReader);
     }
 
     public String getMethod() {
@@ -42,15 +45,31 @@ public class HttpRequest {
         return requestPath;
     }
 
-    public String getVersion() {
+    public static String method(String firstLine) {
+        String[] tokens = firstLine.split(" ");
+        String method = tokens[0];
+        logger.debug("request method: {}", method);
+
+        return method;
+    }
+
+    public static String requestPath(String firstLine) {
+        String[] tokens = firstLine.split(" ");
+        String requestPath = tokens[1].split("\\?")[0];
+        logger.debug("request url: {}", requestPath);
+
+        return requestPath;
+    }
+
+    public static String version(String firstLine) {
+        String[] tokens = firstLine.split(" ");
+        String version = tokens[2];
+        logger.debug("request version: {}", version);
+
         return version;
     }
 
-    public Map<String, String> getParams() {
-        return params;
-    }
-
-    private Map<String, String> getHeaders(BufferedReader bufferedReader) throws IOException {
+    private Map<String, String> headers(BufferedReader bufferedReader) throws IOException {
         Map<String, String> headers = new HashMap<>();
 
         String line = bufferedReader.readLine();
@@ -62,5 +81,21 @@ public class HttpRequest {
         }
 
         return headers;
+    }
+
+    private static Map<String, String> parseQueryString(String firstLine) {
+        String parameters = firstLine.split("\\?")[1];
+        if (parameters == null || parameters.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<String, String> paramsMap = new HashMap<>();
+        for (String param : parameters.split("&")) {
+            String key = param.split("=")[0];
+            String value = param.split("=")[1];
+            paramsMap.put(key, value);
+        }
+
+        return paramsMap;
     }
 }
