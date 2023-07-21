@@ -1,9 +1,11 @@
 package support.exception;
 
-public class BadRequestException extends Exception {
+import webserver.response.HttpStatus;
+
+public class BadRequestException extends HttpException {
 
     public BadRequestException(String message) {
-        super(message);
+        super(message, HttpStatus.BAD_REQUEST);
     }
 
 }

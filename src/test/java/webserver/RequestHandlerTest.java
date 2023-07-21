@@ -6,13 +6,16 @@ import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 import support.DefaultInstanceManager;
+import support.HttpMethod;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.NEW_LINE;
 import static utils.StringUtils.appendNewLine;
@@ -241,6 +244,64 @@ class RequestHandlerTest {
             softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi%40slipp.net");
             softAssertions.assertThat(result[0]).isEqualTo(Found);
             softAssertions.assertAll();
+        }
+
+    }
+
+    @Nested
+    @DisplayName("유저 로그인 시도")
+    class login {
+
+        @Test
+        @DisplayName("로그인 성공 시도")
+        void success() {
+            //given
+            Database.addUser(new User("userId", "password", "name", "email@luiso.xgv"));
+            String request = HttpMethod.POST.name() + " /user/login HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "userId=userId&password=password");
+
+            //when
+            requestHandler.run();
+            String[] result = outputStream.toString().split(NEW_LINE);
+
+            //then
+            softAssertions.assertThat(result[0]).isEqualTo(Found);
+            softAssertions.assertThat(Arrays.stream(result).anyMatch("Location"::startsWith)).isNotEqualTo("");
+            softAssertions.assertThat(Arrays.stream(result).anyMatch("Set-cookie"::startsWith)).isNotEqualTo("");
+            softAssertions.assertAll();
+        }
+
+        @Test
+        @DisplayName("로그인 실패 시도")
+        void failure() {
+            //given
+            Database.addUser(new User("userId", "password", "name", "email@luiso.xgv"));
+            String request = HttpMethod.POST.name() + " /user/login HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "userId=userId&password=wrongpassword");
+
+            //when
+            requestHandler.run();
+            String[] result = outputStream.toString().split(NEW_LINE);
+
+            //then
+            assertThat(result[0]).isEqualTo(Found);
+            assertThat(result[1]).isEqualTo("Location: /user/login_failed.html");
+        }
+
+        @Test
+        @DisplayName("없는 유저 로그인 실패 시도")
+        void failure2() {
+            //given
+            String request = HttpMethod.POST.name() + " /user/login HTTP/1.1";
+            RequestHandler requestHandler = buildRequestHandler(request, "userId=userId&password=password");
+
+            //when
+            requestHandler.run();
+            String[] result = outputStream.toString().split(NEW_LINE);
+
+            //then
+            assertThat(result[0]).isEqualTo(Found);
+            assertThat(result[1]).isEqualTo("Location: /user/login_failed.html");
         }
 
     }
