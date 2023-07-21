@@ -2,8 +2,10 @@ package webserver.http;
 
 import util.HttpRequestUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ public class HttpRequest {
     private final String method;
     private final String requestPath;
     private final String version;
+    private Map<String, String> headers = new HashMap<>();
 
     private Map<String, String> params = new HashMap<>();
 
@@ -22,13 +25,12 @@ public class HttpRequest {
     }
 
     public HttpRequest(InputStream in) throws IOException {
-        String firstLine = HttpRequestUtils.getFirstLine(in);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+        String firstLine = bufferedReader.readLine();
         this.method = HttpRequestUtils.getMethod(firstLine);
         this.requestPath = HttpRequestUtils.getUrl(firstLine);
         this.version = HttpRequestUtils.getVersion(firstLine);
-
-        String queryString = requestPath.split("\\?")[1];
-        this.params = HttpRequestUtils.parseQueryString(queryString);
+        this.headers = getHeaders(bufferedReader);
     }
 
     public String getMethod() {
@@ -45,5 +47,19 @@ public class HttpRequest {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    private Map<String, String> getHeaders(BufferedReader bufferedReader) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+
+        String line = bufferedReader.readLine();
+        while (!line.equals("")) {
+            line = bufferedReader.readLine();
+            String key = line.split(": ")[0];
+            String value = line.split(": ")[1];
+            headers.put(key, value);
+        }
+
+        return headers;
     }
 }
