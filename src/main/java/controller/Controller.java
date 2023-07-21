@@ -8,9 +8,9 @@ import webserver.http.HttpRequest;
 
 import java.util.Map;
 
-public class UserController {
+public class Controller {
 
-    private final static Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final static Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public static String createUser(HttpRequest httpRequest) {
         String requestPath = httpRequest.getRequestPath();

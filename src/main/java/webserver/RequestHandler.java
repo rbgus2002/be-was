@@ -2,14 +2,10 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 
-import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpRequestUtils;
 import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
 
 public class RequestHandler implements Runnable {
 
