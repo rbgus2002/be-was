@@ -14,6 +14,8 @@ import webserver.request.HttpWasRequest;
 import webserver.response.HttpFileHandler;
 import webserver.response.HttpWasResponse;
 import webserver.utils.HttpMethod;
+import webserver.utils.HttpMimeType;
+import webserver.utils.HttpStatus;
 
 public class WasHandler {
 
@@ -28,7 +30,7 @@ public class WasHandler {
 		httpFileHandler = new HttpFileHandler();
 	}
 
-	public void service() throws ReflectiveOperationException {
+	public void service() {
 		final String resourcePath = httpWasRequest.getResourcePath();
 		if (httpFileHandler.isExistResource(resourcePath)) {
 			final Path filePath = httpFileHandler.getFilePath(resourcePath);
@@ -36,7 +38,13 @@ public class WasHandler {
 			return;
 		}
 
-		apiService();
+		try {
+			apiService();
+		} catch (ReflectiveOperationException e) {
+			httpWasResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
+			httpWasResponse.setBody(e.getCause().getMessage() , HttpMimeType.NOTING);
+			httpWasResponse.doResponse();
+		}
 	}
 
 	private void apiService() throws ReflectiveOperationException{

@@ -104,9 +104,11 @@ public class HttpWasRequest {
 		final String[] params = data.split("&");
 		for (String param : params) {
 			final String[] keyValue = param.split("=");
-			final String key = keyValue[0];
-			final String value = base64Decoder(keyValue[1]);
-			requestParam.put(key, value);
+			if (keyValue.length == 2) {
+				final String key = keyValue[0];
+				final String value = base64Decoder(keyValue[1]);
+				requestParam.put(key, value);
+			}
 		}
 	}
 

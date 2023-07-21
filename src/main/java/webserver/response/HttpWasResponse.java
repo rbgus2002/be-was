@@ -86,7 +86,16 @@ public class HttpWasResponse {
 		this.httpStatus = httpStatus;
 	}
 
-	public void setBody(String body) {
-		this.body = body.getBytes();
+	public void setBody(String body, HttpMimeType type) {
+		if (body != null) {
+			this.body = body.getBytes();
+			addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(this.body.length));
+			addHeader(HttpHeader.CONTENT_TYPE, type.getCharsetUtf8());
+		}
+	}
+
+
+	public void addHeader(HttpHeader headerType, String value) {
+		header.addHeader(headerType, value);
 	}
 }
