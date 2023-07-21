@@ -9,4 +9,9 @@ Java Web Application Server 2023
 
 ## 구현 목록
 
-[step1 기능 목록](readme/step1.md)
+- [step1 기능 목록](readme/step1.md)
+- [step2 기능 목록](readme/step2.md)
+
+
+## Github Wiki
+[github.com/Chocochip101/be-was/wiki](https://github.com/Chocochip101/be-was/wiki)
