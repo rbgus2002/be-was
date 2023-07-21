@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ public class HttpRequest {
         StringTokenizer stringTokenizer = new StringTokenizer(requestLine);
 
         httpHeaders.put(HttpField.METHOD, stringTokenizer.nextToken());
-        httpHeaders.put(HttpField.URI, URLDecoder.decode(stringTokenizer.nextToken()));
+        httpHeaders.put(HttpField.URI, URLDecoder.decode(stringTokenizer.nextToken(), StandardCharsets.UTF_8));
         httpHeaders.put(HttpField.VERSION, stringTokenizer.nextToken());
 
         parsePathAndParameters(httpHeaders.get(HttpField.URI));
