@@ -22,16 +22,16 @@ public final class FileUtils {
         String contentType = ContentTypeResolver.getContentType(URI);
 
         httpResponse.setStatus(status);
-        httpResponse.setContentType(contentType);
-        httpResponse.setContentLength(body.length);
+        httpResponse.set(HttpField.CONTENT_TYPE, contentType);
+        httpResponse.set(HttpField.CONTENT_LENGTH, body.length);
         httpResponse.setBody(body);
     }
 
     private static String preprocessURI(String URI) {
-        if(isFileExist(URI)) {
+        if (isFileExist(URI)) {
             return URI;
         }
-        if(URI.equals("/")) {
+        if (URI.equals("/")) {
             return "/index.html";
         }
         return "/404.html";
@@ -45,7 +45,7 @@ public final class FileUtils {
     }
 
     private static HttpStatus resolveHttpStatus(String URI) {
-        if(URI.equals("/404.html")) {
+        if (URI.equals("/404.html")) {
             return HttpStatus.NOT_FOUND;
         }
         return HttpStatus.OK;
