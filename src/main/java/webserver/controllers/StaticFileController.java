@@ -30,7 +30,7 @@ public class StaticFileController implements Controller {
         try {
             body = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
-            return Controller.createErrorResponse(request, NOT_FOUND);
+            return createErrorResponse(request, NOT_FOUND);
         }
 
         builder.version(request.version())
@@ -44,7 +44,7 @@ public class StaticFileController implements Controller {
     private String getPathString(HttpRequest request, ContentType contentType) {
         String fileName = request.uri();
 
-        if(contentType == HTML) {
+        if (contentType == HTML) {
             return System.getProperty("user.dir").concat("/src/main/resources/templates").concat(fileName);
         }
         return System.getProperty("user.dir").concat("/src/main/resources/static").concat(fileName);

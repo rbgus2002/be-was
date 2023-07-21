@@ -9,6 +9,7 @@ import webserver.http.HttpResponse;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static service.UserService.addUser;
 import static webserver.http.enums.ContentType.HTML;
@@ -21,33 +22,34 @@ public class UserCreateController implements Controller {
     @Override
     public HttpResponse handle(HttpRequest request) {
         Map<String, String> parameters = parseUri(request.uri());
-        HttpResponse.Builder builder = HttpResponse.newBuilder();
 
-        if (parameters.values().size() != 4) {
-            return Controller.createErrorResponse(request, BAD_REQUEST);
+        if (!verifyParameter(parameters)) {
+            return createErrorResponse(request, BAD_REQUEST);
         }
 
-        if (parameters.get("userId") == null || parameters.get("password") == null
-                || parameters.get("name") == null || parameters.get("email") == null)
-            return Controller.createErrorResponse(request, BAD_REQUEST);
-
+        HttpResponse.Builder builder = HttpResponse.newBuilder();
 
         User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
+        String path = "http://".concat(request.getHeader("Host").concat("/index.html"));
         if (!addUser(user)) {
-            return builder.version(request.version())
-                    .status(FOUND)
-                    .contentType(HTML)
-                    .setHeader("Location", "http://".concat(request.getHeader("Host").concat("/user/form.html")))
-                    .build();
+            path = "http://".concat(request.getHeader("Host").concat("/user/form.html"));
         }
 
         return builder.version(request.version())
                 .status(FOUND)
                 .contentType(HTML)
-                .setHeader("Location", "http://".concat(request.getHeader("Host").concat("/index.html")))
+                .setHeader("Location", path)
                 .build();
+    }
+
+    private boolean verifyParameter(Map<String, String> parameters) {
+        Set<String> essentialField = Set.of("userId", "password", "name", "email");
+        if (!parameters.keySet().equals(essentialField)) {
+            return false;
+        }
+        return true;
     }
 
     private Map<String, String> parseUri(String uri) {

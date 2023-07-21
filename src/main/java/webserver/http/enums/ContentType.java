@@ -43,6 +43,7 @@ public enum ContentType {
     }
 
     public static ContentType getContentTypeByExtension(String extension) {
-        return contentTypeMap.get(extension);
+        return contentTypeMap.containsKey(extension)?
+                contentTypeMap.get(extension): contentTypeMap.get("default");
     }
 }

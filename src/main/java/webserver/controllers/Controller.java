@@ -7,7 +7,7 @@ import webserver.http.enums.HttpResponseStatus;
 public interface Controller {
     HttpResponse handle(HttpRequest request);
 
-    static HttpResponse createErrorResponse(HttpRequest request, HttpResponseStatus status) {
+    default HttpResponse createErrorResponse(HttpRequest request, HttpResponseStatus status) {
         HttpResponse.Builder builder = HttpResponse.newBuilder();
         return builder.version(request.version())
                 .status(status)
