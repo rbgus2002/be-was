@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controller.UserSaveController;
 import webserver.http.HttpConstant;
-import webserver.http.HttpMethod;
+import webserver.utils.HttpMethodName;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.FileUtils;
@@ -31,7 +31,7 @@ public class DispatcherServlet implements Runnable {
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
-            if (httpRequest.get(HttpConstant.METHOD).equals(HttpMethod.GET.toString()) && httpRequest.getPath().equals("/user/create")) {
+            if (httpRequest.get(HttpConstant.METHOD).equals(HttpMethodName.GET) && httpRequest.getPath().equals("/user/create")) {
                 UserSaveController userSaveController = new UserSaveController();
                 userSaveController.process(httpRequest, httpResponse);
             } else {
