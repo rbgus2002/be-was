@@ -27,7 +27,7 @@ public class HttpRequest {
         parseRequestMessage();
     }
 
-    public void parseRequestMessage() throws IOException {
+    private void parseRequestMessage() throws IOException {
         parseHeader();
         parseBody();
     }
