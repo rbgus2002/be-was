@@ -1,6 +1,5 @@
 package container;
 
-import db.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;

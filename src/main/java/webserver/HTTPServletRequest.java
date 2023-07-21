@@ -41,4 +41,8 @@ public class HTTPServletRequest {
     public void addHeader(Map<String, String> adder) {
         headers.putAll(adder);
     }
+
+    public String getHeader(String key) {
+        return headers.containsKey(key) ? headers.get(key) : null;
+    }
 }
