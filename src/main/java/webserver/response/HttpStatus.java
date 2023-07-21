@@ -2,7 +2,8 @@ package webserver.response;
 
 public enum HttpStatus {
 
-    OK(200, "OK");
+    OK(200, "OK"),
+    NOT_FOUND(404, "NOT FOUND");
 
     private final int statusCode;
     private final String name;
