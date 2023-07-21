@@ -34,9 +34,6 @@ public class UserSaveController {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (ConflictException e) {
             httpResponse.setStatus(HttpStatus.CONFLICT);
-        } finally {
-            httpResponse.setContentType("application/json");
-            httpResponse.setContentLength(0);
         }
     }
 
