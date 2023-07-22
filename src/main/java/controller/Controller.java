@@ -39,7 +39,7 @@ public class Controller {
         );
 
         ModelView mv = new ModelView("redirect:/index.html");
-        mv.setAttribute("user", user);
+        mv.addAttribute("user", user);
         return mv;
     }
 

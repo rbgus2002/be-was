@@ -1,6 +1,5 @@
 package webserver;
 
-import common.enums.ResponseCode;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
 import controller.Controller;
@@ -32,11 +31,11 @@ public class Dispatcher {
             mv = (ModelView) controllerMethod.invoke(controller, request);
 
         } catch (NoSuchControllerMethodException e) {
-            mv = new ModelView(ERROR_PAGE, ResponseCode.NOT_FOUND);
+            mv = new ModelView(ERROR_PAGE);
 
         } finally {
             if (mv != null) {
-                View view = ViewResolver.resolve(mv);
+                View view = ViewResolver.resolve(mv.getViewName());
                 view.render(mv.getModel(), request, response);
             }
         }

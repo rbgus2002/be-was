@@ -35,24 +35,8 @@ public enum ContentType {
         return this == HTML;
     }
 
-    public boolean isPlainContent() {
-        return this == PLAIN;
-    }
-
     public boolean isNoneContent() {
         return this == NONE;
-    }
-
-    public static boolean isStaticContent(String viewName) {
-        return viewName.endsWith(".css") || viewName.endsWith(".js") ||
-                viewName.endsWith(".jpg") || viewName.endsWith(".png") ||
-                viewName.endsWith(".ico") || viewName.endsWith(".eot") ||
-                viewName.endsWith(".svg") || viewName.endsWith(".ttf") ||
-                viewName.endsWith(".woff") || viewName.endsWith(".woff2");
-    }
-
-    public static boolean isHtmlContent(String viewName) {
-        return viewName.endsWith("html");
     }
 
 }

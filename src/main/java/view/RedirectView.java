@@ -20,7 +20,7 @@ public class RedirectView implements View {
     }
 
     @Override
-    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception {
+    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) {
         decorateResponse(response, ResponseCode.FOUND, new byte[0]);
         response.addHeader("Location", viewPath);
     }

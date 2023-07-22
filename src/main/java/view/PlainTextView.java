@@ -7,10 +7,10 @@ import common.http.HttpResponse;
 
 import java.util.Map;
 
-public class TextView implements View {
+public class PlainTextView implements View {
     private final String text;
 
-    public TextView(String text) {
+    public PlainTextView(String text) {
         this.text = text;
     }
 
@@ -20,7 +20,7 @@ public class TextView implements View {
     }
 
     @Override
-    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception{
+    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) {
         decorateResponse(response, ResponseCode.OK, text.getBytes());
     }
 
