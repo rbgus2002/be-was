@@ -41,39 +41,43 @@ public class ResponseHandler {
     }
 
     private HttpResponse handleHttpRequest(HttpRequest httpRequest) {
+        Cookie sessionCookie = httpRequest.getCookie("sid");
+        String sid = getSessionIdOrCreate(sessionCookie);
+        Session session = SessionManager.getSession(sid);
+        HttpResponse httpResponse = getHttpResponse(httpRequest, session);
+        if (isCreatedSession(sessionCookie, sid)) {
+            httpResponse.setCookie("sid", sid);
+        }
+        return httpResponse;
+    }
+
+    private String getSessionIdOrCreate(Cookie sessionCookie) {
+        // session cookie가 없거나 session이 만료
+        if (sessionCookie == null || SessionManager.getSession(sessionCookie.getValue()) == null) {
+            return SessionManager.createSession();
+        }
+        return sessionCookie.getValue();
+    }
+
+    private boolean isCreatedSession(Cookie sessionCookie, String sid) {
+        return sessionCookie == null || !sid.equals(sessionCookie.getValue());
+    }
+
+    private HttpResponse getHttpResponse(HttpRequest httpRequest, Session session) {
         String path = httpRequest.uri().getPath();
         String extension = StringUtils.getExtension(path);
-
-        Cookie sessionCookie = httpRequest.getCookie("sid");
-        boolean isCreatedSession = false;
-        String sid;
-        if (sessionCookie == null || SessionManager.getSession(sessionCookie.getValue()) == null) {
-            sid = SessionManager.createSession();
-            isCreatedSession = true;
-        } else {
-            sid = sessionCookie.getValue();
-        }
-        Session session = SessionManager.getSession(sid);
-
-        HttpResponse httpResponse;
         if (!Objects.equals(extension, path)) {
             // 정적 파일 응답
-            httpResponse = HttpResponse.ok(path, httpRequest.mime());
+            return HttpResponse.ok(path, httpRequest.mime());
         } else {
             // 잘못된 http request이면 /error.html response 생성
             try {
-                httpResponse = RequestMappingHandler.invokeMethod(httpRequest, session);
+                return RequestMappingHandler.invokeMethod(httpRequest, session);
             } catch (Throwable e) {
                 logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
-                httpResponse = HttpResponse.notFound();
+                return HttpResponse.notFound();
             }
         }
-
-        if (isCreatedSession) {
-            httpResponse.setCookie("sid", sid);
-        }
-
-        return httpResponse;
     }
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
