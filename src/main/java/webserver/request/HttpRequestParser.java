@@ -1,8 +1,5 @@
 package webserver.request;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import webserver.Dispatcher;
 import webserver.exception.BadRequestException;
 
 import java.io.BufferedReader;
@@ -16,31 +13,23 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 import static utils.StringUtils.NEW_LINE;
+import static webserver.WebServer.logger;
 
 public class HttpRequestParser {
-    private static final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
+    public static final String TEMPLATES_PATH = "src/main/resources/templates";
+    public static final String STATIC_PATH = "src/main/resources/static";
 
     public static HttpRequestMessage parseRequest(InputStream inputStream) throws BadRequestException {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             StringBuilder stringBuilder = new StringBuilder();
-            char[] buffer = new char[1024]; // 읽을 버퍼 사이즈는 성능에 따라 정하기
-            int bytesRead;
-            while (bufferedReader.ready()) {
-                bytesRead = bufferedReader.read(buffer);
-                stringBuilder.append(buffer, 0, bytesRead);
+            String line;
+            while (!(line = bufferedReader.readLine()).isEmpty()) {
+                stringBuilder.append(line).append(NEW_LINE);
             }
 
-            String readAll = stringBuilder.toString();
-            logger.debug("[request message] \n{}", readAll);
-
-            int crlfIndex = readAll.indexOf(NEW_LINE + NEW_LINE);
-            String header = readAll.substring(0, crlfIndex);
-            String body = "";
-            if (crlfIndex > 0) {
-                /* \r\n 바이트 이후 body 가 시작되므로 */
-                body = readAll.substring(crlfIndex + 4);
-            }
+            String header = stringBuilder.toString();
+            logger.debug("[request message] [header]\n{}", header);
 
             String[] lines = header.split(NEW_LINE);
             String[] statusLine = lines[0].split(" ");
@@ -57,7 +46,15 @@ public class HttpRequestParser {
                 String[] tokens = lines[i].split(": ?");
                 headers.put(tokens[0], tokens[1]);
             });
-            return new HttpRequestMessage(method, url, version, headers, body);
+
+            char[] body = new char[0];
+            if (headers.containsKey("Content-Length")) {
+                body = new char[Integer.parseInt(headers.get("Content-Length"))];
+                bufferedReader.read(body, 0, body.length);
+            }
+            logger.debug("[request message] [body]\n{}", new String(body));
+
+            return new HttpRequestMessage(method, url, version, headers, URLDecoder.decode(new String(body), StandardCharsets.UTF_8));
         } catch (IOException | IndexOutOfBoundsException e) {
             throw new BadRequestException("잘못된 요청 메시지 입니다.");
         }
@@ -91,7 +88,7 @@ public class HttpRequestParser {
     private static String extractPath(String url, int queryIndex) {
         // todo 기본 경로에 접속할 경우 파서가 재설정 해주는 것이 맞는것인지..?
         if (url.equals("/")) {
-            return "/index.html";
+            url = "/index.html";
         }
         if (queryIndex != -1) {
             return url.substring(0, queryIndex);
@@ -100,7 +97,7 @@ public class HttpRequestParser {
     }
 
     private static String extractExtension(String path) {
-        int extensionIndex = path.indexOf(".");
+        int extensionIndex = path.lastIndexOf(".");
         if (extensionIndex != -1) {
             return path.substring(extensionIndex);
         }
