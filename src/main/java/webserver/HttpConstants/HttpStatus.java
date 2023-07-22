@@ -1,4 +1,4 @@
-package webserver.response;
+package webserver.HttpConstants;
 
 public enum HttpStatus {
 

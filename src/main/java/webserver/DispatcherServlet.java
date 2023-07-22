@@ -4,7 +4,7 @@ import view.view.View;
 import view.viewResolver.StaticViewResolver;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
-import webserver.response.HttpStatus;
+import webserver.HttpConstants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

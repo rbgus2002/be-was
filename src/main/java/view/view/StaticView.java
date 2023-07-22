@@ -2,7 +2,7 @@ package view.view;
 
 import webserver.ContentType;
 import webserver.response.HttpResponse;
-import webserver.response.HttpStatus;
+import webserver.HttpConstants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

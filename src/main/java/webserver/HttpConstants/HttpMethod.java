@@ -1,4 +1,4 @@
-package webserver.request;
+package webserver.HttpConstants;
 
 public enum HttpMethod {
 
