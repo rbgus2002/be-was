@@ -4,9 +4,6 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import io.restassured.RestAssured.*;
-import io.restassured.matcher.RestAssuredMatchers.*;
-import org.hamcrest.Matchers.*;
 
 import java.util.Arrays;
 
@@ -20,9 +17,8 @@ class HttpResponseTest {
             "Host: localhost:8080\r\n";
 
     String headerWithContent = "HTTP/1.1 200 OK\r\n" +
-            "Content-Type: text/plain;charset=utf-8\r\n" +
-            "Content-Length: 11\r\n";
-
+            "Content-Length: 11\r\n" +
+            "Content-Type: text/plain;charset=utf-8\r\n";
     @BeforeEach
     void init() {
         httpResponse = new HttpResponse();
