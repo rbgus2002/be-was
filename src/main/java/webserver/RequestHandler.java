@@ -27,12 +27,14 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = new HttpRequest(in);
             logger.debug("{}", httpRequest);
+
             String path = httpRequest.getPath();
             MIME mime = httpRequest.getMime();
 
             HttpResponse httpResponse;
 
             Method method = HandlerMapping.getHandler(httpRequest);
+
             if (method != null) {
                 httpResponse = (HttpResponse) method.invoke(new UserController(), httpRequest);
             } else {
