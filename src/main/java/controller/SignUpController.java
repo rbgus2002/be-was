@@ -4,6 +4,7 @@ import db.Database;
 import model.User;
 import webserver.exception.BadRequestException;
 import webserver.reponse.HttpResponse;
+import webserver.reponse.HttpResponseStatus;
 import webserver.request.HttpRequest;
 
 import static utils.StringUtils.getDecodedString;
@@ -26,7 +27,8 @@ public class SignUpController implements Controller {
 
     @Override
     public void manageResponse(HttpResponse response) {
-        response.setBodyByText("SIGN UP SUCCESS");
+        response.setStatus(HttpResponseStatus.STATUS_302);
+        response.setHeader("Location","/index.html");
     }
 
 
