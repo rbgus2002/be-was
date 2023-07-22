@@ -22,7 +22,6 @@ public class UserController {
         User user = new User(params.get("userId"),params.get("password"),params.get("name"),params.get("email"));
         Database.addUser(user);
 
-        logger.debug("user create");
         return HttpResponse.redirect("/index.html", request.getMime());
     }
 }
