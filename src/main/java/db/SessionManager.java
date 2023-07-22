@@ -20,16 +20,7 @@ public class SessionManager {
         sessions.put(sessionId, new Session());
         Session session = sessions.get(sessionId);
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (session.getLastAccessedTime() + SESSION_TIMEOUT_MS <= System.currentTimeMillis()) {
-                    sessions.remove(sessionId);
-                    timer.cancel();
-                }
-            }
-        }, SESSION_TIMEOUT_MS, SESSION_TIMEOUT_MS);
+        setTimer(session, sessionId);
 
         logger.debug("세션을 생성했습니다. sid : {}", sessionId);
         return sessionId;
@@ -47,5 +38,18 @@ public class SessionManager {
     public static void invalidateSession(String sessionId) {
         logger.debug("세션을 제거했습니다. sid : {}", sessionId);
         sessions.remove(sessionId);
+    }
+
+    private static void setTimer(Session session, String sessionId) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (session.getLastAccessedTime() + SESSION_TIMEOUT_MS <= System.currentTimeMillis()) {
+                    sessions.remove(sessionId);
+                    timer.cancel();
+                }
+            }
+        }, SESSION_TIMEOUT_MS, SESSION_TIMEOUT_MS);
     }
 }
