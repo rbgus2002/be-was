@@ -1,5 +1,6 @@
-package webserver.controller;
+package webserver.controller.file;
 
+import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
