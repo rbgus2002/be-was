@@ -25,6 +25,11 @@ public class ControllerTest {
 	@DisplayName("/create")
 	class createController {
 
+		@BeforeEach
+		void clearDatabase() {
+			Database.dropAll();
+		}
+
 		@Test
 		@DisplayName("GET 요청의 파라미터를 통해 데이터베이스에 User를 추가할 수 있어야 한다")
 		void registerUser() {

@@ -7,26 +7,32 @@ import model.User;
 import java.util.Collection;
 import java.util.Map;
 
+import org.checkerframework.checker.units.qual.Mass;
+
 public class Database {
-    public static final String USERID_ALREADY_EXISTS_MESSAGE = "이미 userId가 존재합니다.";
-    private static Map<String, User> users = Maps.newHashMap();
+	public static final String USERID_ALREADY_EXISTS_MESSAGE = "이미 userId가 존재합니다.";
+	private static Map<String, User> users = Maps.newHashMap();
 
-    public static void addUser(User user) {
-        CheckDuplicateUserId(user.getUserId());
-        users.put(user.getUserId(), user);
-    }
+	public static void dropAll() {
+		users = Maps.newHashMap();
+	}
 
-    private static void CheckDuplicateUserId(final String userId) {
-        if (findUserById(userId) != null) {
-            throw new IllegalArgumentException(USERID_ALREADY_EXISTS_MESSAGE);
-        }
-    }
+	public static void addUser(User user) throws IllegalArgumentException {
+		CheckDuplicateUserId(user.getUserId());
+		users.put(user.getUserId(), user);
+	}
 
-    public static User findUserById(String userId) {
-        return users.get(userId);
-    }
+	private static void CheckDuplicateUserId(final String userId) throws IllegalArgumentException {
+		if (findUserById(userId) != null) {
+			throw new IllegalArgumentException(USERID_ALREADY_EXISTS_MESSAGE);
+		}
+	}
 
-    public static Collection<User> findAll() {
-        return users.values();
-    }
+	public static User findUserById(String userId) {
+		return users.get(userId);
+	}
+
+	public static Collection<User> findAll() {
+		return users.values();
+	}
 }

@@ -1,11 +1,11 @@
-package http;
+package http.statusline;
 
 public class StatusLine {
 	private HttpVersion version;
 	private StatusCode statusCode;
 
 	public String getStatusLineForHeader() {
-		return version.representation + " " + statusCode.message;
+		return version.representation + " " + statusCode.code + " " + statusCode.message;
 	}
 
 	public void setVersion(final HttpVersion version) {

@@ -6,6 +6,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import http.statusline.HttpMethod;
+import http.statusline.HttpVersion;
+
 public class HttpRequest {
 	private Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 	private HttpMethod method;

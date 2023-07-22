@@ -17,7 +17,7 @@ public class Controller {
 	}
 
 	@GetMapping(path = "/create")
-	public String createUser(Parameter parameter) {
+	public String createUser(Parameter parameter) throws IllegalArgumentException {
 		Database.addUser(parameterToUser(parameter));
 		logger.debug("[Database] User {} added", Database.findUserById(parameter.getParameter("userId")).getName());
 		return "redirect:http://localhost:8080/";

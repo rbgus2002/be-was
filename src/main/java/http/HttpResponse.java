@@ -6,6 +6,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import http.header.Header;
+import http.header.MimeType;
+import http.statusline.StatusCode;
+import http.statusline.StatusLine;
 
 public class HttpResponse {
 	private StatusLine statusLine = new StatusLine();

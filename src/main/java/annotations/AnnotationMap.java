@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controllers.Controller;
-import http.HttpMethod;
+import http.statusline.HttpMethod;
 import http.Parameter;
 
 public class AnnotationMap {
