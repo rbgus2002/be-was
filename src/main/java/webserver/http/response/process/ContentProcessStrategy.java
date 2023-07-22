@@ -20,7 +20,7 @@ public interface ContentProcessStrategy {
             if (resource == null) {
                 return HttpResponse.notFound(mime);
             }
-            return new HttpResponse(new ResponseLine(StatusCode.OK), Headers.create(mime), resource);
+            return new HttpResponse(new ResponseLine(StatusCode.OK), Headers.create(mime, resource.length), resource);
         } catch (Exception exception) {
             exception.printStackTrace();
             return HttpResponse.internalError(httpRequest.getMIME());
