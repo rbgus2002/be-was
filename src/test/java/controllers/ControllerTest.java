@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import db.Database;
-import http.Parameter;
+import http.HttpParameter;
 import model.User;
 
 public class ControllerTest {
@@ -33,11 +33,11 @@ public class ControllerTest {
 		@Test
 		@DisplayName("GET 요청의 파라미터를 통해 데이터베이스에 User를 추가할 수 있어야 한다")
 		void registerUser() {
-			final Parameter parameter = newParameter("testID", "testPassword", "testName", "test@email.com");
+			final HttpParameter httpParameter = newParameter("testID", "testPassword", "testName", "test@email.com");
 
-			controller.createUser(parameter);
+			controller.createUser(httpParameter);
 
-			verifyRegister(parameter);
+			verifyRegister(httpParameter);
 		}
 
 		@Test
@@ -48,11 +48,11 @@ public class ControllerTest {
 			final String name = "testName";
 			final String email = "test@email.com";
 			final User existingUser = setUpUser(userId, password, name, email);
-			Parameter parameter = newParameter("testID", "testPassword2", "testName2", "test2@email.com");
+			HttpParameter httpParameter = newParameter("testID", "testPassword2", "testName2", "test2@email.com");
 
 			SoftAssertions softAssertions = new SoftAssertions();
 			softAssertions.assertThatThrownBy(() -> {
-				controller.createUser(parameter);
+				controller.createUser(httpParameter);
 			}).isInstanceOf(Exception.class).hasMessage(Database.USERID_ALREADY_EXISTS_MESSAGE);
 
 			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword()).isEqualTo(existingUser.getPassword());
@@ -69,24 +69,24 @@ public class ControllerTest {
 			return existingUser;
 		}
 
-		private void verifyRegister(final Parameter parameter) {
+		private void verifyRegister(final HttpParameter httpParameter) {
 			SoftAssertions softAssertions = new SoftAssertions();
-			final User databaseUser = Database.findUserById(parameter.getParameter("userId"));
+			final User databaseUser = Database.findUserById(httpParameter.getParameter("userId"));
 
 			softAssertions.assertThat(databaseUser).isNotNull();
-			softAssertions.assertThat(databaseUser.getUserId()).isEqualTo(parameter.getParameter("userId"));
-			softAssertions.assertThat(databaseUser.getPassword()).isEqualTo(parameter.getParameter("password"));
-			softAssertions.assertThat(databaseUser.getName()).isEqualTo(parameter.getParameter("name"));
-			softAssertions.assertThat(databaseUser.getEmail()).isEqualTo(parameter.getParameter("email"));
+			softAssertions.assertThat(databaseUser.getUserId()).isEqualTo(httpParameter.getParameter("userId"));
+			softAssertions.assertThat(databaseUser.getPassword()).isEqualTo(httpParameter.getParameter("password"));
+			softAssertions.assertThat(databaseUser.getName()).isEqualTo(httpParameter.getParameter("name"));
+			softAssertions.assertThat(databaseUser.getEmail()).isEqualTo(httpParameter.getParameter("email"));
 
 			softAssertions.assertAll();
 		}
 
-		private Parameter newParameter(final String userId, final String password, final String name, final String email) {
-			final Parameter parameter = new Parameter();
+		private HttpParameter newParameter(final String userId, final String password, final String name, final String email) {
+			final HttpParameter httpParameter = new HttpParameter();
 			Map<String, String> map = Map.of("userId", userId, "password", password, "name", name, "email", email);
-			map.keySet().stream().forEach(key -> parameter.put(key, map.get(key)));
-			return parameter;
+			map.keySet().stream().forEach(key -> httpParameter.put(key, map.get(key)));
+			return httpParameter;
 		}
 
 		@Test

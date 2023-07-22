@@ -3,7 +3,7 @@ package http;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Parameter {
+public class HttpParameter {
 	private Map<String, String> parameters = new HashMap<>();
 
 	public void put(String key, String value) {

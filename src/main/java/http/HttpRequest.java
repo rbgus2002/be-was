@@ -16,7 +16,7 @@ public class HttpRequest {
 	private String endPoint;
 	private HttpVersion version;
 	private String body;
-	private Parameter parameter = new Parameter();
+	private HttpParameter httpParameter = new HttpParameter();
 
 	public boolean isGet() {
 		return method.equals(HttpMethod.GET);
@@ -90,7 +90,7 @@ public class HttpRequest {
 			if (line.contains("=")) {
 				logger.debug(line);
 				String[] values = line.split("=");
-				parameter.put(values[0], values[1]);
+				httpParameter.put(values[0], values[1]);
 			}
 		}
 	}
@@ -115,7 +115,7 @@ public class HttpRequest {
 		return endPoint;
 	}
 
-	public Parameter getParameter() {
-		return parameter;
+	public HttpParameter getParameter() {
+		return httpParameter;
 	}
 }
