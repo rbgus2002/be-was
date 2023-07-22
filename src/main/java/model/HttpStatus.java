@@ -2,7 +2,9 @@ package model;
 
 public enum HttpStatus {
 
-    CREATED(201, "Created");
+    OK(200, "OK"),
+    CREATED(201, "Created"),
+    NOT_FOUND(404, "Not Found");
 
     private final int value;
 
@@ -11,5 +13,13 @@ public enum HttpStatus {
     HttpStatus(int value, String reasonPhrase) {
         this.value = value;
         this.reasonPhrase = reasonPhrase;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public String getReasonPhrase() {
+        return reasonPhrase;
     }
 }

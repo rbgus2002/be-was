@@ -4,58 +4,71 @@ import annotations.RequestMapping;
 import model.HttpRequest;
 import model.HttpResponse;
 import model.HttpStatus;
+import model.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.ModelAndView;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class HandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(HandlerAdapter.class);
 
-    //TODO: 예외처리를 404 페이지로 MV 반환하도록 수정
-    protected ModelAndView handle(HttpRequest request, HttpResponse response, Object handler) {
+    private final String STATIC_PATH = "./src/main/resources/static";
+    private final String DYNAMIC_PATH = "./src/main/resources/templates";
 
-        Class<?> controller = handler.getClass();
+    /**
+     * Dynamic View 요청에 대한 처리
+     * @param request
+     * @param response
+     * @param handler, null이 아님을 보장해야함
+     * @return ModelAndView, templates에 존재하지 않으면 에러 페이지의 ModelAndView 반환
+     */
+    protected ModelAndView handle(HttpRequest request, HttpResponse response, Class<?> handler) {
+
+        Class<?> controller = handler;
 
         Method requestHandler = Arrays.stream(controller.getDeclaredMethods())
                 .filter(method -> matchesURI(request, method))
                 .findFirst()
                 .orElse(null);
 
-        if(requestHandler == null) {
-            response.setStatus(HttpStatus.OK);
-            return staticView(request);
-        }
-
         Object result = null;
-        ModelAndView mv = null;
         try {
             result = requestHandler.invoke(controller.getDeclaredConstructor().newInstance(), request, response);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
 
-        Type type = requestHandler.getGenericReturnType();
+        return createModelAndView(request, result);
+    }
 
-        if(type.equals(String.class)) {
-            mv = new ModelAndView();
-            mv.setViewName((String) result);
+    private ModelAndView createModelAndView(HttpRequest request, Object result) {
+        ModelAndView mv = new ModelAndView();
+
+        String path = request.getRequestURI();
+
+        if(!(result == null)) {
+            path = (String) result;
+        }
+
+        if(path.equals("/")) {
+            path = path + "index";
+        }
+
+        path = DYNAMIC_PATH + path + ".html";
+
+        if(!Files.exists(Paths.get(path))) {
             return mv;
         }
 
-        if(type.equals(void.class)) {
-            mv = new ModelAndView();
-            mv.setViewName(request.getRequestURI());
-            return mv;
-        }
-
-        if(type.equals(Object.class)) {
-            //객체로 반환시 처리
-        }
+        mv.setViewName(path);
+        mv.setContentType(ContentType.TEXT_HTML);
+        mv.setStatus(HttpStatus.OK);
 
         return mv;
     }
@@ -73,10 +86,38 @@ public class HandlerAdapter {
         return false;
     }
 
+    /**
+     * controller에 매핑되지 않는 URL 요청이나 static 파일 요청이 왔을 때 해당 URL 위치의 파일을 가리키는 ModelAndView 객체 반환
+     * @param request
+     * @return ModelAndView, viewName은 URI로 설정
+     */
     protected ModelAndView staticView(HttpRequest request) {
         ModelAndView mv = new ModelAndView();
 
-        mv.setViewName(request.getRequestURI());
+        String requestURI = request.getRequestURI();
+        if(requestURI.endsWith(".html")) {
+            mv = createModelAndView(request, requestURI.substring(0, requestURI.length() - ".html".length()));
+            return mv;
+        }
+
+        mv.setViewName(STATIC_PATH + requestURI);
+        mv.setStatus(HttpStatus.OK);
+
+        if(requestURI.endsWith(".css")) {
+            mv.setContentType(ContentType.TEXT_CSS);
+        }
+
+        if(requestURI.endsWith(".js")) {
+            mv.setContentType(ContentType.TEXT_JAVASCRIPT);
+        }
+
+        if(requestURI.endsWith("favicon.ico")) {
+            mv.setContentType(ContentType.IMAGE_X_ICON);
+        }
+
+        if(requestURI.endsWith(".png")) {
+            mv.setContentType(ContentType.IMAGE_PNG);
+        }
 
         return mv;
     }
