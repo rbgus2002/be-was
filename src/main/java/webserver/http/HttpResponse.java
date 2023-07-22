@@ -1,31 +1,34 @@
 package webserver.http;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import webserver.utils.HttpConstants;
 
 public class HttpResponse {
     private HttpStatus status;
-    private final Map<String, String> headers;
+    private final HttpHeaders headers;
     private byte[] body;
 
     public HttpResponse() {
-        headers = new LinkedHashMap<>();
+        headers = new HttpHeaders();
     }
 
-    public void setHeader(String name, String value) {
+    public String get(String name) {
+        return headers.get(name);
+    }
+
+    public void set(String name, String value) {
         headers.put(name, value);
+    }
+
+    public void set(String name, int value) {
+        headers.put(name, String.valueOf(value));
+    }
+
+    public HttpStatus getStatus() {
+        return status;
     }
 
     public void setStatus(HttpStatus status) {
         this.status = status;
-    }
-
-    public void setContentType(String contentType) {
-        headers.put(HttpConstant.CONTENT_TYPE, contentType);
-    }
-
-    public void setContentLength(int contentLength) {
-        headers.put(HttpConstant.CONTENT_LENGTH, String.valueOf(contentLength));
     }
 
     public void setBody(byte[] body) {
@@ -39,21 +42,16 @@ public class HttpResponse {
     public String getHeaderMessage() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(status.getStatusLine())
-                .append(HttpConstant.CRLF);
+        stringBuilder.append(status.getStatusLine()).append(HttpConstants.CRLF);
 
-        for (String key : headers.keySet()) {
-            stringBuilder.append(key)
+        for (String fieldName : headers.getFieldNames()) {
+            stringBuilder.append(fieldName)
                     .append(": ")
-                    .append(headers.get(key))
-                    .append(HttpConstant.CRLF);
+                    .append(headers.get(fieldName))
+                    .append(HttpConstants.CRLF);
         }
 
         return stringBuilder.toString();
-    }
-
-    public HttpStatus getStatus() {
-        return status;
     }
 
     public byte[] getHeaderBytes() {

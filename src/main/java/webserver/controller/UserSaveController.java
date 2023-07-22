@@ -4,44 +4,43 @@ import db.Database;
 import model.User;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.ConflictException;
+import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-
-import java.util.Map;
+import webserver.utils.HttpField;
+import webserver.utils.HttpParametersParser;
 
 public class UserSaveController {
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            Map<String, String> parametersMap = httpRequest.getParametersMap();
+            HttpParameters httpParameters = HttpParametersParser.parse(httpRequest.getBody());
 
-            verifyParametersCount(parametersMap);
+            verifyParametersCount(httpParameters);
 
-            String userId = (String) parametersMap.get("userId");
-            String password = (String) parametersMap.get("password");
-            String name = (String) parametersMap.get("name");
-            String email = (String) parametersMap.get("email");
+            String userId = httpParameters.get("userId");
+            String password = httpParameters.get("password");
+            String name = httpParameters.get("name");
+            String email =  httpParameters.get("email");
 
             verifyEmptyParameter(userId, password, name, email);
 
-            verifyUserIdConflict(userId);
+            verifyUserIdAvailable(userId);
 
             User user = new User(userId, password, name, email);
             Database.addUser(user);
 
-            httpResponse.setStatus(HttpStatus.OK);
+            httpResponse.setStatus(HttpStatus.FOUND);
+            httpResponse.set(HttpField.LOCATION, "/index.html");
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (ConflictException e) {
             httpResponse.setStatus(HttpStatus.CONFLICT);
-        } finally {
-            httpResponse.setContentType("application/json");
-            httpResponse.setContentLength(0);
         }
     }
 
-    private void verifyParametersCount(Map<String, String> parametersMap) throws BadRequestException {
-        if (parametersMap.size() != 4) {
+    private void verifyParametersCount(HttpParameters httpParameters) throws BadRequestException {
+        if (httpParameters.size() != 4) {
             throw new BadRequestException();
         }
     }
@@ -52,7 +51,7 @@ public class UserSaveController {
         }
     }
 
-    private void verifyUserIdConflict(String userId) throws ConflictException {
+    private void verifyUserIdAvailable(String userId) throws ConflictException {
         if (Database.findUserById(userId) != null) {
             throw new ConflictException();
         }
