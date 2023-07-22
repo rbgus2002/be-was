@@ -8,15 +8,23 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class UserRepository {
+public enum UserRepository {
+
+    USER_REPOSITORY(Database.INSTANCE);
+
+    private final Database database;
+
+    private UserRepository(Database database) {
+        this.database = database;
+    }
 
     public void addUser(UserDto userDto) {
         User user = new User(userDto.getUserId(), userDto.getPassword(), userDto.getName(), userDto.getEmail());
-        Database.addUser(user);
+        database.addUser(user);
     }
 
     public Optional<UserDto> findUserById(String userId) {
-        User user = Database.findUserById(userId);
+        User user = database.findUserById(userId);
 
         if (user == null) {
             return Optional.empty();
@@ -31,7 +39,7 @@ public class UserRepository {
     }
 
     public Collection<UserDto> findAll() {
-        return Database.findAll().stream()
+        return database.findAll().stream()
                 .map(user -> new UserDto.Builder()
                         .withUserId(user.getUserId())
                         .withPassword(user.getPassword())
