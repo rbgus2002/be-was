@@ -51,7 +51,10 @@ public class RequestHandler implements Runnable {
 		}
 	}
 
-	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws ReflectiveOperationException, IOException, IllegalArgumentException {
+	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws
+		ReflectiveOperationException,
+		IOException,
+		IllegalArgumentException {
 		String path = runController(httpRequest);
 		if (path.contains(REDIRECT)) {
 			return redirectHttpResponse(httpRequest, path);
@@ -65,7 +68,9 @@ public class RequestHandler implements Runnable {
 		return httpResponse;
 	}
 
-	private String runController(final HttpRequest httpRequest) throws InvocationTargetException, IllegalAccessException {
+	private String runController(final HttpRequest httpRequest) throws
+		InvocationTargetException,
+		IllegalAccessException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getEndpoint())) {
 			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint(), httpRequest.getParameter());
@@ -73,7 +78,9 @@ public class RequestHandler implements Runnable {
 		return path;
 	}
 
-	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws IOException, IllegalArgumentException {
+	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws
+		IOException,
+		IllegalArgumentException {
 		HttpResponse httpResponse = new HttpResponse(httpRequest);
 		httpResponse.addFile(getValidPath(path));
 		logger.debug("{} added", path);

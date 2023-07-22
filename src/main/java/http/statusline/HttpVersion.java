@@ -1,12 +1,14 @@
 package http.statusline;
 
 public enum HttpVersion {
-	HTTP_1_1("HTTP/1.1"),
-	HTTP_2("HTTP/2.0");
+	HTTP_1_1("HTTP/1.1"), HTTP_2("HTTP/2.0");
+
 	public final String representation;
+
 	HttpVersion(String representation) {
 		this.representation = representation;
 	}
+
 	public static HttpVersion versionOf(String stringVersion) throws IllegalArgumentException {
 		for (HttpVersion version : HttpVersion.values()) {
 			if (version.representation.equals(stringVersion)) {
