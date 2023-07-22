@@ -1,5 +1,6 @@
 package annotation;
 
+import db.Session;
 import http.HttpRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class RequestMappingHandlerTest {
         HttpRequest httpRequest = new HttpRequest(bufferedReader);
 
         //when, then
-        assertThrows(IllegalAccessException.class, () -> RequestMappingHandler.invokeMethod(httpRequest));
+        assertThrows(IllegalAccessException.class, () -> RequestMappingHandler.invokeMethod(httpRequest, new Session()));
     }
 
     private BufferedReader stringListToBufferedReader(List<String> strings) {
