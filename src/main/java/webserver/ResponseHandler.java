@@ -1,6 +1,9 @@
 package webserver;
 
 import annotation.RequestMappingHandler;
+import db.Session;
+import db.SessionManager;
+import http.Cookie;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
@@ -46,6 +49,18 @@ public class ResponseHandler {
     private HttpResponse handleHttpRequest(HttpRequest httpRequest) {
         String path = httpRequest.uri().getPath();
         String extension = StringUtils.getExtension(path);
+
+        Cookie sessionCookie = httpRequest.getCookie("sid");
+        boolean isCreatedSession = false;
+        String sid;
+        if (sessionCookie == null || SessionManager.getSession(sessionCookie.getValue()) == null) {
+            sid = SessionManager.createSession();
+            isCreatedSession = true;
+        } else {
+            sid = sessionCookie.getValue();
+        }
+        Session session = SessionManager.getSession(sid);
+
         HttpResponse httpResponse;
         if (!Objects.equals(extension, path)) {
             // 정적 파일 응답
@@ -53,12 +68,17 @@ public class ResponseHandler {
         } else {
             // 잘못된 http request이면 /error.html response 생성
             try {
-                httpResponse = RequestMappingHandler.invokeMethod(httpRequest);
+                httpResponse = RequestMappingHandler.invokeMethod(httpRequest, session);
             } catch (Throwable e) {
                 logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
                 httpResponse = HttpResponse.notFound();
             }
         }
+
+        if (isCreatedSession) {
+            httpResponse.setCookie("sid", sid);
+        }
+
         return httpResponse;
     }
 
@@ -78,7 +98,11 @@ public class ResponseHandler {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + httpResponse.getContentType().getType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
+            for (Cookie cookie : httpResponse.getCookies()) {
+                dos.writeBytes("Set-Cookie: " + cookie.toString() + "\r\n");
+            }
             dos.writeBytes("\r\n");
+            logger.debug("200 response");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -92,6 +116,7 @@ public class ResponseHandler {
             dos.writeBytes("Pragma: no-cache\r\n");
             dos.writeBytes("Expires: 0\r\n");
             dos.writeBytes("\r\n");
+            logger.debug("302 response");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -115,6 +140,7 @@ public class ResponseHandler {
             dos.writeBytes("Content-Type: text/html; charset=UTF-8\r\n");
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
             dos.writeBytes("\r\n");
+            logger.debug("404 response");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
