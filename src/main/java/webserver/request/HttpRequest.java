@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.StringUtils;
 import webserver.HttpConstants.HttpMethod;
+import webserver.HttpConstants.HttpVersion;
 import webserver.RequestHandler;
 
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ public class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final HttpMethod httpMethod;
-    private final String version;
+    private final HttpVersion version;
     private final String path;
     private final Query query;
     private final RequestHeader requestHeader;
@@ -31,7 +32,7 @@ public class HttpRequest {
         String[] pathAndQueries = tokens[1].split("\\?");
 
         this.httpMethod = HttpMethod.valueOf(tokens[0]);
-        this.version = tokens[2];
+        this.version = HttpVersion.of(tokens[2]);
         this.path = pathAndQueries[0];
         this.query = parseRequestQuery(pathAndQueries);
         this.requestHeader = RequestHeader.of(header);
@@ -60,7 +61,23 @@ public class HttpRequest {
                 .orElse(null);
     }
 
+    public HttpMethod getHttpMethod() {
+        return this.httpMethod;
+    }
+
+    public HttpVersion getVersion() {
+        return this.version;
+    }
+
     public String getPath() {
         return path;
+    }
+
+    public Optional<Query> getQuery() {
+        if(query == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(query);
     }
 }
