@@ -19,7 +19,7 @@ public enum UserRepository {
     }
 
     public void addUser(UserDto userDto) {
-        User user = new User(userDto.getUserId(), userDto.getPassword(), userDto.getName(), userDto.getEmail());
+        User user = User.of(userDto);
         database.addUser(user);
     }
 
