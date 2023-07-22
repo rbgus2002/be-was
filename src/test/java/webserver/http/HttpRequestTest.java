@@ -1,6 +1,8 @@
 package webserver.http;
 
+import exception.NotSupportedContentTypeException;
 import org.junit.jupiter.api.*;
+import webserver.ContentType;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.Uri;
 
@@ -8,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static utils.StringUtils.*;
 
@@ -50,5 +53,16 @@ class HttpRequestTest {
             // then
             assertEquals(PATH, request.getPath());
         }
+    }
+
+    @Test
+    @DisplayName("지원하지 않는 ContentType의 경우 예외를 던진다")
+    void mapResourceFolders(){
+        // given
+        ContentType type = ContentType.NONE;
+
+        // when, then
+        assertThatThrownBy(() -> type.mapResourceFolders(""))
+                .isInstanceOf(NotSupportedContentTypeException.class);
     }
 }

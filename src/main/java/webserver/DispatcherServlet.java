@@ -1,6 +1,7 @@
 package webserver;
 
 import controller.Controller;
+import exception.NotSupportedContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.request.HttpRequest;
@@ -60,13 +61,17 @@ public class DispatcherServlet {
         return path;
     }
 
-    private void findResources(HttpResponse response, String filePath) {
+    private void findResources(HttpResponse response, String filePath) throws IOException {
         try {
             ContentType type = ContentType.findBy(filePath);
             filePath = type.mapResourceFolders(filePath);
             response.setResults(filePath, OK);
+        } catch (NotSupportedContentTypeException e) {
+            response.setResults(null, BAD_REQUEST);
+            logger.debug(e.getMessage());
         } catch (IOException e) {
-            logger.debug("readAllBytes ERROR");
+            response.setResults(null, NOT_FOUND);
+            logger.debug(e.getMessage());
         }
     }
 

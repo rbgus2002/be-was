@@ -1,5 +1,7 @@
 package webserver;
 
+import exception.NotSupportedContentTypeException;
+
 import java.util.Arrays;
 
 public enum ContentType {
@@ -9,7 +11,7 @@ public enum ContentType {
     ICO("ico", "/static", "image/x-icon"),
     PNG("png", "/static", "image/png"),
     JPG("jpg", "/static", "image/jpeg"),
-    NONE("", "", ""),
+    NONE("", "", "INVALID"),
     ;
 
     private String value;
@@ -30,6 +32,9 @@ public enum ContentType {
     }
 
     public String mapResourceFolders(String file){
+        if(this == NONE){
+            throw new NotSupportedContentTypeException();
+        }
         return this.path + file;
     }
 
