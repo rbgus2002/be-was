@@ -3,13 +3,14 @@ package webserver;
 import config.UserConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.UserService;
 import webserver.handlers.*;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.utils.FileNameScanner;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,6 +22,13 @@ public class HttpRequestHandler {
         routeTables.put(new RouteKey(HttpMethod.GET, "/index.html"), new IndexHandler());
         routeTables.put(new RouteKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
         routeTables.put(new RouteKey(HttpMethod.GET, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
+        addStaticFilesRecords();
+    }
+
+    private void addStaticFilesRecords() {
+        StaticFileHandler staticFileHandler = new StaticFileHandler();
+        List<String> filePaths = FileNameScanner.scan("src/main/resources/static");
+        filePaths.forEach(fileName -> routeTables.put(new RouteKey(HttpMethod.GET, fileName), staticFileHandler));
     }
 
     public HttpResponse handle(HttpRequest httpRequest) {

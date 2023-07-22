@@ -14,7 +14,7 @@ class ByteReaderTest {
     @DisplayName("readInputStream 테스트")
     @Test
     void readTest() throws IOException {
-        String message = "abc\ndef\nghi\n";
+        String message = "abc\r\ndef\r\nghi\r\n\r\n";
         InputStream inputStream = new ByteArrayInputStream(message.getBytes());
 
         String inputMessage = ByteReader.readInputStream(inputStream);

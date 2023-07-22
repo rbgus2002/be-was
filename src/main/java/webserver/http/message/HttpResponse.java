@@ -1,5 +1,7 @@
 package webserver.http.message;
 
+import webserver.http.Mime;
+
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +20,9 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public static HttpResponse okWithFile(byte[] file) {
+    public static HttpResponse okWithFile(byte[] file, Mime mime) {
         Map<String, List<String>> headers = new HashMap<>();
-        headers.put("Content-Type", List.of("text/html;charset=utf-8"));
+        headers.put("Content-Type", List.of(mime.getContentType()));
         headers.put("Content-Length", List.of(String.valueOf(file.length)));
         return new HttpResponse(HttpVersion.V1_1, HttpStatus.OK, headers, file);
     }
