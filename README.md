@@ -30,6 +30,7 @@ Java Web Application Server 2023
 - [X] Thread -> Concurrent 패키지 사용
 - [X] GET으로 회원가입하기
 - [X] 다양한 컨텐츠 타입 지원
+- [X] POST로 회원가입 하기
 
 ## Wiki page
 https://github.com/plusjob70/be-was/wiki
