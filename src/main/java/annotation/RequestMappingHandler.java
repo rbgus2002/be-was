@@ -18,6 +18,8 @@ public class RequestMappingHandler {
 
     private static final Map<HttpUtils.Method, Map<String, MethodHandle>> methodHandles = new HashMap<>();
 
+    private static final Controller controller = new Controller();
+
     static {
         methodHandles.put(HttpUtils.Method.GET, new HashMap<>());
         methodHandles.put(HttpUtils.Method.POST, new HashMap<>());
@@ -50,7 +52,7 @@ public class RequestMappingHandler {
         }
         return MethodHandles.lookup()
                 .findVirtual(Controller.class, method.getName(), methodType)
-                .bindTo(Controller.getInstance());
+                .bindTo(controller);
     }
 
     private RequestMappingHandler() {

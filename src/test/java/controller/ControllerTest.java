@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ControllerTest {
 
-    Controller controller = Controller.getInstance();
+    Controller controller = new Controller();
 
     final String userId = "abc";
     final String password = "1q2w3e4r";
@@ -25,17 +25,6 @@ class ControllerTest {
     @AfterEach
     void tearDown() {
         Database.clear();
-    }
-
-    @Test
-    @DisplayName("싱글톤으로 생성된다.")
-    void createSingleton() {
-        //given, when
-        Controller c1 = Controller.getInstance();
-        Controller c2 = Controller.getInstance();
-
-        //then
-        assertThat(c1).isEqualTo(c2);
     }
 
     @Nested

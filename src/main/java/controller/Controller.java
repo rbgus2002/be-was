@@ -13,18 +13,8 @@ import util.HttpUtils;
 import java.util.Map;
 
 public class Controller {
+
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
-
-    private Controller() {
-    }
-
-    private static class SingletonHelper {
-        private static final Controller INSTANCE = new Controller();
-    }
-
-    public static Controller getInstance() {
-        return SingletonHelper.INSTANCE;
-    }
 
     @RequestMapping(path = "/user/create", method = HttpUtils.Method.POST)
     public HttpResponse creatUser(Map<String, String> parameters) {
