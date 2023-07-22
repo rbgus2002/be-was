@@ -91,11 +91,19 @@ public class ResponseEntity {
 
         private String findResource(String uri) throws IOException {
             try {
+                if (!isHtmlExtension(uri)) {
+                    final URL resource = getClass().getClassLoader().getResource("static" + uri);
+                    return new String(Files.readAllBytes(new File(resource.getFile()).toPath()));
+                }
                 final URL resource = getClass().getClassLoader().getResource("templates" + uri);
                 return new String(Files.readAllBytes(new File(resource.getFile()).toPath()));
             } catch (NullPointerException e) {
                 throw new NotFoundExtensionException();
             }
+        }
+
+        private boolean isHtmlExtension(String uri) {
+            return uri.contains(".html");
         }
     }
 

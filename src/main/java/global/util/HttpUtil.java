@@ -1,7 +1,6 @@
 package global.util;
 
 import exception.BadRequestException;
-import global.constant.Extension;
 import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.request.RequestLine;

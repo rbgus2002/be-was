@@ -1,6 +1,6 @@
 package global.handler;
 
-import annotations.MyGetMapping;
+import annotations.GetMapping;
 import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
@@ -37,14 +37,14 @@ public class GetHandler implements Handler {
 
     private Set<String> getDeclaredGetMappings() {
         return Arrays.stream(Controller.class.getDeclaredMethods())
-                .filter(method -> method.isAnnotationPresent(MyGetMapping.class))
-                .map(method -> method.getAnnotation(MyGetMapping.class).path())
+                .filter(method -> method.isAnnotationPresent(GetMapping.class))
+                .map(method -> method.getAnnotation(GetMapping.class).path())
                 .collect(Collectors.toSet());
     }
 
     private boolean isGetMapping(Method method, String uri) {
-        if (method.isAnnotationPresent(MyGetMapping.class)) {
-            String path = method.getAnnotation(MyGetMapping.class).path();
+        if (method.isAnnotationPresent(GetMapping.class)) {
+            String path = method.getAnnotation(GetMapping.class).path();
             return path.equals(uri);
         }
         return false;
