@@ -24,7 +24,7 @@ public class HtmlView implements View {
     @Override
     public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception {
         byte[] body = Files.readAllBytes(new File(viewPath).toPath());
-        decorateResponse(request, response, ResponseCode.OK, body);
+        decorateResponse(response, ResponseCode.OK, body);
     }
 
 }

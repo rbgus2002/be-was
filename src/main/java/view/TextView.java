@@ -21,7 +21,7 @@ public class TextView implements View {
 
     @Override
     public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception{
-        decorateResponse(request, response, ResponseCode.OK, text.getBytes());
+        decorateResponse(response, ResponseCode.OK, text.getBytes());
     }
 
 }

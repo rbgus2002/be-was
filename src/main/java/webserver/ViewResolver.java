@@ -1,10 +1,9 @@
 package webserver;
 
 import common.enums.ContentType;
-import common.enums.ResponseCode;
 import modelview.ModelView;
 import view.HtmlView;
-import view.RedirectHtmlView;
+import view.RedirectView;
 import view.TextView;
 import view.View;
 
@@ -19,7 +18,7 @@ public class ViewResolver {
 
         if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
             viewName = viewName.substring(REDIRECT_URL_PREFIX.length()).trim();
-            return new RedirectHtmlView(TEMPLATE_PATH + viewName);
+            return new RedirectView(viewName);
         }
 
         if (contentType.isHtmlContent()) {

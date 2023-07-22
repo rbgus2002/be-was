@@ -3,9 +3,7 @@ package view;
 import common.enums.ResponseCode;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
-import common.http.ResponseLine;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public interface View {
@@ -14,20 +12,10 @@ public interface View {
 
     void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception;
 
-    // TODO : 뷰에서 reponse를 세팅하면 안 되지 싶다. 개선하자
-    default void decorateResponse(HttpRequest request, HttpResponse response, ResponseCode responseCode, byte[] body) {
-        ResponseLine responseLine = new ResponseLine(responseCode);
-
-        Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", getContentType());
-        header.put("Content-Length", String.valueOf(body.length));
-
-        if (responseCode.equals(ResponseCode.FOUND)) {
-            header.put("Location", "");
-        }
-
-        response.setResponseLine(responseLine);
-        response.setHeaders(header);
+    default void decorateResponse(HttpResponse response, ResponseCode responseCode, byte[] body) {
+        response.setResponseLine(responseCode);
+        response.addHeader("Content-Type", getContentType());
+        response.addHeader("Content-Length", String.valueOf(body.length));
         response.setBody(body);
     }
 

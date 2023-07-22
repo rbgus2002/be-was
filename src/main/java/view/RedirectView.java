@@ -7,10 +7,10 @@ import common.http.HttpResponse;
 
 import java.util.Map;
 
-public class RedirectHtmlView implements View {
+public class RedirectView implements View {
     private final String viewPath;
 
-    public RedirectHtmlView(String viewPath) {
+    public RedirectView(String viewPath) {
         this.viewPath = viewPath;
     }
 
@@ -21,7 +21,8 @@ public class RedirectHtmlView implements View {
 
     @Override
     public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception {
-        decorateResponse(request, response, ResponseCode.FOUND, new byte[0]);
+        decorateResponse(response, ResponseCode.FOUND, new byte[0]);
+        response.addHeader("Location", viewPath);
     }
 
 }
