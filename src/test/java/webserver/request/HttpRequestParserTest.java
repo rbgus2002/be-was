@@ -1,4 +1,4 @@
-package webserver;
+package webserver.request;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +59,7 @@ class HttpRequestParserTest {
 
     @BeforeEach
     void init() throws IOException{
-        request = HttpRequestParser.getInstance().getRequest(new ByteArrayInputStream(requestInput.getBytes()));
+        request = HttpRequestParser.getRequest(new ByteArrayInputStream(requestInput.getBytes()));
     }
 
 

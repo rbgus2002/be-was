@@ -1,8 +1,9 @@
-package webserver;
+package webserver.request;
 
 import controller.SignUpController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.HttpRequestMapper;
 import webserver.request.HttpRequest;
 import webserver.request.HttpRequestParser;
 
@@ -21,7 +22,7 @@ class HttpRequestMapperTest {
     }
 
     void verifyController(String statusLine, Class clazz) throws IOException {
-        HttpRequest request = HttpRequestParser.getInstance().getRequest(new ByteArrayInputStream(statusLine.getBytes()));
+        HttpRequest request = HttpRequestParser.getRequest(new ByteArrayInputStream(statusLine.getBytes()));
         assertInstanceOf(clazz, HttpRequestMapper.getInstance().getController(request.getMethod(),request.getUrl()));
     }
 }

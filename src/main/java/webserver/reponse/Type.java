@@ -37,6 +37,10 @@ public enum Type {
                 return PNG;
             case "ico":
                 return ICO;
+            case "txt":
+                return TEXT;
+            case "html":
+                return HTML;
             default:
                 return null;
         }
