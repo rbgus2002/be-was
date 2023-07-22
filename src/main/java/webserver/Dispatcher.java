@@ -1,7 +1,5 @@
 package webserver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webserver.exception.BadRequestException;
 import webserver.handler.HttpHandler;
 import webserver.request.HttpRequestMessage;
@@ -14,10 +12,10 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import static utils.StringUtils.NEW_LINE;
+import static webserver.WebServer.logger;
 import static webserver.request.HttpRequestParser.parseRequest;
 
 public class Dispatcher implements Runnable {
-    private final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
     private final Socket connection;
 
     public Dispatcher(Socket connectionSocket) {
@@ -50,7 +48,9 @@ public class Dispatcher implements Runnable {
         DataOutputStream dos = new DataOutputStream(out);
         dos.writeBytes(httpResponseMessage.getResponseHeader());
         dos.writeBytes(NEW_LINE);
-        dos.write(httpResponseMessage.getResponseBody());
+        if (httpResponseMessage.getResponseBody() != null) {
+            dos.write(httpResponseMessage.getResponseBody());
+        }
         dos.flush();
     }
 }
