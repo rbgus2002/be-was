@@ -1,5 +1,6 @@
 package webserver;
 
+import db.SessionManager;
 import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +16,9 @@ public class RequestHandler implements Runnable {
     private final Socket connection;
     private final ResponseHandler responseHandler;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, SessionManager sessionManager) {
         this.connection = connectionSocket;
-        this.responseHandler = new ResponseHandler(connection);
+        this.responseHandler = new ResponseHandler(connection, sessionManager);
     }
 
     @Override

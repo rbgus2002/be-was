@@ -15,7 +15,7 @@ public class SessionManager {
     private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
     private static final long SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30분 (단위: 밀리초)
 
-    public static String createSession() {
+    public String createSession() {
         String sessionId = UUID.randomUUID().toString();
         sessions.put(sessionId, new Session());
         Session session = sessions.get(sessionId);
@@ -26,7 +26,7 @@ public class SessionManager {
         return sessionId;
     }
 
-    public static Session getSession(String sessionId) {
+    public Session getSession(String sessionId) {
         Session session = sessions.get(sessionId);
         if (session == null) {
             return null;
@@ -35,12 +35,12 @@ public class SessionManager {
         return session;
     }
 
-    public static void invalidateSession(String sessionId) {
+    public void invalidateSession(String sessionId) {
         logger.debug("세션을 제거했습니다. sid : {}", sessionId);
         sessions.remove(sessionId);
     }
 
-    private static void setTimer(Session session, String sessionId) {
+    private void setTimer(Session session, String sessionId) {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

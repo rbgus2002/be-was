@@ -23,9 +23,11 @@ public class ResponseHandler {
     private static final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
     private final Socket connection;
+    private final SessionManager sessionManager;
 
-    public ResponseHandler(Socket connection) {
+    public ResponseHandler(Socket connection, SessionManager sessionManager) {
         this.connection = connection;
+        this.sessionManager = sessionManager;
     }
 
     public void response(HttpRequest httpRequest) {
@@ -43,7 +45,7 @@ public class ResponseHandler {
     private HttpResponse handleHttpRequest(HttpRequest httpRequest) {
         Cookie sessionCookie = httpRequest.getCookie("sid");
         String sid = getSessionIdOrCreate(sessionCookie);
-        Session session = SessionManager.getSession(sid);
+        Session session = sessionManager.getSession(sid);
         HttpResponse httpResponse = getHttpResponse(httpRequest, session);
         if (isCreatedSession(sessionCookie, sid)) {
             httpResponse.setCookie("sid", sid);
@@ -53,8 +55,8 @@ public class ResponseHandler {
 
     private String getSessionIdOrCreate(Cookie sessionCookie) {
         // session cookie가 없거나 session이 만료
-        if (sessionCookie == null || SessionManager.getSession(sessionCookie.getValue()) == null) {
-            return SessionManager.createSession();
+        if (sessionCookie == null || sessionManager.getSession(sessionCookie.getValue()) == null) {
+            return sessionManager.createSession();
         }
         return sessionCookie.getValue();
     }

@@ -10,21 +10,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SessionManagerTest {
 
     String sessionId;
+    SessionManager sessionManager;
 
     @BeforeEach
     void setUp() {
-        sessionId = SessionManager.createSession();
+        sessionManager = new SessionManager();
+        sessionId = sessionManager.createSession();
     }
 
     @AfterEach
     void tearDown() {
-        SessionManager.invalidateSession(sessionId);
+        sessionManager.invalidateSession(sessionId);
     }
 
     @Test
     @DisplayName("세션을 생성한다.")
     void createSession() {
-        Session session = SessionManager.getSession(sessionId);
+        Session session = sessionManager.getSession(sessionId);
 
         assertThat(session).isNotNull();
     }
@@ -33,8 +35,8 @@ class SessionManagerTest {
     @DisplayName("세션을 제거하고 세션을 조회하면 null을 반환한다.")
     void invalidateSession() {
         //when
-        SessionManager.invalidateSession(sessionId);
-        Session session = SessionManager.getSession(sessionId);
+        sessionManager.invalidateSession(sessionId);
+        Session session = sessionManager.getSession(sessionId);
 
         //then
         assertThat(session).isNull();
