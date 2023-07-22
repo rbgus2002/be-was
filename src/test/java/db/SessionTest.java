@@ -61,6 +61,8 @@ class SessionTest {
     @DisplayName("세션의 접근 시간을 현재로 바꾼다.")
     void changeAccessTime() throws InterruptedException {
         long oldAccessedTime = session.getLastAccessedTime();
+
+        Thread.sleep(1);
         session.setLastAccessedTimeNow();
         long nowAccessedTime = session.getLastAccessedTime();
 
