@@ -16,11 +16,15 @@ public interface View {
 
     // TODO : 뷰에서 reponse를 세팅하면 안 되지 싶다. 개선하자
     default void decorateResponse(HttpRequest request, HttpResponse response, ResponseCode responseCode, byte[] body) {
-        ResponseLine responseLine = new ResponseLine(request.getVersion(), responseCode);
+        ResponseLine responseLine = new ResponseLine(responseCode);
 
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", getContentType());
         header.put("Content-Length", String.valueOf(body.length));
+
+        if (responseCode.equals(ResponseCode.FOUND)) {
+            header.put("Location", "");
+        }
 
         response.setResponseLine(responseLine);
         response.setHeaders(header);

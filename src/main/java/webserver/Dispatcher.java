@@ -28,7 +28,7 @@ public class Dispatcher {
 
         ModelView mv = null;
         try {
-            Method controllerMethod = mapper.getControllerMethod(request.getRequestMethod(), request.getPath());
+            Method controllerMethod = mapper.getControllerMethod(request.getRequestMethod(), request.getRequestPath());
             mv = (ModelView) controllerMethod.invoke(controller, request);
 
         } catch (NoSuchControllerMethodException e) {

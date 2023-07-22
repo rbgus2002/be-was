@@ -34,15 +34,15 @@ public class RequestHandler implements Runnable {
 
             HttpResponse response = new HttpResponse();
 
-            ContentType contentType = request.getContentType();
+            ContentType contentType = request.getRequestContentType();
 
             // static 폴더 내에 있는 정적 파일을 요청할 떄는 Dispatcher를 거치지 않는다.
             if (contentType.isStaticContent()) {
                 response.setStaticContentResponse(
                         contentType,
-                        request.getVersion(),
-                        request.getPath()
+                        request.getRequestPath()
                 );
+
             }
 
             // HTML 파일을 요청하거나 별도로 요청하는 컨텐츠가 없을 때는 Dispatcher를 거친다.

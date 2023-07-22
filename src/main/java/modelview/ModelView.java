@@ -41,10 +41,6 @@ public class ModelView {
         return contentType;
     }
 
-    public ResponseCode getResponseCode() {
-        return responseCode;
-    }
-
     public void setAttribute(String key, Object value) {
         model.put(key, value);
     }

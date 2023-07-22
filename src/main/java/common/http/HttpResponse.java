@@ -48,7 +48,7 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public void setStaticContentResponse(ContentType type, String version, String path) {
+    public void setStaticContentResponse(ContentType type, String path) {
         byte[] body = new byte[0];
         ResponseLine responseLine = new ResponseLine();
         HashMap<String, String> headers = new HashMap<>();
@@ -56,14 +56,13 @@ public class HttpResponse {
         try {
             body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
 
-            responseLine.setVersion(version);
             responseLine.setResponseCode(ResponseCode.OK);
 
             headers.put("Content-Type", type.getDescription());
             headers.put("Content-Length", String.valueOf(body.length));
 
         } catch (IOException e) {
-            responseLine = new ResponseLine(version, ResponseCode.NOT_FOUND);
+            responseLine = new ResponseLine(ResponseCode.NOT_FOUND);
 
         } finally {
             this.responseLine = responseLine;

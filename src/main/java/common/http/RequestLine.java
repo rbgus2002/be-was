@@ -3,40 +3,32 @@ package common.http;
 import common.enums.ContentType;
 import common.enums.RequestMethod;
 
-import java.util.Map;
+import java.util.Optional;
 
 public class RequestLine {
-    private final RequestMethod requestMethod;
-    private final String path;
-    private final String version;
-    private final ContentType contentType;
-    private final Map<String, String> params;
 
-    public RequestLine(RequestMethod requestMethod, String path, String version, ContentType contentType, Map<String, String> params) {
+    private final RequestMethod requestMethod;
+    private final Uri uri;
+
+    public RequestLine(RequestMethod requestMethod, Uri uri) {
         this.requestMethod = requestMethod;
-        this.path = path;
-        this.version = version;
-        this.contentType = contentType;
-        this.params = params;
+        this.uri = uri;
     }
 
     public RequestMethod getRequestMethod() {
         return requestMethod;
     }
 
-    public String getPath() {
-        return path;
+    public String getRequestPath() {
+        return uri.getRequestPath();
     }
 
-    public String getVersion() {
-        return version;
+    public Optional<Queries> getQueries() {
+        return Optional.ofNullable(uri.getQueries());
     }
 
-    public ContentType getContentType() {
-        return contentType;
+    public ContentType getRequestContentType() {
+        return uri.getContentType();
     }
 
-    public Map<String, String> getParams() {
-        return params;
-    }
 }
