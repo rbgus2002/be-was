@@ -32,7 +32,7 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 // 요청에 대한 task 객체를 생성한다.
-                RequestHandler task = new RequestHandler(connection);
+                Dispatcher task = new Dispatcher(connection);
                 // task 객체를 수행하도록 한다.
                 executorService.submit(task);
             }
