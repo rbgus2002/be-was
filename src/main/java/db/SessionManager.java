@@ -1,5 +1,8 @@
 package db;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -8,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
     private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
     private static final long SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30분 (단위: 밀리초)
 
@@ -27,6 +31,7 @@ public class SessionManager {
             }
         }, SESSION_TIMEOUT_MS, SESSION_TIMEOUT_MS);
 
+        logger.debug("세션을 생성했습니다. sid : {}", sessionId);
         return sessionId;
     }
 
@@ -40,6 +45,7 @@ public class SessionManager {
     }
 
     public static void invalidateSession(String sessionId) {
+        logger.debug("세션을 제거했습니다. sid : {}", sessionId);
         sessions.remove(sessionId);
     }
 }
