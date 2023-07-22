@@ -67,7 +67,18 @@ public class HttpRequestParser {
         String extension = extractExtension(path);
         Map<String, String> parameters = extractParameters(url, queryIndex);
 
+        if (extension != null) {
+            path = addResourcePath(path, extension);
+        }
+
         return new HttpURL(url, extension, path, parameters);
+    }
+
+    private static String addResourcePath(String path, String extension) {
+        if (extension.equals(".html")) {
+            return TEMPLATES_PATH + path;
+        }
+        return STATIC_PATH + path;
     }
 
     private static Map<String, String> extractParameters(String url, int queryIndex) {
