@@ -35,7 +35,7 @@ public class Dispatcher {
 
         } finally {
             if (mv != null) {
-                View view = ViewResolver.resolve(mv.getViewName());
+                View view = ViewResolver.resolveViewName(mv.getViewName());
                 view.render(mv.getModel(), request, response);
             }
         }
