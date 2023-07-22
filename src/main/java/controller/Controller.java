@@ -1,16 +1,14 @@
 package controller;
 
 import annotation.RequestMapping;
-import common.enums.RequestMethod;
 import common.http.HttpRequest;
 import common.http.Queries;
 import model.User;
 import modelview.ModelView;
 import service.UserService;
 
-import java.util.Map;
-
-import static common.enums.RequestMethod.*;
+import static common.enums.RequestMethod.GET;
+import static common.enums.RequestMethod.POST;
 
 public class Controller {
 
