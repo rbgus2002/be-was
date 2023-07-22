@@ -36,8 +36,6 @@ public class HttpRequest {
             }
         }
         return null;
-//        // TODO: 적절한 예외 찾기
-//        throw new IllegalStateException("지원하지 않는 확장자입니다.");
     }
 
     public String getMethod() {
@@ -94,9 +92,5 @@ public class HttpRequest {
         }
 
         return sb.toString();
-    }
-
-    public boolean hasExtension() {
-        return !getExtension(path).equals(path);
     }
 }
