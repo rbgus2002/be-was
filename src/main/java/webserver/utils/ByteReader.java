@@ -16,7 +16,7 @@ public class ByteReader {
         StringBuilder messageBuilder = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         String line;
-        while (!(line = br.readLine()).equals("")) {
+        while ((line = br.readLine()) != null && !line.equals("")) {
             messageBuilder.append(line).append(CRLF);
         }
         messageBuilder.append(CRLF);
