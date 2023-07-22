@@ -13,6 +13,7 @@ import util.StringUtils;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.Objects;
 
 import static util.StringUtils.getExtension;
@@ -31,16 +32,9 @@ public class ResponseHandler {
         HttpResponse httpResponse = handleHttpRequest(httpRequest);
         try (OutputStream out = this.connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
-            HttpStatus status = httpResponse.getHttpStatus();
-            if (status == HttpStatus.OK) {
-                response200(dos, httpResponse);
-            }
-            if (status == HttpStatus.FOUND) {
-                response302Header(dos, httpResponse);
-            }
-            if (status == HttpStatus.NOT_FOUND) {
-                response404(dos);
-            }
+
+            writeResponse(dos, httpResponse);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -82,77 +76,49 @@ public class ResponseHandler {
         return httpResponse;
     }
 
-    private void response200(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
-        try {
-            InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
-            byte[] body = fileInputStream.readAllBytes();
-            response200Header(dos, httpResponse, body);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            response404(dos);
-        }
-    }
+    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        HttpStatus status = httpResponse.getHttpStatus();
+        InputStream fileInputStream;
+        byte[] body;
 
-    private void response200Header(DataOutputStream dos, HttpResponse httpResponse, byte[] body) {
         try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + httpResponse.getContentType().getType() + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + body.length + "\r\n");
-            for (Cookie cookie : httpResponse.getCookies()) {
-                dos.writeBytes("Set-Cookie: " + cookie.toString() + "\r\n");
-            }
+            fileInputStream = getResourceAsStream(httpResponse.getPath());
+            body = fileInputStream.readAllBytes();
+            httpResponse.setBody(body);
+
+            dos.writeBytes("HTTP/1.1 " + status.value() + " " + status.reasonPhrase() + " \r\n");
+            writeHeaders(dos, httpResponse);
             dos.writeBytes("\r\n");
-            logger.debug("200 response");
+            writeBody(dos, httpResponse.getBody());
+            logger.debug("{} response", httpResponse.getHttpStatus().value());
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            fileInputStream = getResourceAsStream("/error.html");
+            body = fileInputStream.readAllBytes();
+            writeBody(dos, body);
         }
     }
 
-    private void response302Header(DataOutputStream dos, HttpResponse httpResponse) {
-        try {
-            dos.writeBytes("HTTP/1.1 302 Found\r\n");
+    private void writeHeaders(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+        if (httpResponse.getHttpStatus().value() / 100 == 3) {
             dos.writeBytes("Location: " + httpResponse.getPath() + "\r\n");
             dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
             dos.writeBytes("Pragma: no-cache\r\n");
             dos.writeBytes("Expires: 0\r\n");
-            dos.writeBytes("\r\n");
-            logger.debug("302 response");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+            return;
+        }
+        List<Cookie> cookies = httpResponse.getCookies();
+        dos.writeBytes("Content-Type: " + httpResponse.getContentType().getType() + ";charset=utf-8\r\n");
+        dos.writeBytes("Content-Length: " + httpResponse.getBody().length + "\r\n");
+        for (Cookie cookie : cookies) {
+            dos.writeBytes("Set-Cookie: " + cookie.toString() + "\r\n");
         }
     }
 
-    private void response404(DataOutputStream dos) throws IOException {
-        byte[] body;
-        try {
-            InputStream fileInputStream = getResourceAsStream("/error.html");
-            body = fileInputStream.readAllBytes();
-        } catch (IOException e) {
-            body = "<html><body><h1>404 Not Found</h1></body></html>".getBytes();
-        }
-        response404Header(dos, body);
-        responseBody(dos, body);
-    }
-
-    private void response404Header(DataOutputStream dos, byte[] body) {
-        try {
-            dos.writeBytes("HTTP/1.1 404 Not Found\r\n");
-            dos.writeBytes("Content-Type: text/html; charset=UTF-8\r\n");
-            dos.writeBytes("Content-Length: " + body.length + "\r\n");
-            dos.writeBytes("\r\n");
-            logger.debug("404 response");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    private void writeBody(DataOutputStream dos, byte[] body) throws IOException {
+        if (body.length == 0)
+            return;
+        dos.write(body, 0, body.length);
+        dos.flush();
     }
 
     private InputStream getResourceAsStream(String path) throws FileNotFoundException {
