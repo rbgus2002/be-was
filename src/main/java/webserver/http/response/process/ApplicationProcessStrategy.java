@@ -25,82 +25,100 @@ import webserver.http.response.HttpResponse;
 import webserver.http.response.ResponseLine;
 
 public class ApplicationProcessStrategy implements ContentProcessStrategy {
+    private static final String CLASS_EXTENSION = ".class";
+
     @Override
     public HttpResponse process(final HttpRequest httpRequest) {
-        List<Class> classes = findByHasAnnotationClasses(RestController.class);
-
-        Method targetMethod = classes.stream()
-                .flatMap(clazz -> Arrays.stream(clazz.getMethods()))
-                .filter(method -> method.isAnnotationPresent(RequestMapping.class))
-                .filter(method -> method.getAnnotation(RequestMapping.class).value().equals(httpRequest.getPath()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 경로의 메서드를 찾을 수 없습니다."));
-
-        return processMethod(httpRequest, targetMethod);
-    }
-
-    private HttpResponse processMethod(final HttpRequest httpRequest, final Method method) {
         try {
-            QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
-            Map<String, String> map = queryParameter.getMap();
-
-            Object[] parameters = Arrays.stream(method.getParameters())
-                    .filter(parameter -> map.containsKey(parameter.getDeclaredAnnotation(RequestParam.class).value()))
-                    .map(parameter -> map.get(parameter.getDeclaredAnnotation(RequestParam.class).value()))
-                    .toArray();
-
-            Object invoke = method.invoke(method.getDeclaringClass().newInstance(), parameters);
-
-            return new HttpResponse(
-                    new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
-            );
-        } catch (InstantiationException | IllegalAccessException | IOException e) {
+            List<Class> classes = findByHasAnnotationClasses(RestController.class);
+            Method targetMethod = findTargetMethod(httpRequest, classes);
+            return processMethod(httpRequest, targetMethod);
+        } catch (
+                InstantiationException | IllegalAccessException | IOException | NoSuchMethodException |
+                ClassNotFoundException exception) {
             return HttpResponse.internalError(httpRequest.getMIME());
         } catch (InvocationTargetException e) {
             return HttpResponse.badRequest(httpRequest.getMIME());
         }
     }
 
+    private Method findTargetMethod(final HttpRequest httpRequest, final List<Class> classes) {
+        return classes.stream()
+                .flatMap(clazz -> Arrays.stream(clazz.getMethods()))
+                .filter(method -> method.isAnnotationPresent(RequestMapping.class))
+                .filter(method -> method.getAnnotation(RequestMapping.class).value().equals(httpRequest.getPath()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 경로의 메서드를 찾을 수 없습니다."));
+    }
+
+    private HttpResponse processMethod(final HttpRequest httpRequest, final Method method)
+            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
+
+        QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
+
+        Object invoke = method.invoke(
+                method.getDeclaringClass().getDeclaredConstructor().newInstance(),
+                getMethodParameters(method, queryParameter.getMap())
+        );
+
+        return new HttpResponse(
+                new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
+        );
+    }
+
+    private Object[] getMethodParameters(final Method method, final Map<String, String> map) {
+        return Arrays.stream(method.getParameters())
+                .filter(parameter -> map.containsKey(parameter.getDeclaredAnnotation(RequestParam.class).value()))
+                .map(parameter -> map.get(parameter.getDeclaredAnnotation(RequestParam.class).value()))
+                .toArray();
+    }
+
     private byte[] convertObjectToBytes(Object obj) throws IOException {
-        ByteArrayOutputStream boas = new ByteArrayOutputStream();
-        try (ObjectOutputStream ois = new ObjectOutputStream(boas)) {
-            ois.writeObject(obj);
-            return boas.toByteArray();
+        try (
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)
+        ) {
+            objectOutputStream.writeObject(obj);
+            return byteArrayOutputStream.toByteArray();
         }
     }
 
-    private List<Class> findByHasAnnotationClasses(final Class annotation) {
+    private List<Class> findByHasAnnotationClasses(final Class annotation) throws ClassNotFoundException {
+        validationIsAnnotation(annotation);
         return getAllClass().stream()
                 .filter(clazz -> clazz.isAnnotationPresent(annotation))
                 .collect(Collectors.toList());
     }
 
-    private List<Class> getAllClass() {
-        List<Class> result = new ArrayList<>();
+    private void validationIsAnnotation(final Class annotation) {
+        if (!annotation.isAnnotation()) {
+            throw new IllegalArgumentException("클래스가 어노테이션이 아닙니다.");
+        }
+    }
 
+    private List<Class> getAllClass() throws ClassNotFoundException {
         String canonicalName = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        return getClassesBy(getClassPaths(canonicalName, canonicalName));
+    }
 
-        List<String> list = getList(canonicalName, canonicalName);
+    private static List<Class> getClassesBy(final List<String> list) throws ClassNotFoundException {
+        List<Class> result = new ArrayList<>();
         for (String s : list) {
-            try {
-                Class<?> clazz = ClassLoader.getSystemClassLoader().loadClass(s.replace("/", ".").substring(1));
-                result.add(clazz);
-            } catch (ClassNotFoundException exception) {
-                // 아무것도 안함
-            }
+            Class<?> clazz = ClassLoader.getSystemClassLoader()
+                    .loadClass(s.replace("/", ".").substring(1));
+            result.add(clazz);
         }
         return result;
     }
 
-    private List<String> getList(final String root, final String path) {
+    private List<String> getClassPaths(final String root, final String path) {
         List<String> result = new ArrayList<>();
-        File file = new File(path);
-        for (String s : Objects.requireNonNull(file.list())) {
-            if (s.contains(".class")) {
-                result.add(path.split(root)[1] + "/" + s.replace(".class", ""));
+        for (String s : Objects.requireNonNull(new File(path).list())) {
+            if (s.contains(CLASS_EXTENSION)) {
+                result.add(path.split(root)[1] + "/" + s.replace(CLASS_EXTENSION, ""));
             }
-            if (!s.contains(".class")) {
-                result.addAll(getList(root, path + "/" + s));
+            if (!s.contains(CLASS_EXTENSION)) {
+                result.addAll(getClassPaths(root, path + "/" + s));
             }
         }
         return result;
@@ -108,11 +126,11 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
 
     @Override
     public URL getURL(final HttpRequest httpRequest) {
-        return ContentProcessStrategy.super.getURL(httpRequest);
+        throw new RuntimeException("애플리케이션 요청입니다.");
     }
 
     @Override
     public String getRoot() {
-        return null;
+        throw new RuntimeException("애플리케이션 요청입니다.");
     }
 }
