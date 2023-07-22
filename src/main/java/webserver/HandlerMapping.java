@@ -14,21 +14,27 @@ import java.util.Set;
 
 public class HandlerMapping {
 
-    private static final String ROOT_PATH = "src/main";
+    private static final String ROOT_PATH = "src/main/java";
     private static final Logger logger = LoggerFactory.getLogger(HandlerMapping.class);
 
-    protected Object getHandler(HttpRequest request) {
+    /**
+     * URL을 handle하는 Controller를 찾아 반환
+     * @param request
+     * @return Object, Class<?> Controller를 Object로 Casting한 객체 반환
+     * null, Controller 클래스가 존재하지 않거나 매핑되는 Controller가 존재하지 않을 때 null 반환
+     */
+    protected Class<?> getHandler(HttpRequest request) {
 
-        Set<Class<?>> controllers = reflection(ROOT_PATH);
+        Set<Class<?>> controllers = reflectionControllerFinder(ROOT_PATH);
 
         String uri = request.getRequestURI();
 
-        //TODO: 예외처리 부분 404 페이지 반환하도록 수정
+        //Controller 클래스가 존재하지 않을 때 null 반환
         if(controllers.isEmpty()) {
             return null;
         }
 
-        //TODO: 예외처리 부분 404 페이지 반환하도록 수정
+        //매핑되는 URI를 가진 메서드가 존재하는 controller 반환, 없으면 NULL
         return controllers.stream().filter(controller ->
             Arrays.stream(controller.getDeclaredMethods()).anyMatch(method -> {
                 if(method.isAnnotationPresent(RequestMapping.class)) {
@@ -36,10 +42,15 @@ public class HandlerMapping {
                 }
                 return false;
             })
-        ).findFirst().orElseThrow(() -> new RuntimeException("매핑되는 컨트롤러가 존재하지 않습니다."));
+        ).findFirst().orElse(null);
     }
 
-    private Set<Class<?>> reflection(String path) {
+    /**
+     * Controller 어노테이션이 붙은 Controller 클래스 Set을 반환
+     * @param path, 검색을 시작할 디렉토리 위치
+     * @return Set<Class<?>>, Controller 클래스 Set, 하나도 존재하지 않으면 emptySet() 반환
+     */
+    private Set<Class<?>> reflectionControllerFinder(String path) {
         Set<Class<?>> controllers = new HashSet<>();
 
         File rootDir = new File(path);
@@ -58,24 +69,23 @@ public class HandlerMapping {
             File subFile = new File(subPath);
 
             if(subFile.isDirectory()) {
-                controllers.addAll(reflection(subPath));
+                controllers.addAll(reflectionControllerFinder(subPath));
                 continue;
             }
 
-            if(subPath.endsWith(".class")) {
-                String className = subPath.substring(0, subPath.length() - ".class".length());
-
+            if(subPath.endsWith(".java")) {
                 try {
-                    Class<?> clazz = Class.forName(path.replace('/', '.') + "." + className);
+                    subPath = subPath.substring(ROOT_PATH.length() + 1).replace('/', '.');
+                    subPath = subPath.substring(0, subPath.length() - ".java".length());
+                    Class<?> clazz = Class.forName(subPath);
                     if(isController(clazz)) {
                         controllers.add(clazz);
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (Exception e) {
                     logger.error(e.getMessage());
                 }
             }
         }
-
         return controllers;
     }
 
