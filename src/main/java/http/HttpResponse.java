@@ -26,7 +26,7 @@ public class HttpResponse {
         this.statusCode = statusCode;
         this.mime = mime;
 
-        if (path.equals("/index.html") || mime == null) {
+        if (mime.equals(MIME.html)) {
             this.body = Files.readAllBytes(new File(TEMPLATE_PATH + path).toPath());
         } else {
             this.body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
