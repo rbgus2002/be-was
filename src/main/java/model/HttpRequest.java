@@ -16,27 +16,29 @@ import java.util.StringTokenizer;
 
 public class HttpRequest {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServletContainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
     private final HttpMethod METHOD;
 
     private final String URI;
 
-    private final String PROTOCOL;
+    private final String VERSION;
 
     private Map<String, String> headers;
     private Map<String, String> parameters;
 
+    //TODO: ReadLine() 하지마라
     public HttpRequest(InputStream in) throws IOException {
         headers = new HashMap<>();
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
         String input = bufferedReader.readLine();
+        logger.debug(input);
         String[] startLine = input.split(" ");
         METHOD = HttpMethod.valueOf(startLine[0]);
         URI = startLine[1];
-        PROTOCOL = startLine[2];
+        VERSION = startLine[2];
 
         //TODO: 일급 컬렉션으로 헤더 별도 저장하기
         while (!(input = bufferedReader.readLine()).equals("")) {
@@ -109,8 +111,8 @@ public class HttpRequest {
         return URI.substring(URI.indexOf('?')+1);
     }
 
-    public String getProtocol() {
-        return PROTOCOL;
+    public String getVersion() {
+        return VERSION;
     }
 
     public String getParameter(String name) {

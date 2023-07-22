@@ -52,7 +52,7 @@ class HttpRequestTest {
         assertEquals("text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7", httpRequest.getHeader("Accept"));
         assertEquals(HttpMethod.GET, httpRequest.getMethod());
         assertEquals("name=hello&pass=1234", httpRequest.getQueryString());
-        assertEquals("HTTP/1.1", httpRequest.getProtocol());
+        assertEquals("HTTP/1.1", httpRequest.getVersion());
         assertEquals("hello", httpRequest.getParameter("name"));
         assertEquals("1234", httpRequest.getParameter("pass"));
     }
