@@ -1,6 +1,6 @@
 package db;
 
-import org.junit.jupiter.api.AfterEach;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,16 +9,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SessionTest {
 
-    String sessionId;
+    Session session;
 
     @BeforeEach
     void setUp() {
-        sessionId = Session.createSession();
-    }
-
-    @AfterEach
-    void tearDown() {
-        Session.invalidateSession(sessionId);
+        session = new Session();
     }
 
     @Test
@@ -27,24 +22,24 @@ class SessionTest {
         //given
         String key = "hello";
         String value = "world";
+        Session session = new Session();
 
         //when
-        Session.setAttribute(sessionId, key, value);
+        session.setAttribute(key, value);
 
         //then
-        assertThat(Session.getAttribute(sessionId, key)).isEqualTo(value);
+        assertThat(session.getAttribute(key)).isEqualTo(value);
     }
 
     @Test
     @DisplayName("세션에 키가 없으면 null이 반환된다.")
     void getAttributeNull() {
         //when
-        Object value = Session.getAttribute(sessionId, "b");
+        Object value = session.getAttribute("b");
 
         //then
         assertThat(value).isNull();
     }
-
 
     @Test
     @DisplayName("세션의 값을 삭제한다.")
@@ -52,28 +47,28 @@ class SessionTest {
         //given
         String key = "hi";
         String value = "hello";
-        Session.setAttribute(sessionId, key, value);
+        session.setAttribute(key, value);
 
         //when
-        Session.removeAttribute(sessionId, key);
+        session.removeAttribute(key);
 
         //then
-        Object result = Session.getAttribute(sessionId, key);
+        Object result = session.getAttribute(key);
         assertThat(result).isNull();
     }
 
     @Test
-    @DisplayName("세션을 삭제하면 null을 얻는다.")
-    void invalidateSessionGetNull() {
-        //given
-        String key = "hello";
-        String value = "world";
-        Session.setAttribute(sessionId, key, value);
+    @DisplayName("세션의 접근 시간을 현재로 바꾼다.")
+    void changeAccessTime() throws InterruptedException {
+        long oldAccessedTime = session.getLastAccessedTime();
+        session.setLastAccessedTimeNow();
+        long nowAccessedTime = session.getLastAccessedTime();
 
-        //when
-        Session.invalidateSession(sessionId);
+        Thread.sleep(1);
 
-        //then
-        assertThat(Session.getAttribute(sessionId, key)).isNull();
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(oldAccessedTime < nowAccessedTime).isTrue();
+            softAssertions.assertThat(nowAccessedTime < System.currentTimeMillis()).isTrue();
+        });
     }
 }

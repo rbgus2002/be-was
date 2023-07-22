@@ -1,42 +1,34 @@
 package db;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Session {
 
-    private static final Map<String, Map<String, Object>> sessions = new ConcurrentHashMap<>();
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
+    private long lastAccessedTime;
 
-    public static String createSession() {
-        String sessionId = UUID.randomUUID().toString();
-        sessions.put(sessionId, new ConcurrentHashMap<>());
-        return sessionId;
+    public Session() {
+        this.lastAccessedTime = System.currentTimeMillis();
     }
 
-    public static void setAttribute(String sessionId, String key, String value) {
-        Map<String, Object> sessionData = sessions.get(sessionId);
-        if (sessionData != null) {
-            sessionData.put(key, value);
-        }
+    public long getLastAccessedTime() {
+        return this.lastAccessedTime;
     }
 
-    public static Object getAttribute(String sessionId, String key) {
-        Map<String, Object> sessionData = sessions.get(sessionId);
-        if (sessionData != null) {
-            return sessionData.get(key);
-        }
-        return null;
+    public void setLastAccessedTimeNow() {
+        this.lastAccessedTime = System.currentTimeMillis();
     }
 
-    public static void removeAttribute(String sessionId, String key) {
-        Map<String, Object> sessionData = sessions.get(sessionId);
-        if (sessionData != null) {
-            sessionData.remove(key);
-        }
+    public Object getAttribute(String name) {
+        return this.attributes.get(name);
     }
 
-    public static void invalidateSession(String sessionId) {
-        sessions.remove(sessionId);
+    public void setAttribute(String name, Object value) {
+        this.attributes.put(name, value);
+    }
+
+    public void removeAttribute(String name) {
+        this.attributes.remove(name);
     }
 }
