@@ -18,12 +18,13 @@ import static webserver.http.HttpStatus.*;
 
 public class DispatcherServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
+    private static final DispatcherServlet servlet = new DispatcherServlet();
 
     private DispatcherServlet() {
     }
 
     public static DispatcherServlet init() {
-        return new DispatcherServlet();
+        return servlet;
     }
 
     public void doService(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
