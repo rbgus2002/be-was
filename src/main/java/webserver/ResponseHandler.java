@@ -46,7 +46,7 @@ public class ResponseHandler {
         Cookie sessionCookie = httpRequest.getCookie("sid");
         String sid = getSessionIdOrCreate(sessionCookie);
         Session session = sessionManager.getSession(sid);
-        HttpResponse httpResponse = getHttpResponse(httpRequest, session);
+        HttpResponse httpResponse = processHttpRequest(httpRequest, session);
         if (isCreatedSession(sessionCookie, sid)) {
             httpResponse.setCookie("sid", sid);
         }
@@ -65,7 +65,7 @@ public class ResponseHandler {
         return sessionCookie == null || !sid.equals(sessionCookie.getValue());
     }
 
-    private HttpResponse getHttpResponse(HttpRequest httpRequest, Session session) {
+    private HttpResponse processHttpRequest(HttpRequest httpRequest, Session session) {
         String path = httpRequest.uri().getPath();
         String extension = StringUtils.getExtension(path);
         if (!Objects.equals(extension, path)) {
