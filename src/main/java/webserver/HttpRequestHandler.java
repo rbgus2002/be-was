@@ -21,10 +21,10 @@ public class HttpRequestHandler {
     {
         routeTables.put(new RouteKey(HttpMethod.GET, "/index.html"), new IndexHandler());
         routeTables.put(new RouteKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
-        routeTables.put(new RouteKey(HttpMethod.GET, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
+        routeTables.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
         addStaticFilesRecords();
     }
-
+    
     private void addStaticFilesRecords() {
         StaticFileHandler staticFileHandler = new StaticFileHandler();
         List<String> filePaths = FileNameScanner.scan("src/main/resources/static");
