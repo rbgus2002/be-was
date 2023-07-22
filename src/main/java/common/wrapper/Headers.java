@@ -1,4 +1,4 @@
-package common.http;
+package common.wrapper;
 
 public class Headers extends KeyValuePair {
 

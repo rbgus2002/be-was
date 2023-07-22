@@ -1,9 +1,9 @@
 package utils;
 
 import common.enums.RequestMethod;
-import common.http.Headers;
+import common.wrapper.Headers;
 import common.http.HttpRequest;
-import common.http.Queries;
+import common.wrapper.Queries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

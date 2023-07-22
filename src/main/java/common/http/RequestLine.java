@@ -2,6 +2,7 @@ package common.http;
 
 import common.enums.ContentType;
 import common.enums.RequestMethod;
+import common.wrapper.Queries;
 
 import java.util.Optional;
 

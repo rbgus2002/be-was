@@ -1,6 +1,7 @@
 package common.http;
 
 import common.enums.ContentType;
+import common.wrapper.Queries;
 
 import static common.enums.ContentType.*;
 import static common.enums.ContentType.NONE;

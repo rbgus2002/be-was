@@ -1,5 +1,7 @@
 package common.http;
 
+import common.wrapper.Queries;
+
 import java.util.Optional;
 
 public class RequestBody {

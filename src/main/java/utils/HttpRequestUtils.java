@@ -2,6 +2,7 @@ package utils;
 
 import common.enums.RequestMethod;
 import common.http.*;
+import common.wrapper.Headers;
 
 import java.io.BufferedReader;
 import java.io.IOException;

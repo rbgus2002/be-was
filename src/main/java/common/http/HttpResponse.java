@@ -2,20 +2,25 @@ package common.http;
 
 import common.enums.ContentType;
 import common.enums.ResponseCode;
+import common.wrapper.Headers;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import static webserver.ServerConfig.STATIC_PATH;
 
 public class HttpResponse {
     private ResponseCode responseLine;
     private Headers headers;
+    private final List<Cookie> cookies;
     private byte[] body;
 
     public HttpResponse() {
         headers = new Headers();
+        cookies = new ArrayList<>();
     }
 
     public String getResponseLine() {
@@ -30,6 +35,12 @@ public class HttpResponse {
             headerLine = key + ": " + headers.getValue(key) + "\r\n";
             headerBuilder.append(headerLine);
         }
+
+        for (Cookie cookie : cookies) {
+            headerLine = "Set-Cookie: " + cookie.toString() + "\r\n";
+            headerBuilder.append(headerLine);
+        }
+
         return headerBuilder.toString();
     }
 
@@ -43,6 +54,10 @@ public class HttpResponse {
 
     public void addHeader(String key, String value) {
         headers.addAttribute(key, value);
+    }
+
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
     }
 
     public void setBody(byte[] body) {
