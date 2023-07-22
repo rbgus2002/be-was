@@ -1,5 +1,8 @@
 package http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,11 +12,13 @@ import static util.Parser.*;
 import static util.StringUtil.*;
 
 public class HttpRequest {
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
     private String method;
     private String path;
     private MIME mime;
     private Map<String, String> params;
     private Map<String, String> headers;
+    private String body;
     private String httpVersion;
 
     public HttpRequest(InputStream in) throws Exception {
@@ -27,6 +32,9 @@ public class HttpRequest {
         this.params = parseParamsFromUrl(tokens[1]);
         this.httpVersion = tokens[2];
         this.headers = parseHeaders(br);
+        if(headers.containsKey("Content-Length")) {
+            this.body = parseBody(br, Integer.parseInt(headers.get("Content-Length")));
+        }
     }
 
     private MIME convertExtensionToMime(String extension) {
@@ -59,6 +67,10 @@ public class HttpRequest {
 
     public String getVersion() {
         return this.httpVersion;
+    }
+
+    public String getBody() {
+        return this.body;
     }
 
     @Override
