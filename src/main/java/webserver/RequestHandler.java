@@ -27,7 +27,7 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
                 connection.getPort());
         HttpResponse response = new HttpResponse();
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            if(in.readAllBytes() == null) {
+            if(in == null) {
                 return;
             }
             HttpRequest request = HttpRequestParser.getRequest(in);
@@ -46,7 +46,6 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
     private void process(HttpRequest request, HttpResponse response) throws IOException {
         try {
             FrontController.service(request, response);
-            response.setStatus(HttpResponseStatus.STATUS_200);
         } catch (NotFoundException e) {
             response.setStatus(HttpResponseStatus.STATUS_404);
             response.setBodyByText("404 NOT FOUND");

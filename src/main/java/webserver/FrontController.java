@@ -15,13 +15,13 @@ public class FrontController {
     public static void service(HttpRequest request, HttpResponse response) throws IOException {
         if(StaticFIleUtils.isExistedStaticFileRequest(request.getUrl())) {
             StaticFIleUtils.getStaticByte(request.getUrl(), response);
+            response.setStatus(HttpResponseStatus.STATUS_200);
             return;
         }
 
         Controller controller = HttpRequestMapper.getInstance().getController(request.getMethod(), request.getUrl());
 
         if(controller == null){
-            response.setStatus(HttpResponseStatus.STATUS_404);
             throw new NotFoundException();
         }
 
