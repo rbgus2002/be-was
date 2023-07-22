@@ -4,7 +4,7 @@ import exception.InvalidVersionException;
 
 import java.util.Arrays;
 
-public enum Version {
+public enum HttpVersion {
     HTTP_0_9("HTTP/0.9"),
     HTTP_1_0("HTTP/1.0"),
     HTTP_1_1("HTTP/1.1"),
@@ -13,12 +13,12 @@ public enum Version {
 
     private final String description;
 
-    Version(String description) {
+    HttpVersion(String description) {
         this.description = description;
     }
 
-    public static Version of(final String version) {
-        return Arrays.stream(Version.values())
+    public static HttpVersion of(final String version) {
+        return Arrays.stream(HttpVersion.values())
                 .filter(v -> v.description.equals(version))
                 .findFirst()
                 .orElseThrow(() -> new InvalidVersionException(version));
