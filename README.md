@@ -6,7 +6,8 @@ Java Web Application Server 2023
 
 이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was 
 를 참고하여 작성되었습니다.
-
+<br><br>
+---
 # Step-1
 ## 구현 사항
 - [x] Concurrent 패키지의 Executors 클래스를 사용하여 멀티 스레드 방식을 적용
@@ -32,5 +33,34 @@ Java Web Application Server 2023
 - ETC
   - [Logging](https://github.com/csct3434/be-was/wiki/%EB%A1%9C%EA%B9%85)
   - [Socket](https://github.com/csct3434/be-was/wiki/%EC%86%8C%EC%BC%93)
-  - [Java Thread](https://github.com/csct3434/be-was/wiki/%EC%9E%90%EB%B0%94-%EC%93%B0%EB%A0%88%EB%93%9C)
-  - [Concurrent package](https://github.com/csct3434/be-was/wiki/concurrent-package)
+  - [Java Thread](https://github.com/csct3434/be-was/wiki/Java-Thread)
+  - [Concurrent Package](https://github.com/csct3434/be-was/wiki/concurrent-package)
+<br><br>
+---
+# Step-2
+## 구현 사항
+- [x] GET으로 회원가입 기능 구현
+- [x] URL Parameter 생략 시 Bad Request 응답
+- [x] 회원정보 미입력 시 Bad Request 응답
+- [x] 아이디가 중복되면 Conflict 응답
+## 학습 내용
+- [URL 인코딩](https://github.com/csct3434/be-was/wiki/URL-Encoding)
+<br><br>
+
+---
+# Step-3
+## 구현 사항
+- [x] stylesheet와 파비콘 등을 위한 다양한 컨텐츠 타입 지원
+  - html, css, js, png, eot, svg, ttf, woff, woff2, ico, jpg, jpeg
+## 학습 내용
+- [MIME Type](https://github.com/csct3434/be-was/wiki/MIME-Type)
+<br><br>
+---
+# Step-4
+## 구현 사항
+- [x] 회원가입 요청 방식을 GET에서 POST로 변경
+- [x] 회원가입 완료 후 /index.html 페이지로 이동
+## 학습 내용
+- [HTTP Redirect](https://github.com/csct3434/be-was/wiki/HTTP-Redirect)
+- [HTTP Method : GET vs POST](https://github.com/csct3434/be-was/wiki/GET-vs-POST)
+- [Idempotent Method vs Safe Method](https://github.com/csct3434/be-was/wiki/Idempotent-Method-vs-Safe-Method)
