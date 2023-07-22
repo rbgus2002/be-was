@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WebServer {
-    private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
+    public static final Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
     private static final int MAX_THREAD_POOL = 200;
 
