@@ -11,8 +11,11 @@ import webserver.http.HttpStatus;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
 
-public class UserSaveController {
-    public void process(HttpRequest httpRequest, HttpResponse httpResponse) {
+import java.io.IOException;
+
+public class UserSaveController implements Controller {
+    @Override
+    public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
             HttpParameters httpParameters = HttpParametersParser.parse(httpRequest.getBody());
 
@@ -21,7 +24,7 @@ public class UserSaveController {
             String userId = httpParameters.get("userId");
             String password = httpParameters.get("password");
             String name = httpParameters.get("name");
-            String email =  httpParameters.get("email");
+            String email = httpParameters.get("email");
 
             verifyEmptyParameter(userId, password, name, email);
 
