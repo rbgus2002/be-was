@@ -7,14 +7,12 @@ import model.User;
 import java.util.Collection;
 import java.util.Map;
 
-import org.checkerframework.checker.units.qual.Mass;
-
 public class Database {
 	public static final String USERID_ALREADY_EXISTS_MESSAGE = "이미 userId가 존재합니다.";
-	private static Map<String, User> users = Maps.newHashMap();
+	private static Map<String, User> users = Maps.newConcurrentMap();
 
 	public static void dropAll() {
-		users = Maps.newHashMap();
+		users = Maps.newConcurrentMap();
 	}
 
 	public static void addUser(User user) throws IllegalArgumentException {
