@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import db.Session;
 import http.HttpResponse;
 import model.User;
 import org.junit.jupiter.api.*;
@@ -92,7 +93,7 @@ class ControllerTest {
             loginParameters.put("password", password);
 
             //when
-            HttpResponse httpResponse = controller.login(loginParameters);
+            HttpResponse httpResponse = controller.login(loginParameters, new Session());
 
             //then
             assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.redirect("/index.html"));
@@ -108,7 +109,7 @@ class ControllerTest {
             loginParameters.put("password", password);
 
             //when, then
-            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters));
+            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters, new Session()));
         }
 
         @Test
@@ -121,7 +122,7 @@ class ControllerTest {
             loginParameters.put("password", invalidPassword);
 
             //when, then
-            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters));
+            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters, new Session()));
         }
     }
 
