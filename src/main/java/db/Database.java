@@ -4,10 +4,9 @@ import model.User;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class Database {
-    private static ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
