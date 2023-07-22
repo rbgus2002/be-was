@@ -2,7 +2,6 @@ package model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.ServletContainer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +40,7 @@ public class HttpRequest {
         VERSION = startLine[2];
 
         //TODO: 일급 컬렉션으로 헤더 별도 저장하기
-        while (!(input = bufferedReader.readLine()).equals("")) {
+        while (!(input = bufferedReader.readLine()).isBlank()) {
             StringTokenizer tokenizer = new StringTokenizer(input, ":");
 
             String key = tokenizer.nextToken().trim();

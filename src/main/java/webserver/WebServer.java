@@ -1,5 +1,6 @@
 package webserver;
 
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -30,10 +31,8 @@ public class WebServer {
             ExecutorService executor = Executors.newCachedThreadPool();
 
             while ((connection = listenSocket.accept()) != null) {
-                executor.submit(new ServletContainer(connection));
+                executor.execute(new ServletContainer(connection));
             }
-
-            executor.shutdown();
         }
     }
 }

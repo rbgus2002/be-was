@@ -2,7 +2,6 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 
 import model.HttpRequest;
 import model.HttpResponse;
@@ -10,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ServletContainer implements Runnable {
-
-    private final String STATIC_PATH = "./src/main/resources/static";
-    private final String DYNAMIC_PATH = "./src/main/resources/templates";
 
     private static final Logger logger = LoggerFactory.getLogger(ServletContainer.class);
 
@@ -33,10 +29,9 @@ public class ServletContainer implements Runnable {
             DispatcherServlet dispatcherServlet = new DispatcherServlet(request, response);
             dispatcherServlet.doService(request, response);
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(DYNAMIC_PATH + request.getRequestURI()).toPath());
-            dos.write(response.write());
+            response.write(dos);
             dos.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
