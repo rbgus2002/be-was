@@ -64,7 +64,7 @@ class HttpRequestTest {
     }
 
     @Test
-    @DisplayName("Http Request에서 쿠키를 배열로 얻는다.")
+    @DisplayName("Http Request에서 쿠키를 얻는다.")
     void getCookies() throws URISyntaxException, IOException {
         //given
         List<String> strings = List.of("GET /user/create.png HTTP/1.1",
@@ -74,13 +74,16 @@ class HttpRequestTest {
 
         //when
         HttpRequest httpRequest = new HttpRequest(bufferedReader);
-        List<Cookie> cookies = httpRequest.getCookies();
+        Cookie sid = httpRequest.getCookie("sid");
+        Cookie name = httpRequest.getCookie("name");
 
         //then
         Cookie cookie1 = new Cookie("sid", "12345");
         Cookie cookie2 = new Cookie("name", "god");
-        List<Cookie> expectedCookies = List.of(cookie1, cookie2);
-        assertThat(cookies).usingRecursiveComparison().isEqualTo(expectedCookies);
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(sid).usingRecursiveComparison().isEqualTo(cookie1);
+            softAssertions.assertThat(name).usingRecursiveComparison().isEqualTo(cookie2);
+        });
     }
 
     private BufferedReader stringListToBufferedReader(List<String> strings) {

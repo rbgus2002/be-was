@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,8 +62,11 @@ public class HttpRequest {
         return this.body;
     }
 
-    public List<Cookie> getCookies() {
-        return new ArrayList<>(this.cookies);
+    public Cookie getCookie(String name) {
+        return cookies.stream()
+                .filter(cookie -> cookie.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
     public void printLogs() {
