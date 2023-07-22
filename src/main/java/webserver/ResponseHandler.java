@@ -69,14 +69,13 @@ public class ResponseHandler {
         if (!Objects.equals(extension, path)) {
             // 정적 파일 응답
             return HttpResponse.ok(path, httpRequest.mime());
-        } else {
-            // 잘못된 http request이면 /error.html response 생성
-            try {
-                return RequestMappingHandler.invokeMethod(httpRequest, session);
-            } catch (Throwable e) {
-                logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
-                return HttpResponse.notFound();
-            }
+        }
+        // 잘못된 http request이면 /error.html response 생성
+        try {
+            return RequestMappingHandler.invokeMethod(httpRequest, session);
+        } catch (Throwable e) {
+            logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
+            return HttpResponse.notFound();
         }
     }
 
