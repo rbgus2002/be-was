@@ -9,6 +9,7 @@ public class HttpResponse {
     private final HttpStatus httpStatus;
     private final Mime contentType;
     private final List<Cookie> cookies;
+    private byte[] body;
 
     public static HttpResponse ok(String path, Mime mime) {
         return new HttpResponse(path, mime, HttpStatus.OK);
@@ -48,5 +49,13 @@ public class HttpResponse {
 
     public List<Cookie> getCookies() {
         return new ArrayList<>(this.cookies);
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
+
+    public byte[] getBody() {
+        return this.body;
     }
 }
