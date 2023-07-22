@@ -5,17 +5,15 @@ import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.ModelAndView;
-import view.ViewResolver;
 
 public final class DispatcherServlet {
 
-    private static final Logger logger = LoggerFactory.getLogger(ServletContainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
     private final HttpRequest request;
     private final HttpResponse response;
     private HandlerMapping handlerMapping;
     private HandlerAdapter handlerAdapter;
-    private ViewResolver viewResolver;
 
     public DispatcherServlet(HttpRequest request, HttpResponse response) {
         this.request = request;
@@ -24,14 +22,9 @@ public final class DispatcherServlet {
         initStrategies();
     }
 
-    protected void initStrategies() {
+    private void initStrategies() {
         initHandlerMapping();
         initHandlerAdapter();
-        initViewResolver();
-    }
-
-    private void initViewResolver() {
-        viewResolver = new ViewResolver();
     }
 
     private void initHandlerAdapter() {
@@ -42,32 +35,28 @@ public final class DispatcherServlet {
         handlerMapping = new HandlerMapping();
     }
 
-    //TODO: request, response의 초기화 시점
-    protected void doService(HttpRequest request, HttpResponse response) {
+     void doService(HttpRequest request, HttpResponse response) {
 
         doDispatch(request, response);
     }
 
-    //TODO: doDispatch(Request, Response) = 해당되는 컨트롤러(handler) 찾기 => handlerMapping 통해서, 컨트롤러 내부 메서드 실행(invoke)
-    protected void doDispatch(HttpRequest request, HttpResponse response) {
-        Object handler = handlerMapping.getHandler(request);
-        ModelAndView modelAndView = null;
+    private void doDispatch(HttpRequest request, HttpResponse response) {
+        Class<?> handler = handlerMapping.getHandler(request);
 
         try {
-            modelAndView = handlerAdapter.handle(handler);
-        } catch (Exception e) {
+            ModelAndView modelAndView = null;
 
+            //URI와 매핑되는 Controller가 존재하지 않거나 Controller 클래스 자체가 존재하지 않을 때
+            if(handler == null) {
+                modelAndView = handlerAdapter.staticView(request);
+                modelAndView.setResponse(request, response);
+                return;
+            }
+
+            modelAndView = handlerAdapter.handle(request, response, handler);
+            modelAndView.setResponse(request, response);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
     }
-
-    //TODO: modelAndView 결과를 보고 에러면 에러 페이지 출력
-    private void processDispatchResult(HttpRequest request, HttpResponse response, ModelAndView modelAndView) {
-
-    }
-
-    //TODO: 에러가 없으면 View 렌더링
-    private void render(ModelAndView modelAndView, HttpRequest request, HttpResponse response) {
-
-    }
-
 }
