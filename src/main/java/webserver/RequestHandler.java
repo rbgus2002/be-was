@@ -26,8 +26,7 @@ public class RequestHandler implements Runnable {
             HttpResponse response = HttpResponse.init();
 
             DispatcherServlet dispatcherServlet = DispatcherServlet.init();
-            dispatcherServlet.doService(request, response);
-            dispatcherServlet.processDispatchResult(request, response, out);
+            dispatcherServlet.doService(request, response, out);
         } catch (IOException e){
             logger.debug("readAllBytes ERROR");
         }

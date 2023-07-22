@@ -25,15 +25,16 @@ public class DispatcherServlet {
         return new DispatcherServlet();
     }
 
-    public void doService(HttpRequest request, HttpResponse response) throws Throwable {
+    public void doService(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
         logger.debug("{}", request);
 
-        doDispatch(request, response);
+        doDispatch(request, response, out);
     }
 
-    public void doDispatch(HttpRequest request, HttpResponse response) throws Throwable {
+    public void doDispatch(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
         Method method = HandlerMapping.getMethodMapped(request);
         handle(request, response, method);
+        processDispatchResult(request, response, out);
     }
 
     private void handle(HttpRequest request, HttpResponse response, Method method) throws Throwable {
@@ -84,8 +85,7 @@ public class DispatcherServlet {
         return method.getParameterCount() != 0;
     }
 
-    // FIXME : doDispatch 안에 삽입하고 private 변경
-    public void processDispatchResult(HttpRequest request, HttpResponse response, OutputStream out) {
+    private void processDispatchResult(HttpRequest request, HttpResponse response, OutputStream out) {
         ContentType type = ContentType.findBy(request.getPath());
         response.writeResponseToOutputStream(out, type);
     }
