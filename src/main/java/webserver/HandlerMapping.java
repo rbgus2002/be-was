@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HandlerMapping {
-    public static Map<String, Method> GETMap = new HashMap<>();;
+    public static Map<String, Method> GETMap = new HashMap<>();
     static{
         Method[] methods = Controller.class.getMethods();
         for (Method method : methods) {

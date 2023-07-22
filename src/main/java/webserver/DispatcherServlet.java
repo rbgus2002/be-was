@@ -52,7 +52,7 @@ public class DispatcherServlet {
         MethodHandle methodHandle = getMethodHandle(method);
         String path;
         if (hasParameter(methodHandle.type())) {
-            path = (String) methodHandle.invoke(request.getQuery());;
+            path = (String) methodHandle.invoke(request.getQuery());
         } else {
             path = (String) methodHandle.invoke();
         }
@@ -84,7 +84,8 @@ public class DispatcherServlet {
         return method.getParameterCount() != 0;
     }
 
-    public void processDispatchServlet(HttpRequest request, HttpResponse response, OutputStream out) {
+    // FIXME : doDispatch 안에 삽입하고 private 변경
+    public void processDispatchResult(HttpRequest request, HttpResponse response, OutputStream out) {
         ContentType type = ContentType.findBy(request.getPath());
         response.writeResponseToOutputStream(out, type);
     }

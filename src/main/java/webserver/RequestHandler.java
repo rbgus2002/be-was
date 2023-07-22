@@ -1,9 +1,7 @@
 package webserver;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
-import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +27,7 @@ public class RequestHandler implements Runnable {
 
             DispatcherServlet dispatcherServlet = DispatcherServlet.init();
             dispatcherServlet.doService(request, response);
-            dispatcherServlet.processDispatchServlet(request, response, out);
+            dispatcherServlet.processDispatchResult(request, response, out);
         } catch (IOException e){
             logger.debug("readAllBytes ERROR");
         }
