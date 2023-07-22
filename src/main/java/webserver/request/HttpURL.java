@@ -1,5 +1,6 @@
 package webserver.request;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class HttpURL {
@@ -12,7 +13,7 @@ public class HttpURL {
         this.url = url;
         this.extension = extension;
         this.path = path;
-        this.parameters = parameters;
+        this.parameters = Collections.unmodifiableMap(parameters);
     }
 
     public String getUrl() {
