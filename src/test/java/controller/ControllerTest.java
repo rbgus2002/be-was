@@ -100,7 +100,7 @@ class ControllerTest {
         }
 
         @Test
-        @DisplayName("userId로 사용자를 찾을 수 없으면 예외가 발생한다.")
+        @DisplayName("userId로 사용자를 찾을 수 없으면 login failed 페이지로 리다이렉트한다.")
         void userNotExist() {
             //given
             String noId = "kjdfksj";
@@ -108,12 +108,16 @@ class ControllerTest {
             loginParameters.put("userId", noId);
             loginParameters.put("password", password);
 
-            //when, then
-            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters, new Session()));
+            //when
+            HttpResponse response = controller.login(loginParameters, new Session());
+
+            //then
+            HttpResponse expected = HttpResponse.redirect("/user/login_failed.html");
+            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
         }
 
         @Test
-        @DisplayName("userId 찾은 사용자의 비밀번호가 다르면 예외가 발생한다.")
+        @DisplayName("userId 찾은 사용자의 비밀번호가 다르면 login failed 페이지로 리다이렉트한다.")
         void passwordNotMatch() {
             //given
             String invalidPassword = "kjdfksj";
@@ -121,8 +125,12 @@ class ControllerTest {
             loginParameters.put("userId", userId);
             loginParameters.put("password", invalidPassword);
 
-            //when, then
-            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters, new Session()));
+            //when
+            HttpResponse response = controller.login(loginParameters, new Session());
+
+            //then
+            HttpResponse expected = HttpResponse.redirect("/user/login_failed.html");
+            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
         }
     }
 
