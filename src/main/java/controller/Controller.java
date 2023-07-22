@@ -7,6 +7,8 @@ import model.User;
 import modelview.ModelView;
 import service.UserService;
 
+import java.util.Optional;
+
 import static common.enums.RequestMethod.GET;
 import static common.enums.RequestMethod.POST;
 
@@ -43,4 +45,24 @@ public class Controller {
         return mv;
     }
 
+    @RequestMapping(method = GET, path = "/user/login.html")
+    public ModelView loginPage(HttpRequest request) {
+        return new ModelView("/user/login.html");
+    }
+
+    @RequestMapping(method = POST, path = "/user/login")
+    public ModelView login(HttpRequest request) {
+        Queries queries = request.getQueries();
+
+        Optional<User> user = UserService.login(
+                queries.getValue("userId"),
+                queries.getValue("password")
+        );
+
+        if (user.isEmpty()) {
+            return new ModelView("/user/login_failed.html");
+        }
+
+        return new ModelView("redirect:/index.html");
+    }
 }
