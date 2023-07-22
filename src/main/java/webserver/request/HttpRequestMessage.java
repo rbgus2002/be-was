@@ -5,14 +5,14 @@ import webserver.HttpMethod;
 import java.util.Collections;
 import java.util.Map;
 
-public class HttpRequest {
+public class HttpRequestMessage {
     private final HttpMethod method;
     private final HttpURL url;
     private final String version;
     private final String body;
     private final Map<String, String> headers;
 
-    public HttpRequest(String method, HttpURL url, String version, Map<String, String> headers, String body) {
+    public HttpRequestMessage(String method, HttpURL url, String version, Map<String, String> headers, String body) {
         this.method = HttpMethod.valueOf(method);
         this.url = url;
         this.version = version;

@@ -2,9 +2,9 @@ package webserver.request;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.HttpMethod;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,33 +14,33 @@ import static utils.StringUtils.NEW_LINE;
 import static webserver.request.HttpRequestParser.parseRequest;
 
 @DisplayName("요청 메시지 클래스 테스트")
-class HttpRequestTest {
+class HttpRequestMessageTest {
     @Test
-    @DisplayName("body가 없는 Get 응답 메시지 객체가 생성된다.")
-    void createWithoutBody() throws IOException {
+    @DisplayName("body가 없는 Get 응답 메시지 객체가 생성한다.")
+    void createWithoutBody() throws Exception {
         // given
         String message = "GET /test HTTP/1.1" + NEW_LINE +
                 "Host: test.com" + NEW_LINE +
                 "Accept: application/json" + NEW_LINE + NEW_LINE;
 
         // when
-        HttpRequest httpRequest = parseRequest(new ByteArrayInputStream(message.getBytes()));
+        HttpRequestMessage httpRequestMessage = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
-        String method = httpRequest.getMethod();
-        String version = httpRequest.getVersion();
-        String host = httpRequest.getHeader("Host");
+        HttpMethod method = httpRequestMessage.getMethod();
+        String version = httpRequestMessage.getVersion();
+        String host = httpRequestMessage.getHeader("Host");
 
         // then
         assertAll(
-                () -> assertEquals("GET", method),
+                () -> assertEquals(HttpMethod.GET, method),
                 () -> assertEquals("HTTP/1.1", version),
                 () -> assertEquals("test.com", host)
         );
     }
 
     @Test
-    @DisplayName("body가 존재하는 Post 응답 메시지 객체가 생성된다.")
-    void createWithBody() throws IOException {
+    @DisplayName("body가 존재하는 Post 응답 메시지 객체가 생성한다.")
+    void createWithBody() throws Exception {
         // given
         String message = "POST /api/data.image?user=me&name=김&id=iidd HTTP/1.1" + NEW_LINE +
                 "Host: example.com" + NEW_LINE +
@@ -51,25 +51,25 @@ class HttpRequestTest {
         String targetBody = "{\"name\": \"John\", \"age\": 30}" + NEW_LINE;
 
         // when
-        HttpRequest httpRequest = parseRequest(new ByteArrayInputStream(message.getBytes()));
+        HttpRequestMessage httpRequestMessage = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
-        String method = httpRequest.getMethod();
-        String version = httpRequest.getVersion();
-        String body = httpRequest.getBody();
+        HttpMethod method = httpRequestMessage.getMethod();
+        String version = httpRequestMessage.getVersion();
+        String body = httpRequestMessage.getBody();
 
         // then
         assertAll(
-                () -> assertEquals("POST", method),
+                () -> assertEquals(HttpMethod.POST, method),
                 () -> assertEquals("HTTP/1.1", version),
                 () -> assertEquals(targetBody, body)
         );
     }
 
     @Test
-    @DisplayName("헤더가 없는 응답 메시지를 올바르게 생성한다.")
-    void name() throws IOException {
+    @DisplayName("헤더가 없는 응답 메시지를 생성한다.")
+    void name() throws Exception {
         // given
-        String method = "GET";
+        HttpMethod method = HttpMethod.GET;
         String url = "/index.html";
         String version = "HTTP/1.1";
         Map<String, String> headers = new HashMap<>();
@@ -84,17 +84,17 @@ class HttpRequestTest {
                 "</html>";
 
         // when
-        HttpRequest httpRequest = HttpRequestParser.parseRequest(createRequestMessage(method, url, version, headers, body));
+        HttpRequestMessage httpRequestMessage = HttpRequestParser.parseRequest(createRequestMessage(method, url, version, headers, body));
 
         // then
         assertAll(
-                () -> assertEquals(method, httpRequest.getMethod()),
-                () -> assertEquals(version, httpRequest.getVersion()),
-                () -> assertEquals(body, httpRequest.getBody())
+                () -> assertEquals(method, httpRequestMessage.getMethod()),
+                () -> assertEquals(version, httpRequestMessage.getVersion()),
+                () -> assertEquals(body, httpRequestMessage.getBody())
         );
     }
 
-    private ByteArrayInputStream createRequestMessage(String method, String url, String
+    private ByteArrayInputStream createRequestMessage(HttpMethod method, String url, String
             version, Map<String, String> headers, String body) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(method).append(" ").append(url).append(" ").append(version).append(NEW_LINE);
