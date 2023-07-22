@@ -4,9 +4,10 @@ import model.User;
 import service.UserService;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
-import webserver.http.message.URL;
 
-import java.util.List;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserJoinHandler implements Handler {
@@ -18,18 +19,28 @@ public class UserJoinHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        URL url = request.getURL();
-        Map<String, List<String>> parameters = url.getQueryParameter();
-        User user = mapToUserFrom(parameters);
+        String body = URLDecoder.decode(request.getBody(), StandardCharsets.UTF_8);
+        User user = mapToUserFrom(body);
         userService.join(user);
-        return HttpResponse.created();
+        return HttpResponse.created("/index.html");
     }
 
-    private static User mapToUserFrom(Map<String, List<String>> parameters) {
-        String userId = parameters.get("userId").get(0);
-        String password = parameters.get("password").get(0);
-        String name = parameters.get("name").get(0);
-        String email = parameters.get("email").get(0);
+    private static User mapToUserFrom(String body) {
+        Map<String, String> joinInfos = parseBody(body);
+        String userId = joinInfos.get("userId");
+        String password = joinInfos.get("password");
+        String name = joinInfos.get("name");
+        String email = joinInfos.get("email");
         return new User(userId, password, name, email);
+    }
+
+    private static Map<String, String> parseBody(String body) {
+        HashMap<String, String> joinInfos = new HashMap<>();
+        String[] infos = body.split("&");
+        for (String info : infos) {
+            String[] token = info.split("=");
+            joinInfos.put(token[0], token[1]);
+        }
+        return joinInfos;
     }
 }
