@@ -36,8 +36,9 @@ public class HttpResponseSender {
 
         dos.write(CRLF.getBytes());
 
-        dos.write(httpResponse.getBody());
-        dos.flush();
+        if (httpResponse.hasBody()) {
+            dos.write(httpResponse.getBody());
+            dos.flush();
+        }
     }
-
 }
