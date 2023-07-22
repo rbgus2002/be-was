@@ -43,7 +43,7 @@ public class DispatcherServlet {
         if (hasRequestPathMapped(method)) {
             path = executeRequest(request, method);
         }
-        findResources(response, path);
+        processResources(response, path);
     }
 
     private static boolean hasRequestPathMapped(Method method) {
@@ -61,7 +61,7 @@ public class DispatcherServlet {
         return path;
     }
 
-    private void findResources(HttpResponse response, String filePath) throws IOException {
+    private void processResources(HttpResponse response, String filePath) throws IOException {
         try {
             ContentType type = ContentType.findBy(filePath);
             filePath = type.mapResourceFolders(filePath);
