@@ -1,4 +1,4 @@
-package utils;
+package support.utils;
 
 public class StringUtils {
 

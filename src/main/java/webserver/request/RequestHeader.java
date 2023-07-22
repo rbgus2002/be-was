@@ -1,6 +1,6 @@
 package webserver.request;
 
-import utils.StringUtils;
+import support.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;

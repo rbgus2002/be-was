@@ -1,10 +1,11 @@
 package webserver;
 
-import view.view.View;
-import view.viewResolver.StaticViewResolver;
+import webserver.view.view.View;
+import webserver.view.viewResolver.StaticViewResolver;
+import webserver.Constants.ContentType;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
-import webserver.HttpConstants.HttpStatus;
+import webserver.Constants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

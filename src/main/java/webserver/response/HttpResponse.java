@@ -1,12 +1,12 @@
 package webserver.response;
 
-import webserver.ContentType;
-import webserver.HttpConstants.HttpStatus;
+import webserver.Constants.ContentType;
+import webserver.Constants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static utils.StringUtils.*;
+import static support.utils.StringUtils.*;
 
 public class HttpResponse {
 

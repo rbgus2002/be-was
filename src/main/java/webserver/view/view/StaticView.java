@@ -1,8 +1,8 @@
-package view.view;
+package webserver.view.view;
 
-import webserver.ContentType;
+import webserver.Constants.ContentType;
 import webserver.response.HttpResponse;
-import webserver.HttpConstants.HttpStatus;
+import webserver.Constants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

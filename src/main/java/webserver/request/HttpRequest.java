@@ -2,9 +2,9 @@ package webserver.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.StringUtils;
-import webserver.HttpConstants.HttpMethod;
-import webserver.HttpConstants.HttpVersion;
+import support.utils.StringUtils;
+import webserver.Constants.HttpMethod;
+import webserver.Constants.HttpVersion;
 import webserver.RequestHandler;
 
 import java.io.BufferedReader;

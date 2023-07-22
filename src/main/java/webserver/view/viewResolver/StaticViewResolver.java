@@ -1,7 +1,7 @@
-package view.viewResolver;
+package webserver.view.viewResolver;
 
-import view.view.StaticView;
-import view.view.View;
+import webserver.view.view.StaticView;
+import webserver.view.view.View;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

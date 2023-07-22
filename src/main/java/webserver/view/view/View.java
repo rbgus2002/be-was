@@ -1,4 +1,4 @@
-package view.view;
+package webserver.view.view;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

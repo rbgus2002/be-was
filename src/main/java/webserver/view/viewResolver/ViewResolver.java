@@ -1,6 +1,6 @@
-package view.viewResolver;
+package webserver.view.viewResolver;
 
-import view.view.View;
+import webserver.view.view.View;
 
 import java.util.Optional;
 
