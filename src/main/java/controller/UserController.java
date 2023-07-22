@@ -5,6 +5,7 @@ import db.Database;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.MIME;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,6 @@ public class UserController {
         Database.addUser(user);
 
         logger.debug("user create");
-        return HttpResponse.redirect("/index.html", request.getMime());
+        return HttpResponse.redirect("/index.html", MIME.html);
     }
 }
