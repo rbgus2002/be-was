@@ -26,7 +26,7 @@ public class HttpResponse {
         this.statusCode = statusCode;
         this.mime = mime;
 
-        if (path.equals("/index.html") || mime == null) {
+        if (mime.equals(MIME.html) || mime == null) {
             this.body = Files.readAllBytes(new File(TEMPLATE_PATH + path).toPath());
         } else {
             this.body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
@@ -42,7 +42,12 @@ public class HttpResponse {
     }
 
     public void response(DataOutputStream dos) {
-        response200Header(dos, body.length);
+        if (this.statusCode == HttpStatusCode.OK) {
+            response200Header(dos, body.length);
+        }
+        else if(this.statusCode == HttpStatusCode.FOUND) {
+            response302Header(dos);
+        }
         responseBody(dos, body);
     }
 
@@ -52,6 +57,16 @@ public class HttpResponse {
             dos.writeBytes("Content-Type: " + mime.getContentType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        String location = "/index.html";
+        try {
+            dos.writeBytes("HTTP/1.1 302 FOUND\r\n");
+            dos.writeBytes("Location: " + location + "\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
