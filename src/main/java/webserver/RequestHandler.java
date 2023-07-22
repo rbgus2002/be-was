@@ -27,15 +27,12 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
                 connection.getPort());
         HttpResponse response = new HttpResponse();
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            if(in == null) {
+            if(in.readAllBytes() == null) {
                 return;
             }
-            //1.리퀘스트를 파싱해서 그에 대한 정보를 분석하자! -> inputStream을 받아서 찍어보기
             HttpRequest request = HttpRequestParser.getRequest(in);
             logger.debug("Request Header : \n{}", request.getHeader());
 
-            //2.리퀘스트의 method와 url을 분석해 컨트롤러 매핑 후 정적 파일을 보내주도록 하자!
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             process(request, response);
             DataOutputStream dos = new DataOutputStream(out);
             responseHeader(dos, response);
