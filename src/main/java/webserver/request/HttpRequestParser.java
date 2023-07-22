@@ -11,22 +11,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestParser {
-    private static final HttpRequestParser requestParser = new HttpRequestParser();
     private HttpRequestParser() {
 
     }
 
-    public static HttpRequestParser getInstance() {
-        return requestParser;
-    }
-
-    public HttpRequest getRequest(InputStream in) throws  IOException{
+    public static HttpRequest getRequest(InputStream in) throws  IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
         return parseRequest(br);
     }
 
-    private HttpRequest parseRequest(BufferedReader br) throws IOException {
+    private static HttpRequest parseRequest(BufferedReader br) throws IOException {
         if(!br.ready()){
             return new HttpRequest();
         }
@@ -36,7 +31,7 @@ public class HttpRequestParser {
 
     }
 
-    private Map<String, String> initParams(String line) {
+    private static Map<String, String> initParams(String line) {
         String[] params = line.split("[?]");
         Map<String, String> paramsMap = new HashMap<>();
         if(params.length > 1){
@@ -48,7 +43,7 @@ public class HttpRequestParser {
         return paramsMap;
     }
 
-    private String initHeader(BufferedReader br, String line) throws IOException {
+    private static String initHeader(BufferedReader br, String line) throws IOException {
         StringBuilder headerBuilder = new StringBuilder();
         while (line != null && !line.equals("")) {
             headerBuilder.append(StringUtils.appendLineSeparator(line));
@@ -57,7 +52,7 @@ public class HttpRequestParser {
         return headerBuilder.toString();
     }
 
-    private String initBody(BufferedReader br) throws IOException {
+    private static String initBody(BufferedReader br) throws IOException {
         StringBuilder bodyBuilder = new StringBuilder();
         while (br.ready()){
             bodyBuilder.append((char)br.read());
