@@ -7,4 +7,4 @@
   - [x] 사용자가 입력한 아이디, 패스워드, 이름, 이메일을 쿼리 스트링 형태로 파싱 User 클래스에 저장
   - [x] 회원가입 단위 테스트
   - [x] Dispatcher Servlet 구현
-  - [ ] Dispatcher Servlet doDispatch refactoring
+  - [x] Dispatcher Servlet doDispatch refactoring
