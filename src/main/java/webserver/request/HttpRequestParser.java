@@ -83,11 +83,10 @@ public class HttpRequestParser {
     }
 
     private static Map<String, String> extractParameters(String url, int queryIndex) {
-        Map<String, String> parameters = null;
+        Map<String, String> parameters = new HashMap<>();
 
         if (queryIndex != -1) {
             String queryString = url.substring(queryIndex + 1);
-            parameters = new HashMap<>();
             String[] tokens = queryString.split("&");
             for (String parameter : tokens) {
                 int splitIndex = parameter.indexOf("=");

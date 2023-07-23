@@ -13,7 +13,7 @@ public class HttpURL {
         this.url = url;
         this.extension = extension;
         this.path = path;
-        this.parameters = Collections.unmodifiableMap(parameters);
+        this.parameters = parameters;
     }
 
     public String getUrl() {
@@ -29,7 +29,7 @@ public class HttpURL {
     }
 
     public Map<String, String> getParameters() {
-        return parameters;
+        return Collections.unmodifiableMap(parameters);
     }
 
     @Override
