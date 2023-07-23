@@ -15,11 +15,11 @@ import static webserver.controller.ApplicationControllerHandler.executeMethod;
 
 public class HttpHandler {
     private final HttpRequestMessage httpRequestMessage;
-    private HttpResponseMessage responseMessage;
+    private HttpResponseMessage httpResponseMessage;
 
-    public HttpHandler(HttpRequestMessage httpRequestMessage, HttpResponseMessage responseMessage) {
+    public HttpHandler(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage) {
         this.httpRequestMessage = httpRequestMessage;
-        this.responseMessage = responseMessage;
+        this.httpResponseMessage = httpResponseMessage;
     }
 
     public void handling() {
@@ -32,7 +32,7 @@ public class HttpHandler {
             handlingController();
         } catch (BadRequestException badRequestException) {
             logger.error("찾을 수 없는 리소스입니다. {}", badRequestException.getLocalizedMessage());
-            responseMessage.setStatusLine(HttpStatus.BAD_REQUEST);
+            httpResponseMessage.setStatusLine(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -40,9 +40,9 @@ public class HttpHandler {
         try {
             logger.debug(httpRequestMessage.getPath());
             byte[] body = Files.readAllBytes(Paths.get(httpRequestMessage.getPath()));
-            responseMessage.setStatusLine(HttpStatus.OK);
-            responseMessage.setBody(body);
-            responseMessage.setHeader("Content-Type", HttpMIME.findBy(httpRequestMessage.getExtension()).getType() + "; charset=UTF-8");
+            httpResponseMessage.setStatusLine(HttpStatus.OK);
+            httpResponseMessage.setBody(body);
+            httpResponseMessage.setHeader("Content-Type", HttpMIME.findBy(httpRequestMessage.getExtension()).getType() + "; charset=UTF-8");
         } catch (IOException | IllegalArgumentException e) {
             throw new BadRequestException("요청 파일 경로에 파일이 존재하지 않습니다.");
         }
@@ -51,8 +51,8 @@ public class HttpHandler {
     private void handlingController() throws BadRequestException {
         try {
             executeMethod(httpRequestMessage);
-            responseMessage.setStatusLine(HttpStatus.CREATED);
-            responseMessage.setHeader("Location", httpRequestMessage.getPath());
+            httpResponseMessage.setStatusLine(HttpStatus.CREATED);
+            httpResponseMessage.setHeader("Location", httpRequestMessage.getPath());
 
             // todo 리다이렉트 만들어 주기.
         } catch (ReflectiveOperationException e) {
@@ -60,7 +60,7 @@ public class HttpHandler {
         }
     }
 
-    public HttpResponseMessage getResponseMessage() {
-        return responseMessage;
+    public HttpResponseMessage getHttpResponseMessage() {
+        return httpResponseMessage;
     }
 }

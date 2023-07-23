@@ -36,7 +36,7 @@ public class Dispatcher implements Runnable {
             HttpHandler httpHandler = new HttpHandler(httpRequestMessage, responseMessage);
             httpHandler.handling();
 
-            response(out, httpHandler.getResponseMessage());
+            response(out, httpHandler.getHttpResponseMessage());
 
         } catch (IOException | BadRequestException e) {
             logger.error(e.getLocalizedMessage());
