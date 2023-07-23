@@ -2,5 +2,5 @@ package webserver.Constants;
 
 public enum HttpMethod {
 
-    GET
+    GET, POST, PUT, PATCH, DELETE
 }
