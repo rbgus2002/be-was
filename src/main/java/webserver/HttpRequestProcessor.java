@@ -15,7 +15,7 @@ public class HttpRequestProcessor {
     public static final Logger logger = LoggerFactory.getLogger(HttpRequestProcessor.class);
     private final HttpRequestParser requestParser = new HttpRequestParser();
     private final HttpResponseSender responseSender = new HttpResponseSender();
-    private final HttpRequestHandler frontHandler = new HttpRequestHandler();
+    private final FrontHandler frontHandler = new FrontHandler();
 
     public void process(Socket connection) {
         try (InputStream inputStream = connection.getInputStream(); OutputStream outputStream = connection.getOutputStream()) {

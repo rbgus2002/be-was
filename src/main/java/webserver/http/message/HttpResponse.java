@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpResponse {
     public static final String NOT_FOUND_BODY_HTML = "<html><body>NOT FOUND</body><html>";
-    public static final String BAD_REQUEST_HTML = "<html><body>badRequest</body><html>";
+    public static final String BAD_REQUEST_HTML = "<html><body>BAD REQUEST</body><html>";
+    public static final String INTERNAL_SERVER_ERROR_HTML = "<html><body>Internal Server Error</body><html>";
 
     private final HttpVersion httpVersion;
     private final HttpStatus httpStatus;
@@ -59,6 +60,16 @@ public class HttpResponse {
         httpHeaders.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(badRequestHtml.length));
 
         return new HttpResponse(HttpVersion.V1_1, HttpStatus.BAD_REQUEST, httpHeaders, badRequestHtml);
+    }
+
+    public static HttpResponse internalServerError() {
+        byte[] notFoundHtml = INTERNAL_SERVER_ERROR_HTML.getBytes(StandardCharsets.UTF_8);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.addHeader(HttpHeaders.CONTENT_TYPE, Mime.HTML.getContentType());
+        httpHeaders.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(notFoundHtml.length));
+
+        return new HttpResponse(HttpVersion.V1_1, HttpStatus.INTERNAL_SERVER_ERROR, httpHeaders, notFoundHtml);
     }
 
     public HttpHeaders getHttpHeaders() {
