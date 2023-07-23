@@ -33,10 +33,9 @@ public class HttpResponse {
 
     public void response(OutputStream out) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
-
         dos.writeBytes(appendNewLine(version + " " + statusCode.toString()));
-        dos.writeBytes(headers.toString());
+        headers.write(dos);
         dos.writeBytes(CRLF);
-        dos.write(body, 0, body.length);
+        body.write(dos);
     }
 }

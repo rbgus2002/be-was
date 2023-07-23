@@ -54,6 +54,9 @@ public class Headers {
         headers.forEach((name, value) -> stringBuilder.append(appendNewLine(name + COLON + SPACE + value)));
         return stringBuilder.toString();
     }
+    public void write(DataOutputStream dos) throws IOException {
+        dos.writeBytes(toString());
+    }
 
     public int getContentLength() {
         if (headers.containsKey(CONTENT_LENGTH)) {
