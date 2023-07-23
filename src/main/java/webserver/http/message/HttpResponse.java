@@ -35,12 +35,11 @@ public class HttpResponse {
         return new HttpResponse(HttpVersion.V1_1, HttpStatus.NOT_FOUND, headers, notFoundHtml);
     }
 
-    public static HttpResponse created() {
-        byte[] notFoundHtml = "<html><body>Created</body><html>".getBytes(StandardCharsets.UTF_8);
+    public static HttpResponse created(String url) {
         Map<String, List<String>> headers = new HashMap<>();
         headers.put("Content-Type", List.of("text/html;charset=utf-8"));
-        headers.put("Content-Length", List.of(String.valueOf(notFoundHtml.length)));
-        return new HttpResponse(HttpVersion.V1_1, HttpStatus.NOT_FOUND, headers, notFoundHtml);
+        headers.put("Location", List.of(url));
+        return new HttpResponse(HttpVersion.V1_1, HttpStatus.FOUND, headers, null);
     }
 
     public static HttpResponse badRequest() {
