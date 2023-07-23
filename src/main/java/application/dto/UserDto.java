@@ -1,5 +1,7 @@
 package application.dto;
 
+import java.util.Objects;
+
 public class UserDto {
     private String userId;
     private String password;
@@ -23,6 +25,19 @@ public class UserDto {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(userId, userDto.userId) && Objects.equals(password, userDto.password) && Objects.equals(name, userDto.name) && Objects.equals(email, userDto.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, password, name, email);
     }
 
     public static class Builder {
