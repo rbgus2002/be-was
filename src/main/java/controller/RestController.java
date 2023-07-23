@@ -12,6 +12,7 @@ import service.UserService;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 import static constant.Uri.*;
 import static mapper.ResponseMapper.*;
@@ -34,7 +35,7 @@ public class RestController {
                 response = addUserByForm(httpRequest);
             }
 
-            if (httpRequest.match(Method.POST, USER_LOGIN_URI)) {
+            if (httpRequest.match(Method.POST, USER_LOGIN_REQUEST_URI)) {
                 response = loginUser(httpRequest);
             }
 
@@ -52,7 +53,10 @@ public class RestController {
         LoginRequestDto dto = new LoginRequestDto(bodyMap);
         boolean loginResult = userService.login(dto);
         if (loginResult) {
-            return createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+            HttpResponse response = createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+            String sessionId = UUID.randomUUID().toString();
+            response.setCookie(sessionId);
+            return response;
         }
         return createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, USER_LOGIN_FAILED_URI);
     }

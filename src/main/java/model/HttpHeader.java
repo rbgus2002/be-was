@@ -35,9 +35,13 @@ public class HttpHeader {
 
     public int getContentLength() {
         // 10진수 바이트 단위
-        if(contents.containsKey("Content-Type")){
+        if (contents.containsKey("Content-Type")) {
             return Integer.parseInt(contents.get("Content-Length").trim());
         }
         return 0;
+    }
+
+    public void put(String key, String value) {
+        contents.put(key, value);
     }
 }
