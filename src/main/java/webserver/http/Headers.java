@@ -21,7 +21,6 @@ public class Headers {
         String line;
 
         while ((line = bufferedReader.readLine()) != null) {
-            logger.debug(line);
             int separatorIndex = line.indexOf(COLON);
             if (isBlankLine(separatorIndex)) {
                 break;
