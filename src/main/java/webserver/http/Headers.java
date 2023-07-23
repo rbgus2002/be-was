@@ -23,12 +23,16 @@ public class Headers {
         while ((line = bufferedReader.readLine()) != null) {
             logger.debug(line);
             int separatorIndex = line.indexOf(COLON);
-            if (separatorIndex == -1) {
+            if (isBlankLine(separatorIndex)) {
                 break;
             }
             headers.put(line.substring(0, separatorIndex).strip(), line.substring(separatorIndex + 1).strip());
         }
         return headers;
+    }
+
+    private static boolean isBlankLine(int separatorIndex) {
+        return separatorIndex == -1;
     }
 
     public static Headers createDefaultHeaders(int contentLength) {
