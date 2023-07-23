@@ -1,9 +1,11 @@
 package webserver;
 
 import controller.HttpController;
+import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Utils;
+import http.Utils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
