@@ -25,18 +25,18 @@ public class Dispatcher implements Runnable {
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
-//
+
         try (InputStream in = connection.getInputStream();
              OutputStream out = connection.getOutputStream()) {
             // 파싱해서 요청 메시지를 가져온다.
+            HttpResponseMessage httpResponseMessage = new HttpResponseMessage();
             HttpRequestMessage httpRequestMessage = parseRequest(in);
-            HttpResponseMessage responseMessage = new HttpResponseMessage();
 
             // 요청 메시지에 따라 수행한다.
-            HttpHandler httpHandler = new HttpHandler(httpRequestMessage, responseMessage);
+            HttpHandler httpHandler = new HttpHandler(httpRequestMessage, httpResponseMessage);
             httpHandler.handling();
 
-            response(out, httpHandler.getHttpResponseMessage());
+            response(out, httpResponseMessage);
 
         } catch (IOException | BadRequestException e) {
             logger.error(e.getLocalizedMessage());
