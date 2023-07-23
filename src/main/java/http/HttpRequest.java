@@ -31,7 +31,7 @@ public class HttpRequest {
         version = statusLineTokens[2];
         while ((input = br.readLine()) != null && !input.isEmpty()) {
             if (input.contains(":")) {
-                String[] tokens = input.split(":(\\s*)");
+                String[] tokens = input.split("\\s*:\\s*");
                 headers.put(tokens[0], tokens[1]);
             }
         }
