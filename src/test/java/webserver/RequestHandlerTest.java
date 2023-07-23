@@ -36,21 +36,18 @@ class RequestHandlerTest {
     }
 
     @Test
-    @DisplayName("localhost:8080/user/create로 적절한 파라미터와 함께 get 요청이 들어오면 로그인 처리를 하고 status 200을 반환해야 한다.")
+    @DisplayName("localhost:8080/user/create로 적절한 파라미터와 함께 post 요청이 들어오면 로그인 처리를 하고 status 200을 반환해야 한다.")
     void createUser() throws IOException {
 
         RestAssured
                 .given()
-                    .param("userId", "id")
-                    .param("password", "password")
-                    .param("email", "email")
-                    .param("name", "name")
+                    .body("userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
                 .when()
-                    .get("/user/create")
+                    .post("/user/create")
                 .then()
                     .assertThat()
                     .statusCode(HttpStatus.SC_OK)
-                    .contentType(ContentType.TEXT);
+                    .contentType(ContentType.HTML);
     }
 
     @Test
