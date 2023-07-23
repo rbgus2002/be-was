@@ -13,6 +13,8 @@ import http.statusline.HttpMethod;
 import http.statusline.HttpVersion;
 
 public class HttpRequest {
+	private static final int KEY = 0;
+	private static final int VALUE = 1;
 	private Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 	private BufferedReader reader;
 	private HttpMethod method;
@@ -45,7 +47,7 @@ public class HttpRequest {
 			line = reader.readLine();
 			if (line.contains(HEADER_DELIMITER)) {
 				tokens = line.split(HEADER_DELIMITER);
-				header.addHeader(tokens[0], tokens[1]);
+				header.addHeader(tokens[KEY], tokens[VALUE]);
 			}
 		}
 	}
@@ -79,7 +81,7 @@ public class HttpRequest {
 			if (line.contains("=")) {
 				logger.debug(line);
 				String[] values = line.split("=");
-				httpParameter.put(values[0], values[1]);
+				httpParameter.put(values[KEY], values[VALUE]);
 			}
 		}
 	}
