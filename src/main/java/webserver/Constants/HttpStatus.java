@@ -3,7 +3,8 @@ package webserver.Constants;
 public enum HttpStatus {
 
     OK(200, "OK"),
-    NOT_FOUND(404, "NOT FOUND");
+    NOT_FOUND(404, "NOT FOUND"),
+    CREATED(201, "CREATED");
 
     private final int statusCode;
     private final String name;
