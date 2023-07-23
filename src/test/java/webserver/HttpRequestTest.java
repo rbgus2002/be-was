@@ -24,7 +24,6 @@ class HttpRequestTest {
                 "Host: localhost:8080\r\n" +
                 "Accept-Encoding: gzip, deflate, br\r\n" +
                 "Connection: keep-alive\r\n" +
-                "Content-Length: 22\r\n" +
                 "\r\n";
 
         InputStream inputStream = new ByteArrayInputStream(httpGetRequest.getBytes());
@@ -51,7 +50,7 @@ class HttpRequestTest {
                 "Host: localhost:8080\r\n" +
                 "Accept-Encoding: gzip, deflate, br\r\n" +
                 "Connection: keep-alive\r\n" +
-                "Content-Length: 22\r\n" +
+                "Content-Length: 24\r\n" +
                 "\r\n" +
                 "{\r\n" +
                 "    \"test\": \"test\"\r\n" +

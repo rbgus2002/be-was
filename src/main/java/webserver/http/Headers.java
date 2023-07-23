@@ -1,8 +1,5 @@
 package webserver.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -11,8 +8,8 @@ import java.util.Map;
 import static utils.StringUtils.*;
 
 public class Headers {
-    private static final Logger logger = LoggerFactory.getLogger(Headers.class);
-
+    private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String CONTENT_TYPE = "Content-Type";
     private final Map<String, String> headers;
 
     public Headers() {
@@ -36,8 +33,8 @@ public class Headers {
 
     public static Headers createDefaultHeaders(int contentLength) {
         Headers headers = new Headers();
-        headers.put("Content-Type", "text/html;charset=utf-8");
-        headers.put("Content-Length", String.valueOf(contentLength));
+        headers.put(CONTENT_TYPE, "text/html;charset=utf-8");
+        headers.put(CONTENT_LENGTH, String.valueOf(contentLength));
         return headers;
     }
 
@@ -50,5 +47,12 @@ public class Headers {
         StringBuilder stringBuilder = new StringBuilder();
         headers.forEach((name, value) -> stringBuilder.append(appendNewLine(name + COLON + SPACE + value)));
         return stringBuilder.toString();
+    }
+
+    public int getContentLength() {
+        if (headers.containsKey(CONTENT_LENGTH)) {
+            return Integer.parseInt(headers.get(CONTENT_LENGTH));
+        }
+        return 0;
     }
 }

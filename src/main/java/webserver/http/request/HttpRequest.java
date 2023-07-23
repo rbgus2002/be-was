@@ -27,20 +27,17 @@ public class HttpRequest {
         try {
             RequestLine requestLine = RequestLine.from(bufferedReader.readLine());
             Headers headers = Headers.from(bufferedReader);
-            String body = buildBody(bufferedReader);
+            String body = buildBody(bufferedReader, headers.getContentLength());
             return new HttpRequest(requestLine, headers, body);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static String buildBody(BufferedReader bufferedReader) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        while (bufferedReader.ready()) {
-            int character = bufferedReader.read();
-            stringBuilder.append((char) character);
-        }
-        return stringBuilder.toString();
+    private static String buildBody(BufferedReader bufferedReader, int contentLength) throws IOException {
+        char[] buffer = new char[contentLength];
+        bufferedReader.read(buffer, 0, contentLength);
+        return new String(buffer);
     }
 
     public String getPath() {
