@@ -1,6 +1,6 @@
 package webserver.handlers;
 
-import webserver.http.Mime;
+import webserver.http.message.Mime;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.utils.FileExtensionSeparator;

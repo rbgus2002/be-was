@@ -1,7 +1,5 @@
 package webserver.http.message;
 
-import webserver.http.Mime;
-
 import java.nio.charset.StandardCharsets;
 
 public class HttpResponse {
