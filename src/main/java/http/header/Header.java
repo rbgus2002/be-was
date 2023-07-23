@@ -20,4 +20,12 @@ public class Header {
 	public void addHeader(String key, String value) {
 		header.put(key, value);
 	}
+
+	public boolean containsLength() {
+		return header.containsKey("Content-Length");
+	}
+
+	public int getContentLength() {
+		return Integer.parseInt(header.get("Content-Length"));
+	}
 }

@@ -1,9 +1,11 @@
 package http;
 
 import static http.header.Header.*;
+import static http.statusline.ResponseLine.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +36,10 @@ public class HttpRequest {
 		return method.equals(HttpMethod.GET);
 	}
 
+	public boolean isPost() {
+		return method.equals(HttpMethod.POST);
+	}
+
 	private void parseRequest() throws IOException {
 		parseStatusLine();
 		parseHeader();
@@ -53,24 +59,25 @@ public class HttpRequest {
 	}
 
 	private void parseBody() throws IOException {
-		body = reader.readLine();
+		if ((method == HttpMethod.POST) && header.containsLength()) {
+			char[] charArray = new char[header.getContentLength()];
+			reader.read(charArray);
+			body = Arrays.toString(charArray);
+			parseParameter(body);
+		}
 	}
 
 	private void parseStatusLine() throws IOException {
 		String statusLine = reader.readLine();
-		String[] arguments = statusLine.split(" ");
+		String[] arguments = statusLine.split(STATUS_LINE_DELIMETER);
 		method = HttpMethod.typeOf(arguments[0]);
 		path = arguments[1];
 		endPoint = path;
-		logger.debug("[Whole Path] : {}", path);
-		if (path.contains("?")) {
+		if ((method == HttpMethod.GET) && path.contains("?")) {
 			String[] pathSplit = path.split("\\?");
 			String parameterLine = pathSplit[1].substring(0, pathSplit[1].indexOf("."));
 			path = pathSplit[0];
 			endPoint = path.substring(path.lastIndexOf("/"));
-			logger.debug("[Clear Path] : {}", path);
-			logger.debug("[End Point] : {}", endPoint);
-			logger.debug("[Params] : {}", parameterLine);
 			parseParameter(parameterLine);
 		}
 		version = HttpVersion.versionOf(arguments[2]);

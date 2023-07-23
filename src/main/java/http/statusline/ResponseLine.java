@@ -1,7 +1,7 @@
 package http.statusline;
 
 public class ResponseLine {
-	private static final String STATUS_LINE_DELIMETER = " ";
+	public static final String STATUS_LINE_DELIMETER = " ";
 	private HttpVersion version;
 	private StatusCode statusCode;
 
