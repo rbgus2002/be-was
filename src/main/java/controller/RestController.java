@@ -1,5 +1,6 @@
 package controller;
 
+import dto.LoginRequestDto;
 import dto.UserFormRequestDto;
 import model.HttpRequest;
 import model.HttpResponse;
@@ -14,8 +15,8 @@ import java.util.Map;
 
 import static constant.Uri.*;
 import static mapper.ResponseMapper.*;
-import static mapper.ResponseMapper.createRedirectResponse;
-import static util.StringUtils.*;
+import static util.StringUtils.COMMA_MARK;
+import static util.StringUtils.splitBy;
 
 public class RestController {
     private final FileService fileService;
@@ -32,14 +33,29 @@ public class RestController {
             if (httpRequest.match(Method.POST, USER_CREATE_REQUEST_URI)) {
                 response = addUserByForm(httpRequest);
             }
+
+            if (httpRequest.match(Method.POST, USER_LOGIN_URI)) {
+                response = loginUser(httpRequest);
+            }
+
             if (isNotRestfulRequest(httpRequest)) {
                 response = sendNotRestfulResponse(httpRequest);
             }
             return response;
         } catch (IOException e) {
-            return createBadRequestResponse(httpRequest);}
+            return createBadRequestResponse(httpRequest);
+        }
     }
 
+    private HttpResponse loginUser(HttpRequest httpRequest) {
+        Map<String, String> bodyMap = httpRequest.getBodyMap();
+        LoginRequestDto dto = new LoginRequestDto(bodyMap);
+        boolean loginResult = userService.login(dto);
+        if (loginResult) {
+            return createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+        }
+        return createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, USER_LOGIN_FAILED_URI);
+    }
 
     private HttpResponse addUserByForm(HttpRequest request) {
         Map<String, String> bodyMap = request.getBodyMap();

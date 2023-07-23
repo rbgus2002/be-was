@@ -30,9 +30,6 @@ public class FileService {
 
     private byte[] getFileIn(String relativePath) throws IOException {
         Path path = Paths.get(relativePath);
-
-        byte[] bytes = Files.readAllBytes(path);
-
-        return bytes;
+        return Files.readAllBytes(path);
     }
 }
