@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import annotations.AnnotationMap;
-import http.statusline.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.statusline.StatusCode;
@@ -40,18 +39,16 @@ public class RequestHandler implements Runnable {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			HttpRequest httpRequest = new HttpRequest(reader);
 			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
-			if (httpRequest.isGet()) {
-				HttpResponse httpResponse = handleGetRequest(httpRequest);
-				logger.debug("httpResponse created");
-				httpResponse.response(out);
-				logger.debug("httpResponse sent");
-			}
+
+			HttpResponse httpResponse = handleRequest(httpRequest);
+			httpResponse.response(out);
+
 		} catch (IOException | ReflectiveOperationException | IllegalArgumentException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private HttpResponse handleGetRequest(HttpRequest httpRequest) throws
+	private HttpResponse handleRequest(final HttpRequest httpRequest) throws
 		ReflectiveOperationException,
 		IOException,
 		IllegalArgumentException {
@@ -72,8 +69,8 @@ public class RequestHandler implements Runnable {
 		InvocationTargetException,
 		IllegalAccessException {
 		String path = httpRequest.getPath();
-		if (AnnotationMap.exists(HttpMethod.GET, httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(HttpMethod.GET, httpRequest.getEndpoint(), httpRequest.getParameter());
+		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
+			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest.getParameter());
 		}
 		return path;
 	}
