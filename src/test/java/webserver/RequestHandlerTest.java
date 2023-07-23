@@ -1,11 +1,9 @@
 package webserver;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static constant.Uri.USER_CREATE_URI;
+import static constant.Uri.USER_CREATE_REQUEST_URI;
 import static io.restassured.RestAssured.DEFAULT_PORT;
 import static io.restassured.RestAssured.given;
 import static model.enums.HttpStatusCode.*;
@@ -38,11 +36,11 @@ class RequestHandlerTest {
     @Test
     @DisplayName("/user/create 요청 후 리다이렉트 되야 한다.")
     void redirectAfterRequestCreateUser() {
-        String uri = USER_CREATE_URI;
+        String uri = USER_CREATE_REQUEST_URI;
         given()
             .log().all()
             .redirects().follow(false)
-            .param("name", "kim")
+            .param("name", "한글")
             .param("email", "a@a.a")
             .param("userId", "id")
             .param("password", "pawd")
@@ -56,7 +54,7 @@ class RequestHandlerTest {
     @Test
     @DisplayName("/user/create 요청 테스트")
     void requestCreateUser() {
-        String uri = USER_CREATE_URI;
+        String uri = USER_CREATE_REQUEST_URI;
         given()
             .log().all()
             .param("name", "kim")

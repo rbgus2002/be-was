@@ -31,9 +31,7 @@ public class Parser {
         RequestUri requestUri = RequestUri.of(tokens[URI_INDEX]);
 
         StringBuilder headerBuilder = new StringBuilder();
-        String line = null;
-
-        HttpHeader header = null;
+        String line;
 
         while (!(line = br.readLine()).equals(NO_CONTENT)) {
             headerBuilder.append(line);
@@ -41,7 +39,7 @@ public class Parser {
         }
 
         String[] splitMessage = splitBy(headerBuilder.toString(), NEXTLINE);
-        header = HttpHeader.of(splitMessage);
+        HttpHeader header = HttpHeader.of(splitMessage);
 
         String body = getBody(br, header.getContentLength());
 
