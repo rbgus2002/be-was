@@ -3,6 +3,7 @@ package controller;
 import annotation.RequestMapping;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
+import common.wrapper.Cookies;
 import common.wrapper.Queries;
 import model.User;
 import modelview.ModelView;

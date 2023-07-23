@@ -13,7 +13,6 @@ public class HttpRequest {
     private final RequestLine requestLine;
     private final Headers headers;
     private final RequestBody requestBody;
-    private Cookies cookies;
 
     public HttpRequest(RequestLine requestLine, Headers headers, RequestBody requestBody) {
         this.requestLine = requestLine;
@@ -52,16 +51,7 @@ public class HttpRequest {
     }
 
     public Cookies getCookies() {
-        if (cookies != null) {
-            return cookies;
-        }
-
-        if (headers.containsKey("Cookie")) {
-            String cookieString = headers.getValue("Cookie");
-            cookies = new Cookies(cookieString);
-        }
-
-        return new Cookies();
+        return headers.getCookies();
     }
 
     public String getBody() {

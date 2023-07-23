@@ -13,8 +13,8 @@ public class HttpResponseUtils {
     public static void sendResponse(OutputStream out, HttpResponse response) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
 
-        dos.writeBytes(response.getResponseLine());
-        dos.writeBytes(response.getHeaders());
+        dos.writeBytes(response.toStringResponseLine());
+        dos.writeBytes(response.toStringHeaders());
         dos.writeBytes("\r\n");
         dos.write(response.getBody());
         dos.flush();

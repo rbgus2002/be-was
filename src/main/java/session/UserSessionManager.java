@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserSessionManager {
 
     private static final String SESSION_COOKIE_KEY = "SID";
-    private static Map<String, User> sessionStorage = new ConcurrentHashMap<>();
+    private static final Map<String, User> sessionStorage = new ConcurrentHashMap<>();
 
     public static void createSession(User user, HttpResponse response, String pathRange) {
         String sessionId = UUID.randomUUID().toString();
