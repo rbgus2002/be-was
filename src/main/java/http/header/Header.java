@@ -5,14 +5,15 @@ import java.util.Map;
 
 public class Header {
 	public static final String HEADER_DELIMITER = ": ";
+	private static final String CRLF = "\r\n";
 	private Map<String, String> header = new HashMap<>();
 
 	public String getHeaderLines() {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (String key : header.keySet()) {
-			stringBuilder.append(key + HEADER_DELIMITER + header.get(key) + "\r\n");
+			stringBuilder.append(key + HEADER_DELIMITER + header.get(key) + CRLF);
 		}
-		stringBuilder.append("\r\n");
+		stringBuilder.append(CRLF);
 		return stringBuilder.toString();
 	}
 

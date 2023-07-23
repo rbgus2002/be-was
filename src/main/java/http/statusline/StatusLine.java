@@ -1,11 +1,13 @@
 package http.statusline;
 
 public class StatusLine {
+	private static final String STATUS_LINE_DELIMETER = " ";
 	private HttpVersion version;
 	private StatusCode statusCode;
 
 	public String getStatusLineForHeader() {
-		return version.representation + " " + statusCode.code + " " + statusCode.message;
+		return version.representation + STATUS_LINE_DELIMETER + statusCode.code + STATUS_LINE_DELIMETER
+			+ statusCode.message;
 	}
 
 	public void setVersion(final HttpVersion version) {
