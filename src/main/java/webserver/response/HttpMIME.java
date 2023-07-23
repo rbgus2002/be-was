@@ -5,11 +5,12 @@ import java.util.Arrays;
 public enum HttpMIME {
     CSS(".css", "text/css"),
     HTML(".html", "text/html"),
+    ICO(".ico", "image/x-icon"),
     JPEG(".jpg", "image/jpeg"),
     JS(".js", "text/javascript"),
-    ICO(".ico", "image/x-icon"),
-    WOFF(".woff", "font/woff"),
-    TTF(".ttf", "font/ttf");
+    PNG(".png", "image/png"),
+    TTF(".ttf", "font/ttf"),
+    WOFF(".woff", "font/woff");
 
 
     private final String extension;
