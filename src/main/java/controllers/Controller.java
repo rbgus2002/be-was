@@ -21,7 +21,7 @@ public class Controller {
 	public String createUser(HttpParameter httpParameter) throws IllegalArgumentException {
 		Database.addUser(parameterToUser(httpParameter));
 		logger.debug("[Database] User {} added", Database.findUserById(httpParameter.getParameter("userId")).getName());
-		return "redirect:http://localhost:8080/";
+		return "redirect:/";
 	}
 
 	private User parameterToUser(HttpParameter httpParameter) {

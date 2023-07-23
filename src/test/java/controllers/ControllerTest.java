@@ -1,8 +1,11 @@
 package controllers;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+
 import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,7 +15,7 @@ import db.Database;
 import http.HttpParameter;
 import model.User;
 
-public class ControllerTest {
+class ControllerTest {
 
 	private Controller controller;
 
@@ -55,9 +58,12 @@ public class ControllerTest {
 				controller.createUser(httpParameter);
 			}).isInstanceOf(Exception.class).hasMessage(Database.USERID_ALREADY_EXISTS_MESSAGE);
 
-			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword()).isEqualTo(existingUser.getPassword());
-			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getName()).isEqualTo(existingUser.getName());
-			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getEmail()).isEqualTo(existingUser.getEmail());
+			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword())
+				.isEqualTo(existingUser.getPassword());
+			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getName())
+				.isEqualTo(existingUser.getName());
+			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getEmail())
+				.isEqualTo(existingUser.getEmail());
 			softAssertions.assertThat(Database.findAll().size()).isEqualTo(1);
 
 			softAssertions.assertAll();
@@ -82,7 +88,8 @@ public class ControllerTest {
 			softAssertions.assertAll();
 		}
 
-		private HttpParameter newParameter(final String userId, final String password, final String name, final String email) {
+		private HttpParameter newParameter(final String userId, final String password, final String name,
+			final String email) {
 			final HttpParameter httpParameter = new HttpParameter();
 			Map<String, String> map = Map.of("userId", userId, "password", password, "name", name, "email", email);
 			map.keySet().stream().forEach(key -> httpParameter.put(key, map.get(key)));
@@ -92,7 +99,9 @@ public class ControllerTest {
 		@Test
 		@DisplayName("회원가입 성공 이후 메인 페이지로 리다이렉트 되어야 한다")
 		void sendRedirect() {
-			
+			final HttpParameter httpParameter = newParameter("testID", "testPassword", "testName", "test@email.com");
+			String page = controller.createUser(httpParameter);
+			assertThat(page).isEqualTo("redirect:/");
 		}
 
 	}
