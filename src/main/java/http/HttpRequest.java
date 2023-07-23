@@ -1,5 +1,7 @@
 package http;
 
+import static http.header.Header.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -41,8 +43,8 @@ public class HttpRequest {
 		String[] tokens;
 		while (!line.isBlank()) {
 			line = reader.readLine();
-			if (line.contains(": ")) {
-				tokens = line.split(": ");
+			if (line.contains(HEADER_DELIMITER)) {
+				tokens = line.split(HEADER_DELIMITER);
 				header.addHeader(tokens[0], tokens[1]);
 			}
 		}
