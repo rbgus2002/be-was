@@ -28,12 +28,11 @@ public class FrontController {
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
         String url = request.getUrl();
         HttpController controller = controllerMap.get(url);
-        if (controller == null) {
-            viewResolve(url, response);
-        } else {
-            String viewName = controller.process(request, response);
-            viewResolve(viewName, response);
+        String viewName = url;
+        if (controller != null) {
+            viewName = controller.process(request, response);
         }
+        viewResolve(viewName, response);
         render(dos, response);
     }
 
@@ -43,8 +42,7 @@ public class FrontController {
             response.setRedirect(url);
             return;
         }
-        Path path;
-        path = Paths.get("src/main/resources/static" + viewName);
+        Path path = Paths.get("src/main/resources/static" + viewName);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
             path = Paths.get("src/main/resources/templates" + viewName);
         }
