@@ -49,10 +49,14 @@ class HttpResponseTest {
     void createNotFound() {
         //given
         //when
-        HttpResponse httpResponse = HttpResponse.notFound();
+        HttpResponse httpResponse = HttpResponse.notFound("path", Mime.CSS);
 
         //then
-        assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(httpResponse.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+            softAssertions.assertThat(httpResponse.getPath()).isEqualTo("path");
+            softAssertions.assertThat(httpResponse.getContentType()).isEqualTo(Mime.CSS);
+        });
     }
 
     @Test

@@ -3,16 +3,16 @@ package webserver;
 import annotation.RequestMappingHandler;
 import db.Session;
 import db.SessionManager;
-import http.Cookie;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.HttpStatus;
+import http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpUtils;
 import util.StringUtils;
 
-import java.io.*;
-import java.net.Socket;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,21 +22,17 @@ public class ResponseHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
-    private final Socket connection;
     private final SessionManager sessionManager;
 
-    public ResponseHandler(Socket connection, SessionManager sessionManager) {
-        this.connection = connection;
+    public ResponseHandler(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
-    public void response(HttpRequest httpRequest) {
-        HttpResponse httpResponse = handleHttpRequest(httpRequest);
-        try (OutputStream out = this.connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
-
+    public void response(DataOutputStream dos, HttpRequest httpRequest) {
+        HttpResponse httpResponse;
+        try {
+            httpResponse = handleHttpRequest(httpRequest);
             writeResponse(dos, httpResponse);
-
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -77,30 +73,24 @@ public class ResponseHandler {
                 return HttpResponse.ok(path, httpRequest.mime());
             }
             logger.error("메소드를 실행하거나 정적파일을 응답하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
-            return HttpResponse.notFound();
+            if (httpRequest.method().equals(HttpUtils.Method.GET)) {
+                return HttpResponse.notFound("/error.html", Mime.HTML);
+            }
+            return HttpResponse.redirect("/error.html");
         }
     }
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
         HttpStatus status = httpResponse.getHttpStatus();
-        InputStream fileInputStream;
-        byte[] body;
+        InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
+        byte[] body = fileInputStream.readAllBytes();
+        httpResponse.setBody(body);
 
-        try {
-            fileInputStream = getResourceAsStream(httpResponse.getPath());
-            body = fileInputStream.readAllBytes();
-            httpResponse.setBody(body);
-
-            dos.writeBytes("HTTP/1.1 " + status.value() + " " + status.reasonPhrase() + " \r\n");
-            writeHeaders(dos, httpResponse);
-            dos.writeBytes("\r\n");
-            writeBody(dos, httpResponse.getBody());
-            logger.debug("{} response", httpResponse.getHttpStatus().value());
-        } catch (IOException e) {
-            fileInputStream = getResourceAsStream("/error.html");
-            body = fileInputStream.readAllBytes();
-            writeBody(dos, body);
-        }
+        dos.writeBytes("HTTP/1.1 " + status.value() + " " + status.reasonPhrase() + " \r\n");
+        writeHeaders(dos, httpResponse);
+        dos.writeBytes("\r\n");
+        writeBody(dos, httpResponse.getBody());
+        logger.debug("{} response", httpResponse.getHttpStatus().value());
     }
 
     private void writeHeaders(DataOutputStream dos, HttpResponse httpResponse) throws IOException {

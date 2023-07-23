@@ -19,8 +19,8 @@ public class HttpResponse {
         return new HttpResponse(path, null, HttpStatus.FOUND);
     }
 
-    public static HttpResponse notFound() {
-        return new HttpResponse(null, null, HttpStatus.NOT_FOUND);
+    public static HttpResponse notFound(String path, Mime mime) {
+        return new HttpResponse(path, mime, HttpStatus.NOT_FOUND);
     }
 
     private HttpResponse(String path, Mime mime, HttpStatus httpStatus) {
