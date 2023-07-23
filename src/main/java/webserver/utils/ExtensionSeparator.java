@@ -1,7 +1,7 @@
 package webserver.utils;
 
-public class FileExtensionSeparator {
-    private FileExtensionSeparator() {
+public class ExtensionSeparator {
+    private ExtensionSeparator() {
     }
 
     public static String separateExtension(String fileName) {
