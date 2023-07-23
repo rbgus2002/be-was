@@ -3,9 +3,6 @@ package webserver.http.message;
 import webserver.http.Mime;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class HttpResponse {
     public static final String NOT_FOUND_BODY_HTML = "<html><body>NOT FOUND</body><html>";
@@ -48,7 +45,6 @@ public class HttpResponse {
     }
 
     public static HttpResponse redirect(String url) {
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.addHeader(HttpHeaders.LOCATION, url);
 
@@ -63,10 +59,6 @@ public class HttpResponse {
         httpHeaders.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(badRequestHtml.length));
 
         return new HttpResponse(HttpVersion.V1_1, HttpStatus.BAD_REQUEST, httpHeaders, badRequestHtml);
-    }
-
-    public boolean hasBody() {
-        return body != null;
     }
 
     public HttpHeaders getHttpHeaders() {
