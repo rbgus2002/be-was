@@ -20,11 +20,11 @@ public class HttpRequest {
 
     private Map<String, String> params;
 
-    public HttpRequest(String method, String requestPath, String version, String queryString) {
+    public HttpRequest(String method, String requestPath, String version, Map<String, String> params) {
         this.method = method;
         this.requestPath = requestPath;
         this.version = version;
-        this.params = parseQueryString(queryString);
+        this.params = params;
     }
 
     public HttpRequest(InputStream in) throws IOException {
@@ -94,7 +94,7 @@ public class HttpRequest {
         return headers;
     }
 
-    private static Map<String, String> parseQueryString(String firstLine) {
+    public static Map<String, String> parseQueryString(String firstLine) {
         String[] tokens = firstLine.split(" ");
 
         String queryString = tokens[1];

@@ -22,6 +22,10 @@ public class HttpResponse {
         this.body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
     }
 
+    public String getPath() {
+        return path;
+    }
+
     public void response(OutputStream out) {
         DataOutputStream dos = new DataOutputStream(out);
         response200Header(dos, body.length);
