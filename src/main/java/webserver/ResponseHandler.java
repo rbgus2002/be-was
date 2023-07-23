@@ -66,17 +66,17 @@ public class ResponseHandler {
     }
 
     private HttpResponse processHttpRequest(HttpRequest httpRequest, Session session) {
-        String path = httpRequest.uri().getPath();
-        String extension = StringUtils.getExtension(path);
-        if (!Objects.equals(extension, path)) {
-            // 정적 파일 응답
-            return HttpResponse.ok(path, httpRequest.mime());
-        }
-        // 잘못된 http request이면 /error.html response 생성
         try {
             return RequestMappingHandler.invokeMethod(httpRequest, session);
         } catch (Throwable e) {
-            logger.error("메소드를 실행하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
+            logger.debug("정적 파일을 응답합니다.");
+            String path = httpRequest.uri().getPath();
+            String extension = StringUtils.getExtension(path);
+            if (!Objects.equals(extension, path)) {
+                // 정적 파일 응답
+                return HttpResponse.ok(path, httpRequest.mime());
+            }
+            logger.error("메소드를 실행하거나 정적파일을 응답하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
             return HttpResponse.notFound();
         }
     }
