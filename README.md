@@ -25,6 +25,10 @@ Java Web Application Server 2023
   - 유지보수가 편하도록!
 - [x] Junit을 활용한 단위테스트
 
+### step3 - 다양한 컨텐츠 타입 지원
+- [ ] html, css, js, ico, png, jpg 확장자를 지원해야 한다
+- [ ] static 폴더 내의 정적 콘텐츠에 대한 요청이 정상적으로 처리되어야 한다
+
 ---
 ## 학습할 내용
 
