@@ -10,10 +10,11 @@ import webserver.annotation.RequestParameter;
 @Controller
 public class UserController {
     @RequestMapping(path = "/user/create", method = HttpMethod.GET)
-    public void createUser(@RequestParameter(value = "userId") String userId,
-                           @RequestParameter(value = "password") String password,
-                           @RequestParameter(value = "name") String name,
-                           @RequestParameter(value = "email") String email) {
+    public String createUser(@RequestParameter(value = "userId") String userId,
+                             @RequestParameter(value = "password") String password,
+                             @RequestParameter(value = "name") String name,
+                             @RequestParameter(value = "email") String email) {
         Database.addUser(new User(userId, password, name, email));
+        return "/index.html";
     }
 }
