@@ -22,7 +22,7 @@ public class HttpRequest {
     private final HttpMethod httpMethod;
     private final HttpVersion version;
     private final String path;
-    private final Query query;
+    private final RequestQuery requestQuery;
     private final RequestHeader requestHeader;
 
     private HttpRequest(String requestLine, String header) {
@@ -34,7 +34,7 @@ public class HttpRequest {
         this.httpMethod = HttpMethod.valueOf(tokens[0]);
         this.version = HttpVersion.of(tokens[2]);
         this.path = pathAndQueries[0];
-        this.query = parseRequestQuery(pathAndQueries);
+        this.requestQuery = parseRequestQuery(pathAndQueries);
         this.requestHeader = RequestHeader.of(header);
     }
 
@@ -54,10 +54,10 @@ public class HttpRequest {
         return new HttpRequest(requestLine, header.toString());
     }
 
-    private Query parseRequestQuery(String[] pathAndQueries) {
+    private RequestQuery parseRequestQuery(String[] pathAndQueries) {
         return Optional.of(pathAndQueries)
                 .filter(p -> p.length == 2)
-                .map(p -> Query.of(p[1]))
+                .map(p -> RequestQuery.of(p[1]))
                 .orElse(null);
     }
 
@@ -73,11 +73,11 @@ public class HttpRequest {
         return path;
     }
 
-    public Optional<Query> getQuery() {
-        if(query == null) {
+    public Optional<RequestQuery> getRequestQuery() {
+        if(requestQuery == null) {
             return Optional.empty();
         }
 
-        return Optional.of(query);
+        return Optional.of(requestQuery);
     }
 }
