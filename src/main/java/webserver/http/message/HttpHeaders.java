@@ -28,6 +28,10 @@ public class HttpHeaders {
         return Integer.parseInt(contentLength);
     }
 
+    public List<String> get(String key) {
+        return headers.getOrDefault(key, new ArrayList<>());
+    }
+
     public String getSingleValue(String key) {
         return headers.get(key).get(0);
     }
