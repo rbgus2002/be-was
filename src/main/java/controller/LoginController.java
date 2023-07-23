@@ -5,6 +5,7 @@ import http.HttpResponse;
 import model.User;
 
 import java.util.Map;
+import java.util.UUID;
 
 public enum LoginController implements HttpController {
     LOGIN_CONTROLLER;
@@ -15,6 +16,8 @@ public enum LoginController implements HttpController {
         String password = requestParams.get("password");
         User user = Database.findUserById(userId);
         if (user != null && user.getPassword().equals(password)) {
+            String sid = UUID.randomUUID().toString();
+            response.setHeader("Set-Cookie", "sid=" + sid + "; Path=/");
             return "redirect:/index.html";
         }
         return "redirect:/user/login_failed.html";
