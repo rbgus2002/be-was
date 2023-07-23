@@ -4,7 +4,7 @@ import application.dto.UserDto;
 import db.Database;
 import model.User;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -38,7 +38,7 @@ public enum UserRepository {
                 .build());
     }
 
-    public Collection<UserDto> findAll() {
+    public List<UserDto> findAll() {
         return database.findAll().stream()
                 .map(user -> new UserDto.Builder()
                         .withUserId(user.getUserId())
