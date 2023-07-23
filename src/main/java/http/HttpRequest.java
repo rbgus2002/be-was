@@ -5,7 +5,6 @@ import static http.statusline.ResponseLine.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +46,7 @@ public class HttpRequest {
 	}
 
 	private void parseHeader() throws IOException {
-		String line = "";
+		String line = HEADER_DELIMITER;
 		String[] tokens;
 		while (!line.isBlank()) {
 			line = reader.readLine();
@@ -62,7 +61,7 @@ public class HttpRequest {
 		if ((method == HttpMethod.POST) && header.containsLength()) {
 			char[] charArray = new char[header.getContentLength()];
 			reader.read(charArray);
-			body = Arrays.toString(charArray);
+			body = String.valueOf(charArray);
 			parseParameter(body);
 		}
 	}

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import annotations.GetMapping;
+import annotations.PostMapping;
 import db.Database;
 import http.HttpParameter;
 import model.User;
@@ -16,7 +17,7 @@ public class Controller {
 		return "index.html";
 	}
 
-	@GetMapping(path = "/create")
+	@PostMapping(path = "/user/create")
 	public String createUser(HttpParameter httpParameter) throws IllegalArgumentException {
 		Database.addUser(parameterToUser(httpParameter));
 		logger.debug("[Database] User {} added", Database.findUserById(httpParameter.getParameter("userId")).getName());
