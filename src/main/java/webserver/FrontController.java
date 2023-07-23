@@ -30,7 +30,7 @@ public class FrontController {
         HttpController controller = controllerMap.get(url);
         String viewName = url;
         if (controller != null) {
-            viewName = controller.process(request, response);
+            viewName = controller.process(request.getParams());
         }
         viewResolve(viewName, response);
         render(dos, response);

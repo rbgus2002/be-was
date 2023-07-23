@@ -1,8 +1,7 @@
 package controller;
 
-import webserver.HttpRequest;
-import webserver.HttpResponse;
+import java.util.Map;
 
 public interface HttpController {
-    String process(HttpRequest request, HttpResponse response);
+    String process(Map<String, String> requestParams);
 }

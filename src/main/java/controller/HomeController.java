@@ -1,13 +1,12 @@
 package controller;
 
-import webserver.HttpRequest;
-import webserver.HttpResponse;
+import java.util.Map;
 
 public enum HomeController implements HttpController {
     HOME_CONTROLLER;
 
     @Override
-    public String process(HttpRequest request, HttpResponse response) {
+    public String process(Map<String, String> requestParams) {
         return "/index.html";
     }
 }
