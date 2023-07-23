@@ -1,18 +1,19 @@
 package webserver.request;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Query {
+public class RequestQuery {
 
     private final Map<String, String> queries;
 
-    private Query(Map<String, String> queries) {
+    private RequestQuery(Map<String, String> queries) {
         this.queries = queries;
     }
 
-    public static Query of(String string) {
+    public static RequestQuery of(String string) {
 
         String[] array = string.split("&");
 
@@ -22,6 +23,13 @@ public class Query {
                         s -> s.split("=")[1]
                 ));
 
-        return new Query(queries);
+        return new RequestQuery(queries);
+    }
+
+    public Optional<String> getValue(String key) {
+        String value = queries.get(key);
+        if(value == null) return Optional.empty();
+
+        return Optional.of(queries.get(key));
     }
 }
