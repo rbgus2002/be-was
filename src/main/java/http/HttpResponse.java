@@ -9,16 +9,16 @@ import java.nio.file.Path;
 import http.header.Header;
 import http.header.MimeType;
 import http.statusline.StatusCode;
-import http.statusline.StatusLine;
+import http.statusline.ResponseLine;
 
 public class HttpResponse {
-	private StatusLine statusLine = new StatusLine();
+	private ResponseLine responseLine = new ResponseLine();
 	private Header header = new Header();
 	private byte[] body = new byte[0];
 
 	public HttpResponse(HttpRequest httpRequest) {
-		statusLine.setVersion(httpRequest.getVersion());
-		statusLine.setStatusCode(StatusCode.OK);
+		responseLine.setVersion(httpRequest.getVersion());
+		responseLine.setStatusCode(StatusCode.OK);
 	}
 
 	public void response(OutputStream out) throws IOException {
@@ -37,12 +37,12 @@ public class HttpResponse {
 	}
 
 	public void setRedirect(final String redirectPath, StatusCode statusCode) {
-		statusLine.setStatusCode(statusCode);
+		responseLine.setStatusCode(statusCode);
 		header.addHeader("Location", redirectPath);
 	}
 
 	private void responseStatusLine(DataOutputStream dos) throws IOException {
-		dos.writeBytes(statusLine.getStatusLineForHeader() + "\r\n");
+		dos.writeBytes(responseLine.getStatusLineForHeader() + "\r\n");
 	}
 
 	private void responseHeader(DataOutputStream dos) throws IOException {
