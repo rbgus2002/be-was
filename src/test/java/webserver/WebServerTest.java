@@ -2,8 +2,7 @@ package webserver;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 
 class WebServerTest {
 

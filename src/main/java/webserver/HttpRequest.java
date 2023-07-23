@@ -47,9 +47,9 @@ public class HttpRequest {
 
     private void parseTarget(String target) {
         if (target.contains("?")) {
-            String[] targetTonkens = target.split("\\?");
-            url = targetTonkens[0];
-            parseParam(targetTonkens[1]);
+            String[] targetTokens = target.split("\\?");
+            url = targetTokens[0];
+            parseParam(targetTokens[1]);
         } else {
             url = target;
         }
