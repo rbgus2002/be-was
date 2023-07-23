@@ -10,25 +10,16 @@ public class HttpResponseMessage {
     private String statusCode = "";
     private String statusMessage = "";
     private Map<String, String> headerMap = new HashMap<>();
-    private byte[] body;
+    private byte[] body = new byte[0];
 
     public HttpResponseMessage() {
         setHeader("Content-Length", "0");
         setHeader("Content-Type", "");
     }
 
-    public HttpResponseMessage(HttpStatus httpStatus, byte[] body) {
-        this.statusCode = httpStatus.getCode();
-        this.statusMessage = httpStatus.getMessage();
-        this.body = body;
-        setHeader("Content-Length", String.valueOf(body.length));
-        setHeader("Content-Type", "text/html;charset=utf-8");
-    }
-
     public void setStatusLine(HttpStatus httpStatus) {
         this.statusCode = httpStatus.getCode();
         this.statusMessage = httpStatus.getMessage();
-
     }
 
     public void setBody(String body) {
@@ -38,7 +29,6 @@ public class HttpResponseMessage {
     public void setBody(byte[] body) {
         this.body = body;
         setHeader("Content-Length", String.valueOf(body.length));
-        setHeader("Content-Type", "text/html;charset=utf-8");
     }
 
     public void setHeader(String key, String value) {
@@ -47,15 +37,19 @@ public class HttpResponseMessage {
 
     public String getResponseHeader() {
         StringBuilder responseMessage = new StringBuilder();
-        responseMessage.append(version).append(" ").append(statusCode).append(" ").append(statusMessage).append(NEW_LINE);
+        responseMessage.append(renderResponseStatusLine());
         for (String key : headerMap.keySet()) {
             responseMessage.append(key).append(": ").append(headerMap.get(key)).append(NEW_LINE);
         }
         return responseMessage.toString();
     }
 
+    private String renderResponseStatusLine() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.append(version).append(" ").append(statusCode).append(" ").append(statusMessage).append(NEW_LINE).toString();
+    }
+
     public byte[] getResponseBody() {
         return body;
     }
-
 }
