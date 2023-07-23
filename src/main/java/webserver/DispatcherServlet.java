@@ -2,7 +2,6 @@ package webserver;
 
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
-import webserver.Constants.ContentType;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.Constants.HttpStatus;
@@ -24,11 +23,10 @@ public class DispatcherServlet {
         StaticViewResolver staticViewResolver = new StaticViewResolver();
         Optional<View> view = staticViewResolver.resolve(httpRequest.getPath());
 
-        if(view.isPresent()) view.get().render(null, dos);
+        if(view.isPresent()) view.get().render(httpRequest.getVersion(), null, dos);
 
         if(view.isEmpty()) {
-            byte[] body = "404 Not Found".getBytes();
-            HttpResponse httpResponse = HttpResponse.of(HttpStatus.NOT_FOUND, ContentType.HTML, body);
+            HttpResponse httpResponse = HttpResponse.ofWithStatusOnly(httpRequest.getVersion(), HttpStatus.NOT_FOUND);
             httpResponse.sendResponse(dos);
         }
     }

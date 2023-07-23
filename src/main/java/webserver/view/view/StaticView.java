@@ -1,6 +1,7 @@
 package webserver.view.view;
 
 import webserver.Constants.ContentType;
+import webserver.Constants.HttpVersion;
 import webserver.response.HttpResponse;
 import webserver.Constants.HttpStatus;
 
@@ -19,11 +20,11 @@ public class StaticView implements View {
     }
 
     @Override
-    public void render(final Map<String, Object> model, final DataOutputStream dos) throws IOException {
+    public void render(final HttpVersion version, final Map<String, Object> model, final DataOutputStream dos) throws IOException {
 
         byte[] body = Files.readAllBytes(Paths.get(filePath));
 
-        HttpResponse httpResponse = HttpResponse.of(HttpStatus.OK, ContentType.HTML, body);
+        HttpResponse httpResponse = HttpResponse.ofWithBodyData(version, HttpStatus.OK, ContentType.HTML, body);
         httpResponse.sendResponse(dos);
     }
 }
