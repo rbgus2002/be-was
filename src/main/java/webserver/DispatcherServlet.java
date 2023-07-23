@@ -4,8 +4,8 @@ import controller.Controller;
 import exception.NotSupportedContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.request.HttpRequest;
-import webserver.http.response.HttpResponse;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 
 import java.io.*;
 import java.lang.invoke.MethodHandle;

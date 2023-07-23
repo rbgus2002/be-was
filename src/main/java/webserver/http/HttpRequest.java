@@ -1,4 +1,4 @@
-package webserver.http.request;
+package webserver.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,39 +12,43 @@ import java.util.StringTokenizer;
 import static utils.StringUtils.*;
 
 public class HttpRequest {
+    private final String CONTENT_LENGTH = "Content-Length";
     private final HttpRequestLine requestLine;
-    private final Map<String, String> header = new HashMap<>();
+    private final Header header;
+    private final Map<String, String> body = new HashMap<>();
 
     private HttpRequest(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-        String line = br.readLine();
-        this.requestLine = HttpRequestLine.from(line);
+        this.requestLine = HttpRequestLine.from(br.readLine());
+        this.header = Header.from(br);
+        setBody(br);
+    }
 
-        while (!isNullOrBlank(line)) {
-            line = br.readLine();
-            if (isNullOrBlank(line)) {
-                break;
-            }
-            StringTokenizer st = new StringTokenizer(line, ": ");
-            header.put(st.nextToken(), st.nextToken());
+    private void setBody(BufferedReader br) throws IOException {
+        if(!existBody()){
+            return;
         }
+        int contentLength = header.getContentLength();
+        char[] buffer = new char[contentLength];
+        br.read(buffer);
+        Uri.setQuery(body, String.valueOf(buffer));
+    }
+
+    private boolean existBody() {
+        return header.containsContentLength();
     }
 
     public static HttpRequest from(InputStream in) throws IOException {
         return new HttpRequest(in);
     }
 
-    private boolean isNullOrBlank(String line) {
-        return line == null || line.isBlank();
-    }
+
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[URI] ").append(appendNewLine(requestLine.toString()));
-        for (String key : header.keySet()) {
-            sb.append(key + ": ").append(appendNewLine(header.get(key)));
-        }
+        sb.append(header);
         return sb.toString();
     }
 
@@ -58,5 +62,9 @@ public class HttpRequest {
 
     public Map<String, String> getQuery(){
         return requestLine.getUri().getQuery();
+    }
+
+    public Map<String, String> getBody() {
+        return body;
     }
 }

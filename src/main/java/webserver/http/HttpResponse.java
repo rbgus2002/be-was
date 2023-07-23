@@ -1,10 +1,8 @@
-package webserver.http.response;
+package webserver.http;
 
-import exception.NotSupportedContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.ContentType;
-import webserver.http.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.File;

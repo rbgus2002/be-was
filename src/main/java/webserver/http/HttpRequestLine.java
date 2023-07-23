@@ -1,4 +1,4 @@
-package webserver.http.request;
+package webserver.http;
 
 public class HttpRequestLine {
     private String method;

@@ -1,14 +1,10 @@
 package webserver;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import webserver.http.request.HttpRequest;
-import webserver.http.request.Uri;
+import webserver.http.Uri;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 
 import static utils.StringUtils.appendNewLine;
 

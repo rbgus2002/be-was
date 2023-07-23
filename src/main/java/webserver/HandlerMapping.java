@@ -2,7 +2,7 @@ package webserver;
 
 import annotation.GetMapping;
 import controller.Controller;
-import webserver.http.request.HttpRequest;
+import webserver.http.HttpRequest;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
