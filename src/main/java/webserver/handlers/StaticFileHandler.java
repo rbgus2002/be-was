@@ -1,21 +1,21 @@
 package webserver.handlers;
 
 import webserver.http.Mime;
+import webserver.http.message.HttpHeaders;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.utils.FileExtensionSeparator;
 import webserver.utils.FileUtils;
 
-import java.util.List;
-import java.util.Map;
+import static webserver.http.message.HttpHeaders.ACCEPT;
 
 public class StaticFileHandler implements Handler {
     @Override
     public HttpResponse handle(HttpRequest request) {
-        if (request.getMetaData().containsKey("Accept")) {
+        if (request.containsHeader(ACCEPT)) {
             HttpResponse response = makeResponseUsingAccept(request);
-            Map<String, List<String>> headers = response.getMetaData();
-            if (!headers.get("Content-Type").get(0).equals(Mime.DEFAULT.getContentType()))
+            HttpHeaders headers = request.getHttpHeaders();
+            if (!headers.getSingleValue(ACCEPT).equals(Mime.DEFAULT.getContentType()))
                 return response;
         }
         return makeResponseUsingExt(request);
@@ -31,7 +31,7 @@ public class StaticFileHandler implements Handler {
 
     private static HttpResponse makeResponseUsingAccept(HttpRequest request) {
         String path = request.getURL().getPath();
-        String contentType = request.getMetaData().get("Accept").get(0);
+        String contentType = request.getHttpHeaders().getSingleValue(ACCEPT);
         byte[] file = FileUtils.readFileFromStatic(path);
         Mime mime = Mime.findByContentType(contentType);
         return HttpResponse.okWithFile(file, mime);

@@ -6,7 +6,13 @@ public class HttpHeaders {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String CONTENT_LENGTH = "Content-Length";
     public static final String ACCEPT = "Accept";
+    public static final String LOCATION = "Location";
+
     private final Map<String, List<String>> headers = new HashMap<>();
+
+    public Map<String, List<String>> getHeaders() {
+        return headers;
+    }
 
     public void addHeader(String key, String... value) {
         List<String> values = headers.getOrDefault(key, new ArrayList<>());

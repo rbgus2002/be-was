@@ -31,7 +31,7 @@ public class UserJoinHandler implements Handler {
         String body = makeString(messageBody);
         User user = mapToUserFrom(body);
         userService.join(user);
-        return HttpResponse.created(REDIRECT_URL);
+        return HttpResponse.redirect(REDIRECT_URL);
     }
 
     private String makeString(char[] messageBody) {
