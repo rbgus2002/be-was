@@ -6,6 +6,8 @@ import webserver.Constants.HttpVersion;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static support.utils.StringUtils.*;
 
@@ -46,5 +48,20 @@ public class HttpResponse {
         dos.writeBytes(getStatusLine() + getHeader());
         dos.write(body, 0, body.length);
         dos.flush();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HttpResponse that = (HttpResponse) o;
+        return httpVersion == that.httpVersion && httpStatus == that.httpStatus && contentType == that.contentType && Arrays.equals(body, that.body);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(httpVersion, httpStatus, contentType);
+        result = 31 * result + Arrays.hashCode(body);
+        return result;
     }
 }
