@@ -19,7 +19,11 @@ public class ResponseMapper {
     public static final int KEY_INDEX = 0;
     public static final int VALUE_INDEX = 1;
 
-    public HttpResponse createHttpResponse(HttpRequest request, HttpStatusCode statusCode, byte[] body, MIME extension) {
+    public static HttpResponse createNoBodyHttpResponse(HttpRequest request, HttpStatusCode statusCode) {
+        return createHttpResponse(request, statusCode, NO_CONTENT.getBytes(), MIME.JSON);
+    }
+
+    public static HttpResponse createHttpResponse(HttpRequest request, HttpStatusCode statusCode, byte[] body, MIME extension) {
         int lengthOfBody = body.length;
 
         HttpHeader httpHeader = createHeader(
@@ -29,7 +33,7 @@ public class ResponseMapper {
         return HttpResponse.of(request, statusCode, httpHeader, body);
     }
 
-    public HttpResponse createRedirectResponse(HttpRequest request, HttpStatusCode statusCode, String redirectPath) {
+    public static HttpResponse createRedirectResponse(HttpRequest request, HttpStatusCode statusCode, String redirectPath) {
         HttpHeader httpHeader = createHeader(
                 List.of(HttpHeaders.LOCATION, redirectPath)
         );
@@ -37,7 +41,7 @@ public class ResponseMapper {
     }
 
     @SafeVarargs
-    private HttpHeader createHeader(List<String>... contents) {
+    private static HttpHeader createHeader(List<String>... contents) {
         Map<String, String> header = new HashMap<>();
         for (List<String> content : contents) {
             String key = content.get(KEY_INDEX);
@@ -47,11 +51,11 @@ public class ResponseMapper {
         return HttpHeader.of(header);
     }
 
-    public HttpResponse createNotFoundResponse(HttpRequest httpRequest) {
+    public static HttpResponse createNotFoundResponse(HttpRequest httpRequest) {
         return createHttpResponse(httpRequest, HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND.getBytes(), MIME.JSON);
     }
 
-    public HttpResponse createBadRequestResponse(HttpRequest httpRequest) {
+    public static HttpResponse createBadRequestResponse(HttpRequest httpRequest) {
         return createHttpResponse(httpRequest, HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST.getBytes(), MIME.JSON);
     }
 }
