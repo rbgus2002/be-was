@@ -12,6 +12,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;
 import static webserver.http.HttpStatus.*;
@@ -55,7 +56,8 @@ public class DispatcherServlet {
         MethodHandle methodHandle = getMethodHandle(method);
         String path;
         if (hasParameter(methodHandle.type())) {
-            path = (String) methodHandle.invoke(request.getQuery());
+            Map<String, String> map = (request.isGetMethod()) ? request.getQuery() : request.getBody();
+            path = (String) methodHandle.invoke(map);
         } else {
             path = (String) methodHandle.invoke();
         }

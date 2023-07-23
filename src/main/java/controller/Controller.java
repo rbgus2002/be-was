@@ -1,6 +1,7 @@
 package controller;
 
 import annotation.GetMapping;
+import annotation.PostMapping;
 import db.Database;
 import model.User;
 import model.factory.UserFactory;
@@ -13,13 +14,13 @@ import java.util.Map;
 public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    @GetMapping(value = "/user/create")
-    public String createUser(Map<String, String> query){
-        logger.debug("GET user/create API START");
+    @PostMapping(value = "/user/create")
+    public String createUser(Map<String, String> body){
+        logger.debug("POST user/create API START");
 
-        User user = UserFactory.createUserFrom(query);
+        User user = UserFactory.createUserFrom(body);
         Database.addUser(user);
-        logger.debug("user 생성 : {}", Database.findUserById(query.get("userId")));
+        logger.debug("user 생성 : {}", Database.findUserById(body.get("userId")));
 
         return "/index.html";
     }

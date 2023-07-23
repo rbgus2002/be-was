@@ -14,7 +14,6 @@ public class HttpRequest {
     private final Header header;
     private final Body body;
 
-
     private HttpRequest(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
         this.requestLine = HttpRequestLine.from(br.readLine());
@@ -29,14 +28,10 @@ public class HttpRequest {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[URI] ").append(appendNewLine(requestLine.toString()));
-        sb.append(header);
-        sb.append(body);
+        sb.append("<URI>").append(appendNewLine(requestLine.toString()));
+        sb.append(appendNewLine("<HEADER>")).append(header).append(appendNewLine("</HEADER>"));
+        sb.append(appendNewLine("<BODY>")).append(body).append(appendNewLine("</BODY>"));
         return sb.toString();
-    }
-
-    public String getMethod() {
-        return requestLine.getMethod();
     }
 
     public String getPath() {
@@ -49,5 +44,14 @@ public class HttpRequest {
 
     public Map<String, String> getBody() {
         return body.getBody();
+    }
+
+
+    public boolean isPostMethod() {
+        return "POST".equals(requestLine.getMethod());
+    }
+
+    public boolean isGetMethod() {
+        return "GET".equals(requestLine.getMethod());
     }
 }

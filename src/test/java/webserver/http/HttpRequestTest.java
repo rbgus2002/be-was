@@ -26,18 +26,6 @@ class HttpRequestTest {
                 appendNewLine("");
         InputStream in = new ByteArrayInputStream(requestStr.getBytes());
 
-
-        @Test
-        @DisplayName("요청 메소드를 가져온다")
-        void getMethod() throws IOException {
-            // given, when
-            HttpRequest request = HttpRequest.from(in);
-
-            // then
-            assertNotNull(request);
-            assertEquals(GET, request.getMethod());
-        }
-
         @Test
         @DisplayName("요청 uri를 가져온다")
         void getUri() throws IOException {
@@ -46,6 +34,19 @@ class HttpRequestTest {
 
             // then
             assertEquals(PATH, request.getPath());
+        }
+
+        @Test
+        @DisplayName("GET 메소드인 경우 true를 반환한다")
+        void isGetMethod() throws IOException {
+            // given
+            HttpRequest request = HttpRequest.from(in);
+
+            // when
+            boolean get = request.isGetMethod();
+
+            // then
+            assertTrue(get);
         }
     }
 
@@ -98,6 +99,19 @@ class HttpRequestTest {
 
             // then
             System.out.println(request);
+        }
+
+        @Test
+        @DisplayName("POST 메소드인 경우 true를 반환한다")
+        void isGetMethod() throws IOException {
+            // given
+            HttpRequest request = HttpRequest.from(in);
+
+            // when
+            boolean post = request.isPostMethod();
+
+            // then
+            assertTrue(post);
         }
     }
 }
