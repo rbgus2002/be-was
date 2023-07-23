@@ -4,10 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpResponse {
+    public static final String OK = "200";
+    public static final String FOUND = "302";
+    public static final String NOT_FOUND = "404";
 
-    private String method = "200";
-    private String version = "HTTP/1.1";
-    private String statusMessage = "OK";
+    public static final String OK_MESSAGE = "OK";
+    public static final String FOUND_MESSAGE = "Found";
+
+    public static final String HTTP11 = "HTTP/1.1";
+
+    private String method = OK;
+    private String version = HTTP11;
+    private String statusMessage = OK_MESSAGE;
     private byte[] body;
     private final Map<String, String> headers = new HashMap<>();
 
@@ -37,8 +45,8 @@ public class HttpResponse {
     }
 
     public void setRedirect(String url) {
-        setMethod("302");
-        setStatusMessage("Found");
+        setMethod(FOUND);
+        setStatusMessage(FOUND_MESSAGE);
         setHeader("Location", url);
     }
 
