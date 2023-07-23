@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
@@ -19,6 +20,7 @@ public class HttpRequest {
 
     private final Map<String, String> headers = new HashMap<>();
     private final Map<String, String> params = new HashMap<>();
+    private final Map<String, String> cookies = new HashMap<>();
 
     public HttpRequest(InputStream in) throws IOException {
         String input;
@@ -86,5 +88,25 @@ public class HttpRequest {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public String getCookie(String key) {
+        return cookies.get(key);
+    }
+
+    public HttpSession getSession() {
+        String sid = getCookie("sid");
+        if (sid == null) {
+            sid = UUID.randomUUID().toString();
+        }
+        return new HttpSession(sid);
     }
 }

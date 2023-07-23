@@ -1,23 +1,25 @@
 package http;
 
-import model.User;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class HttpSession {
-    private static final Map<String, User> attributes = new HashMap<>();
+    private static final Map<String, Object> attributes = new HashMap<>();
     private final String sid;
 
     public HttpSession(String sid) {
         this.sid = sid;
     }
 
-    public void addSession(String sid, User user) {
-        attributes.put(sid, user);
+    public String getSid() {
+        return sid;
     }
 
-    public User getUser() {
+    public void addAttribute(Object object) {
+        attributes.put(sid, object);
+    }
+
+    public Object getAttribute() {
         return attributes.get(sid);
     }
 }

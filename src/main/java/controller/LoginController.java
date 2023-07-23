@@ -3,9 +3,8 @@ package controller;
 import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.HttpSession;
 import model.User;
-
-import java.util.UUID;
 
 public enum LoginController implements HttpController {
     LOGIN_CONTROLLER;
@@ -16,8 +15,9 @@ public enum LoginController implements HttpController {
         String password = request.getParam("password");
         User user = Database.findUserById(userId);
         if (user != null && user.getPassword().equals(password)) {
-            String sid = UUID.randomUUID().toString();
-            response.setHeader("Set-Cookie", "sid=" + sid + "; Path=/");
+            HttpSession session = request.getSession();
+            session.addAttribute(user);
+            response.setSession(session);
             return "redirect:/index.html";
         }
         return "redirect:/user/login_failed.html";
