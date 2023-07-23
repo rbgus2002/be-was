@@ -69,4 +69,13 @@ public class HttpResponse {
     public HttpVersion getHttpVersion() {
         return httpVersion;
     }
+
+    @Override
+    public String toString() {
+        return "HttpResponse{" +
+                "httpVersion=" + httpVersion +
+                ", httpStatus=" + httpStatus +
+                ", metaData=" + metaData +
+                '}';
+    }
 }
