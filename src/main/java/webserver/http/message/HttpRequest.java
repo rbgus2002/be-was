@@ -51,4 +51,45 @@ public class HttpRequest {
                 ", body=" + Arrays.toString(body) +
                 '}';
     }
+
+    public static HttpRequestBuilder builder() {
+        return new HttpRequestBuilder();
+    }
+
+    public static class HttpRequestBuilder {
+        public HttpMethod httpMethod;
+        public URL url;
+        public HttpVersion httpVersion;
+        public HttpHeaders httpHeaders;
+        public char[] body;
+
+        public HttpRequestBuilder httpMethod(HttpMethod httpMethod) {
+            this.httpMethod = httpMethod;
+            return this;
+        }
+
+        public HttpRequestBuilder url(URL url) {
+            this.url = url;
+            return this;
+        }
+
+        public HttpRequestBuilder httpVersion(HttpVersion httpVersion) {
+            this.httpVersion = httpVersion;
+            return this;
+        }
+
+        public HttpRequestBuilder httpHeader(HttpHeaders headers) {
+            this.httpHeaders = headers;
+            return this;
+        }
+
+        public HttpRequestBuilder body(char[] body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(httpMethod, url, httpVersion, httpHeaders, body);
+        }
+    }
 }
