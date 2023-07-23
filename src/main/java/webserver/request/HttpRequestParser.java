@@ -1,5 +1,6 @@
 package webserver.request;
 
+import webserver.HttpMethod;
 import webserver.exception.BadRequestException;
 
 import java.io.BufferedReader;
@@ -37,7 +38,7 @@ public class HttpRequestParser {
                 throw new IllegalArgumentException("잘못된 Status line 입니다.");
             }
 
-            String method = statusLine[0];
+            HttpMethod method = HttpMethod.valueOf(statusLine[0]);
             HttpURL url = HttpRequestParser.parseUrl(URLDecoder.decode(statusLine[1], StandardCharsets.UTF_8));
             String version = statusLine[2];
 
