@@ -10,34 +10,24 @@ public class Utils {
     public static String getMimeType(Path path) {
         String filename = path.getFileName().toString();
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
-        String contentType;
         switch (extension) {
             case "css":
-                contentType = "text/css";
-                break;
+                return "text/css";
             case "js":
-                contentType = "text/javascript";
-                break;
+                return "text/javascript";
             case "html":
-                contentType = "text/html; charset=utf-8";
-                break;
+                return "text/html; charset=utf-8";
             case "ico":
-                contentType = "image/x-icon";
-                break;
+                return "image/x-icon";
             case "jpg":
             case "jpeg":
-                contentType = "image/jpeg";
-                break;
+                return "image/jpeg";
             case "png":
-                contentType = "image/png";
-                break;
+                return  "image/png";
             case "txt":
-                contentType = "text/plain";
-                break;
+                return "text/plain";
             default:
-                contentType = "application/octet-stream";
-                break;
+                return "application/octet-stream";
         }
-        return contentType;
     }
 }
