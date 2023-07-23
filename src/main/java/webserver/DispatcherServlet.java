@@ -30,7 +30,7 @@ public class DispatcherServlet {
 
     private Method getHandler(HttpRequest request) {
         Map<String, Method> handlers = HandlerMapping.getHandlerMappings();
-        if (handlers != null) {
+        if (!handlers.isEmpty()) {
             for (String url : handlers.keySet()) {
                 if (request.getRequestPath().equals(url)) {
                     return handlers.get(url);

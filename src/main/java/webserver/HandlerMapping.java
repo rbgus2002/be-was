@@ -14,7 +14,7 @@ public class HandlerMapping {
         Method[] methods = Controller.class.getDeclaredMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(GetMapping.class)) {
-                handlerMappings.put(method.getAnnotation(GetMapping.class).value(), method);
+                handlerMappings.put(method.getAnnotation(GetMapping.class).path(), method);
             }
         }
     }

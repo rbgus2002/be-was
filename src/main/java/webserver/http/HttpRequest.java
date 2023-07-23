@@ -18,7 +18,7 @@ public class HttpRequest {
     private final String version;
     private Map<String, String> headers = new HashMap<>();
 
-    private Map<String, String> params = new HashMap<>();
+    private Map<String, String> params;
 
     public HttpRequest(String method, String requestPath, String version, String queryString) {
         this.method = method;
@@ -79,8 +79,8 @@ public class HttpRequest {
         String line = bufferedReader.readLine();
         while (!line.equals("")) {
             line = bufferedReader.readLine();
-            String key = line.split(": ")[0];
-            String value = line.split(": ")[1];
+            String key = line.split(":")[0].trim();
+            String value = line.split(":")[1].trim();
             headers.put(key, value);
         }
 
