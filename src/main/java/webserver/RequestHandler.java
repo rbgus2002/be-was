@@ -32,6 +32,7 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
             }
             HttpRequest request = HttpRequestParser.getRequest(in);
             logger.debug("Request Header : \n{}", request.getHeader());
+            logger.debug("Request Body : \n{}", request.getBody());
 
             process(request, response);
             DataOutputStream dos = new DataOutputStream(out);

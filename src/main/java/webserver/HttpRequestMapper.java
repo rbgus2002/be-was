@@ -11,7 +11,7 @@ public class HttpRequestMapper {
     private static final Map<String, Controller> controllerMap = new HashMap<>();
     private static final HttpRequestMapper requestMapper = new HttpRequestMapper();
     private HttpRequestMapper(){
-        controllerMap.put("GET /user/create", new SignUpController());
+        controllerMap.put("POST /user/create", new SignUpController());
     }
 
     public static HttpRequestMapper getInstance(){
