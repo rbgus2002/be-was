@@ -18,6 +18,13 @@ Java Web Application Server 2023
 - [x] SoftAssertion으로 회원가입 컨트롤러 테스트
 - [x] 회원가입 성공 시 메인 페이지로 리다이렉트
 
+### [Step-3] 다양한 컨텐츠타입 지원
+- [x] html, css, js, ico, png, jpg 타입을 지원한다
+
+### [Step-4] POST로 회원가입
+- [ ] 로그인을 GET에서 POST로 동작하도록 변경한다
+- [ ] 가입을 완료하면 /index.html 페이지로 이동한다
+
 ---
 
 ## 프로젝트 정보 
