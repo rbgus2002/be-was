@@ -22,6 +22,7 @@ public class FrontHandler {
 
     {
         routeTables.put(new RouteKey(HttpMethod.GET, "/index.html"), new IndexHandler());
+        routeTables.put(new RouteKey(HttpMethod.GET, "/user/login.html"), new LoginPageHandler());
         routeTables.put(new RouteKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
         routeTables.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
         addStaticFilesRecords();
