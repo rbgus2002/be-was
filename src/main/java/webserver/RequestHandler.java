@@ -26,8 +26,8 @@ public class RequestHandler implements Runnable {
 
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
             dispatcherServlet.doService(httpRequest, out);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
     }
 }

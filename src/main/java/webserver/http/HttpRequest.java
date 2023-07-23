@@ -30,7 +30,7 @@ public class HttpRequest {
     public HttpRequest(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String firstLine = bufferedReader.readLine();
-        this.method = (firstLine);
+        this.method = method(firstLine);
         this.requestPath = requestPath(firstLine);
         this.version = version(firstLine);
         this.params = parseQueryString(firstLine);
@@ -59,7 +59,11 @@ public class HttpRequest {
 
     public static String requestPath(String firstLine) {
         String[] tokens = firstLine.split(" ");
-        String requestPath = tokens[1].split("\\?")[0];
+
+        String requestPath = tokens[1];
+        if (requestPath.contains("?")) {
+            requestPath = tokens[1].split("\\?")[0];
+        }
         logger.debug("request url: {}", requestPath);
 
         return requestPath;
@@ -76,9 +80,12 @@ public class HttpRequest {
     private Map<String, String> headers(BufferedReader bufferedReader) throws IOException {
         Map<String, String> headers = new HashMap<>();
 
-        String line = bufferedReader.readLine();
-        while (!line.equals("")) {
+        String line;
+        while (true) {
             line = bufferedReader.readLine();
+            if (line.equals("")) {
+                break;
+            }
             String key = line.split(":")[0].trim();
             String value = line.split(":")[1].trim();
             headers.put(key, value);
@@ -88,13 +95,16 @@ public class HttpRequest {
     }
 
     private static Map<String, String> parseQueryString(String firstLine) {
-        String parameters = firstLine.split("\\?")[1];
-        if (parameters == null || parameters.isEmpty()) {
+        String[] tokens = firstLine.split(" ");
+
+        String queryString = tokens[1];
+        if (!queryString.contains("?")) {
             return new HashMap<>();
         }
 
+        String params = queryString.split("\\?")[1];
         Map<String, String> paramsMap = new HashMap<>();
-        for (String param : parameters.split("&")) {
+        for (String param : params.split("&")) {
             String key = param.split("=")[0];
             String value = param.split("=")[1];
             paramsMap.put(key, value);
