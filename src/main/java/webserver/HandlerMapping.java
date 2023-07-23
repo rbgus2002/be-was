@@ -2,6 +2,7 @@ package webserver;
 
 import controller.Controller;
 import controller.annotaion.GetMapping;
+import webserver.http.HttpRequest;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -19,7 +20,15 @@ public class HandlerMapping {
         }
     }
 
-    public static Map<String, Method> getHandlerMappings() {
-        return handlerMappings;
+    public static Method getHandler(HttpRequest request) {
+        if (!handlerMappings.isEmpty()) {
+            for (String url : handlerMappings.keySet()) {
+                if (request.getRequestPath().equals(url)) {
+                    return handlerMappings.get(url);
+                }
+            }
+        }
+
+        return null;
     }
 }

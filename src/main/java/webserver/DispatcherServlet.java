@@ -23,7 +23,7 @@ public class DispatcherServlet {
     }
 
     protected void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
-        Method handler = getHandler(request);
+        Method handler = HandlerMapping.getHandler(request);
         HttpResponse httpResponse;
 
         if (handler == null) {
@@ -35,37 +35,36 @@ public class DispatcherServlet {
         String httpMethod = request.getMethod();
         boolean isGet = httpMethod.equals("GET");
         if (isGet) {
-            MethodType methodType;
-            if (handler.getParameterCount() > 0) {
-                methodType = MethodType.methodType(HttpResponse.class, handler.getParameterTypes());
-            } else {
-                methodType = MethodType.methodType(HttpResponse.class);
-            }
-
-            MethodHandle methodHandle = MethodHandles.lookup()
-                    .findVirtual(Controller.class, handler.getName(), methodType)
-                    .bindTo(new Controller());
-
-            if (methodHandle.type().parameterCount() > 0) {
-                httpResponse = (HttpResponse) methodHandle.invoke(request.getParams());
-            } else {
-                httpResponse = (HttpResponse) methodHandle.invoke();
-            }
-
+            MethodType methodType = getMethodType(handler);
+            MethodHandle methodHandle = getMethodHandle(handler, methodType);
+            httpResponse = getHttpResponse(request, methodHandle);
             httpResponse.response(out);
         }
     }
 
-    private Method getHandler(HttpRequest request) {
-        Map<String, Method> handlers = HandlerMapping.getHandlerMappings();
-        if (!handlers.isEmpty()) {
-            for (String url : handlers.keySet()) {
-                if (request.getRequestPath().equals(url)) {
-                    return handlers.get(url);
-                }
-            }
+    private MethodType getMethodType(Method handler) {
+        MethodType methodType;
+        if (handler.getParameterCount() > 0) {
+            methodType = MethodType.methodType(HttpResponse.class, handler.getParameterTypes());
+        } else {
+            methodType = MethodType.methodType(HttpResponse.class);
         }
+        return methodType;
+    }
 
-        return null;
+    private MethodHandle getMethodHandle(Method handler, MethodType methodType) throws NoSuchMethodException, IllegalAccessException {
+        return MethodHandles.lookup()
+                .findVirtual(Controller.class, handler.getName(), methodType)
+                .bindTo(new Controller());
+    }
+
+    private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
+        HttpResponse httpResponse;
+        if (methodHandle.type().parameterCount() > 0) {
+            httpResponse = (HttpResponse) methodHandle.invoke(request.getParams());
+        } else {
+            httpResponse = (HttpResponse) methodHandle.invoke();
+        }
+        return httpResponse;
     }
 }
