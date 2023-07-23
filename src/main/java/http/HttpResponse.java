@@ -13,11 +13,18 @@ public class HttpResponse {
 
     public static final String HTTP11 = "HTTP/1.1";
 
-    private String method = OK;
-    private String version = HTTP11;
-    private String statusMessage = OK_MESSAGE;
+    private String method;
+    private String version;
+    private String statusMessage;
     private byte[] body;
-    private final Map<String, String> headers = new HashMap<>();
+    private final Map<String, String> headers;
+
+    public HttpResponse() {
+        method = OK;
+        version = HTTP11;
+        statusMessage = OK_MESSAGE;
+        headers = new HashMap<>();
+    }
 
     public void setMethod(String method) {
         this.method = method;
