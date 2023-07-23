@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import http.HttpResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,11 +16,13 @@ class JoinControllerTest {
 
     HttpController controller;
     Map<String, String> requestParams;
+    HttpResponse response;
 
     @BeforeEach
     void setUp() {
         controller = JOIN_CONTROLLER;
         requestParams = new HashMap<>();
+        response = new HttpResponse();
     }
 
     @Test
@@ -30,7 +33,7 @@ class JoinControllerTest {
         requestParams.put("name", "hello");
         requestParams.put("email", "server@example.com");
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(controller.process(requestParams)).isEqualTo("redirect:/index.html");
+        softly.assertThat(controller.process(requestParams, response)).isEqualTo("redirect:/index.html");
         softly.assertThat(Database.findAll().size()).isEqualTo(1);
         softly.assertAll();
     }

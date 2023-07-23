@@ -1,5 +1,6 @@
 package controller;
 
+import http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +15,18 @@ class HomeControllerTest {
 
     HttpController controller;
     Map<String, String> requestParams;
+    HttpResponse response;
 
     @BeforeEach
     void setUp() {
         controller = HOME_CONTROLLER;
         requestParams = new HashMap<>();
+        response = new HttpResponse();
     }
 
     @Test
     @DisplayName("/index.html을 반환해야 한다.")
     void process() {
-        assertEquals("/index.html", controller.process(requestParams));
+        assertEquals("/index.html", controller.process(requestParams, response));
     }
 }
