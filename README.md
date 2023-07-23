@@ -22,8 +22,8 @@ Java Web Application Server 2023
 - [x] html, css, js, ico, png, jpg 타입을 지원한다
 
 ### [Step-4] POST로 회원가입
-- [ ] 로그인을 GET에서 POST로 동작하도록 변경한다
-- [ ] 가입을 완료하면 /index.html 페이지로 이동한다
+- [x] 로그인을 GET에서 POST로 동작하도록 변경한다
+- [x] 가입을 완료하면 /index.html 페이지로 이동한다
 
 ---
 
