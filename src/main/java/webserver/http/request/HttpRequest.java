@@ -1,5 +1,7 @@
 package webserver.http.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import webserver.http.HttpHeaders;
 
 import java.io.BufferedReader;
@@ -10,12 +12,15 @@ import java.io.InputStreamReader;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HttpRequest {
+    private static final Logger log = LoggerFactory.getLogger(HttpHeaders.class);
     private final HttpRequestLine httpRequestLine;
     private final HttpHeaders httpHeaders;
+    private final String httpRequestBody;
 
-    public HttpRequest(HttpRequestLine httpRequestLine, HttpHeaders httpHeaders) {
+    public HttpRequest(HttpRequestLine httpRequestLine, HttpHeaders httpHeaders, String httpRequestBody) {
         this.httpRequestLine = httpRequestLine;
         this.httpHeaders = httpHeaders;
+        this.httpRequestBody = httpRequestBody;
     }
 
     public String getRequestUri() {
@@ -34,7 +39,18 @@ public class HttpRequest {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
         HttpRequestLine requestLine = HttpRequestLine.create(br.readLine());
         HttpHeaders headers = HttpHeaders.create(br);
+        String contentLength = headers.getContentLength();
 
-        return new HttpRequest(requestLine, headers);
+        //TODO : Parser를 통해 파싱하도록 변경 필요!
+        if (contentLength != null) {
+            int length = Integer.parseInt(contentLength);
+            char[] buffer = new char[length];
+            int bytesSize = br.read(buffer, 0, length);
+            String requestBody = String.valueOf(buffer, 0, bytesSize);
+            log.info("requestBody = {}", requestBody);
+            return new HttpRequest(requestLine, headers, requestBody);
+        }
+
+        return new HttpRequest(requestLine, headers, null);
     }
 }
