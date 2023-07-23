@@ -89,26 +89,15 @@ class HttpRequestTest {
             assertTrue(body.containsKey("userId"));
             assertEquals("javajigi", body.get("userId"));
         }
-    }
 
-    @Test
-    @DisplayName("toString이 제대로 override 됐는지 확인한다")
-    void testToString() throws IOException {
-        // given
-        final String GET = "GET";
-        final String PATH = "/index.html";
-        final Uri URI = Uri.from(PATH);
-        final String requestStr = GET + " " + URI + " " + appendNewLine("HTTP/1.1") +
-                appendNewLine("Host: localhost:8080") +
-                appendNewLine("Connection: keep-alive") +
-                appendNewLine("Cache-Control: max-age=0") +
-                appendNewLine("");
-        InputStream in = new ByteArrayInputStream(requestStr.getBytes());
+        @Test
+        @DisplayName("toString이 제대로 override 됐는지 확인한다")
+        void testToString() throws IOException {
+            // given, when
+            HttpRequest request = HttpRequest.from(in);
 
-        // when
-        HttpRequest request = HttpRequest.from(in);
-
-        // then
-        System.out.println(request);
+            // then
+            System.out.println(request);
+        }
     }
 }
