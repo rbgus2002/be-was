@@ -17,7 +17,7 @@ public class HttpRequestMessage {
         this.url = url;
         this.version = version;
         this.body = body;
-        this.headers = Collections.unmodifiableMap(headers);
+        this.headers = headers;
     }
 
     public HttpMethod getMethod() {
@@ -33,7 +33,7 @@ public class HttpRequestMessage {
     }
 
     public String getHeader(String key) {
-        return headers.get(key);
+        return Collections.unmodifiableMap(headers).get(key);
     }
 
     public String getBody() {
