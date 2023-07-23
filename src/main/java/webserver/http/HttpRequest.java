@@ -16,7 +16,7 @@ public class HttpRequest {
     private final String method;
     private final String requestPath;
     private final String version;
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> headers;
 
     private Map<String, String> params;
 
