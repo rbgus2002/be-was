@@ -53,6 +53,11 @@ public class Controller {
         return new ModelView("/user/login.html");
     }
 
+    @RequestMapping(method = GET, path = "/user/login_failed.html")
+    public ModelView loginFailedPage(HttpRequest request, HttpResponse response) {
+        return new ModelView("/user/login_failed.html");
+    }
+
     @RequestMapping(method = POST, path = "/user/login")
     public ModelView login(HttpRequest request, HttpResponse response) {
         Queries queries = request.getQueries();
@@ -63,7 +68,7 @@ public class Controller {
         );
 
         if (user.isEmpty()) {
-            return new ModelView("/user/login_failed.html");
+            return new ModelView("redirect:/user/login_failed.html");
         }
 
         UserSessionManager.createSession(user.get(), response, "/");
