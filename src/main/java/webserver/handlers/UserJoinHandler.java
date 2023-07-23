@@ -1,6 +1,9 @@
 package webserver.handlers;
 
+import exception.UserServiceException;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.UserService;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
@@ -11,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserJoinHandler implements Handler {
+    public static final Logger logger = LoggerFactory.getLogger(UserJoinHandler.class);
+
     public static final String REDIRECT_URL = "/index.html";
     public static final String EMAIL = "email";
     public static final String NAME = "name";
@@ -27,11 +32,19 @@ public class UserJoinHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        char[] messageBody = request.getBody();
-        String body = makeString(messageBody);
-        User user = mapToUserFrom(body);
-        userService.join(user);
-        return HttpResponse.redirect(REDIRECT_URL);
+        try {
+            char[] messageBody = request.getBody();
+            String body = makeString(messageBody);
+            User user = mapToUserFrom(body);
+            userService.join(user);
+            return HttpResponse.redirect(REDIRECT_URL);
+        } catch (IllegalArgumentException e) {
+            logger.warn("bad request : {}", e.getMessage());
+            return HttpResponse.badRequest();
+        } catch (UserServiceException e) {
+            logger.warn("duplicate userId : {}", e.getMessage());
+            return HttpResponse.badRequest();
+        }
     }
 
     private String makeString(char[] messageBody) {
@@ -40,12 +53,16 @@ public class UserJoinHandler implements Handler {
     }
 
     private static User mapToUserFrom(String body) {
-        Map<String, String> joinInfos = parseBody(body);
-        String userId = joinInfos.get(USER_ID);
-        String password = joinInfos.get(PASSWORD);
-        String name = joinInfos.get(NAME);
-        String email = joinInfos.get(EMAIL);
-        return new User(userId, password, name, email);
+        try {
+            Map<String, String> joinInfos = parseBody(body);
+            String userId = joinInfos.get(USER_ID);
+            String password = joinInfos.get(PASSWORD);
+            String name = joinInfos.get(NAME);
+            String email = joinInfos.get(EMAIL);
+            return new User(userId, password, name, email);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     private static Map<String, String> parseBody(String body) {

@@ -21,7 +21,7 @@ public class UserService {
     private void verifyNoDuplicateUserId(User user) {
         Optional<User> optionalUser = userRepository.findUserById(user.getUserId());
         if (optionalUser.isPresent()) {
-            throw UserServiceException.duplicateId();
+            throw UserServiceException.duplicatedId();
         }
     }
 }
