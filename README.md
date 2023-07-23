@@ -24,6 +24,17 @@ Java Web Application Server 2023
 ### 기능 요구사항
 1. stylesheet와 파비콘 등 다양한 컨텐츠 타입을 지원하도록 개선
 
+## step 4
+### 기능 요구사항
+1. POST로 회원가입 기능 구현
+2. 가입 완료 후 index.html로 리다이렉션
+
+## step 5
+### 기능 요구사항
+1. 가입된 회원 정보로 로그인 기능 구현
+2. 로그인 성공 시 index.html로 이동
+3. 로그인 실패 시 login_failed.html 페이지로 이동
+
 ## 기능 구현 커밋
 - [X] HTTP Request Message 출력
 - [X] /index.html 요청 시 응답
@@ -31,6 +42,10 @@ Java Web Application Server 2023
 - [X] GET으로 회원가입하기
 - [X] 다양한 컨텐츠 타입 지원
 - [X] POST로 회원가입 하기
+- [X] 로그인 기능
+  - [X] 세션 구현
+  - [X] 쿠키 구현
+- [X] 로그인 성공 및 실패 시 페이지 이동
 
 ## Wiki page
 https://github.com/plusjob70/be-was/wiki
