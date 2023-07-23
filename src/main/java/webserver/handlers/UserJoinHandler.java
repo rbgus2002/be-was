@@ -11,6 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserJoinHandler implements Handler {
+    public static final String REDIRECT_URL = "/index.html";
+    public static final String EMAIL = "email";
+    public static final String NAME = "name";
+    public static final String PASSWORD = "password";
+    public static final String USER_ID = "userId";
+    public static final String EQUAL = "=";
+    public static final String AND = "&";
+
     private final UserService userService;
 
     public UserJoinHandler(UserService userService) {
@@ -19,26 +27,32 @@ public class UserJoinHandler implements Handler {
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        String body = URLDecoder.decode(request.getBody(), StandardCharsets.UTF_8);
+        char[] messageBody = request.getBody();
+        String body = makeString(messageBody);
         User user = mapToUserFrom(body);
         userService.join(user);
-        return HttpResponse.created("/index.html");
+        return HttpResponse.created(REDIRECT_URL);
+    }
+
+    private String makeString(char[] messageBody) {
+        String body = String.valueOf(messageBody);
+        return URLDecoder.decode(body, StandardCharsets.UTF_8);
     }
 
     private static User mapToUserFrom(String body) {
         Map<String, String> joinInfos = parseBody(body);
-        String userId = joinInfos.get("userId");
-        String password = joinInfos.get("password");
-        String name = joinInfos.get("name");
-        String email = joinInfos.get("email");
+        String userId = joinInfos.get(USER_ID);
+        String password = joinInfos.get(PASSWORD);
+        String name = joinInfos.get(NAME);
+        String email = joinInfos.get(EMAIL);
         return new User(userId, password, name, email);
     }
 
     private static Map<String, String> parseBody(String body) {
         HashMap<String, String> joinInfos = new HashMap<>();
-        String[] infos = body.split("&");
+        String[] infos = body.split(AND);
         for (String info : infos) {
-            String[] token = info.split("=");
+            String[] token = info.split(EQUAL);
             joinInfos.put(token[0], token[1]);
         }
         return joinInfos;
