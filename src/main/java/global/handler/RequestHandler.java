@@ -2,6 +2,7 @@ package global.handler;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -24,11 +25,10 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             final HttpUtil httpUtil = new HttpUtil(in);
-            String response = httpUtil.getResponse();
+            byte[] response = httpUtil.getResponse();
             logger.debug("request = {}", response);
-            byte[] body = response.getBytes();
             DataOutputStream dos = new DataOutputStream(out);
-            dos.write(body);
+            dos.write(response);
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());

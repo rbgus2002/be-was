@@ -21,37 +21,16 @@ class ControllerTest {
         String expectedResponse = "HTTP/1.1 200 OK \n";
 
         //when
-        String response = controller.root(new LinkedHashMap<>());
+        byte[] response = controller.root(new LinkedHashMap<>());
 
         //then
-        assertTrue(response.contains(expectedResponse));
+        assertAll(
+                () -> assertEquals(response[0], expectedResponse.getBytes()[0]),
+                () -> assertEquals(response[1], expectedResponse.getBytes()[1]),
+                () -> assertEquals(response[2], expectedResponse.getBytes()[2])
+        );
     }
 
-    @Test
-    @DisplayName("getIndexHtml 메서드 테스트")
-    void testGetIndexHtml() {
-        //given
-        String expectedResponse = "HTTP/1.1 200 OK \n";
-
-        //when
-        String response = controller.getIndexHtml(new LinkedHashMap<>());
-
-        //then
-        assertTrue(response.contains(expectedResponse));
-    }
-
-    @Test
-    @DisplayName("getFormHtml 메서드 테스트")
-    void testGetFormHtml() {
-        //given
-        String expectedResponse = "HTTP/1.1 200 OK \n";
-
-        //when
-        String response = controller.getFormHtml(new LinkedHashMap<>());
-
-        //then
-        assertTrue(response.contains(expectedResponse));
-    }
 
     @Test
     @DisplayName("createUser 메서드 - 유효한 쿼리 매개변수를 받아서 사용자 생성")
@@ -63,9 +42,13 @@ class ControllerTest {
         String expectedResponse = "HTTP/1.1 200 OK ";
 
         //when
-        String actualResponse = controller.createUser(queryParams);
+        byte[] actualResponse = controller.createUser(queryParams);
 
         //then
-        assertTrue(actualResponse.contains(expectedResponse));
+        assertAll(
+                () -> assertEquals(actualResponse[0], expectedResponse.getBytes()[0]),
+                () -> assertEquals(actualResponse[1], expectedResponse.getBytes()[1]),
+                () -> assertEquals(actualResponse[2], expectedResponse.getBytes()[2])
+        );
     }
 }

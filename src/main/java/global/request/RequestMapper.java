@@ -25,7 +25,7 @@ public class RequestMapper {
         this.controller = new Controller();
     }
 
-    public String response() throws Exception {
+    public byte[] response() throws Exception {
         final HttpMethod httpMethod = requestLine.getHttpMethod();
         final Handler handler = findHandler(httpMethod);
         if (isFileType(requestLine)) {

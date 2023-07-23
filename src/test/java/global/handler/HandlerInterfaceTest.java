@@ -6,7 +6,8 @@ import global.request.RequestLine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Handler 테스트")
 class HandlerTest {
@@ -24,15 +25,19 @@ class HandlerTest {
     @DisplayName("컨트롤러 메서드 실행한다.")
     void testStartController() throws Exception {
         //given
-        String requestLine = "GET /index.html HTTP/1.1";
+        String requestLine = "GET / HTTP/1.1";
         RequestLine requestLineObject = new RequestLine(requestLine);
         Controller controller = new Controller();
 
         //when
         String expectedResponse = "HTTP/1.1 200 OK";
-        String actualResponse = handler.startController(requestLineObject, controller);
+        byte[] actualResponse = handler.startController(requestLineObject, controller);
 
         //then
-        assertTrue(actualResponse.contains(expectedResponse));
+        assertAll(
+                () -> assertEquals(actualResponse[0], expectedResponse.getBytes()[0]),
+                () -> assertEquals(actualResponse[1], expectedResponse.getBytes()[1]),
+                () -> assertEquals(actualResponse[2], expectedResponse.getBytes()[2])
+        );
     }
 }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class ResponseEntity {
         private final Map<String, String> headers;
 
         private StatusCode statusCode = StatusCode.OK;
-        private String responseBody = "";
+        private byte[] responseBody = new byte[0];
         private ContentType contentType = ContentType.HTML;
 
         private Builder() {
@@ -38,7 +39,7 @@ public class ResponseEntity {
             return this;
         }
 
-        public Builder responseBody(String responseBody) {
+        public Builder responseBody(byte[] responseBody) {
             this.responseBody = responseBody;
             return this;
         }
@@ -55,11 +56,20 @@ public class ResponseEntity {
             return this;
         }
 
-        public String build() {
-            return String.join(NEW_LINE,
+        public byte[] build() {
+            String responseHeaders = String.join(NEW_LINE,
                     "HTTP/1.1 " + this.statusCode.getStatusCode() + " " + this.statusCode.getStatus() + " ",
-                    assembleHeaders(),
-                    responseBody);
+                    assembleHeaders());
+
+            byte[] headersBytes = responseHeaders.getBytes();
+            byte[] newLineBytes = NEW_LINE.getBytes();
+            byte[] responseBytes = new byte[headersBytes.length + newLineBytes.length + responseBody.length];
+
+            System.arraycopy(headersBytes, 0, responseBytes, 0, headersBytes.length);
+            System.arraycopy(newLineBytes, 0, responseBytes, headersBytes.length, newLineBytes.length);
+            System.arraycopy(responseBody, 0, responseBytes, headersBytes.length + newLineBytes.length, responseBody.length);
+
+            return responseBytes;
         }
 
         private String assembleHeaders() {
@@ -73,7 +83,7 @@ public class ResponseEntity {
 
         private void updateDefaultHeaders() {
             headers.put(Headers.CONTENT_TYPE.getKey(), contentType.getContentType() + ";charset=utf-8");
-            headers.put(Headers.CONTENT_LENGTH.getKey(), String.valueOf(responseBody.getBytes().length));
+            headers.put(Headers.CONTENT_LENGTH.getKey(), String.valueOf(responseBody.length));
         }
 
         private ContentType extractContentType(String uri) {
@@ -89,14 +99,14 @@ public class ResponseEntity {
             return uri;
         }
 
-        private String findResource(String uri) throws IOException {
+        private byte[] findResource(String uri) throws IOException {
             try {
                 if (!isHtmlExtension(uri)) {
                     final URL resource = getClass().getClassLoader().getResource("static" + uri);
-                    return new String(Files.readAllBytes(new File(resource.getFile()).toPath()));
+                    return Files.readAllBytes(Path.of(resource.getPath()));
                 }
                 final URL resource = getClass().getClassLoader().getResource("templates" + uri);
-                return new String(Files.readAllBytes(new File(resource.getFile()).toPath()));
+                return Files.readAllBytes(Path.of(resource.getPath()));
             } catch (NullPointerException e) {
                 throw new NotFoundExtensionException();
             }
@@ -109,7 +119,7 @@ public class ResponseEntity {
 
     private ResponseEntity(Builder builder) {
         StatusCode statusCode = builder.statusCode;
-        String responseBody = builder.responseBody;
+        byte[] responseBody = builder.responseBody;
         ContentType contentType = builder.contentType;
     }
 
@@ -117,7 +127,7 @@ public class ResponseEntity {
         return new Builder().statusCode(statusCode);
     }
 
-    public static Builder responseBody(String responseBody) {
+    public static Builder responseBody(byte[] responseBody) {
         return new Builder().responseBody(responseBody);
     }
 }

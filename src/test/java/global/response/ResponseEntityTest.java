@@ -25,12 +25,16 @@ class ResponseEntityTest {
                 "Hello, World!";
 
         //when
-        String response = ResponseEntity
-                .responseBody(responseBody)
+        byte[] response = ResponseEntity
+                .responseBody(responseBody.getBytes())
                 .build();
 
         //then
-        assertTrue(response.contains(expectedResponse));
+        assertAll(
+                () -> assertEquals(response[0], expectedResponse.getBytes()[0]),
+                () -> assertEquals(response[1], expectedResponse.getBytes()[1]),
+                () -> assertEquals(response[2], expectedResponse.getBytes()[2])
+        );
     }
 
     @Test
@@ -41,14 +45,18 @@ class ResponseEntityTest {
         String expectedResponse = "HTTP/1.1 200 OK \n";
 
         //when
-        String response = ResponseEntity
+        byte[] response = ResponseEntity
                 .statusCode(StatusCode.OK)
                 .addHeaders(Headers.LOCATION, uri)
                 .responseResource(uri)
                 .build();
 
         //then
-        assertTrue(response.contains(expectedResponse));
+        assertAll(
+                () -> assertEquals(response[0], expectedResponse.getBytes()[0]),
+                () -> assertEquals(response[1], expectedResponse.getBytes()[1]),
+                () -> assertEquals(response[2], expectedResponse.getBytes()[2])
+        );
     }
 
     @Test

@@ -63,16 +63,16 @@ public class HttpUtil {
         return EMPTY_LINE;
     }
 
-    public String getResponse() throws IOException {
+    public byte[] getResponse() throws IOException {
         final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.requestBody);
         try {
             return mappingHandler.response();
         } catch (BadRequestException e) {
             logger.info(e.getMessage());
-            return "Error!";
+            return "Error!".getBytes();
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return "Error!!";
+            return "Error!!".getBytes();
         }
     }
 }

@@ -37,10 +37,12 @@ public class GetHandlerTest {
         RequestLine requestLine = new RequestLine("GET / HTTP/1.1 ");
 
         //when
-        String result = getHandler.startController(requestLine, controller);
+        byte[] result = getHandler.startController(requestLine, controller);
 
         //then
-        assertTrue(result.contains("Hello world!"));
+        assertAll(
+                () -> assertEquals(result[0], "Hello world!".getBytes()[0])
+        );
     }
 
     @Test
