@@ -3,6 +3,7 @@ package webserver.http;
 import webserver.http.response.Body;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import static utils.StringUtils.*;
 public class Headers {
     private static final String CONTENT_LENGTH = "Content-Length";
     private static final String CONTENT_TYPE = "Content-Type";
+    private static final String ACCEPT = "Accept";
     private final Map<String, String> headers;
 
     public Headers() {
@@ -42,13 +44,6 @@ public class Headers {
         return separatorIndex == -1;
     }
 
-    public static Headers createDefaultHeaders(int contentLength) {
-        Headers headers = new Headers();
-        headers.put(CONTENT_TYPE, "text/html;charset=utf-8");
-        headers.put(CONTENT_LENGTH, String.valueOf(contentLength));
-        return headers;
-    }
-
     private void put(String key, String value) {
         headers.put(key, value);
     }
@@ -65,5 +60,13 @@ public class Headers {
             return Integer.parseInt(headers.get(CONTENT_LENGTH));
         }
         return 0;
+    }
+
+    public MIME getMime() {
+        if (headers.containsKey(ACCEPT)) {
+            String[] tokens = headers.get(ACCEPT).split(COMMA);
+            return MIME.from(tokens[0]);
+        }
+        return MIME.defaultMime();
     }
 }
