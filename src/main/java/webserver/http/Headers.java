@@ -1,5 +1,7 @@
 package webserver.http;
 
+import webserver.http.response.Body;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -27,6 +29,12 @@ public class Headers {
             }
             headers.put(line.substring(0, separatorIndex).strip(), line.substring(separatorIndex + 1).strip());
         }
+        return headers;
+    }
+    public static Headers from(Body body) {
+        Headers headers = new Headers();
+        headers.put(CONTENT_TYPE, body.getContentType());
+        headers.put(CONTENT_LENGTH, String.valueOf(body.getLength()));
         return headers;
     }
 

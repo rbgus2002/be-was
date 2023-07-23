@@ -2,6 +2,7 @@ package webserver.http.request;
 import model.User;
 import webserver.http.Headers;
 import webserver.http.HttpMethod;
+import webserver.http.MIME;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,5 +65,9 @@ public class HttpRequest {
 
     public boolean isMatchHandler(HttpMethod method, String path) {
         return requestLine.isMatchHandler(method, path);
+    }
+
+    public MIME getMime() {
+        return headers.getMime();
     }
 }

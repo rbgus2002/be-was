@@ -14,21 +14,21 @@ public class HttpResponse {
     private String version;
     private HttpStatusCode statusCode;
     private Headers headers;
-    private byte[] body;
+    private Body body;
 
-    private HttpResponse(String version, HttpStatusCode statusCode, byte[] body, Headers headers) {
+    private HttpResponse(String version, HttpStatusCode statusCode, Body body, Headers headers) {
         this.version = version;
         this.statusCode = statusCode;
         this.body = body;
         this.headers = headers;
     }
 
-    public static HttpResponse of(String version, HttpStatusCode statusCode, byte[] body) {
-        return new HttpResponse(version, statusCode, body, Headers.createDefaultHeaders(body.length));
+    public static HttpResponse of(String version, HttpStatusCode statusCode, Body body) {
+        return new HttpResponse(version, statusCode, body, Headers.from(body));
     }
 
     public static HttpResponse of(String version, HttpStatusCode statusCode) {
-        return new HttpResponse(version, statusCode, new byte[0], Headers.createDefaultHeaders(0));
+        return new HttpResponse(version, statusCode, Body.emptyBody(), Headers.from(Body.emptyBody()));
     }
 
     public void response(OutputStream out) throws IOException {
