@@ -5,13 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import webserver.Constants.HttpStatus;
 import webserver.Constants.HttpVersion;
+import webserver.ModelAndView;
 import webserver.request.HttpRequest;
 import webserver.request.RequestQuery;
-import webserver.response.HttpResponse;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -38,8 +35,8 @@ class UserControllerTest {
         when(mockQuery.getValue("name")).thenReturn("name");
         when(mockQuery.getValue("email")).thenReturn("email@example.com");
 
-        HttpResponse response = userController.createUser(mockRequest);
+        ModelAndView modelAndView = userController.createUser(mockRequest);
 
-        assertEquals(HttpResponse.ofWithStatusOnly(HttpVersion.HTTP_1_1, HttpStatus.CREATED), response);
+        assertEquals(new ModelAndView("/index.html", null), modelAndView);
     }
 }
