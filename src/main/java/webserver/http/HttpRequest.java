@@ -27,6 +27,16 @@ public class HttpRequest {
 
     private Map<String, String> params;
 
+    public HttpRequest(HttpMethod httpMethod, String requestPath, String version, HttpMime mime,
+                       Map<String, String> headers, Map<String, String> params) {
+        this.httpMethod = httpMethod;
+        this.requestPath = requestPath;
+        this.version = version;
+        this.mime = mime;
+        this.headers = headers;
+        this.params = params;
+    }
+
     public HttpRequest(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String firstLine = bufferedReader.readLine();
