@@ -12,7 +12,7 @@ public class Session {
     }
 
     public boolean verifySessionId(String sessionId) {
-        if(sessionId == null) {
+        if (sessionId == null) {
             return false;
         }
         return sessionId.equals(this.sessionId);
@@ -20,5 +20,9 @@ public class Session {
 
     public String getUserId() {
         return userId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 }

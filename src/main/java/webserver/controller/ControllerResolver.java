@@ -1,6 +1,7 @@
 package webserver.controller;
 
 import webserver.controller.file.FileController;
+import webserver.controller.user.UserLoginController;
 import webserver.controller.user.UserSaveController;
 import webserver.utils.HttpMethod;
 
@@ -28,6 +29,7 @@ public class ControllerResolver {
 
     private void initControllers() {
         controllers.put(new ControllerSignature("/user/create", HttpMethod.POST), new UserSaveController());
+        controllers.put(new ControllerSignature("/user/login", HttpMethod.POST), new UserLoginController());
     }
 
     public Controller resolve(String path, String method) {
