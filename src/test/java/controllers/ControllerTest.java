@@ -2,7 +2,6 @@ package controllers;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
@@ -12,9 +11,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import db.Database;
-import http.HttpParameter;
-import http.HttpRequest;
-import http.HttpResponse;
+import webserver.http.HttpParameter;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 import model.User;
 
 class ControllerTest {

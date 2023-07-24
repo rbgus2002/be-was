@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import annotations.AnnotationMap;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.statusline.StatusCode;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.statusline.StatusCode;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
