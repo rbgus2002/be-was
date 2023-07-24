@@ -2,18 +2,15 @@ package webserver.myframework.view;
 
 import webserver.myframework.model.Model;
 import webserver.myframework.utils.FileUtils;
-import webserver.myframework.utils.ReflectionUtils;
 import webserver.myframework.utils.StringUtils;
+import webserver.myframework.view.content.DynamicContent;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DynamicView implements View {
     private static final String INTERNAL_SERVER_ERROR_PAGE = "src/main/resources/templates/errors/500.html";
@@ -48,7 +45,7 @@ public class DynamicView implements View {
     private void writeDynamicFile(StringBuilder stringBuilder, List<String> fileContents) throws NoSuchFieldException, IllegalAccessException {
         for (String fileContent : fileContents) {
             if (fileContent.startsWith("{") && fileContent.endsWith("}")) {
-                stringBuilder.append(writeDynamicContent(fileContent));
+                    stringBuilder.append(writeDynamicContent(fileContent));
                 continue;
             }
             stringBuilder.append(fileContent);

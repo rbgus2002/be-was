@@ -1,5 +1,6 @@
 package user.controller;
 
+import db.Database;
 import model.User;
 import user.service.UserService;
 import webserver.http.HttpMethod;
@@ -9,13 +10,13 @@ import webserver.http.response.HttpStatus;
 import webserver.myframework.handler.argument.annotation.RequestBody;
 import webserver.myframework.handler.request.annotation.Controller;
 import webserver.myframework.handler.request.annotation.RequestMapping;
+import webserver.myframework.model.Model;
 import webserver.myframework.session.Session;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
+@SuppressWarnings("unused")
 @Controller("/user")
 public class UserController {
     private final UserService userService;
@@ -54,6 +55,19 @@ public class UserController {
         } catch (IllegalArgumentException exception) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @RequestMapping("/list")
+    public void listUsers(HttpRequest httpRequest, HttpResponse httpResponse, Model model) {
+        Session session = httpRequest.getSession(false);
+        if(session == null) {
+            httpResponse.sendRedirection("/user/login.html");
+            return;
+        }
+        User user = Database.findUserById((String) session.getAttribute("userId"));
+        model.addParameter("user", user);
+        model.addParameter("users", new ArrayList<>(Database.findAll()));
+        httpResponse.setUri("/user/list.html");
     }
 
     private static void verifyParameters(Map<String, String> parameterMap, int size) {

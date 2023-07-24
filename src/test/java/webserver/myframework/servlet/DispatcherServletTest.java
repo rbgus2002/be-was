@@ -25,6 +25,7 @@ import webserver.myframework.session.SessionManagerImpl;
 import webserver.myframework.view.ViewResolverImpl;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -97,15 +98,16 @@ class DispatcherServletTest {
                 void renderFileMatchedURI() throws IOException {
                     //given
                     HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
-                            .uri("/index.html").build();
+                            .uri("/user/login.html").build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
 
                     //when
                     dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
                     //then
+                    System.out.println(new String(httpResponse.getBody(), StandardCharsets.UTF_8));
                     assertThat(httpResponse.getBody())
-                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/index.html")));
+                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/login.html")));
                 }
             }
         }

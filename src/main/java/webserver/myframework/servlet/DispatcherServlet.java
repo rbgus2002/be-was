@@ -11,6 +11,8 @@ import webserver.myframework.handler.request.RequestHandler;
 import webserver.myframework.handler.request.RequestHandlerResolver;
 import webserver.myframework.handler.request.exception.NotMatchedMethodException;
 import webserver.myframework.handler.request.exception.NotMatchedUriException;
+import webserver.myframework.model.Model;
+import webserver.myframework.model.ModelImpl;
 import webserver.myframework.session.Session;
 import webserver.myframework.view.View;
 import webserver.myframework.view.ViewResolver;
@@ -32,10 +34,11 @@ public class DispatcherServlet {
 
     public void handleRequest(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String uri = httpRequest.getUri();
+        Model model = new ModelImpl();
         try {
             RequestHandler requestHandler =
                     requestHandlerResolver.resolveHandler(httpRequest.getUri(), httpRequest.getMethod());
-            requestHandler.handle(httpRequest, httpResponse);
+            requestHandler.handle(httpRequest, httpResponse, model);
             uri = httpResponse.getUri();
         } catch (NotMatchedUriException notMatchedUriException) {
             httpResponse.setStatus(HttpStatus.NOT_FOUND);
@@ -51,7 +54,7 @@ public class DispatcherServlet {
         }
 
         if (!uri.equals(HttpResponse.NOT_RENDER_URI)) {
-            View view = viewResolver.resolve(uri);
+            View view = viewResolver.resolve(uri, model);
             httpResponse.setStatus(HttpStatus.OK);
             httpResponse.setContentType(ContentType.getContentType(view.getFileExtension()));
             httpResponse.setBody(view.render());

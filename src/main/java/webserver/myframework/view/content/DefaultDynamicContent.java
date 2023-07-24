@@ -1,4 +1,4 @@
-package webserver.myframework.view;
+package webserver.myframework.view.content;
 
 public class DefaultDynamicContent extends DynamicContent {
     private final String content;
@@ -8,7 +8,7 @@ public class DefaultDynamicContent extends DynamicContent {
     }
 
     @Override
-    String render() {
+    public String render() {
         return content;
     }
 }

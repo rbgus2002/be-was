@@ -11,8 +11,10 @@ import webserver.myframework.model.ModelImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -29,7 +31,10 @@ public class DynamicViewTest {
                                   " User Name: cccc\n" +
                                   " User Name: dddd\n";
     @BeforeAll
-    static void setUp() {
+    static void setUp() throws NoSuchFieldException, IllegalAccessException {
+        Field usersField = Database.class.getDeclaredField("users");
+        usersField.setAccessible(true);
+        ((Map) usersField.get(null)).clear();
         Database.addUser(new User("aaaa", "aaaa", "aaaa", "aaaa"));
         Database.addUser(new User("bbbb", "bbbb", "bbbb", "bbbb"));
         Database.addUser(new User("cccc", "cccc", "cccc", "cccc"));

@@ -4,6 +4,8 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.handler.argument.ArgumentResolver;
+import webserver.myframework.model.Model;
+import webserver.myframework.model.ModelImpl;
 
 import java.lang.reflect.Method;
 
@@ -19,9 +21,9 @@ public class RequestHandlerImpl implements RequestHandler {
     }
 
     @Override
-    public void handle(HttpRequest httpRequest, HttpResponse httpResponse)  {
+    public void handle(HttpRequest httpRequest, HttpResponse httpResponse, Model model)  {
         try {
-            Object[] parameters = argumentResolver.resolve(method, httpRequest, httpResponse);
+            Object[] parameters = argumentResolver.resolve(method, httpRequest, httpResponse, model);
             method.invoke(controller, parameters);
         } catch (IllegalArgumentException argumentException) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);

@@ -1,4 +1,4 @@
-package webserver.myframework.view;
+package webserver.myframework.view.content;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class MultipleObjectDynamicContent extends DynamicContent {
     }
 
     @Override
-    String render() throws NoSuchFieldException, IllegalAccessException {
+    public String render() throws NoSuchFieldException, IllegalAccessException {
         StringBuilder stringBuilder = new StringBuilder();
         for (Object parameter : parameters) {
             writeParameterContent(stringBuilder, contentParts, parameter);

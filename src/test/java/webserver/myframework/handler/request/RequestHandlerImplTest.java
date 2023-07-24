@@ -8,6 +8,7 @@ import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.handler.argument.ArgumentResolver;
 import webserver.myframework.handler.argument.ArgumentResolverImpl;
+import webserver.myframework.model.ModelImpl;
 import webserver.myframework.session.SessionManagerImpl;
 
 import static org.assertj.core.api.Assertions.*;
@@ -32,7 +33,7 @@ class RequestHandlerImplTest {
                     .build();
 
             //when
-            requestHandler.handle(httpRequest, httpResponse);
+            requestHandler.handle(httpRequest, httpResponse, new ModelImpl());
 
             //then
             assertThat(httpResponse.getUri()).isEqualTo("string");
@@ -49,7 +50,7 @@ class RequestHandlerImplTest {
                         TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class),
                         argumentResolver);
                 HttpResponse httpResponse = HttpResponse.getInstance();
-                requestHandler.handle(null, httpResponse);
+                requestHandler.handle(null, httpResponse, new ModelImpl());
 
                 //when
                 //then

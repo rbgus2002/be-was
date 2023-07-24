@@ -7,6 +7,7 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.handler.argument.annotation.RequestBody;
 import webserver.myframework.handler.argument.annotation.RequestParam;
+import webserver.myframework.model.ModelImpl;
 import webserver.myframework.session.SessionManagerImpl;
 
 import java.lang.reflect.Method;
@@ -47,7 +48,7 @@ class ArgumentResolverImplTest {
                     String.class,
                     char.class,
                     double.class);
-            Object[] resolvedParameters = argumentResolver.resolve(testMethod, httpRequest, httpResponse);
+            Object[] resolvedParameters = argumentResolver.resolve(testMethod, httpRequest, httpResponse, new ModelImpl());
 
             //then
             assertThat(resolvedParameters[0]).isEqualTo("hello");

@@ -3,8 +3,10 @@ package webserver.myframework.view;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import webserver.myframework.model.ModelImpl;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.*;
@@ -22,10 +24,10 @@ class ViewResolverImplTest {
         class IsFileExistInTemplates {
             @Test
             @DisplayName("templates에서 viewPath에 해당하는 파일의 경로를 갖는 View 객체를 반환한다")
-            void returnView() throws NoSuchFieldException, IllegalAccessException {
+            void returnView() throws NoSuchFieldException, IllegalAccessException, IOException {
                 //given
                 //when
-                View indexView = viewResolver.resolve("/index.html");
+                View indexView = viewResolver.resolve("/index.html", new ModelImpl());
 
                 //then
                 Field htmlField = indexView.getClass().getDeclaredField("viewFile");
@@ -41,10 +43,10 @@ class ViewResolverImplTest {
         class IsFileExistInStatic {
             @Test
             @DisplayName("statics에서 viewPath에 해당하는 파일의 경로를 갖는 View 객체를 반환한다")
-            void returnView() throws NoSuchFieldException, IllegalAccessException {
+            void returnView() throws NoSuchFieldException, IllegalAccessException, IOException {
                 //given
                 //when
-                View indexView = viewResolver.resolve("/favicon.ico");
+                View indexView = viewResolver.resolve("/favicon.ico", new ModelImpl());
 
                 //then
                 Field htmlField = indexView.getClass().getDeclaredField("viewFile");
@@ -60,10 +62,10 @@ class ViewResolverImplTest {
         class isFileNotExist {
             @Test
             @DisplayName("404.html 파일의 경로를 갖는 View 객체를 반환한다")
-            void return404View() throws NoSuchFieldException, IllegalAccessException {
+            void return404View() throws NoSuchFieldException, IllegalAccessException, IOException {
                 //given
                 //when
-                View notFoundView = viewResolver.resolve("/notExist");
+                View notFoundView = viewResolver.resolve("/notExist", new ModelImpl());
 
                 //then
                 Field htmlField = notFoundView.getClass().getDeclaredField("viewFile");

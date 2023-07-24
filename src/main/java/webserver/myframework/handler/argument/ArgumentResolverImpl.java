@@ -5,6 +5,7 @@ import webserver.http.response.HttpResponse;
 import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.handler.argument.annotation.RequestBody;
 import webserver.myframework.handler.argument.annotation.RequestParam;
+import webserver.myframework.model.Model;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -14,24 +15,34 @@ import java.util.List;
 @Component
 public class ArgumentResolverImpl implements ArgumentResolver {
     @Override
-    public Object[] resolve(Method method, HttpRequest httpRequest, HttpResponse httpResponse) throws IllegalArgumentException {
+    public Object[] resolve(Method method,
+                            HttpRequest httpRequest,
+                            HttpResponse httpResponse,
+                            Model model) throws IllegalArgumentException {
         Parameter[] parameterInfos = method.getParameters();
         List<Object> parameters = new ArrayList<>();
 
         for (Parameter parameterInfo : parameterInfos) {
-            parameters.add(getParameter(httpRequest, httpResponse, parameterInfo));
+            parameters.add(getParameter(httpRequest, httpResponse, model, parameterInfo));
         }
 
         return parameters.toArray();
     }
 
-    private static Object getParameter(HttpRequest httpRequest, HttpResponse httpResponse, Parameter parameterInfo) {
+    private static Object getParameter(HttpRequest httpRequest,
+                                       HttpResponse httpResponse,
+                                       Model model,
+                                       Parameter parameterInfo) {
         if (parameterInfo.getType().equals(HttpRequest.class)) {
             return httpRequest;
         }
 
         if (parameterInfo.getType().equals(HttpResponse.class)) {
             return httpResponse;
+        }
+
+        if(parameterInfo.getType().equals(Model.class)) {
+            return model;
         }
 
         if (parameterInfo.isAnnotationPresent(RequestBody.class)) {
