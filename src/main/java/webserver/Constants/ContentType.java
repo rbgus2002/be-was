@@ -2,7 +2,13 @@ package webserver.Constants;
 
 public enum ContentType {
 
-    HTML("text/html;charset=utf-8");
+    HTML("text/html"),
+    CSS("text/css"),
+    JS("application/javascript"),
+    ICO("image/x-icon"),
+    PNG("image/png"),
+    JPG("image/jpeg"),
+    JPEG("image/jpeg");
 
     private final String description;
 
