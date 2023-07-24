@@ -12,6 +12,10 @@ public final class SessionManager {
         sessions.add(session);
     }
 
+    public static boolean verifySessionId(String sessionId) {
+        return sessions.stream().anyMatch(session -> session.verifySessionId(sessionId));
+    }
+
     public static String verifySessionIdAndGetUserId(String sessionId) {
         return sessions.stream()
                 .filter(session -> session.verifySessionId(sessionId))
