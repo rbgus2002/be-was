@@ -1,8 +1,7 @@
-package webserver;
+package webserver.http.request;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.request.HttpRequest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

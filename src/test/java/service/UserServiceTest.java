@@ -1,14 +1,15 @@
-package webserver;
+package service;
 
 import db.Database;
 import model.User;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserServiceTest {
     @Test
+    @DisplayName("User가 Database에 추가되어야 한다.")
     void addUser() {
         // given
         String userId = "userId";
