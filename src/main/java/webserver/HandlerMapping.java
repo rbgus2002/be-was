@@ -35,8 +35,6 @@ public class HandlerMapping {
         if(mappings.containsKey(handlerKey)) {
             return mappings.get(handlerKey);
         }
-
-        // TODO: 핸들러 없을 경우 예외처리
-        throw new IllegalArgumentException();
+        return null;
     }
 }
