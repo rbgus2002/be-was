@@ -24,9 +24,9 @@ public enum MIME {
 
     public static MIME from(String token) {
         Optional<MIME> optionalMime = Arrays.stream(MIME.values())
-                .filter(mime -> mime.getContentType().equals(token))
+                .filter(mime -> mime.extension.equals(token))
                 .findFirst();
-        return optionalMime.orElse(HTML);
+        return optionalMime.orElse(defaultMime());
     }
 
     public static MIME defaultMime() {

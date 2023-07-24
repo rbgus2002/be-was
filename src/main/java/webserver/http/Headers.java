@@ -13,7 +13,6 @@ import static utils.StringUtils.*;
 public class Headers {
     private static final String CONTENT_LENGTH = "Content-Length";
     private static final String CONTENT_TYPE = "Content-Type";
-    private static final String ACCEPT = "Accept";
     private final Map<String, String> headers;
 
     public Headers() {
@@ -63,13 +62,5 @@ public class Headers {
             return Integer.parseInt(headers.get(CONTENT_LENGTH));
         }
         return 0;
-    }
-
-    public MIME getMime() {
-        if (headers.containsKey(ACCEPT)) {
-            String[] tokens = headers.get(ACCEPT).split(COMMA);
-            return MIME.from(tokens[0]);
-        }
-        return MIME.defaultMime();
     }
 }

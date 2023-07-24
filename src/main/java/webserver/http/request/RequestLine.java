@@ -3,6 +3,7 @@ package webserver.http.request;
 
 import model.User;
 import webserver.http.HttpMethod;
+import webserver.http.MIME;
 
 import static utils.StringUtils.SPACE;
 
@@ -41,5 +42,9 @@ public class RequestLine {
 
     public boolean isMatchHandler(HttpMethod method, String path) {
         return this.method == method && uri.isSamePath(path);
+    }
+
+    public MIME getMime() {
+        return uri.getMime();
     }
 }

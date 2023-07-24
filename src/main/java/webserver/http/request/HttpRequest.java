@@ -68,6 +68,6 @@ public class HttpRequest {
     }
 
     public MIME getMime() {
-        return headers.getMime();
+        return requestLine.getMime();
     }
 }
