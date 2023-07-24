@@ -38,7 +38,7 @@ class FrontControllerTest {
     @Test
     @DisplayName("요청과 일치하는 method나 url이 없으면 NotFoundException 반환한다.")
     void NotFoundException() {
-        HttpRequest request = new HttpRequest("GET", "/index.qwer", null, null, null);
+        HttpRequest request = new HttpRequest("GET", "/index.qwer", null, null, null, null);
         HttpResponse response = new HttpResponse();
         assertThrows(NotFoundException.class, () -> FrontController.service(request, response));
     }

@@ -1,6 +1,9 @@
 package webserver.request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.StringUtils;
+import webserver.RequestHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestParser {
-
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequestParser.class);
     private HttpRequestParser() {
 
     }
@@ -23,16 +26,25 @@ public class HttpRequestParser {
     }
 
     private static HttpRequest parseRequest(BufferedReader br) throws IOException {
-//        if(!br.ready()){
-//            return new HttpRequest();
-//        }
         String line = br.readLine();
         String[] firstLine = line.split(" ");
-        return new HttpRequest(firstLine[0], firstLine[1].split("[?]")[0], initParams(firstLine[1]), initHeader(br, line), initBody(br));
+
+        String method = firstLine[0];
+        String url = firstLine[1].split("[?]")[0];
+        Map<String, String> params = parseParams(firstLine[1]);
+        String header = parseHeader(br, line);
+        Map<String, String> headersMap = parseHeaderToMap(header);
+        String body = null;
+        if(headersMap.get("Content-Length") != null){
+            logger.debug(headersMap.get("Content-Length"));
+            body = parseBody(br, Integer.parseInt(headersMap.get("Content-Length")));
+        }
+
+        return new HttpRequest(method, url, params, header, headersMap, body);
 
     }
 
-    private static Map<String, String> initParams(String line) {
+    private static Map<String, String> parseParams(String line) {
         String[] params = line.split("[?]");
         Map<String, String> paramsMap = new HashMap<>();
         if(params.length > 1){
@@ -44,7 +56,7 @@ public class HttpRequestParser {
         return paramsMap;
     }
 
-    private static String initHeader(BufferedReader br, String line) throws IOException {
+    private static String parseHeader(BufferedReader br, String line) throws IOException {
         StringBuilder headerBuilder = new StringBuilder();
         while (line != null && !line.equals("")) {
             headerBuilder.append(StringUtils.appendLineSeparator(line));
@@ -53,13 +65,23 @@ public class HttpRequestParser {
         return headerBuilder.toString();
     }
 
-    private static String initBody(BufferedReader br) throws IOException {
+    private static String parseBody(BufferedReader br, int contentLength) throws IOException {
         StringBuilder bodyBuilder = new StringBuilder();
-        while (br.ready()){
+        for (int index = 0; index < contentLength; index++){
             bodyBuilder.append((char)br.read());
         }
 
         return bodyBuilder.toString();
+    }
+
+    private static Map<String ,String> parseHeaderToMap(String header) {
+        Map<String, String> headersMap = new HashMap<>();
+
+        Arrays.stream(header.split("\n"))
+                .filter(line -> line.split(": ").length > 1)
+                .forEach(line -> headersMap.put(line.split(": ")[0].trim(), line.split(": ")[1].trim()));
+
+        return headersMap;
     }
 
 }

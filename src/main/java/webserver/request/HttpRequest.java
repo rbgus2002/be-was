@@ -7,6 +7,8 @@ public class HttpRequest {
 
     private final String url;
 
+    private final Map<String, String> headersMap;
+
     private final String header;
 
     private final String body;
@@ -17,15 +19,17 @@ public class HttpRequest {
         this.method = null;
         this.url = null;
         this.header = null;
+        this.headersMap = null;
         this.body = null;
         paramsMap = null;
     }
 
-    public HttpRequest(String method, String url, Map<String, String> paramsMap, String header, String body){
+    public HttpRequest(String method, String url, Map<String, String> paramsMap, String header, Map<String, String> headersMap, String body){
         this.method = method;
         this.url = url;
         this.paramsMap = paramsMap;
         this.header = header;
+        this.headersMap = headersMap;
         this.body = body;
     }
 
