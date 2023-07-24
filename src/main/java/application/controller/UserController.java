@@ -16,13 +16,9 @@ import webserver.request.RequestQuery;
 public class UserController implements WebController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private final UserRepository userRepository;
+    private static final UserRepository userRepository = UserRepository.USER_REPOSITORY;
 
-    public UserController() {
-        this.userRepository = UserRepository.USER_REPOSITORY;
-    }
-
-    @RequestMapping(method = HttpMethod.POST, value = "/user/create")
+    @RequestMapping(method = HttpMethod.GET, value = "/user/create")
     public ModelAndView createUser(final HttpRequest request) throws InvalidQueryParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
