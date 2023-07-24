@@ -4,9 +4,8 @@ import common.enums.ContentType;
 import common.enums.ResponseCode;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
+import utils.FileUtils;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.Map;
 
 import static webserver.ServerConfig.ERROR_PAGE;
@@ -19,21 +18,20 @@ public class HtmlView implements View {
     }
 
     @Override
-    public String getContentType() {
-        return ContentType.HTML.getDescription();
+    public ContentType getContentType() {
+        return ContentType.HTML;
     }
 
     @Override
     public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception {
-        byte[] body = Files.readAllBytes(new File(viewPath).toPath());
+        byte[] body = FileUtils.readFile(viewPath);
 
         if (viewPath.endsWith(ERROR_PAGE)) {
-            decorateResponse(response, ResponseCode.BAD_REQUEST, body);
+            response.setUpDefaultResponse(ResponseCode.BAD_REQUEST, getContentType(), body);
         }
         else {
-            decorateResponse(response, ResponseCode.OK, body);
+            response.setUpDefaultResponse(ResponseCode.OK, getContentType(), body);
         }
-
     }
 
 }

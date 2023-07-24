@@ -15,13 +15,13 @@ public class PlainTextView implements View {
     }
 
     @Override
-    public String getContentType() {
-        return ContentType.PLAIN.getDescription();
+    public ContentType getContentType() {
+        return ContentType.PLAIN;
     }
 
     @Override
     public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) {
-        decorateResponse(response, ResponseCode.OK, text.getBytes());
+        response.setUpDefaultResponse(ResponseCode.OK, getContentType(), text.getBytes());
     }
 
 }
