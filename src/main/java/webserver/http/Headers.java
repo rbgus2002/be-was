@@ -6,6 +6,7 @@ import static webserver.http.Http.LINE_DELIMITER;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import webserver.http.Http.MIME;
 
 public class Headers {
     private final Map<String, String> map;
@@ -14,13 +15,13 @@ public class Headers {
         this.map = map;
     }
 
-    public static Headers create() {
-        return create(0);
+    public static Headers create(final MIME mime) {
+        return create(mime, 0);
     }
 
-    public static Headers create(final int length) {
+    public static Headers create(final MIME mime, final int length) {
         Map<String, String> result = new HashMap<>();
-        result.put(Http.Headers.CONTENT_TYPE.getName(), "text/html;charset=utf-8");
+        result.put(Http.Headers.CONTENT_TYPE.getName(), mime.getType());
         if (length > 0) {
             result.put(Http.Headers.CONTENT_LENGTH.getName(), String.valueOf(length));
         }

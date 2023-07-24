@@ -9,17 +9,14 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webserver.http.Headers;
 import webserver.http.Http;
+import webserver.http.Http.MIME;
 import webserver.http.Http.Method;
 import webserver.http.Http.Version;
 
 public class HttpRequest implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
     private final RequestLine requestLine;
     private final Headers headers;
@@ -55,11 +52,9 @@ public class HttpRequest implements Serializable {
     private static Headers extractHeader(final BufferedReader bufferedReader) throws IOException {
         Map<String, String> result = new HashMap<>();
         String line;
-        logger.debug("Request");
         while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
             String[] strings = line.split(HEADER_SEPARATOR);
             result.put(strings[0], strings[1]);
-            logger.debug(line);
         }
         return new Headers(result);
     }
@@ -72,6 +67,14 @@ public class HttpRequest implements Serializable {
         int contentLength = Integer.parseInt(headers.get(Http.Headers.CONTENT_LENGTH));
         char[] chars = new char[contentLength];
         return String.valueOf(bufferedReader.read(chars, 0, contentLength));
+    }
+
+    public String getPath() {
+        return this.requestLine.getTarget().getPath();
+    }
+
+    public MIME getMIME() {
+        return this.requestLine.getTarget().getMIME();
     }
 
     public RequestLine getRequestLine() {

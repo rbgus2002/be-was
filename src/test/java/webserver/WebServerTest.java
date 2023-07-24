@@ -20,10 +20,47 @@ class WebServerTest {
         RestAssured.given().log().all()
                 .when()
                 .contentType(ContentType.HTML)
-                .get("index.html")
+                .get("/index.html")
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
                 .contentType(ContentType.HTML);
+    }
+
+    @DisplayName("http://localhost:8080/styles.css 를 요청했을때 src/main/resources/static/css 디렉토리의 styles.css 파일을 읽어 클라이언트에 응답한다.")
+    @Test
+    void requestCSS() {
+        RestAssured.given().log().all()
+                .when()
+                .contentType("text/css")
+                .get("/css/styles.css")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType("text/css");
+    }
+
+    @DisplayName("http://localhost:8080/80-text.png 를 요청했을때 src/main/resources/static/images 디렉토리의 80-text.png 파일을 읽어 클라이언트에 응답한다.")
+    @Test
+    void requestImage() {
+        RestAssured.given().log().all()
+                .when()
+                .contentType("image/png")
+                .get("/images/80-text.png")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .contentType("image/png");
+    }
+
+    @DisplayName("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net 를 요청했을때 회원가입한다.")
+    @Test
+    void createUser() {
+        RestAssured.given().log().all()
+                .when()
+                .get("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK);
     }
 }

@@ -1,6 +1,10 @@
 package webserver.http;
 
+import static webserver.http.response.process.ProcessStrategy.*;
+
 import java.util.Arrays;
+import webserver.http.response.process.ContentProcessStrategy;
+import webserver.http.response.process.ProcessStrategy;
 
 public class Http {
     public static final String CRLF = "\r\n";
@@ -94,6 +98,53 @@ public class Http {
 
         public int getValue() {
             return value;
+        }
+    }
+
+    public enum MIME {
+        HTM(".htm", "text/html", TEMPLATE),
+        HTML(".html", "text/html", TEMPLATE),
+        CSS(".css", "text/css", STATIC),
+        JS(".js", "text/javascript", STATIC),
+        ICO(".ico", "image/x-icon", STATIC),
+        PNG(".png", "image/png", STATIC),
+        JSON(".json", "application/json", APPLICATION),
+        JPG(".jpg", "image/jpeg", STATIC),
+        JPEG(".jpeg", "image/jpg", STATIC),
+        EOT(".eot", "application/vnd.ms-fontobject", STATIC),
+        SVG(".svg", "image/svg+xml", STATIC),
+        TTF(".ttf", "application/x-font-ttf", STATIC),
+        WOFF(".woff", "application/x-font-woff", STATIC),
+        WOFF2(".woff2", "application/font-woff2", STATIC),
+        NONE("", "", APPLICATION);
+
+        private final String extension;
+        private final String type;
+        private final ProcessStrategy strategy;
+
+        MIME(final String value, final String type, final ProcessStrategy strategy) {
+            this.extension = value;
+            this.type = type;
+            this.strategy = strategy;
+        }
+
+        public static MIME findBy(final String text) {
+            return Arrays.stream(MIME.values())
+                    .filter(m -> m.extension.equals(text))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException(text + "에 해당하는 확장자가 없습니다"));
+        }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public ContentProcessStrategy getStrategy() {
+            return strategy.strategy;
         }
     }
 }
