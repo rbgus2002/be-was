@@ -1,62 +1,97 @@
 package webserver.http;
 
-import webserver.http.message.HttpMethod;
-import webserver.http.message.HttpRequest;
-import webserver.http.message.HttpVersion;
-import webserver.http.message.URL;
+import webserver.exception.WeirdRequestException;
+import webserver.http.message.*;
+import webserver.http.message.HttpRequest.HttpRequestBuilder;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class HttpRequestParser {
-    public HttpRequest parseHttpMessage(String httpMessage) {
-        String[] messageLines = httpMessage.split("\n");
-        int requestLineIndex = 0;
-        int blankLineIndex = findBlankLine(messageLines);
+    public static final String SPACE = " ";
+    public static final String BLANK = "";
+    public static final String COLON = ":";
+    public static final String COMMA = ",";
+    public static final String INVALID_REQUEST_LINE_FORMAT_MESSAGE = "요청 메세지 형식이 잘못됨";
+    public static final String EMPTY_REQUEST_LINE_FORMAT_MESSAGE = "요청 메세지가 없는 Connection 발생";
+    public static final int NUM_OF_REQUEST_LINE_SEGMENT = 3;
+    public static final int NOTHING_VALUE = -1;
 
-        String[] requestLineTokens = messageLines[requestLineIndex].split(" ");
+    public HttpRequest parseHttpRequest(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        HttpRequestBuilder httpRequestBuilder = HttpRequest.builder();
+
+        updateRequestLine(bufferedReader, httpRequestBuilder);
+        updateRequestHeaders(bufferedReader, httpRequestBuilder);
+
+        int contentLength;
+        if ((contentLength = getContentLength(httpRequestBuilder)) != NOTHING_VALUE) {
+            updateBody(bufferedReader, contentLength, httpRequestBuilder);
+        }
+
+        return httpRequestBuilder.build();
+    }
+
+    private int getContentLength(HttpRequestBuilder httpRequestBuilder) {
+        return httpRequestBuilder.httpHeaders.getContentLength();
+    }
+
+    private void updateBody(BufferedReader bufferedReader, int contentLength, HttpRequestBuilder httpRequestBuilder) throws IOException {
+        char[] body = new char[contentLength];
+        bufferedReader.read(body, 0, contentLength);
+        httpRequestBuilder.body(body);
+    }
+
+    private void updateRequestHeaders(BufferedReader bufferedReader, HttpRequestBuilder httpRequestBuilder) throws IOException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        String header;
+        while (!(header = bufferedReader.readLine()).equals(BLANK)) {
+            String[] tokens = header.replaceAll(SPACE, BLANK).split(COLON, 2);
+            String key = tokens[0];
+            String[] values = tokens[1].split(COMMA);
+            httpHeaders.addHeader(key, values);
+        }
+
+        httpRequestBuilder.httpHeader(httpHeaders);
+    }
+
+    private void updateRequestLine(BufferedReader bufferedReader, HttpRequestBuilder httpRequestBuilder) throws IOException {
+        Map<Class<?>, Object> requestLineSegments = readRequestLineSegments(bufferedReader);
+
+        httpRequestBuilder
+                .httpMethod((HttpMethod) requestLineSegments.get(HttpMethod.class))
+                .url((URL) requestLineSegments.get(URL.class))
+                .httpVersion((HttpVersion) requestLineSegments.get(HttpVersion.class));
+    }
+
+    private static Map<Class<?>, Object> readRequestLineSegments(BufferedReader bufferedReader) throws IOException {
+        String[] requestLineTokens = getVerifiedRequestLine(bufferedReader);
+
         HttpMethod method = HttpMethod.from(requestLineTokens[0]);
         URL url = URL.from(requestLineTokens[1]);
         HttpVersion httpVersion = HttpVersion.from(requestLineTokens[2]);
-        Map<String, List<String>> metaData = getMetaData(messageLines, requestLineIndex, blankLineIndex);
 
-        String body = null;
-        if (hasMessageBody(messageLines, blankLineIndex)) {
-            body = getBody(messageLines, blankLineIndex);
+        return Map.of(
+                HttpMethod.class, method,
+                URL.class, url,
+                HttpVersion.class, httpVersion);
+    }
+
+    private static String[] getVerifiedRequestLine(BufferedReader bufferedReader) throws IOException {
+        String requestLine;
+        if ((requestLine = bufferedReader.readLine()) == null || requestLine.equals("")) {
+            throw new WeirdRequestException(EMPTY_REQUEST_LINE_FORMAT_MESSAGE);
         }
-        return new HttpRequest(method, url, httpVersion, metaData, body);
-    }
 
-    private String getBody(String[] messageLines, int blankLineIndex) {
-        return Arrays.stream(messageLines, blankLineIndex + 1, messageLines.length)
-                .collect(Collectors.joining());
-    }
-
-    private static boolean hasMessageBody(String[] messageLines, int blankLineIndex) {
-        return blankLineIndex + 1 < messageLines.length;
-    }
-
-    private Map<String, List<String>> getMetaData(String[] messageLines, int requestLineIndex, int blankLineIndex) {
-        Map<String, List<String>> metaData = new HashMap<>();
-        for (int lineIdx = requestLineIndex + 1; lineIdx < blankLineIndex; lineIdx++) {
-            String headerLine = messageLines[lineIdx].replaceAll("[\\s\r\n]", "");
-            String[] tokens = headerLine.split(":");
-            String header = tokens[0];
-            String[] values = tokens[1].split(",");
-            metaData.put(header, List.of(values));
+        String[] requestLineTokens = requestLine.split(SPACE);
+        if (requestLineTokens.length != NUM_OF_REQUEST_LINE_SEGMENT) {
+            throw new WeirdRequestException(INVALID_REQUEST_LINE_FORMAT_MESSAGE);
         }
-        return metaData;
-    }
-
-    private int findBlankLine(String[] messageLines) {
-        for (int lineIdx = 0; lineIdx < messageLines.length; lineIdx++) {
-            if (messageLines[lineIdx].equals("\r")) {
-                return lineIdx;
-            }
-        }
-        return -1;
+        return requestLineTokens;
     }
 }

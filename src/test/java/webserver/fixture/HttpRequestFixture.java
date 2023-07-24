@@ -7,14 +7,18 @@ import webserver.http.message.URL;
 
 public class HttpRequestFixture {
     public static HttpRequest getRequestIndex() {
-        return new HttpRequest(HttpMethod.GET, URL.from("/index.html"), HttpVersion.V1_1, null, null);
+        return getHttpRequest("/index.html");
     }
 
     public static HttpRequest getRequestUserForm() {
-        return new HttpRequest(HttpMethod.GET, URL.from("/user/form.html"), HttpVersion.V1_1, null, null);
+        return getHttpRequest("/user/form.html");
     }
 
     public static HttpRequest getStrangeRequest() {
-        return new HttpRequest(HttpMethod.GET, URL.from("/afjawifoawef"), HttpVersion.V1_1, null, null);
+        return getHttpRequest("/weired_URL_HAHA");
+    }
+
+    private static HttpRequest getHttpRequest(String url) {
+        return new HttpRequest(HttpMethod.GET, URL.from(url), HttpVersion.V1_1, null, null);
     }
 }

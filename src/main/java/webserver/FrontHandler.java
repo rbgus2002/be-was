@@ -14,8 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class HttpRequestHandler {
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequestHandler.class);
+public class FrontHandler {
+    private static final Logger logger = LoggerFactory.getLogger(FrontHandler.class);
+    public static final String STATIC_PATH = "src/main/resources/static";
+
     private final Map<RouteKey, Handler> routeTables = new HashMap<>();
 
     {
@@ -27,20 +29,24 @@ public class HttpRequestHandler {
     
     private void addStaticFilesRecords() {
         StaticFileHandler staticFileHandler = new StaticFileHandler();
-        List<String> filePaths = FileNameScanner.scan("src/main/resources/static");
+        List<String> filePaths = FileNameScanner.scan(STATIC_PATH);
         filePaths.forEach(fileName -> routeTables.put(new RouteKey(HttpMethod.GET, fileName), staticFileHandler));
     }
 
     public HttpResponse handle(HttpRequest httpRequest) {
-        Handler handler = routeTables.getOrDefault(
-                new RouteKey(httpRequest.getMethod(), httpRequest.getURL().getPath()),
-                new NotFoundHandler());
+        Handler handler = findHandler(httpRequest);
         try {
             return handler.handle(httpRequest);
         } catch (RuntimeException e) {
-            logger.warn(e.getMessage());
-            return HttpResponse.badRequest();
+            logger.error(e.getMessage());
+            return HttpResponse.internalServerError();
         }
+    }
+
+    private Handler findHandler(HttpRequest httpRequest) {
+        return routeTables.getOrDefault(
+                new RouteKey(httpRequest.getMethod(), httpRequest.getURL().getPath()),
+                new NotFoundHandler());
     }
 
     private static class RouteKey {
