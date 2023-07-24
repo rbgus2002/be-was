@@ -32,10 +32,14 @@ public enum ContentType {
     }
 
     public String mapResourceFolders(String file){
-        if(this == NONE){
+        if(this == NONE && !isRedirect(file)){
             throw new NotSupportedContentTypeException();
         }
         return this.path + file;
+    }
+
+    private boolean isRedirect(String file){
+        return "redirect:".equals(file);
     }
 
     public String getPath() {

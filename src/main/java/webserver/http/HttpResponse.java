@@ -15,8 +15,11 @@ import static webserver.http.HttpStatus.*;
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private final String PATH = "src/main/resources";
+    private final String REDIRECT = "redirect:";
     private final String NOT_SUPPORT_ERROR_PAGE = "src/main/resources/templates/not_support_error.html";
     private final String NOT_FOUND_ERROR_PAGE = "src/main/resources/templates/not_found_error.html";
+    private final String INDEX = "/index.html";
+    private final String MAIN_PAGE = "src/main/resources/templates" + INDEX;
 
     private byte[] body;
     private HttpStatus status;
@@ -37,8 +40,9 @@ public class HttpResponse {
             response400Header(dos, type);
         } else if (status == BAD_REQUEST) {
             response404Header(dos, type);
+        } else if (status == FOUND) {
+            response302Header(dos);
         }
-
         responseBody(dos);
     }
 
@@ -47,6 +51,16 @@ public class HttpResponse {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", type.getMime()));
             dos.writeBytes("Content-Length: " + body.length + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 OK \r\n");
+            dos.writeBytes("Location: " + INDEX + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -85,9 +99,16 @@ public class HttpResponse {
     }
 
     public void setResults(String filePath, HttpStatus status) throws IOException {
+        if (isRedirect(filePath)) {
+            status = FOUND;
+        }
         this.status = status;
         byte[] body = convertFilePathToBody(filePath);
         this.body = body;
+    }
+
+    private boolean isRedirect(String filePath) {
+        return REDIRECT.equals(filePath);
     }
 
     private byte[] convertFilePathToBody(String filePath) throws IOException {
@@ -100,6 +121,8 @@ public class HttpResponse {
             fullPath = NOT_FOUND_ERROR_PAGE;
         } else if (status == BAD_REQUEST) {
             fullPath = NOT_SUPPORT_ERROR_PAGE;
+        } else if (status == FOUND) {
+            fullPath = MAIN_PAGE;
         }
         return fullPath;
     }
