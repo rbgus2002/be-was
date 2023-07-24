@@ -1,66 +1,41 @@
 package http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.HttpUtils;
-import util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.net.http.HttpClient;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HttpRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
     private final HttpUtils.Method method;
     private final URI uri;
     private final HttpClient.Version version;
     private final Mime mime;
-    private final Map<String, String> headers;
+    private final HttpRequestHeader httpRequestHeader;
     private final String body;
+    private final List<Cookie> cookies;
 
     public HttpRequest(BufferedReader reader) throws URISyntaxException, IOException {
         String requestLine = reader.readLine();
         String[] requestParts = requestLine.split(" ");
-        this.headers = parseHeader(reader);
+        this.httpRequestHeader = new HttpRequestHeader(reader);
         this.method = HttpUtils.Method.of(requestParts[0]);
-        this.uri = constructUri(requestParts[1], headers);
+        this.uri = HttpUtils.constructUri(this.httpRequestHeader.get("Host"), requestParts[1]);
         this.version = HttpUtils.getHttpVersion(requestParts[2]).orElse(null);
-        this.mime = decideMime(this.uri.getPath());
-        this.body = parseBody(reader);
-    }
+        this.mime = HttpUtils.decideMime(this.uri.getPath());
 
-    private Map<String, String> parseHeader(BufferedReader reader) throws IOException {
-        Map<String, String> map = new HashMap<>();
-        String line;
-        while ((line = reader.readLine()) != null && !line.isEmpty()) {
-            int colonIndex = line.indexOf(':');
-            if (colonIndex != -1) {
-                String headerName = line.substring(0, colonIndex).trim();
-                String headerValue = line.substring(colonIndex + 1).trim();
-                map.put(headerName, headerValue);
-            }
-        }
-        return map;
-    }
-
-    private String parseBody(BufferedReader reader) throws IOException {
-        int contentLength = Integer.parseInt(headers.getOrDefault("Content-Length", "0"));
-        if (this.method.equals(HttpUtils.Method.GET) || contentLength == 0) {
-            return null;
-        }
-        char[] buffer = new char[contentLength];
-        reader.read(buffer);
-        return URLDecoder.decode(new String(buffer), StandardCharsets.UTF_8);
-    }
-
-    private URI constructUri(String file, Map<String, String> headers) throws URISyntaxException {
-        String host = headers.get("Host");
-        return new URI("http://" + host + URLDecoder.decode(file, StandardCharsets.UTF_8));
+        int contentLength = Integer.parseInt(this.httpRequestHeader.getOrDefault("Content-Length", "0"));
+        this.body = HttpUtils.parseBody(reader, contentLength, this.method);
+        this.cookies = Cookie.parseCookie(httpRequestHeader.get("Cookie"));
     }
 
     public HttpUtils.Method method() {
@@ -80,23 +55,27 @@ public class HttpRequest {
     }
 
     public String getHeader(String key) {
-        return this.headers.get(key);
-    }
-
-    public Map<String, String> getHeaders() {
-        return this.headers;
+        return this.httpRequestHeader.get(key);
     }
 
     public String getBody() {
         return this.body;
     }
 
-    private Mime decideMime(String path) {
-        String extension = StringUtils.getExtension(path);
-
-        return Arrays.stream(Mime.values())
-                .filter(mime -> mime.getExtension().equals(extension))
+    public Cookie getCookie(String name) {
+        return cookies.stream()
+                .filter(cookie -> cookie.getName().equals(name))
                 .findFirst()
-                .orElse(Mime.DEFAULT);
+                .orElse(null);
+    }
+
+    public void printLogs() {
+        StringBuilder requestBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : this.httpRequestHeader.entrySet()) {
+            requestBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append(" ");
+        }
+        logger.debug("Method : {}, URI : {}, Version : {}", this.method, this.uri, this.version);
+        logger.debug("Headers : {}", requestBuilder);
+        logger.debug("Mime : {}, Body : {}", this.mime, this.body);
     }
 }

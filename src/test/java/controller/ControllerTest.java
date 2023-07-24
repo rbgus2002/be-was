@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import db.Session;
 import http.HttpResponse;
 import model.User;
 import org.junit.jupiter.api.*;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ControllerTest {
 
-    Controller controller = Controller.getInstance();
+    Controller controller = new Controller();
 
     final String userId = "abc";
     final String password = "1q2w3e4r";
@@ -24,17 +25,6 @@ class ControllerTest {
     @AfterEach
     void tearDown() {
         Database.clear();
-    }
-
-    @Test
-    @DisplayName("싱글톤으로 생성된다.")
-    void createSingleton() {
-        //given, when
-        Controller c1 = Controller.getInstance();
-        Controller c2 = Controller.getInstance();
-
-        //then
-        assertThat(c1).isEqualTo(c2);
     }
 
     @Nested
@@ -92,14 +82,14 @@ class ControllerTest {
             loginParameters.put("password", password);
 
             //when
-            HttpResponse httpResponse = controller.login(loginParameters);
+            HttpResponse httpResponse = controller.login(loginParameters, new Session());
 
             //then
             assertThat(httpResponse).usingRecursiveComparison().isEqualTo(HttpResponse.redirect("/index.html"));
         }
 
         @Test
-        @DisplayName("userId로 사용자를 찾을 수 없으면 예외가 발생한다.")
+        @DisplayName("userId로 사용자를 찾을 수 없으면 login failed 페이지로 리다이렉트한다.")
         void userNotExist() {
             //given
             String noId = "kjdfksj";
@@ -107,12 +97,16 @@ class ControllerTest {
             loginParameters.put("userId", noId);
             loginParameters.put("password", password);
 
-            //when, then
-            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters));
+            //when
+            HttpResponse response = controller.login(loginParameters, new Session());
+
+            //then
+            HttpResponse expected = HttpResponse.redirect("/user/login_failed.html");
+            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
         }
 
         @Test
-        @DisplayName("userId 찾은 사용자의 비밀번호가 다르면 예외가 발생한다.")
+        @DisplayName("userId 찾은 사용자의 비밀번호가 다르면 login failed 페이지로 리다이렉트한다.")
         void passwordNotMatch() {
             //given
             String invalidPassword = "kjdfksj";
@@ -120,8 +114,12 @@ class ControllerTest {
             loginParameters.put("userId", userId);
             loginParameters.put("password", invalidPassword);
 
-            //when, then
-            assertThrows(IllegalArgumentException.class, () -> controller.login(loginParameters));
+            //when
+            HttpResponse response = controller.login(loginParameters, new Session());
+
+            //then
+            HttpResponse expected = HttpResponse.redirect("/user/login_failed.html");
+            assertThat(response).usingRecursiveComparison().isEqualTo(expected);
         }
     }
 

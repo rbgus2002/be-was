@@ -7,7 +7,7 @@ public enum Mime {
     CSS("css", "text/css"),
     ICO("ico", "image/x-icon"),
     PNG("png", "image/png"),
-    JPG("jpg", "image/jpg"),
+    JPG("jpg", "image/jpeg"),
     DEFAULT("", "application/octet-stream");
 
 

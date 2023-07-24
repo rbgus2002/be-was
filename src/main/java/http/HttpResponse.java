@@ -1,22 +1,15 @@
 package http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import util.StringUtils;
-
-import java.io.*;
-import java.net.Socket;
-import java.util.Objects;
-
-import static util.StringUtils.getExtension;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpResponse {
-
-    private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
     private final String path;
     private final HttpStatus httpStatus;
     private final Mime contentType;
+    private final List<Cookie> cookies;
+    private byte[] body;
 
     public static HttpResponse ok(String path, Mime mime) {
         return new HttpResponse(path, mime, HttpStatus.OK);
@@ -26,107 +19,43 @@ public class HttpResponse {
         return new HttpResponse(path, null, HttpStatus.FOUND);
     }
 
-    public static HttpResponse notFound() {
-        return new HttpResponse(null, null, HttpStatus.NOT_FOUND);
+    public static HttpResponse notFound(String path, Mime mime) {
+        return new HttpResponse(path, mime, HttpStatus.NOT_FOUND);
     }
 
     private HttpResponse(String path, Mime mime, HttpStatus httpStatus) {
         this.path = path;
         this.contentType = mime;
         this.httpStatus = httpStatus;
+        this.cookies = new ArrayList<>();
     }
 
-    public void response(Socket connection) {
-        try (OutputStream out = connection.getOutputStream()) {
-            DataOutputStream dos = new DataOutputStream(out);
-
-            if (this.httpStatus == HttpStatus.OK) {
-                response200(dos);
-            }
-            if (this.httpStatus == HttpStatus.FOUND) {
-                response302Header(dos);
-            }
-            if (this.httpStatus == HttpStatus.NOT_FOUND) {
-                response404(dos);
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    public String getPath() {
+        return path;
     }
 
-    private void response200(DataOutputStream dos) throws IOException {
-        try {
-            InputStream fileInputStream = getResourceAsStream(this.path);
-            byte[] body = fileInputStream.readAllBytes();
-            response200Header(dos, body);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            response404(dos);
-        }
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
-    private void response200Header(DataOutputStream dos, byte[] body) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + this.contentType.getType() + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + body.length + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    public Mime getContentType() {
+        return contentType;
     }
 
-    private void response302Header(DataOutputStream dos) {
-        try {
-            dos.writeBytes("HTTP/1.1 302 Found\r\n");
-            dos.writeBytes("Location: " + path + "\r\n");
-            dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
-            dos.writeBytes("Pragma: no-cache\r\n");
-            dos.writeBytes("Expires: 0\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    public void setCookie(String name, String value) {
+        Cookie cookie = new Cookie(name, value);
+        cookies.add(cookie);
     }
 
-    private void response404(DataOutputStream dos) throws IOException {
-        byte[] body;
-        try {
-            InputStream fileInputStream = getResourceAsStream("/error.html");
-            body = fileInputStream.readAllBytes();
-        } catch (IOException e) {
-            body = "<html><body><h1>404 Not Found</h1></body></html>".getBytes();
-        }
-        response404Header(dos, body);
-        responseBody(dos, body);
+    public List<Cookie> getCookies() {
+        return new ArrayList<>(this.cookies);
     }
 
-    private void response404Header(DataOutputStream dos, byte[] body) {
-        try {
-            dos.writeBytes("HTTP/1.1 404 Not Found\r\n");
-            dos.writeBytes("Content-Type: text/html; charset=UTF-8\r\n");
-            dos.writeBytes("Content-Length: " + body.length + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    public void setBody(byte[] body) {
+        this.body = body;
     }
 
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private InputStream getResourceAsStream(String path) throws FileNotFoundException {
-        String ext = getExtension(path);
-        InputStream fileInputStream = StringUtils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
-        if (fileInputStream == null) {
-            throw new FileNotFoundException(path + "에 파일이 존재하지 않습니다.");
-        }
-        return fileInputStream;
+    public byte[] getBody() {
+        return this.body;
     }
 }

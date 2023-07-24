@@ -1,6 +1,7 @@
 package annotation;
 
 import controller.Controller;
+import db.Session;
 import http.HttpRequest;
 import http.HttpResponse;
 import util.HttpUtils;
@@ -16,6 +17,8 @@ import java.util.Map;
 public class RequestMappingHandler {
 
     private static final Map<HttpUtils.Method, Map<String, MethodHandle>> methodHandles = new HashMap<>();
+
+    private static final Controller controller = new Controller();
 
     static {
         methodHandles.put(HttpUtils.Method.GET, new HashMap<>());
@@ -49,50 +52,53 @@ public class RequestMappingHandler {
         }
         return MethodHandles.lookup()
                 .findVirtual(Controller.class, method.getName(), methodType)
-                .bindTo(Controller.getInstance());
+                .bindTo(controller);
     }
 
     private RequestMappingHandler() {
     }
 
-    public static HttpResponse invokeMethod(HttpRequest httpRequest) throws Throwable {
+    public static MethodHandle getMethod(HttpUtils.Method method, String path) {
+        return methodHandles.get(method).get(path);
+    }
+
+    public static HttpResponse invokeMethod(HttpRequest httpRequest, Session session) throws Throwable {
         String path = httpRequest.uri().getPath();
         HttpUtils.Method httpMethod = httpRequest.method();
         MethodHandle method = methodHandles.get(httpRequest.method()).get(path);
         if (method == null) {
             throw new IllegalAccessException("잘못된 메소드입니다.");
         }
-        if (httpMethod.equals(HttpUtils.Method.GET)) {
-            return invokeGet(method, httpRequest);
+
+        MethodType methodType = method.type();
+        Class<?>[] paramTypes = methodType.parameterArray();
+
+        if (paramTypes.length == 0) {
+            return (HttpResponse) method.invoke();
         }
-        if (httpMethod.equals(HttpUtils.Method.POST)) {
-            return invokePost(method, httpRequest);
-        }
-        throw new IllegalArgumentException("잘못된 HTTP 요청입니다.");
+        return invokeMethodWithSessionAndMap(method, session, httpMethod, httpRequest);
     }
 
-    private static HttpResponse invokeGet(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
-        if (isValidInvoke(methodHandle)) {
-            return (HttpResponse) methodHandle.invoke();
+    private static HttpResponse invokeMethodWithSessionAndMap(MethodHandle method, Session session, HttpUtils.Method httpMethod, HttpRequest httpRequest) throws Throwable {
+        MethodType methodType = method.type();
+        Class<?>[] paramTypes = methodType.parameterArray();
+        Object[] args = new Object[paramTypes.length];
+
+        for (int i = 0; i < paramTypes.length; i++) {
+            args[i] = chooseArgument(paramTypes[i], session, httpMethod, httpRequest);
         }
-        return (HttpResponse) methodHandle.invoke(StringUtils.parseParameters(httpRequest.uri().getQuery()));
+        return (HttpResponse) method.invokeWithArguments(args);
     }
 
-    private static HttpResponse invokePost(MethodHandle methodHandle, HttpRequest httpRequest) throws Throwable {
-        if (isValidInvoke(methodHandle)) {
-            return (HttpResponse) methodHandle.invoke();
+    private static Object chooseArgument(Class<?> paramType, Session session, HttpUtils.Method httpMethod, HttpRequest httpRequest) {
+        if (paramType == Session.class) {
+            return session;
         }
-        return (HttpResponse) methodHandle.invoke(StringUtils.parseParameters(httpRequest.getBody()));
-    }
-
-    private static boolean isValidInvoke(MethodHandle methodHandle) {
-        MethodType methodType = methodHandle.type();
-        if (methodType.parameterCount() == 0) {
-            return true;
+        if (paramType == Map.class) {
+            return httpMethod.equals(HttpUtils.Method.GET) ?
+                    StringUtils.parseParameters(httpRequest.uri().getQuery()) :
+                    StringUtils.parseParameters(httpRequest.getBody());
         }
-        if (methodType.parameterCount() > 1 || !(methodType.parameterType(0) == Map.class)) {
-            throw new IllegalArgumentException("하나의 Map을 인자로 받을 수 있습니다.");
-        }
-        return false;
+        throw new IllegalArgumentException("RequestMapping의 인자는 Map과 Session만 설정할 수 있습니다.");
     }
 }
