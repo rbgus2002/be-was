@@ -1,7 +1,5 @@
 package utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webserver.http.Path;
 
 import java.io.BufferedReader;
@@ -12,8 +10,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Parser {
-    private static final Logger log = LoggerFactory.getLogger(Parser.class);
-
     public static Map<String, String> parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
         Map<String, String> requestLineMap = new ConcurrentHashMap<>();
@@ -29,22 +25,24 @@ public class Parser {
 
         while ((line = br.readLine()) != null && !line.isEmpty()) {
             String[] header = line.split(":");
-            requestHeaders.put(header[0], header[1]);
+            requestHeaders.put(header[0].trim(), header[1].trim());
         }
 
         return requestHeaders;
     }
 
-    public static Map<String, String> parseQueryParameters(String requestUri) {
-        log.debug("requestUri = {}", requestUri);
+    public static Map<String, String> parseQueryParameters(String queryString) {
         Map<String, String> queryParams = new ConcurrentHashMap<>();
-        String queryString = requestUri.substring(requestUri.indexOf("?") + 1);
-        String[] params = queryString.split("&");
+        if (queryString.contains("?")) {
+            queryString = queryString.substring(queryString.indexOf("?") + 1);
+        }
 
+        String[] params = queryString.split("&");
         for (String param : params) {
             int splitIndex = param.indexOf("=");
             queryParams.put(param.substring(0, splitIndex), URLDecoder.decode(param.substring(splitIndex + 1), StandardCharsets.UTF_8));
         }
+
         return queryParams;
     }
 
