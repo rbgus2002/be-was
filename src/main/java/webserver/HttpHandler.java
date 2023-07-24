@@ -3,8 +3,9 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.ControllerResolver;
-import support.annotation.ResponseStatus;
-import support.exception.*;
+import support.exception.FoundException;
+import support.exception.HttpException;
+import support.exception.NotSupportedException;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -45,9 +46,9 @@ public class HttpHandler {
 
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
         try {
-            ResponseStatus responseStatus = ControllerResolver.invoke(path, request, response);
-            response.setStatus(responseStatus.status());
-            response.appendHeader("Location", responseStatus.redirectionUrl());
+            String viewName = ControllerResolver.invoke(path, request, response);
+            response.setStatus(HttpStatus.FOUND);
+            response.appendHeader("Location", viewName);
             return true;
         } catch (NotSupportedException e) {
             return false;
