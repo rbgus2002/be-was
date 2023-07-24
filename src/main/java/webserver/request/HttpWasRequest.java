@@ -121,4 +121,5 @@ public class HttpWasRequest {
 	private String base64Decoder(String value) {
 		return URLDecoder.decode(value, StandardCharsets.UTF_8);
 	}
+
 }

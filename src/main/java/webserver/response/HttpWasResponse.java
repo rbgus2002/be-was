@@ -50,6 +50,7 @@ public class HttpWasResponse {
 		try {
 			dos.writeBytes(getRequestLine(httpStatus));
 			dos.writeBytes(header.getAllHeader());
+			printCookie();
 			if (body != null && body.length != 0) {
 				dos.writeBytes("\r\n");
 				dos.write(body, 0, body.length);
@@ -57,6 +58,12 @@ public class HttpWasResponse {
 			dos.flush();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
+		}
+	}
+
+	private void printCookie() throws IOException {
+		for (Cookie cookie : cookies) {
+			dos.writeBytes(cookie.convertToHeader());
 		}
 	}
 
