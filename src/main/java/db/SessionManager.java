@@ -24,7 +24,8 @@ public class SessionManager {
     }
 
     public static User getSession(HTTPServletRequest request) {
-        String sessionId = request.getHeader("Cookie");
+        String sessionId = request.getHeader("Cookie").split("=")[1].trim();
+        logger.debug("sessionId = {}", sessionId);
         if (sessionId == null) {
             throw new IllegalArgumentException("없는 쿠키입니다.");
         }
