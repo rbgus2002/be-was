@@ -21,7 +21,7 @@ public class HttpRequest {
 
     private final HttpMethod httpMethod;
     private final HttpVersion version;
-    private final String path;
+    private final RequestPath path;
     private final RequestQuery requestQuery;
     private final RequestHeader requestHeader;
 
@@ -33,7 +33,7 @@ public class HttpRequest {
 
         this.httpMethod = HttpMethod.valueOf(tokens[0]);
         this.version = HttpVersion.of(tokens[2]);
-        this.path = pathAndQueries[0];
+        this.path = RequestPath.of(pathAndQueries[0]);
         this.requestQuery = parseRequestQuery(pathAndQueries);
         this.requestHeader = RequestHeader.of(header);
     }
@@ -69,8 +69,8 @@ public class HttpRequest {
         return this.version;
     }
 
-    public String getPath() {
-        return path;
+    public String getPathSegment(int idx) {
+        return path.getPathSegment(idx);
     }
 
     public Optional<RequestQuery> getRequestQuery() {

@@ -1,5 +1,6 @@
 package webserver;
 
+import webserver.Constants.PathConstants;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
 import webserver.request.HttpRequest;
@@ -9,6 +10,8 @@ import webserver.Constants.HttpStatus;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+
+import static webserver.Constants.PathConstants.*;
 
 public class DispatcherServlet {
 
@@ -21,7 +24,7 @@ public class DispatcherServlet {
     public void dispatch(final DataOutputStream dos) throws IOException {
 
         StaticViewResolver staticViewResolver = new StaticViewResolver();
-        Optional<View> view = staticViewResolver.resolve(httpRequest.getPath());
+        Optional<View> view = staticViewResolver.resolve(httpRequest.getPathSegment(ROOT_PATH));
 
         if(view.isPresent()) view.get().render(httpRequest.getVersion(), null, dos);
 
