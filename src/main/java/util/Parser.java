@@ -1,5 +1,7 @@
 package util;
 
+import http.MIME;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,6 +65,20 @@ public class Parser {
             params.put(key, value);
         }
         return params;
+    }
+
+    public static MIME convertExtensionToMime(String extension) {
+        for(MIME mime : MIME.values()) {
+            if(mime.getExtension().equals(extension)) {
+                return mime;
+            }
+        }
+        return null;
+    }
+
+    public static String parsePathFromRedirect(String redirectPath) {
+        int index = redirectPath.indexOf(":");
+        return redirectPath.substring(index + 1);
     }
 
     public static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
