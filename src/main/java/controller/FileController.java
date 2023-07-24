@@ -22,8 +22,8 @@ public class FileController {
     private static final String NAVBAR_RIGHT = "/user/list.html\"><i class=\"glyphicon glyphicon-user\"></i></a></li>";
     private static final String USERNAME_FORMAT = "<li>%s</li>";
     private static final String BUTTON_LOGOUT = "<li><a href=\"#\" role=\"button\">로그아웃</a></li>";
-    private static final String BUTTON_LOGIN = "<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>";
-    private static final String BUTTON_SIGNUP = "<li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>";
+    private static final String BUTTON_LOGIN = "user/login.html\" role=\"button\">로그인</a></li>";
+    private static final String BUTTON_SIGNUP = "user/form.html\" role=\"button\">회원가입</a></li>";
     private static final String BUTTON_MODIFY_USERDATA = "<li><a href=\"#\" role=\"button\">개인정보수정</a></li>";
     private static final String USER_LIST_TBODY = "<tbody>";
     private static final String USER_LIST_ROW_FORM = "<tr>\n<th scope=\"row\">%d</th> <td>%s</td> <td>%s</td> <td>%s</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>";
