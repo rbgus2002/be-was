@@ -1,30 +1,31 @@
 package webserver;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controllers.Controller;
+import annotations.AnnotationMap;
+import http.HttpRequest;
+import http.HttpResponse;
+import http.statusline.StatusCode;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+	private final String REDIRECT = "redirect:";
+	private static final String TEMPLATES_PATH = "src/main/resources/templates/";
+	private static final String STATIC_PATH = "src/main/resources/static";
 
-	private Socket connection;
+	private final Socket connection;
 
 	public RequestHandler(Socket connectionSocket) {
 		this.connection = connectionSocket;
@@ -35,85 +36,66 @@ public class RequestHandler implements Runnable {
 			connection.getPort());
 
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-
-			String line;
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			while ((line = reader.readLine()) != null) {
-				logger.debug(line);
-				try {
-					if (line.startsWith("GET")) {
-						handleGetRequest(line, out);
-						return;
-					}
-				} catch (ReflectiveOperationException exception) {
-					logger.warn("ReflectiveOperationException");
-					logger.warn(exception.getMessage());
-				}
-			}
+			HttpRequest httpRequest = new HttpRequest(reader);
+			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
 
-		} catch (IOException e) {
+			HttpResponse httpResponse = handleRequest(httpRequest);
+			httpResponse.response(out);
+
+		} catch (IOException | ReflectiveOperationException | IllegalArgumentException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private void handleGetRequest(String line, OutputStream out) throws ReflectiveOperationException, IOException {
-		String[] arguments;
-		if (line.startsWith("GET")) {
-			arguments = line.split(" ");
-			final Method[] declaredMethods = Controller.class.getDeclaredMethods();
-			Constructor<Controller> constructor = Controller.class.getDeclaredConstructor();
-			Object o = constructor.newInstance();
-			List<Method> mappedMethods = Arrays.stream(declaredMethods)
-				.filter(method -> method.isAnnotationPresent(GetMapping.class) && method.getAnnotation(GetMapping.class)
-					.value()
-					.equals(arguments[1]))
-				.collect(Collectors.toList());
-			if (mappedMethods.isEmpty()) {
-				sendStaticResponse(arguments[1], out);
-				return;
-			}
-			for (Method mappedMethod : mappedMethods) {
-				sendTemplateResponse((String)mappedMethod.invoke(o), out);
-				return;
-			}
+	private HttpResponse handleRequest(final HttpRequest httpRequest) throws
+		ReflectiveOperationException,
+		IOException,
+		IllegalArgumentException {
+		String path = runController(httpRequest);
+		if (path.contains(REDIRECT)) {
+			return redirectHttpResponse(httpRequest, path);
 		}
+		return getHttpResponse(httpRequest, path);
 	}
 
-	private void sendTemplateResponse(String fileName, OutputStream out) throws IOException {
-		Path path = new File("src/main/resources/templates/" + fileName).toPath();
-		responseForPath(out, path);
+	private HttpResponse redirectHttpResponse(final HttpRequest httpRequest, final String path) {
+		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		httpResponse.setRedirect(path.replace("redirect:", ""), StatusCode.FOUND);
+		return httpResponse;
 	}
 
-	private void sendStaticResponse(String fileName, OutputStream out) throws IOException {
-		Path path = new File("src/main/resources/static" + fileName).toPath();
-		responseForPath(out, path);
-	}
-
-	private void responseForPath(OutputStream out, Path path) throws IOException {
-		DataOutputStream dos = new DataOutputStream(out);
-		byte[] body = Files.readAllBytes(path);
-		String mimeType = Files.probeContentType(path);
-		response200Header(dos, body.length, mimeType);
-		responseBody(dos, body);
-	}
-
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String mimeType) {
-		try {
-			dos.writeBytes("HTTP/1.1 200 OK \r\n");
-			dos.writeBytes("Content-Type: " + mimeType + ";charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+	private String runController(final HttpRequest httpRequest) throws
+		InvocationTargetException,
+		IllegalAccessException {
+		String path = httpRequest.getPath();
+		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
+			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest.getParameter());
 		}
+		return path;
 	}
 
-	private void responseBody(DataOutputStream dos, byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws
+		IOException,
+		IllegalArgumentException {
+		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		httpResponse.addFile(getValidPath(path));
+		logger.debug("{} added", path);
+		return httpResponse;
+	}
+
+	private Path getValidPath(final String path) throws IllegalArgumentException {
+		Path templatePath = new File(TEMPLATES_PATH + path).toPath();
+		Path staticPath = new File(STATIC_PATH + path).toPath();
+		logger.debug("{} path created", path);
+
+		if (Files.exists(templatePath)) {
+			return templatePath;
 		}
+		if (Files.exists(staticPath)) {
+			return staticPath;
+		}
+
+		throw new IllegalArgumentException("지원하지 않는 경로를 입력했습니다.");
 	}
 }
