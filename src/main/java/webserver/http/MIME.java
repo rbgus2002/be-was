@@ -4,19 +4,21 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum MIME {
-    HTML("text/html"),
-    CSS("text/css"),
-    JS("application/javascript"),
-    ICO("image/x-icon"),
-    PNG("image/png"),
-    JPG("image/jpeg"),
-    TXT("text/plain"),
-    WOFF("font/WOFF"),
-    TTF("font/ttf");
+    HTML("html", "text/html"),
+    CSS("css", "text/css"),
+    JS("js", "application/javascript"),
+    ICO("ico", "image/x-icon"),
+    PNG("png", "image/png"),
+    JPG("jpg", "image/jpeg"),
+    TXT("txt", "text/plain"),
+    WOFF("woff", "font/WOFF"),
+    TTF("ttf", "font/ttf");
 
+    private String extension;
     private String contentType;
 
-    MIME(String contentType) {
+    MIME(String extension, String contentType) {
+        this.extension = extension;
         this.contentType = contentType;
     }
 
