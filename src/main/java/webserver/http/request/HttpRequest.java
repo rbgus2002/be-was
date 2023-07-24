@@ -2,6 +2,8 @@ package webserver.http.request;
 
 
 import webserver.http.HttpMethod;
+import webserver.myframework.session.Session;
+import webserver.myframework.session.SessionManager;
 
 import java.util.Optional;
 import java.util.Set;
@@ -23,8 +25,12 @@ public abstract class HttpRequest {
 
     public abstract String getBodyToString();
 
-    public static Builder builder() {
-        return new HttpRequestBuilderImpl();
+    public abstract Session getSession();
+
+    public abstract Session getSession(boolean create);
+    
+    public static Builder builder(SessionManager sessionManager) {
+        return new HttpRequestBuilderImpl(sessionManager);
     }
 
     public interface Builder {
