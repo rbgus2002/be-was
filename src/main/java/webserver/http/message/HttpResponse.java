@@ -86,6 +86,10 @@ public class HttpResponse {
         return httpVersion;
     }
 
+    public void setCookie(String sessionId, String path) {
+        httpHeaders.addCookie(sessionId, path);
+    }
+
     @Override
     public String toString() {
         return "HttpResponse{" +
