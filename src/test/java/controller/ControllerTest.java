@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,12 +18,13 @@ class ControllerTest {
 
     @Test
     @DisplayName("root 메서드 테스트")
-    void testRoot() {
+    void testRoot() throws IOException {
         //given
         String expectedResponse = "HTTP/1.1 200 OK \n";
 
+        Map<String, String> map = new LinkedHashMap<>();
         //when
-        byte[] response = controller.root(new LinkedHashMap<>());
+        byte[] response = controller.root(map);
 
         //then
         assertAll(
@@ -35,7 +37,7 @@ class ControllerTest {
 
     @Test
     @DisplayName("createUser 메서드 - 유효한 쿼리 매개변수를 받아서 사용자 생성")
-    void testCreateUserWithValidQueryParams() {
+    void testCreateUserWithValidQueryParams() throws IOException {
         //given
         RequestBody body = new RequestBody("\n" +
                 "userId=chocochip&password=password&name=kiho&email=fingercut@naver.com");

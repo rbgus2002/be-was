@@ -19,7 +19,6 @@ public class ResponseEntity {
 
     public static class Builder {
         private final Map<String, String> headers;
-
         private StatusCode statusCode = StatusCode.OK;
         private byte[] responseBody = new byte[0];
         private ContentType contentType = ContentType.HTML;
