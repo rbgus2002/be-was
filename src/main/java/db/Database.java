@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Database {
-	public static final String USERID_ALREADY_EXISTS_MESSAGE = "이미 userId가 존재합니다.";
+	public static final String USERID_ALREADY_EXISTS_MESSAGE = "이미 동일한 사용자 아이디가 존재합니다.";
 	private static Map<String, User> users = Maps.newConcurrentMap();
 
 	public static void dropAll() {
@@ -19,7 +19,7 @@ public class Database {
 		if (users.containsKey(userId)) {
 			return users.get(userId).getPassword().equals(password);
 		}
-		throw new IllegalArgumentException("등록되지 않은 ID가 입력되었습니다.");
+		throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않아 인증에 실패했습니다.");
 	}
 
 	public static void addUser(User user) throws IllegalArgumentException {
@@ -28,13 +28,16 @@ public class Database {
 	}
 
 	private static void CheckDuplicateUserId(final String userId) throws IllegalArgumentException {
-		if (findUserById(userId) != null) {
+		if (users.containsKey(userId)) {
 			throw new IllegalArgumentException(USERID_ALREADY_EXISTS_MESSAGE);
 		}
 	}
 
 	public static User findUserById(String userId) {
-		return users.get(userId);
+		if (users.containsKey(userId)) {
+			return users.get(userId);
+		}
+		throw new IllegalArgumentException("존재하지 않는 ID를 조회할 수 없습니다.");
 	}
 
 	public static Collection<User> findAll() {
