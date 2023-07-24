@@ -27,6 +27,6 @@ public class UserController {
         userService.createUser(userDTO);
 
         response.setStatus(HttpStatus.CREATED);
-        return "/";
+        return "redirect:/";
     }
 }

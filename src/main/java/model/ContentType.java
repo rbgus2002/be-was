@@ -27,6 +27,8 @@ public final class ContentType {
     public static final ContentType IMAGE_X_ICON = new ContentType("image", "x-icon");
     public static final ContentType IMAGE_PNG = new ContentType("image", "png");
     public static final ContentType APPLICATION_URLENCODED = new ContentType("application", "x-www-form-urlencoded");
+    public static final ContentType FONT_WOFF = new ContentType("font", "woff");
+    public static final ContentType FONT_TTF = new ContentType("font", "ttf");
 
     public String getContentType() {
         StringBuilder stringBuilder = getType();

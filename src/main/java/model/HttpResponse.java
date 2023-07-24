@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class HttpResponse {
@@ -22,12 +23,14 @@ public class HttpResponse {
 
     private HttpStatus statusCode;
     private ContentType contentType;
+    private String Location;
 
     public HttpResponse(HttpRequest request) {
         this.request = request;
 
         uri = request.getRequestURI();
         version = request.getVersion();
+        headers = new LinkedHashMap<>();
     }
 
     public String getHeader(String name) {
@@ -58,6 +61,7 @@ public class HttpResponse {
     }
 
     //TODO: sendRedirect 구현
+//    public void sendRedirect()
 
     //TODO: sendError 구현
 
@@ -79,9 +83,17 @@ public class HttpResponse {
     }
 
     private StringBuilder responseHeaderLine() {
-        int lengthOfBodyContent = body.length;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Content-Type:").append(contentType.getContentType()).append("\r\n").append("Content-Length: " + lengthOfBodyContent + "\r\n");
+        stringBuilder.append("Content-Type:").append(contentType.getContentType()).append("\r\n");
+
+        if(body != null) {
+            int lengthOfBodyContent = body.length;
+            stringBuilder.append("Content-Length: " + lengthOfBodyContent + "\r\n");
+        }
+
+        if(!headers.isEmpty()) {
+            headers.keySet().stream().forEach(key -> stringBuilder.append(key).append(":").append(headers.get(key)).append("\r\n"));
+        }
 
         return stringBuilder;
     }

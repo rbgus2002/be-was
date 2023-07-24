@@ -6,6 +6,7 @@ import model.HttpResponse;
 import model.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.HandlerAdapter;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,17 +18,19 @@ public class ModelAndView {
     private static final Logger logger = LoggerFactory.getLogger(ModelAndView.class);
 
     private final String errorView = "src/main/resources/templates/404.html";
+    private final String DYNAMIC_PATH = "src/main/resources/templates";
+
+
     private String view;
 
     private Map<String, Object> modelMap;
 
-    private ContentType ContentType;
+    private ContentType contentType;
 
     private HttpStatus status;
 
     public ModelAndView() {
         this.modelMap = new HashMap<>();
-        this.ContentType = ContentType.TEXT_HTML;
         this.status = HttpStatus.NOT_FOUND;
         this.view = errorView;
     }
@@ -48,12 +51,12 @@ public class ModelAndView {
         this.status = status;
     }
 
-    public void setContentType(ContentType ContentType) {
-        this.ContentType = ContentType;
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
     }
 
     public ContentType getContentType() {
-        return ContentType;
+        return contentType;
     }
 
     public void addObject(String name, Object value) {
@@ -63,9 +66,16 @@ public class ModelAndView {
 
     public void setResponse(HttpRequest request, HttpResponse response) {
         try {
-            response.setBody(Files.readAllBytes(Paths.get(view)));
+            if(contentType != null) {
+                response.setContentType(contentType);
+            }
             response.setStatus(status);
-            response.setContentType(ContentType);
+            //3xx Response일 때
+            if(status.getValue() / 100 == 3) {
+                response.setHeader("Location", view.substring(DYNAMIC_PATH.length()));
+                return;
+            }
+            response.setBody(Files.readAllBytes(Paths.get(view)));
 
         } catch (Exception e) {
             response.setStatus(HttpStatus.NOT_FOUND);
