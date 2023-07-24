@@ -19,11 +19,11 @@ public class StaticFIleUtils {
     }
 
     public static void getStaticByte(String url, HttpResponse response) throws IOException {
+        String[] urlParts = url.split("[.]");
         if(Files.exists(new File("src/main/resources/templates" + url).toPath())){
-            response.setBodyByFile(Files.readAllBytes(new File("src/main/resources/templates" + url).toPath()), Type.HTML);
+            response.setBodyByFile(Files.readAllBytes(new File("src/main/resources/templates" + url).toPath()), Type.getType(urlParts[urlParts.length-1]));
             return;
         }
-        String[] urlParts = url.split("[.]");
-        response.setBodyByFile(Files.readAllBytes(new File("src/main/resources/static" + url).toPath()),Type.getType(url.split("[.]")[urlParts.length-1]));
+        response.setBodyByFile(Files.readAllBytes(new File("src/main/resources/static" + url).toPath()),Type.getType(urlParts[urlParts.length-1]));
     }
 }

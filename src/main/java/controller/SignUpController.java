@@ -2,6 +2,7 @@ package controller;
 
 import db.Database;
 import model.User;
+import webserver.exception.BadRequestException;
 import webserver.reponse.HttpResponse;
 import webserver.request.HttpRequest;
 
@@ -17,7 +18,10 @@ public class SignUpController implements Controller {
 
     @Override
     public void verifyRequest(HttpRequest request){
-
+        if(request.getParamValueByKey("userId") == null || request.getParamValueByKey("password") == null ||
+                request.getParamValueByKey("name") == null || request.getParamValueByKey("email") == null) {
+            throw new BadRequestException();
+        }
     }
 
     @Override

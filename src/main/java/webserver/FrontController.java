@@ -11,11 +11,9 @@ import webserver.request.HttpRequest;
 import java.io.IOException;
 
 public class FrontController {
-    //TODO 정적파일 요청인지 api 요청인지 확인 후 그에 따른 로직 처리
 
     public static void service(HttpRequest request, HttpResponse response) throws IOException {
         if(StaticFIleUtils.isExistedStaticFileRequest(request.getUrl())) {
-            //TODO response에 정적 파일 제공, content-type 제공
             StaticFIleUtils.getStaticByte(request.getUrl(), response);
             return;
         }

@@ -23,8 +23,8 @@ public class HttpResponse {
 
     public void setBodyByText(String body) {
         this.body = body.getBytes();
-        setHeader("Content-Type", Type.TEXT.getContentType());
         setHeader("Content-Length", String.valueOf(this.body.length));
+        setHeader("Content-Type", Type.TEXT.getContentType());
     }
 
     public void setHeader(String key, String value){
