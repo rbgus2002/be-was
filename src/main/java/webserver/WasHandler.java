@@ -1,5 +1,6 @@
 package webserver;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -40,14 +41,14 @@ public class WasHandler {
 
 		try {
 			apiService();
-		} catch (ReflectiveOperationException e) {
+		} catch (InvocationTargetException | IllegalAccessException e) {
 			httpWasResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
 			httpWasResponse.setBody(e.getCause().getMessage() , HttpMimeType.NOTING);
 			httpWasResponse.doResponse();
 		}
 	}
 
-	private void apiService() throws ReflectiveOperationException{
+	private void apiService() throws InvocationTargetException, IllegalAccessException {
 		final List<Method> methods = getResourcePathMethod();
 
 		if (methods.isEmpty()) {
@@ -65,7 +66,7 @@ public class WasHandler {
 		httpWasResponse.response405();
 	}
 
-	private void runApiMethod(final Method method) throws ReflectiveOperationException{
+	private void runApiMethod(final Method method) throws InvocationTargetException, IllegalAccessException {
 		final Class<?> methodClass = method.getDeclaringClass();
 		frontController.getInstance(methodClass.getName());
 		method.invoke(frontController.getInstance(methodClass.getName()), httpWasRequest, httpWasResponse);
