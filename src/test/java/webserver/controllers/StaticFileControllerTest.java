@@ -15,7 +15,7 @@ import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
 import static webserver.http.enums.HttpResponseStatus.OK;
 
 class StaticFileControllerTest {
-    SoftAssertions s = new SoftAssertions();
+    SoftAssertions softly = new SoftAssertions();
 
     @ParameterizedTest
     @ValueSource(strings = {"/index.html", "/user/form.html"})
@@ -38,10 +38,10 @@ class StaticFileControllerTest {
                 .body(Files.readAllBytes(Paths.get(template_path)))
                 .build();
 
-        s.assertThat(response.version()).isEqualTo(actual.version());
-        s.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        s.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        s.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.version()).isEqualTo(actual.version());
+        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
+        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.body()).isEqualTo(actual.body());
     }
 
     @ParameterizedTest
@@ -66,10 +66,10 @@ class StaticFileControllerTest {
                 .body("요청하신 파일을 찾을 수 없습니다.".getBytes())
                 .build();
 
-        s.assertThat(response.version()).isEqualTo(actual.version());
-        s.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        s.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        s.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.version()).isEqualTo(actual.version());
+        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
+        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.body()).isEqualTo(actual.body());
     }
 
 }

@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class HttpResponseRenderer {
+    // todo static final
     private final static Logger logger = LoggerFactory.getLogger(HttpResponseRenderer.class);
     private final static HttpResponseRenderer HTTP_RESPONSE_RENDERER = new HttpResponseRenderer();
 

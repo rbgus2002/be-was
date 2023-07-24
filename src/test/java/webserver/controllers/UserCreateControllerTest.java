@@ -16,7 +16,7 @@ import static webserver.http.enums.HttpResponseStatus.*;
 
 class UserCreateControllerTest {
 
-    SoftAssertions s = new SoftAssertions();
+    SoftAssertions softly = new SoftAssertions();
 
     @Test
     @DisplayName("handleUserCreateRequest의 기능 확인 테스트")
@@ -40,10 +40,10 @@ class UserCreateControllerTest {
                 .setHeader("Location", "http://localhost:8080".concat("/user/form.html"))
                 .build();
 
-        s.assertThat(response.version()).isEqualTo(actual.version());
-        s.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        s.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        s.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.version()).isEqualTo(actual.version());
+        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
+        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.body()).isEqualTo(actual.body());
     }
 
     @ParameterizedTest
@@ -68,9 +68,9 @@ class UserCreateControllerTest {
                 .version("HTTP/1.1")
                 .build();
 
-        s.assertThat(response.version()).isEqualTo(actual.version());
-        s.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        s.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.version()).isEqualTo(actual.version());
+        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
+        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
     }
 
 }

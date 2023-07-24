@@ -28,7 +28,7 @@ public class HttpRequestParser {
         String oneLine = bufferedReader.readLine();
         while (oneLine.length() != 0) {
             int colonIndex = oneLine.indexOf(":");
-            builder.setHeader(oneLine.substring(0, colonIndex).trim(), oneLine.substring(colonIndex + 1).trim());
+            builder.setHeader(oneLine);
 //            logger.info("HEADERS: {}", oneLine);
             oneLine = bufferedReader.readLine();
         }

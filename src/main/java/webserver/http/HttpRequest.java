@@ -4,23 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
-
     private String method;
     private String uri;
     private String path;
     private String version;
     private String contentType = "text/plain";
-    private Map<String, String> headers;
+    private HttpHeaders headers;
     private Map<String, String> body;
 
-    HttpRequest(HttpRequest.Builder builder) {
-        this.method = builder.method();
-        this.uri = builder.uri();
-        this.path = builder.path();
-        this.version = builder.version();
-        this.contentType = builder.contentType();
-        this.headers = builder.headers();
-        this.body = builder.headers();
+    private HttpRequest(String method, String uri, String path, String version,
+                        String contentType, HttpHeaders headers, Map<String, String> body) {
+        this.method = method;
+        this.uri = uri;
+        this.path = path;
+        this.version = version;
+        this.contentType = contentType;
+        this.headers = headers;
+        this.body = body;
     }
 
     public static class Builder {
@@ -29,11 +29,11 @@ public class HttpRequest {
         private String path;
         private String version;
         private String contentType = "text/plain";
-        private Map<String, String> headers;
+        private HttpHeaders headers;
         private Map<String, String> body;
 
         public Builder() {
-            this.headers = new HashMap<>();
+            this.headers = new HttpHeaders();
             this.body = new HashMap<>();
         }
 
@@ -52,12 +52,10 @@ public class HttpRequest {
             return this;
         }
 
-        // TODO: header 전체 파싱? headers로 나눠서 header 각자 파싱하도록
-        public HttpRequest.Builder setHeader(String name, String value) {
-            if (name.equals("Accept")) {
-                this.contentType = value.split("[,;]")[0];
-            }
-            this.headers.put(name, value);
+        public HttpRequest.Builder setHeader(String headerString) {
+            int splitIndex = headerString.indexOf(":");
+            this.headers.setHeader(headerString.substring(0, splitIndex).trim(),
+                    headerString.substring(splitIndex + 1).trim());
             return this;
         }
 
@@ -67,35 +65,7 @@ public class HttpRequest {
         }
 
         public HttpRequest build() {
-            return new HttpRequest(this);
-        }
-
-        String uri() {
-            return uri;
-        }
-
-        String path() {
-            return path;
-        }
-
-        String method() {
-            return method;
-        }
-
-        String version() {
-            return version;
-        }
-
-        String contentType() {
-            return contentType;
-        }
-
-        Map headers() {
-            return headers;
-        }
-
-        Map body() {
-            return body;
+            return new HttpRequest(method, uri, path, version, contentType, headers, body);
         }
     }
 
@@ -123,11 +93,13 @@ public class HttpRequest {
         return contentType;
     }
 
-    public Map headers() {
+    public HttpHeaders headers() {
         return headers;
     }
 
-    public String getHeader(String field) { return headers.get(field); }
+    public String getHeader(String field) {
+        return headers.getHeader(field);
+    }
 
     public Map body() {
         return body;

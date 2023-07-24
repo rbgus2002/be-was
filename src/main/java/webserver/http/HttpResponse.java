@@ -16,7 +16,7 @@ public class HttpResponse {
     private Map<String, String> headers;
     private byte[] body;
 
-    public HttpResponse(HttpResponse.Builder builder) {
+    private HttpResponse(HttpResponse.Builder builder) {
         this.version = builder.version();
         this.statusCode = builder.status().getStatusCode();
         this.statusText = builder.status().getStatusText();

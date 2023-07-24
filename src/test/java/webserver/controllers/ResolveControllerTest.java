@@ -7,7 +7,7 @@ import webserver.http.HttpRequest;
 
 class ResolveControllerTest {
     ResolveController resolveController = ResolveController.getInstance();
-    SoftAssertions s = new SoftAssertions();
+    SoftAssertions softly = new SoftAssertions();
 
     @Test
     @DisplayName("request의 path에 따라 라우팅이 잘 되는지 확인한다.")
@@ -17,9 +17,9 @@ class ResolveControllerTest {
         HttpRequest request2 = builder.path("/index.html").build();
         HttpRequest request3 = builder.path("/test.path").build();
 
-        s.assertThat(resolveController.resolveRequest(request1).getClass()).isEqualTo(UserCreateController.class);
-        s.assertThat(resolveController.resolveRequest(request2).getClass()).isEqualTo(StaticFileController.class);
-        s.assertThat(resolveController.resolveRequest(request3).getClass()).isEqualTo(StaticFileController.class);
+        softly.assertThat(resolveController.resolveRequest(request1).getClass()).isEqualTo(UserCreateController.class);
+        softly.assertThat(resolveController.resolveRequest(request2).getClass()).isEqualTo(StaticFileController.class);
+        softly.assertThat(resolveController.resolveRequest(request3).getClass()).isEqualTo(StaticFileController.class);
     }
 
 }
