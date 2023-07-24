@@ -65,7 +65,12 @@ public class FileController {
 
             // userList
             if(targetUri.equals(USER_LIST_URL)) {
-                if(sid != null) {
+                if(sid == null) {
+                    Map<String, String> headerMap = new HashMap<>();
+                    headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+                    return new Response(STATUS.SEE_OTHER, headerMap, null);
+                }
+                else {
                     StringBuilder sb = new StringBuilder();
                     int i = 0;
                     for(User user: UserService.getAllUser()) {
