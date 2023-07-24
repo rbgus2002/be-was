@@ -13,7 +13,6 @@ import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static db.Database.addUserTest;
 import static http.HttpMethod.POST;
 
 public class RequestHandler implements Runnable {
@@ -33,8 +32,6 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // 사용자 요청에 대한 처리 구현
             HttpRequest httpRequest = createRequest(in);
-            // todo test 지우기~
-            addUserTest();
 
             assert httpRequest != null;
             Controller controller = controllerMappingHandler.mappingController(httpRequest);

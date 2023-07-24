@@ -12,7 +12,6 @@ import static db.Database.clear;
 import static db.SessionDatabase.clearSessionIds;
 import static exception.ExceptionList.ALREADY_EXIST_USER;
 import static exception.ExceptionList.NOT_EXIST_USER;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
@@ -51,7 +50,6 @@ class UserServiceTest {
         userService.createUser(user1);
 
         // Then
-        SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(Database.findAll().size())
                 .as("Database의 크기가 1이 아닙니다.\n현재 값: %d", Database.findAll().size())
                 .isEqualTo(1);
@@ -93,7 +91,7 @@ class UserServiceTest {
         });
 
         // Then
-        assertThat(exception.getMessage())
+        softAssertions.assertThat(exception.getMessage())
                 .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
                 .isEqualTo(ALREADY_EXIST_USER);
     }
@@ -118,7 +116,7 @@ class UserServiceTest {
         });
 
         // Then
-        assertThat(exception.getMessage())
+        softAssertions.assertThat(exception.getMessage())
                 .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
                 .isEqualTo(NOT_EXIST_USER);
     }

@@ -80,7 +80,7 @@ class UserControllerTest {
                 .as("Id로 이름을 찾을 수 없습니다.\n 현재 값: %s", Database.findUserById("kimahhh").getName()).isEqualTo("김아현");
     }
     @Test
-    @DisplayName("유저가 회원가입 시 정보를 모두 입력하지 않는 경우, NOT_FOUND 404 상태를 반환해야 한다")
+    @DisplayName("유저가 회원가입 혹은 로그인 시 정보를 모두 입력하지 않는 경우, NOT_FOUND 404 상태를 반환해야 한다")
     void notEnoughInformation() {
         // Given
         clear();
