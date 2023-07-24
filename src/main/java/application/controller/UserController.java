@@ -24,7 +24,7 @@ public class UserController implements WebController {
         this.userRepository = UserRepository.USER_REPOSITORY;
     }
 
-    @RequestMapping(method = HttpMethod.POST, value = "/create")
+    @RequestMapping(method = HttpMethod.POST, value = "/user/create")
     public HttpResponse createUser(final HttpRequest request) throws InvalidQueryParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
@@ -45,7 +45,7 @@ public class UserController implements WebController {
         return HttpResponse.ofWithStatusOnly(request.getVersion(), HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = HttpMethod.GET, value = "/search")
+    @RequestMapping(method = HttpMethod.GET, value = "/user/search")
     public HttpResponse getUser(HttpRequest request) throws InvalidQueryParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 

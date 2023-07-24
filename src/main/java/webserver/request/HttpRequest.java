@@ -70,8 +70,12 @@ public class HttpRequest {
         return this.version;
     }
 
-    public String getPathSegment(final int idx) {
-        return path.getPathSegment(idx);
+    public String getRootPath() {
+        return path.getRootPath();
+    }
+
+    public String getFullPath() {
+        return path.getFullPath();
     }
 
     public RequestQuery getRequestQuery() {

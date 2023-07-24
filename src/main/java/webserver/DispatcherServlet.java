@@ -8,9 +8,6 @@ import webserver.Constants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Optional;
-
-import static webserver.Constants.PathConstants.*;
 
 public class DispatcherServlet {
 
@@ -23,13 +20,11 @@ public class DispatcherServlet {
     public void dispatch(final DataOutputStream dos) throws IOException {
 
         StaticViewResolver staticViewResolver = new StaticViewResolver();
-        Optional<View> view = staticViewResolver.resolve(httpRequest.getPathSegment(ROOT_PATH));
+        View view = staticViewResolver.resolve(httpRequest.getFullPath());
 
-        if (view.isPresent()) view.get().render(httpRequest.getVersion(), null, dos);
+        view.render(httpRequest.getVersion(), null, dos);
 
-        if (view.isEmpty()) {
-            HttpResponse httpResponse = HttpResponse.ofWithStatusOnly(httpRequest.getVersion(), HttpStatus.NOT_FOUND);
-            httpResponse.sendResponse(dos);
-        }
+        HttpResponse httpResponse = HttpResponse.ofWithStatusOnly(httpRequest.getVersion(), HttpStatus.NOT_FOUND);
+        httpResponse.sendResponse(dos);
     }
 }
