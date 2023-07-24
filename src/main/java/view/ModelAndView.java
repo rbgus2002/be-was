@@ -64,12 +64,13 @@ public class ModelAndView {
     }
 
 
-    public void setResponse(HttpRequest request, HttpResponse response) {
+    public void setResponse(HttpResponse response) {
         try {
             if(contentType != null) {
                 response.setContentType(contentType);
             }
             response.setStatus(status);
+
             //3xx Response일 때
             if(status.getValue() / 100 == 3) {
                 response.setHeader("Location", view.substring(DYNAMIC_PATH.length()));

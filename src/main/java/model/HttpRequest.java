@@ -23,10 +23,10 @@ public class HttpRequest {
 
     private final String VERSION;
 
+    //TODO: 일급 컬렉션 사용하기
     private Map<String, String> headers;
     private Map<String, String> parameters;
 
-    //TODO: ReadLine() 하지마라
     public HttpRequest(InputStream in) throws IOException {
         headers = new HashMap<>();
 

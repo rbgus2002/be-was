@@ -49,12 +49,12 @@ public final class DispatcherServlet {
             //URI와 매핑되는 Controller가 존재하지 않거나 Controller 클래스 자체가 존재하지 않을 때
             if(handler == null) {
                 modelAndView = handlerAdapter.staticView(request);
-                modelAndView.setResponse(request, response);
+                modelAndView.setResponse(response);
                 return;
             }
 
             modelAndView = handlerAdapter.handle(request, response, handler);
-            modelAndView.setResponse(request, response);
+            modelAndView.setResponse(response);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
