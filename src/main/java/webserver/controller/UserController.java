@@ -28,6 +28,5 @@ public class UserController {
 
         User user = new User(userId, password, name, email);
         Database.addUser(user);
-        System.out.println("유저 = " + user.getUserId() + " " + user.getEmail());
     }
 }
