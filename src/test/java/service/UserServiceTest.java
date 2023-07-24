@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class UserServiceTest {
@@ -42,5 +43,31 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.join(user2))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage(UserServiceException.DUPLICATED_ID);
+    }
+
+    @DisplayName("로그인 성공 테스트")
+    @Test
+    void loginSuccessTest() {
+        User user = new User("userId", "password", "name", "email");
+        userService.join(user);
+
+        User loginUser = userService.login(user.getUserId(), user.getPassword());
+
+        assertEquals(user, loginUser);
+    }
+
+    @DisplayName("로그인 실패 테스트 - 아이디가 존재하지 않는 경우")
+    @Test
+    void loginFailTest1() {
+        assertThatThrownBy(() -> userService.login("wrongId", "password"));
+    }
+
+    @DisplayName("로그인 실패 테스트 - 패스워드가 틀린 경우")
+    @Test
+    void loginFailTest2() {
+        User user = new User("userId", "password", "name", "email");
+        userService.join(user);
+
+        assertThatThrownBy(() -> userService.login(user.getUserId(), "wrong password"));
     }
 }
