@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import db.Database;
 import http.HttpParameter;
+import http.HttpRequest;
 import http.HttpResponse;
 import model.User;
 
@@ -38,7 +39,8 @@ class ControllerTest {
 		@DisplayName("GET 요청의 파라미터를 통해 데이터베이스에 User를 추가할 수 있어야 한다")
 		void registerUser() {
 			final HttpParameter httpParameter = newParameter("testID", "testPassword", "testName", "test@email.com");
-			controller.createUser(httpParameter, new HttpResponse());
+
+			controller.createUser(new HttpRequest(httpParameter), new HttpResponse());
 
 			verifyRegister(httpParameter);
 		}
@@ -55,7 +57,7 @@ class ControllerTest {
 
 			SoftAssertions softAssertions = new SoftAssertions();
 			softAssertions.assertThatThrownBy(() -> {
-				controller.createUser(httpParameter, new HttpResponse());
+				controller.createUser(new HttpRequest(httpParameter), new HttpResponse());
 			}).isInstanceOf(Exception.class).hasMessage(Database.USERID_ALREADY_EXISTS_MESSAGE);
 
 			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword())
@@ -100,7 +102,7 @@ class ControllerTest {
 		@DisplayName("회원가입 성공 이후 메인 페이지로 리다이렉트 되어야 한다")
 		void sendRedirect() {
 			final HttpParameter httpParameter = newParameter("testID", "testPassword", "testName", "test@email.com");
-			String page = controller.createUser(httpParameter, new HttpResponse());
+			String page = controller.createUser(new HttpRequest(httpParameter), new HttpResponse());
 			assertThat(page).isEqualTo("redirect:/");
 		}
 

@@ -37,9 +37,12 @@ public class RequestHandler implements Runnable {
 
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+			// BufferedReader 파싱해 HttpRequest를 생성
 			HttpRequest httpRequest = new HttpRequest(reader);
 			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
 
+			//
 			HttpResponse httpResponse = handleRequest(httpRequest);
 			httpResponse.response(out);
 
@@ -70,7 +73,7 @@ public class RequestHandler implements Runnable {
 		IllegalAccessException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest.getParameter(), httpResponse);
+			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest, httpResponse);
 		}
 		return path;
 	}

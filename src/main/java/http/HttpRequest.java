@@ -5,6 +5,7 @@ import static http.statusline.ResponseLine.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,10 @@ public class HttpRequest {
 	public HttpRequest(BufferedReader reader) throws IOException {
 		this.reader = reader;
 		parseRequest();
+	}
+
+	public HttpRequest(HttpParameter httpParameter) {
+		this.httpParameter = httpParameter;
 	}
 
 	public boolean isGet() {
@@ -82,9 +87,13 @@ public class HttpRequest {
 		version = HttpVersion.versionOf(arguments[2]);
 	}
 
+	public String getCookieValue(final String cookieName) throws NoSuchElementException {
+		return header.getCookieValue(cookieName);
+	}
+
 	private void parseParameter(String path) {
 		for (String line : path.split("\\&")) {
-			if (line.contains("=")) {
+			if (line.contains("=") && !line.endsWith("=")) {
 				logger.debug(line);
 				String[] values = line.split("=");
 				httpParameter.put(values[KEY], values[VALUE]);

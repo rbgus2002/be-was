@@ -15,6 +15,13 @@ public class Database {
 		users = Maps.newConcurrentMap();
 	}
 
+	public static boolean verifyUser(String userId, String password) {
+		if (users.containsKey(userId)) {
+			return users.get(userId).getPassword().equals(password);
+		}
+		throw new IllegalArgumentException("등록되지 않은 ID가 입력되었습니다.");
+	}
+
 	public static void addUser(User user) throws IllegalArgumentException {
 		CheckDuplicateUserId(user.getUserId());
 		users.put(user.getUserId(), user);

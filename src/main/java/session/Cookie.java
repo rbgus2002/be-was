@@ -1,19 +1,31 @@
 package session;
 
-public class Cookie {
-	private String cookieName;
-	private String cookieValue;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-	private Cookie(String cookieName, String cookieValue) {
-		this.cookieName = cookieName;
-		this.cookieValue = cookieValue;
+public class Cookie {
+	private Map<String, String> cookies = new HashMap<>();
+
+	private Cookie() {
 	}
 
-	public static Cookie newCookie(String cookieName, String cookieValue) {
-		return new Cookie(cookieName, cookieValue);
+	public static Cookie newCookie() {
+		return new Cookie();
+	}
+
+	public void add(final String cookieName, final String cookieValue) {
+		cookies.put(cookieName, cookieValue);
 	}
 
 	public String toHeaderValue() {
-		return new StringBuilder().append(cookieName).append("=").append(cookieValue).toString();
+		StringBuilder stringBuilder = new StringBuilder();
+		List<String> headerValues = new ArrayList<>();
+		for (String cookieName : cookies.keySet()) {
+			headerValues.add(stringBuilder.append(cookieName).append("=").append(cookies.get(cookieName)).toString());
+			stringBuilder.setLength(0);
+		}
+		return String.join("; ", headerValues);
 	}
 }

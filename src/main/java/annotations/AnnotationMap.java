@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controllers.Controller;
+import http.HttpRequest;
 import http.HttpResponse;
 import http.statusline.HttpMethod;
 import http.HttpParameter;
@@ -25,8 +26,8 @@ public class AnnotationMap {
 	private AnnotationMap() {
 	}
 
-	public static String run(HttpMethod type, String path, HttpParameter httpParameter, HttpResponse httpResponse) throws InvocationTargetException, IllegalAccessException {
-		return (String)methodMaps.get(type).get(path).invoke(instance, httpParameter, httpResponse);
+	public static String run(HttpMethod type, String path, HttpRequest httpRequest, HttpResponse httpResponse) throws InvocationTargetException, IllegalAccessException {
+		return (String)methodMaps.get(type).get(path).invoke(instance, httpRequest, httpResponse);
 	}
 
 	public static void initialize() {
