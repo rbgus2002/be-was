@@ -11,22 +11,23 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestMappingHandler {
 
     private static final Map<HttpUtils.Method, Map<String, MethodHandle>> methodHandles = new HashMap<>();
-
     private static final Controller controller = new Controller();
 
-    static {
+    public static void initialize() {
         methodHandles.put(HttpUtils.Method.GET, new HashMap<>());
         methodHandles.put(HttpUtils.Method.POST, new HashMap<>());
 
         Method[] methods = Controller.class.getDeclaredMethods();
         for (Method method : methods) {
-            if (!method.isAnnotationPresent(RequestMapping.class)) continue;
+            if (!method.isAnnotationPresent(RequestMapping.class) || !Modifier.isPublic(method.getModifiers()))
+                continue;
             processRequestMappingAnnotation(method);
         }
     }
