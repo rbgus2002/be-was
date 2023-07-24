@@ -54,13 +54,13 @@ public class FileController {
 
             // Navbar
             if(sid == null) {
-                httpDocument = httpDocument.replaceAll(BUTTON_LOGOUT, "");
-                httpDocument = httpDocument.replaceAll(BUTTON_MODIFY_USERDATA, "");
+                httpDocument = removeElement(httpDocument, BUTTON_LOGOUT);
+                httpDocument = removeElement(httpDocument, BUTTON_MODIFY_USERDATA);
             }
             else {
-                httpDocument = appendTail(httpDocument, NAVBAR_RIGHT, String.format(USERNAME_FORMAT, getUserIdBySid(sid)));
-                httpDocument = httpDocument.replaceAll(BUTTON_LOGIN, "");
-                httpDocument = httpDocument.replaceAll(BUTTON_SIGNUP, "");
+                httpDocument = appendElement(httpDocument, NAVBAR_RIGHT, String.format(USERNAME_FORMAT, getUserIdBySid(sid)));
+                httpDocument = removeElement(httpDocument, BUTTON_LOGIN);
+                httpDocument = removeElement(httpDocument, BUTTON_SIGNUP);
             }
 
             // userList
@@ -73,7 +73,7 @@ public class FileController {
                         String tr = String.format(USER_LIST_ROW_FORM, i, user.getUserId(), user.getName(), user.getEmail());
                         sb.append(tr);
                     }
-                    httpDocument = appendTail(httpDocument, USER_LIST_TBODY, sb.toString());
+                    httpDocument = appendElement(httpDocument, USER_LIST_TBODY, sb.toString());
                 }
             }
             body = httpDocument.getBytes();
@@ -86,7 +86,13 @@ public class FileController {
         return new Response(STATUS.OK, headerMap, body);
     }
 
-    private static String appendTail(String source, String regex, String tail) {
+    private static String removeElement(String source, String regex) {
+        source = source.replaceAll(regex, "");
+
+        return source;
+    }
+
+    private static String appendElement(String source, String regex, String tail) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(source);
 
