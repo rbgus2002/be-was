@@ -1,7 +1,9 @@
 package controller;
 
 import annotations.GetMapping;
+import annotations.PostMapping;
 import global.constant.StatusCode;
+import global.request.RequestBody;
 import global.response.ResponseEntity;
 import model.UserParam;
 import service.UserService;
@@ -18,12 +20,14 @@ public class Controller {
                 .build();
     }
 
-    @GetMapping(path = "/user/create")
-    public byte[] createUser(Map<String, String> queryParams) {
-        userService.register(queryParams);
+    @PostMapping(path = "/user/create")
+    public byte[] createUser(RequestBody body) {
+        System.out.println(body.getBody());
+        Map<String, String> params = body.getParams();
+        userService.register(params);
         return ResponseEntity
                 .statusCode(StatusCode.OK)
-                .responseBody(("Created User: " + queryParams.get(UserParam.EMAIL)).getBytes())
+                .responseBody(("Created User: " + params.get(UserParam.EMAIL)).getBytes())
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import global.request.RequestBody;
 import model.UserParam;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,13 +37,13 @@ class ControllerTest {
     @DisplayName("createUser 메서드 - 유효한 쿼리 매개변수를 받아서 사용자 생성")
     void testCreateUserWithValidQueryParams() {
         //given
-        Map<String, String> queryParams = new LinkedHashMap<>();
-        queryParams.put(UserParam.EMAIL, "test@example.com");
+        RequestBody body = new RequestBody("\n" +
+                "userId=chocochip&password=password&name=kiho&email=fingercut@naver.com");
 
         String expectedResponse = "HTTP/1.1 200 OK ";
 
         //when
-        byte[] actualResponse = controller.createUser(queryParams);
+        byte[] actualResponse = controller.createUser(body);
 
         //then
         assertAll(
