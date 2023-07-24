@@ -11,6 +11,9 @@ public class HttpParameters {
     }
 
     public String get(String name) {
+        if(parameters.get(name) == null) {
+            return null;
+        }
         return new String(parameters.get(name));
     }
 
