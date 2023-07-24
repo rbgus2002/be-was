@@ -19,4 +19,7 @@ public class Session {
         this.user = user;
     }
 
+    public User getUser() {
+        return user;
+    }
 }

@@ -5,10 +5,10 @@ import model.Session;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.web.HttpMethod;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
+import support.web.HttpMethod;
 import webserver.Cookie;
 import webserver.response.HttpResponse;
 
@@ -19,8 +19,8 @@ public class UserController {
 
     @RequestMapping(method = HttpMethod.POST, value = "/login")
     public String login(@RequestParam("userId") String userId,
-                      @RequestParam("password") String password,
-                      HttpResponse response) {
+                        @RequestParam("password") String password,
+                        HttpResponse response) {
         logger.debug("유저 로그인 요청");
 
         User user = Database.findUserById(userId);
@@ -47,9 +47,9 @@ public class UserController {
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
     public String create(@RequestParam("userId") String userId,
-                       @RequestParam("password") String password,
-                       @RequestParam("name") String name,
-                       @RequestParam("email") String email) {
+                         @RequestParam("password") String password,
+                         @RequestParam("name") String name,
+                         @RequestParam("email") String email) {
 
         logger.debug("유저 생성 요청");
         User user = new User(userId, password, name, email);

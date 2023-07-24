@@ -31,4 +31,14 @@ public class WebPageReader {
         throw new IOException(ExceptionName.FILE_NOT_FOUND);
     }
 
+    public static List<String> readStringLineByPath(String url) throws IOException {
+        for (String path : WEB_PATH) {
+            File file = new File(path + url);
+            if (file.exists() && file.isFile()) {
+                return Files.readAllLines(file.toPath());
+            }
+        }
+        throw new IOException(ExceptionName.FILE_NOT_FOUND);
+    }
+
 }
