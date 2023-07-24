@@ -1,10 +1,10 @@
 package http;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpSession {
-    private static final Map<String, Object> attributes = new HashMap<>();
+    private static final Map<String, Object> attributes = new ConcurrentHashMap<>();
     private final String sid;
 
     public HttpSession(String sid) {
