@@ -7,6 +7,7 @@ import webserver.http.request.HttpRequest;
 import webserver.http.response.Cookie;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
+import webserver.myframework.handler.argument.annotation.RequestBody;
 import webserver.myframework.handler.request.annotation.Controller;
 import webserver.myframework.handler.request.annotation.RequestMapping;
 import webserver.myframework.session.Session;
@@ -25,9 +26,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/create", method = HttpMethod.POST)
-    public void signUp(HttpRequest httpRequest, HttpResponse httpResponse) {
+    public void signUp(@RequestBody String body, HttpResponse httpResponse) {
         try {
-            Map<String, String> parameterMap = getParameterMap(httpRequest.getBodyToString(), 4);
+            Map<String, String> parameterMap = getParameterMap(body, 4);
             userService.signUp(
                     parameterMap.get("userId"),
                     parameterMap.get("password"),
