@@ -1,8 +1,7 @@
-package webserver;
+package webserver.http.request;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.request.HttpRequest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +23,6 @@ class HttpRequestTest {
                 "Host: localhost:8080\r\n" +
                 "Accept-Encoding: gzip, deflate, br\r\n" +
                 "Connection: keep-alive\r\n" +
-                "Content-Length: 22\r\n" +
                 "\r\n";
 
         InputStream inputStream = new ByteArrayInputStream(httpGetRequest.getBytes());
@@ -51,7 +49,7 @@ class HttpRequestTest {
                 "Host: localhost:8080\r\n" +
                 "Accept-Encoding: gzip, deflate, br\r\n" +
                 "Connection: keep-alive\r\n" +
-                "Content-Length: 22\r\n" +
+                "Content-Length: 24\r\n" +
                 "\r\n" +
                 "{\r\n" +
                 "    \"test\": \"test\"\r\n" +

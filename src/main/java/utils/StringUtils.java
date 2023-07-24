@@ -7,6 +7,7 @@ public class StringUtils {
     public static final String EQUAL = "=";
     public static final String COLON = ":";
     public static final String AMPERSAND = "&";
+    public static final String DOT = "\\.";
 
     private StringUtils() {
     }

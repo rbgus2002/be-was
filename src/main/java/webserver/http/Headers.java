@@ -1,9 +1,9 @@
 package webserver.http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import webserver.http.response.Body;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,8 +11,8 @@ import java.util.Map;
 import static utils.StringUtils.*;
 
 public class Headers {
-    private static final Logger logger = LoggerFactory.getLogger(Headers.class);
-
+    private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String CONTENT_TYPE = "Content-Type";
     private final Map<String, String> headers;
 
     public Headers() {
@@ -24,21 +24,23 @@ public class Headers {
         String line;
 
         while ((line = bufferedReader.readLine()) != null) {
-            logger.debug(line);
             int separatorIndex = line.indexOf(COLON);
-            if (separatorIndex == -1) {
+            if (isBlankLine(separatorIndex)) {
                 break;
             }
             headers.put(line.substring(0, separatorIndex).strip(), line.substring(separatorIndex + 1).strip());
         }
         return headers;
     }
-
-    public static Headers createDefaultHeaders(int contentLength) {
+    public static Headers from(Body body) {
         Headers headers = new Headers();
-        headers.put("Content-Type", "text/html;charset=utf-8");
-        headers.put("Content-Length", String.valueOf(contentLength));
+        headers.put(CONTENT_TYPE, body.getContentType());
+        headers.put(CONTENT_LENGTH, String.valueOf(body.getLength()));
         return headers;
+    }
+
+    private static boolean isBlankLine(int separatorIndex) {
+        return separatorIndex == -1;
     }
 
     private void put(String key, String value) {
@@ -50,5 +52,15 @@ public class Headers {
         StringBuilder stringBuilder = new StringBuilder();
         headers.forEach((name, value) -> stringBuilder.append(appendNewLine(name + COLON + SPACE + value)));
         return stringBuilder.toString();
+    }
+    public void write(DataOutputStream dos) throws IOException {
+        dos.writeBytes(toString());
+    }
+
+    public int getContentLength() {
+        if (headers.containsKey(CONTENT_LENGTH)) {
+            return Integer.parseInt(headers.get(CONTENT_LENGTH));
+        }
+        return 0;
     }
 }
