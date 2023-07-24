@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,16 +17,10 @@ public class HttpRequest {
     private final String method;
     private final String requestPath;
     private final String version;
+    private final HttpMime mime;
     private Map<String, String> headers;
 
     private Map<String, String> params;
-
-    public HttpRequest(String method, String requestPath, String version, Map<String, String> params) {
-        this.method = method;
-        this.requestPath = requestPath;
-        this.version = version;
-        this.params = params;
-    }
 
     public HttpRequest(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
@@ -35,6 +30,7 @@ public class HttpRequest {
         this.version = version(firstLine);
         this.params = parseQueryString(firstLine);
         this.headers = headers(bufferedReader);
+        this.mime = mime(requestPath);
     }
 
     public String getMethod() {
@@ -47,6 +43,20 @@ public class HttpRequest {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public HttpMime getMime() {
+        return mime;
+    }
+
+    public HttpMime mime(String requestPath) {
+        String[] tokens = requestPath.split("\\.");
+        String extension = tokens[tokens.length - 1];
+        logger.debug("extension: {}", extension);
+        return Arrays.stream(HttpMime.values())
+                .filter(mime -> mime.getExtension().equals(extension))
+                .findFirst()
+                .orElse(null);
     }
 
     public static String method(String firstLine) {

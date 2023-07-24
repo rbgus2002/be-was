@@ -11,7 +11,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class DispatcherServlet {
 
@@ -27,7 +26,7 @@ public class DispatcherServlet {
         HttpResponse httpResponse;
 
         if (handler == null) {
-            httpResponse = new HttpResponse("200 OK", request.getRequestPath());
+            httpResponse = new HttpResponse("200 OK", request.getRequestPath(), request.getMime());
             httpResponse.response(out);
             return;
         }
