@@ -8,8 +8,9 @@ public final class SessionManager {
     private SessionManager() {
     }
 
-    public static void addSession(Session session) {
+    public static String addSession(Session session) {
         sessions.add(session);
+        return session.getSessionId();
     }
 
     public static boolean verifySessionId(String sessionId) {

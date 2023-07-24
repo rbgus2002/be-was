@@ -1,7 +1,6 @@
 package webserver.controller.user;
 
 import db.Database;
-import model.User;
 import webserver.controller.Controller;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.LoginFailException;
@@ -25,16 +24,15 @@ public class UserLoginController implements Controller {
 
             verifyParameters(userId, password);
             authenticateUser(userId, password);
-            processResponse(httpResponse, userId);
+            processLoginResponse(httpResponse, userId);
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (LoginFailException e) {
-            httpResponse.setStatus(HttpStatus.FOUND);
-            httpResponse.set(HttpField.LOCATION, "/user/login_failed.html");
+            processLoginFailure(httpResponse);
         }
     }
 
-    private void processResponse(HttpResponse httpResponse, String userId) throws LoginFailException {
+    private void processLoginResponse(HttpResponse httpResponse, String userId) throws LoginFailException {
         String sessionId = createSession(userId);
 
         httpResponse.setStatus(HttpStatus.FOUND);
@@ -43,18 +41,9 @@ public class UserLoginController implements Controller {
         httpResponse.setCookie("Path=/");
     }
 
-    private String createSession(String userId) {
-        Session session = new Session(userId);
-        SessionManager.addSession(session);
-        return session.getSessionId();
-    }
-
-    private void authenticateUser(String userId, String password) throws LoginFailException {
-        User user;
-
-        if ((user = Database.findUserById(userId)) == null || !user.getPassword().equals(password)) {
-            throw new LoginFailException();
-        }
+    private void processLoginFailure(HttpResponse httpResponse) {
+        httpResponse.setStatus(HttpStatus.FOUND);
+        httpResponse.set(HttpField.LOCATION, "/user/login_failed.html");
     }
 
     private void verifyParameters(String userId, String password) throws BadRequestException {
@@ -63,4 +52,24 @@ public class UserLoginController implements Controller {
         }
     }
 
+    private void authenticateUser(String userId, String password) throws LoginFailException {
+        verifyUserIdExistence(userId);
+        verifyCredentials(userId, password);
+    }
+
+    private void verifyUserIdExistence(String userId) throws LoginFailException {
+        if (Database.findUserById(userId) == null) {
+            throw new LoginFailException();
+        }
+    }
+
+    private void verifyCredentials(String userId, String password) throws LoginFailException {
+        if (!Database.findUserById(userId).getPassword().equals(password)) {
+            throw new LoginFailException();
+        }
+    }
+
+    private String createSession(String userId) {
+        return SessionManager.addSession(new Session(userId));
+    }
 }
