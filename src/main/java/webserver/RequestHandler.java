@@ -1,8 +1,9 @@
 package webserver;
 
+import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.httphandler.HttpHandler;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -28,10 +29,9 @@ public class RequestHandler implements Runnable {
 
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = new HttpRequest(in);
-            HttpResponse response = new HttpResponse(dos);
-            String url = request.getUrl();
-            HttpHandler handler = HttpHandler.of(url);
-            handler.service(request, response);
+            HttpResponse response = new HttpResponse();
+            FrontController controller = new FrontController();
+            controller.service(dos, request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
