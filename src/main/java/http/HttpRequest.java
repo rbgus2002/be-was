@@ -103,6 +103,11 @@ public class HttpRequest {
                     .append(appendNewLine());
         }
 
+        if(headers.containsKey("Content-Length")) {
+            sb.append(appendNewLine());
+            sb.append(body);
+        }
+
         return sb.toString();
     }
 }
