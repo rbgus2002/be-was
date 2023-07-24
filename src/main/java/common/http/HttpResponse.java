@@ -6,27 +6,28 @@ import common.enums.ResponseCode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import static webserver.ServerConfig.STATIC_PATH;
 
 public class HttpResponse {
-    private ResponseLine responseLine;
-    private Map<String, String> headers;
+    private ResponseCode responseLine;
+    private Headers headers;
     private byte[] body;
 
+    public HttpResponse() {
+        headers = new Headers();
+    }
+
     public String getResponseLine() {
-        return responseLine.toString() + "\r\n";
+        return responseLine.getDescription() + "\r\n";
     }
 
     public String getHeaders() {
         StringBuilder headerBuilder = new StringBuilder();
 
         String headerLine;
-        for (Entry<String, String> header : headers.entrySet()) {
-            headerLine = header.getKey() + ": " + header.getValue() + "\r\n";
+        for (String key : headers.getKeys()) {
+            headerLine = key + ": " + headers.getValue(key) + "\r\n";
             headerBuilder.append(headerLine);
         }
         return headerBuilder.toString();
@@ -36,34 +37,31 @@ public class HttpResponse {
         return body;
     }
 
-    public void setResponseLine(ResponseLine responseLine) {
-        this.responseLine = responseLine;
+    public void setResponseLine(ResponseCode responseCode) {
+        this.responseLine = responseCode;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+    public void addHeader(String key, String value) {
+        headers.addAttribute(key, value);
     }
 
     public void setBody(byte[] body) {
         this.body = body;
     }
 
-    public void setStaticContentResponse(ContentType type, String version, String path) {
+    public void setStaticContentResponse(ContentType type, String path) {
+        ResponseCode responseLine = ResponseCode.OK;
+        Headers headers = new Headers();
         byte[] body = new byte[0];
-        ResponseLine responseLine = new ResponseLine();
-        HashMap<String, String> headers = new HashMap<>();
 
         try {
             body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
 
-            responseLine.setVersion(version);
-            responseLine.setResponseCode(ResponseCode.OK);
-
-            headers.put("Content-Type", type.getDescription());
-            headers.put("Content-Length", String.valueOf(body.length));
+            headers.addAttribute("Content-Type", type.getDescription());
+            headers.addAttribute("Content-Length", String.valueOf(body.length));
 
         } catch (IOException e) {
-            responseLine = new ResponseLine(version, ResponseCode.NOT_FOUND);
+            responseLine = ResponseCode.NOT_FOUND;
 
         } finally {
             this.responseLine = responseLine;

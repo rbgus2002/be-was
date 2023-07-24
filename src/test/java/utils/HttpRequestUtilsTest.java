@@ -1,17 +1,17 @@
 package utils;
 
 import common.enums.RequestMethod;
+import common.http.Headers;
 import common.http.HttpRequest;
+import common.http.Queries;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import static common.enums.RequestMethod.*;
+import static common.enums.RequestMethod.GET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpRequestUtilsTest {
@@ -24,9 +24,11 @@ class HttpRequestUtilsTest {
         String requestMessage = createRequestMessage("GET", "/", "");
         in = new ByteArrayInputStream(requestMessage.getBytes());
 
+        Queries expectedQueries = new Queries();
+
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        verifyRequestLine(request, GET, "/", "", new HashMap<>());
+        verifyRequestLine(request, GET, "/", "", expectedQueries);
     }
 
     @Test
@@ -35,9 +37,11 @@ class HttpRequestUtilsTest {
         String requestMessage = createRequestMessage("GET", "/index.html", "");
         in = new ByteArrayInputStream(requestMessage.getBytes());
 
+        Queries expectedQueries = new Queries();
+
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        verifyRequestLine(request, GET, "/index.html", "", new HashMap<>());
+        verifyRequestLine(request, GET, "/index.html", "", expectedQueries);
     }
 
     @Test
@@ -46,9 +50,11 @@ class HttpRequestUtilsTest {
         String requestMessage = createRequestMessage("GET", "/dir1/index.html", "");
         in = new ByteArrayInputStream(requestMessage.getBytes());
 
+        Queries expectedQueries = new Queries();
+
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        verifyRequestLine(request, GET, "/dir1/index.html", "", new HashMap<>());
+        verifyRequestLine(request, GET, "/dir1/index.html", "", expectedQueries);
     }
 
     @Test
@@ -57,12 +63,13 @@ class HttpRequestUtilsTest {
         String requestMessage = createRequestMessage("GET", "/dir1/index.html?p1=v1&p2=v2", "");
         in = new ByteArrayInputStream(requestMessage.getBytes());
 
+        Queries expectedQueries = new Queries();
+        expectedQueries.addAttribute("p1", "v1");
+        expectedQueries.addAttribute("p2", "v2");
+
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        HashMap<String, String> expectedParams = new HashMap<>();
-        expectedParams.put("p1", "v1");
-        expectedParams.put("p2", "v2");
-        verifyRequestLine(request, GET, "/dir1/index.html", "", expectedParams);
+        verifyRequestLine(request, GET, "/dir1/index.html", "", expectedQueries);
     }
 
     @Test
@@ -71,12 +78,13 @@ class HttpRequestUtilsTest {
         String requestMessage = createRequestMessage("GET", "/create?p1=v1&p2=v2", "");
         in = new ByteArrayInputStream(requestMessage.getBytes());
 
+        Queries expectedQueries = new Queries();
+        expectedQueries.addAttribute("p1", "v1");
+        expectedQueries.addAttribute("p2", "v2");
+
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        HashMap<String, String> expectedParams = new HashMap<>();
-        expectedParams.put("p1", "v1");
-        expectedParams.put("p2", "v2");
-        verifyRequestLine(request, GET, "/create", "", expectedParams);
+        verifyRequestLine(request, GET, "/create", "", expectedQueries);
     }
 
     @Test
@@ -85,18 +93,59 @@ class HttpRequestUtilsTest {
         String requestMessage = createRequestMessage("GET", "/create?p1=&p2=", "");
         in = new ByteArrayInputStream(requestMessage.getBytes());
 
+        Queries expectedQueries = new Queries();
+        expectedQueries.addAttribute("p1", "");
+        expectedQueries.addAttribute("p2", "");
+
         HttpRequest request = HttpRequestUtils.createRequest(in);
 
-        HashMap<String, String> expectedParams = new HashMap<>();
-        expectedParams.put("p1", null);
-        expectedParams.put("p2", null);
-        verifyRequestLine(request, GET, "/create", "", expectedParams);
+        verifyRequestLine(request, GET, "/create", "", expectedQueries);
+    }
+
+    @Test
+    @DisplayName("[/] 헤더 파싱")
+    void parseHeader() throws IOException{
+        String requestMessage = createRequestMessage("GET", "/", "");
+        in = new ByteArrayInputStream(requestMessage.getBytes());
+
+        Headers expectedHeader = new Headers();
+        expectedHeader.addAttribute("Host", "localhost:8080");
+        expectedHeader.addAttribute("Accept", "*/*");
+
+        HttpRequest request = HttpRequestUtils.createRequest(in);
+
+        assertEquals(expectedHeader, request.getHeaders());
+    }
+
+    @Test
+    @DisplayName("[/] 바디 파싱")
+    void parseBody() throws IOException {
+        String requestMessage = createRequestMessage("GET", "/", "v1=p1&v2=p2");
+        in = new ByteArrayInputStream(requestMessage.getBytes());
+
+        HttpRequest request = HttpRequestUtils.createRequest(in);
+
+        assertEquals("v1=p1&v2=p2", request.getBody());
+    }
+
+    @Test
+    @DisplayName("[/] POST 바디 파싱후 쿼리 파라미터 확인")
+    void parseBody2() throws IOException {
+        String requestMessage = createRequestMessage("POST", "/", "v1=p1&v2=p2");
+        in = new ByteArrayInputStream(requestMessage.getBytes());
+
+        Queries expectedQueries = new Queries();
+        expectedQueries.addAttribute("v1", "p1");
+        expectedQueries.addAttribute("v2", "p2");
+
+        HttpRequest request = HttpRequestUtils.createRequest(in);
+
+        assertEquals(expectedQueries, request.getQueries());
     }
 
     private String createRequestMessage(String method, String uri, String body) {
         return method + " " + uri + " " + "HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
-                "Connection: keep-alive\r\n"+
                 "Accept: */*\r\n"+
                 "\r\n"+
                 body;
@@ -107,12 +156,12 @@ class HttpRequestUtilsTest {
             RequestMethod expectedRequestMethod,
             String expectedPath,
             String expectedBody,
-            Map<String, String> expectedParams
+            Queries expectedQueries
     ) {
         assertEquals(expectedRequestMethod, request.getRequestMethod());
-        assertEquals(expectedPath, request.getPath());
+        assertEquals(expectedPath, request.getRequestPath());
         assertEquals(expectedBody, request.getBody());
-        assertEquals(expectedParams, request.getParams());
+        assertEquals(expectedQueries, request.getQueries());
     }
 
 }

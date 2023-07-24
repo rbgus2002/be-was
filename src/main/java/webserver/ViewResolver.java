@@ -1,29 +1,23 @@
 package webserver;
 
-import common.enums.ContentType;
-import common.enums.ResponseCode;
-import modelview.ModelView;
-import view.HtmlView;
-import view.TextView;
-import view.View;
+import view.*;
 
 import static webserver.ServerConfig.TEMPLATE_PATH;
 
 public class ViewResolver {
+    private static final String REDIRECT_URL_PREFIX = "redirect:";
 
-    public static View resolve(ModelView mv) {
-        ContentType contentType = mv.getContentType();
-        ResponseCode responseCode = mv.getResponseCode();
-
-        if (contentType.isHtmlContent()) {
-            return new HtmlView(TEMPLATE_PATH + mv.getViewName());
+    public static View resolve(String viewName) {
+        if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
+            viewName = viewName.substring(REDIRECT_URL_PREFIX.length()).trim();
+            return new RedirectView(viewName);
         }
 
-        if (contentType.isPlainContent()) {
-            return new TextView(mv.getViewName());
+        if (viewName.endsWith(".html")) {
+            return new HtmlView(TEMPLATE_PATH + viewName);
         }
 
-        return new HtmlView(TEMPLATE_PATH + "/error.html");
+        return new PlainTextView(viewName);
     }
 
 }
