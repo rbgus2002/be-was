@@ -1,7 +1,9 @@
 package controller;
 
 import http.HttpUtil;
+import model.User;
 import service.FileService;
+import service.UserService;
 import webserver.model.Request;
 import webserver.model.Response;
 
@@ -23,6 +25,8 @@ public class FileController {
     private static final String BUTTON_LOGIN = "<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>";
     private static final String BUTTON_SIGNUP = "<li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>";
     private static final String BUTTON_MODIFY_USERDATA = "<li><a href=\"#\" role=\"button\">개인정보수정</a></li>";
+    private static final String USER_LIST_TBODY = "<tbody>";
+    private static final String USER_LIST_ROW_FORM = "<tr>\n<th scope=\"row\">%d</th> <td>%s</td> <td>%s</td> <td>%s</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>";
 
     public static Response genereateResponse(Request request) throws IOException {
         String targetUri = request.getTargetUri();
@@ -45,6 +49,8 @@ public class FileController {
         if(new File(targetPath).exists()) {
             String sid = request.getSid();
             String httpDocument = new String(readStaticFile(TEMPLATE_FILEPATH + targetUri));
+
+            // Navbar
             if(sid == null) {
                 httpDocument = httpDocument.replace(BUTTON_LOGOUT, "");
                 httpDocument = httpDocument.replace(BUTTON_MODIFY_USERDATA, "");
@@ -54,6 +60,20 @@ public class FileController {
                         String.format(USERNAME_FORMAT, getUserIdBySid(sid)));
                 httpDocument = httpDocument.replace(BUTTON_LOGIN, "");
                 httpDocument = httpDocument.replace(BUTTON_SIGNUP, "");
+            }
+
+            // userList
+            if(targetUri.equals("/user/list.html")) {
+                if(sid != null) {
+                    StringBuilder sb = new StringBuilder();
+                    int i = 0;
+                    for(User user: UserService.getAllUser()) {
+                        i++;
+                        String tr = String.format(USER_LIST_ROW_FORM, i, user.getUserId(), user.getName(), user.getEmail());
+                        sb.append(tr);
+                    }
+                    httpDocument = httpDocument.replace(USER_LIST_TBODY, USER_LIST_TBODY + sb);
+                }
             }
             body = httpDocument.getBytes();
         }
