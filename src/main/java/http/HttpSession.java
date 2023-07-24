@@ -1,6 +1,7 @@
 package http;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpSession {
@@ -9,6 +10,11 @@ public class HttpSession {
 
     public HttpSession(String sid) {
         this.sid = sid;
+    }
+
+    public static HttpSession create() {
+        String sid = UUID.randomUUID().toString();
+        return new HttpSession(sid);
     }
 
     public String getSid() {

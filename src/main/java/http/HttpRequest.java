@@ -61,7 +61,7 @@ public class HttpRequest {
     public HttpSession getSession() {
         String sid = getCookie("sid");
         if (sid == null) {
-            sid = UUID.randomUUID().toString();
+            return null;
         }
         return new HttpSession(sid);
     }

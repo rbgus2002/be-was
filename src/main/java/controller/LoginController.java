@@ -15,7 +15,7 @@ public enum LoginController implements HttpController {
         String password = request.getParam("password");
         User user = Database.findUserById(userId);
         if (user != null && user.getPassword().equals(password)) {
-            HttpSession session = request.getSession();
+            HttpSession session = HttpSession.create();
             session.addAttribute(user);
             response.setSession(session);
             return "redirect:/index.html";
