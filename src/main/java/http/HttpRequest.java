@@ -37,15 +37,6 @@ public class HttpRequest {
         }
     }
 
-    private MIME convertExtensionToMime(String extension) {
-        for(MIME mime : MIME.values()) {
-            if(mime.getExtension().equals(extension)) {
-                return mime;
-            }
-        }
-        return null;
-    }
-
     public String getMethod() {
         return this.method;
     }
