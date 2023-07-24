@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.StaticFIleUtils;
 import webserver.exception.BadRequestException;
+import webserver.exception.ConflictException;
 import webserver.exception.NotFoundException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
@@ -52,6 +53,9 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
             response.setBodyByText(e.getMessage());
         } catch (BadRequestException e) {
             response.setStatus(HttpResponseStatus.STATUS_400);
+            response.setBodyByText(e.getMessage());
+        } catch (ConflictException e) {
+            response.setStatus(HttpResponseStatus.STATUS_405);
             response.setBodyByText(e.getMessage());
         }
     }

@@ -3,6 +3,7 @@ package controller;
 import db.Database;
 import model.User;
 import webserver.exception.BadRequestException;
+import webserver.exception.ConflictException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
 import webserver.request.HttpRequest;
@@ -24,6 +25,9 @@ public class SignUpController implements Controller {
 
     @Override
     public void execute(HttpRequest request) {
+        if(Database.findUserById(userId) != null) {
+            throw new ConflictException("이미 존재하는 아이디입니다!");
+        }
         Database.addUser(new User(userId, password, name, email));
         //중복처리
         //동시성 처리 어떻게?
