@@ -30,7 +30,8 @@ public class RequestHandler implements Runnable {
             logger.debug("startLine = {}", startLine);
             
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
-            Servlet servlet = DispatcherServlet.findServlet(request);
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
+            Servlet servlet = dispatcherServlet.findServlet(request);
             HTTPServletResponse response = new HTTPServletResponse(dos);
             
             logger.debug("servlet = {}", servlet);
