@@ -27,4 +27,8 @@ public class Cookie {
     public String getMessage() {
         return String.join("; ", directives);
     }
+
+    public boolean isEmpty() {
+        return directives.isEmpty();
+    }
 }

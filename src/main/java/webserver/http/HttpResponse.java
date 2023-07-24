@@ -74,6 +74,10 @@ public class HttpResponse {
     }
 
     private void addCookieField(StringBuilder stringBuilder) {
+        if(cookie.isEmpty()) {
+            return;
+        }
+
         stringBuilder.append("Set-Cookie: ");
         stringBuilder.append(cookie.getMessage());
         stringBuilder.append(HttpConstants.CRLF);

@@ -72,7 +72,7 @@ public class UserLoginControllerTest {
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
         softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/user/login_failed.html");
-        softAssertions.assertThat(httpResponse.getHeaderMessage()).doesNotContain("sid");
+        softAssertions.assertThat(httpResponse.getHeaderMessage()).doesNotContain("Set-Cookie");
         softAssertions.assertAll();
     }
 
