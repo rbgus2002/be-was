@@ -1,12 +1,14 @@
-package webserver;
+package webserver.http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.Headers;
+import webserver.http.response.Body;
 
 import java.io.*;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.StringUtils.appendNewLine;
 
 class HeaderTest {
     @Test
@@ -58,5 +60,25 @@ class HeaderTest {
 
         // then
         assertEquals(httpHeaders, headers.toString());
+    }
+
+    @Test
+    @DisplayName("body를 받아 Content-type, Content-length를 갖는 Headers를 생성해야 한다.")
+    void buildHeaderFromBody() {
+        // given
+        byte[] content = "바디입니다.".getBytes();
+        Body body = Body.from(content, MIME.TXT);
+
+        // when
+        Headers headers = Headers.from(body);
+
+        // then
+        String expectedHeadersString = appendNewLine("Content-Type: " + MIME.TXT.getContentType()) +
+                appendNewLine("Content-Length: " + headers.getContentLength());
+
+        assertAll(() -> {
+            assertEquals(content.length, headers.getContentLength());
+            assertEquals(expectedHeadersString, headers.toString());
+        });
     }
 }
