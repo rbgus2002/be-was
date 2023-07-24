@@ -28,4 +28,8 @@ public class HttpSession {
     public Object getAttribute() {
         return attributes.get(sid);
     }
+
+    public boolean isValid() {
+        return attributes.containsKey(sid);
+    }
 }

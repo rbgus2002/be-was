@@ -18,6 +18,7 @@ import java.util.Map;
 import static controller.HomeController.HOME_CONTROLLER;
 import static controller.JoinController.JOIN_CONTROLLER;
 import static controller.LoginController.LOGIN_CONTROLLER;
+import static controller.UserListController.USER_LIST_CONTROLLER;
 
 public class FrontController {
     private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
@@ -27,6 +28,7 @@ public class FrontController {
         controllerMap.put("/", HOME_CONTROLLER);
         controllerMap.put("/user/create", JOIN_CONTROLLER);
         controllerMap.put("/user/login", LOGIN_CONTROLLER);
+        controllerMap.put("/user/list", USER_LIST_CONTROLLER);
     }
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
