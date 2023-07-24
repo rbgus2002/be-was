@@ -5,7 +5,6 @@ import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.handler.argument.ArgumentResolver;
 import webserver.myframework.model.Model;
-import webserver.myframework.model.ModelImpl;
 
 import java.lang.reflect.Method;
 

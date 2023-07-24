@@ -64,7 +64,6 @@ public class DynamicView implements View {
             }
             return dynamicContent.render();
         }
-        //TODO
         throw new IllegalArgumentException();
     }
 }

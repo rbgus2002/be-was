@@ -34,7 +34,7 @@ public class DynamicViewTest {
     static void setUp() throws NoSuchFieldException, IllegalAccessException {
         Field usersField = Database.class.getDeclaredField("users");
         usersField.setAccessible(true);
-        ((Map) usersField.get(null)).clear();
+        ((Map<?, ?>) usersField.get(null)).clear();
         Database.addUser(new User("aaaa", "aaaa", "aaaa", "aaaa"));
         Database.addUser(new User("bbbb", "bbbb", "bbbb", "bbbb"));
         Database.addUser(new User("cccc", "cccc", "cccc", "cccc"));
