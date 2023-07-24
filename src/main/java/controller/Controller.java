@@ -31,8 +31,8 @@ public class Controller {
         String userId = parameters.get("userId");
         String password = parameters.get("password");
         try {
-            User user = getValidateUser(userId, password);
-            session.setAttribute("user", user);
+            validateUser(userId, password);
+            session.setAttribute("userId", userId);
             return HttpResponse.redirect("/index.html");
         } catch (IllegalArgumentException e) {
             logger.error("로그인에 실패했습니다.");
@@ -40,12 +40,11 @@ public class Controller {
         }
     }
 
-    private User getValidateUser(String userId, String password) {
+    private void validateUser(String userId, String password) {
         User user = Database.findUserById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다."));
         if (!user.getPassword().equals(password)) {
             throw new IllegalArgumentException("아이디 혹은 비밀번호가 틀렸습니다.");
         }
-        return user;
     }
 }
