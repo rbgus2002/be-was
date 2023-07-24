@@ -44,9 +44,8 @@ public class HttpResponse {
     public void response(DataOutputStream dos) {
         if (this.statusCode == HttpStatusCode.OK) {
             response200Header(dos, body.length);
-        }
-        else if(this.statusCode == HttpStatusCode.FOUND) {
-            response302Header(dos);
+        } else if (this.statusCode == HttpStatusCode.FOUND) {
+            response302Header(dos, path);
         }
         responseBody(dos, body);
     }
@@ -62,8 +61,7 @@ public class HttpResponse {
         }
     }
 
-    private void response302Header(DataOutputStream dos) {
-        String location = "/index.html";
+    private void response302Header(DataOutputStream dos, String location) {
         try {
             dos.writeBytes("HTTP/1.1 302 FOUND\r\n");
             dos.writeBytes("Location: " + location + "\r\n");
