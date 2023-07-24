@@ -1,21 +1,28 @@
 package webserver.handlers;
 
-import Controller.Controller;
-import exceptions.PathNotFoundException;
+import Application.Controller.Controller;
+import webserver.exceptions.BadRequestException;
+import webserver.exceptions.PathNotFoundException;
 import webserver.annotations.HandleRequest;
-import webserver.http.*;
+import webserver.annotations.QueryParameter;
+import webserver.http.HttpMethodHandlerMapping;
 import webserver.http.message.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HttpRequestRouter {
     //set default for test
-    static HttpMethodHandlerMappings requestMappings;
+    static HttpMethodHandlerMapping requestMappings;
 
     static {
-        requestMappings = new HttpMethodHandlerMappings();
+        requestMappings = new HttpMethodHandlerMapping();
         requestMappings.initialize();
 
         Method[] methods = Controller.class.getDeclaredMethods();
@@ -42,15 +49,43 @@ public class HttpRequestRouter {
 
         try {
             if (uri.hasExtension()) {
-                byte[] body = StaticResourceHandler.getStaticResource(uri.getPath());
-                return HttpResponse.generateHttpResponse(StatusCode.OK, body);
+                HttpResponse httpResponse = StaticResourceHandler.handle(httpRequest);
+                return httpResponse;
             }
+
             Method method = requestMappings.getMappedMethod(uri.getPath(), httpMethod);
-            HttpResponse httpResponse = (HttpResponse) method.invoke(Controller.getInstance(), httpRequest);
+
+            Object[] parameters = extractParameterValues(method, uri.getParameters());
+
+            HttpResponse httpResponse = (HttpResponse) method.invoke(Controller.getInstance(), parameters);
 
             return httpResponse;
         } catch (PathNotFoundException e) {
-            return HttpResponse.generateHttpResponse(StatusCode.NOT_FOUND);
+            return new HttpResponse.Builder()
+                    .statusCode(StatusCode.NOT_FOUND)
+                    .build();
+        } catch (BadRequestException e) {
+            return new HttpResponse.Builder()
+                    .statusCode(StatusCode.BAD_REQUEST)
+                    .build();
+        }
+    }
+
+    private Object[] extractParameterValues(Method method, Map<String, String> inputs) throws BadRequestException {
+        List<Parameter> parameters = Arrays.stream(method.getParameters())
+                .filter(parameter -> parameter.isAnnotationPresent(QueryParameter.class))
+                .collect(Collectors.toList());
+
+        verifyParameterExistence(inputs, parameters);
+
+        return parameters.stream().map(parameter -> inputs.get(parameter.getAnnotation(QueryParameter.class).key())).toArray();
+    }
+
+    private static void verifyParameterExistence(Map<String, String> inputs, List<Parameter> parameters) throws BadRequestException {
+        for (Parameter parameter : parameters) {
+            if (!inputs.containsKey(parameter.getAnnotation(QueryParameter.class).key())) {
+                throw new BadRequestException("유효하지 않은 매개 변수");
+            }
         }
     }
 }

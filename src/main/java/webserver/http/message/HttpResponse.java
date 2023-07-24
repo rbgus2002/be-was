@@ -1,10 +1,10 @@
 package webserver.http.message;
 
+import webserver.utils.HttpHeaderUtils;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-
-import static webserver.utils.HttpHeaderUtils.*;
 
 public class HttpResponse {
     private final String version;
@@ -14,26 +14,55 @@ public class HttpResponse {
 
     private final byte[] body;
 
-    private HttpResponse(String version, StatusCode statusCode, Map<String, String> metadata, byte[] body) {
+    public static class Builder {
+        private String version;
+        private StatusCode statusCode;
+        private Map<String, String> headers;
+        private byte[] body;
+
+        public Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder statusCode(StatusCode statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        public Builder headers(Map<String, String> headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        public Builder body(byte[] body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpResponse build() {
+            if (version == null) {
+                version = HttpHeaderUtils.DEFAULT_HTTP_VERSION;
+            }
+            if (headers == null) {
+                headers = Map.of();
+            }
+            if (body == null) {
+                body = new byte[]{};
+            }
+            if (statusCode == null) {
+                statusCode = StatusCode.OK;
+            }
+
+            return new HttpResponse(version, statusCode, headers, body);
+        }
+    }
+
+    private HttpResponse(String version, StatusCode statusCode, Map<String, String> headers, byte[] body) {
         this.version = version;
         this.statusCode = statusCode;
-        this.headers = metadata;
+        this.headers = headers;
         this.body = body;
-    }
-
-    public HttpResponse(StatusCode statusCode, byte[] body) {
-        this.version = DEFAULT_HTTP_VERSION;
-        this.headers = Map.of(CONTENT_TYPE_HEADER, DEFAULT_CONTENT_TYPE_VALUE, CONTENT_LENGTH_HEADER, String.valueOf(body.length));
-        this.statusCode = statusCode;
-        this.body = body;
-    }
-
-    public static HttpResponse generateHttpResponse(StatusCode statusCode, byte[] body) {
-        return new HttpResponse(statusCode, body);
-    }
-
-    public static HttpResponse generateHttpResponse(StatusCode statusCode) {
-        return new HttpResponse(statusCode, new byte[]{});
     }
 
     public byte[] getBody() {

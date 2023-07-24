@@ -1,5 +1,6 @@
 package webserver;
 
+import Application.db.Database;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,13 +18,13 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class RequestRouterTest {
 
     HttpRequestRouter requestRouter;
 
     @BeforeEach
     void setUp() {
+        Database.clear();
         requestRouter = new HttpRequestRouter();
     }
 
@@ -32,7 +33,7 @@ public class RequestRouterTest {
     @DisplayName("정적 리소스에 대한 요청 처리 테스트")
     void routeStaticResource(String path, StatusCode expectedStatusCode, byte[] expectedBody) throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest httpRequest = new HttpRequest(HttpMethod.GET,
-                new URI(path, Map.of(), "txt"),
+                new URI(path, Map.of(), MIME.TXT),
                 "HTTP/1.1",
                 new HashMap<>());
 
@@ -64,7 +65,7 @@ public class RequestRouterTest {
 
     public static Stream<Arguments> providePathAndParametersAndStatusCodeForTestingURIAndParameters() {
         return Stream.of(
-                Arguments.of("/user/create", Map.of("userId", "userId", "password", "password", "name", "name", "email", "email"), StatusCode.OK),
+                Arguments.of("/user/create", Map.of("userId", "userId", "password", "password", "name", "name", "email", "email"), StatusCode.FOUND),
                 Arguments.of("/nonexistent", Map.of("userId", "userId", "password", "password", "name", "name", "email", "email"), StatusCode.NOT_FOUND),
                 Arguments.of("/user/create", Map.of("password", "password", "name", "name", "email", "email"), StatusCode.BAD_REQUEST)
         );

@@ -1,6 +1,6 @@
-package model;
+package Application.model;
 
-import exceptions.IllegalParameterException;
+import webserver.exceptions.BadRequestException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -34,24 +34,13 @@ public class User {
         return email;
     }
 
-    public static User of(Map<String, String> parameters) {
-        verifyUserParameters(parameters);
-
+    public static User of(Map<String, String> parameters) throws BadRequestException {
         String userId = parameters.get("userId");
         String password = parameters.get("password");
         String name = parameters.get("name");
         String email = parameters.get("email");
 
         return new User(userId, password, name, email);
-    }
-
-    private static void verifyUserParameters(Map<String, String> parameters) {
-        if (!parameters.containsKey("userId")
-                || !parameters.containsKey("password")
-                || !parameters.containsKey("name")
-                || !parameters.containsKey("email")) {
-            throw new IllegalParameterException();
-        }
     }
     @Override
     public boolean equals(Object o) {

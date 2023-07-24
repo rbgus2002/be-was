@@ -14,7 +14,7 @@ public class URI {
 
     private final String path;
     private final Map<String, String> parameters;
-    private final Optional<String> extension;
+    private final Optional<MIME> extension;
 
     public URI(String path, Map<String, String> parameters) {
         this.path = path;
@@ -22,10 +22,14 @@ public class URI {
         this.extension = Optional.empty();
     }
 
-    public URI(String path, Map<String, String> parameters, String extension) {
+    public URI(String path, Map<String, String> parameters, MIME extension) {
         this.path = path;
         this.parameters = parameters;
         this.extension = Optional.of(extension);
+    }
+
+    public boolean hasMIMEForStaticResource() {
+        return extension.isPresent() && !extension.get().isTemplate();
     }
 
     public boolean hasParameter() {
@@ -34,11 +38,17 @@ public class URI {
 
     public boolean hasExtension() {
         return extension.isPresent();
-    };
+    }
+
+    ;
 
 
     public String getPath() {
         return path;
+    }
+
+    public Optional<MIME> getExtension() {
+        return extension;
     }
 
     public Map<String, String> getParameters() {

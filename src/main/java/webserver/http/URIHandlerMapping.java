@@ -1,15 +1,15 @@
 package webserver.http;
 
-import exceptions.PathNotFoundException;
+import webserver.exceptions.PathNotFoundException;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class URIHandlers {
+public class URIHandlerMapping {
     private Map<String, Method> map;
 
-    public URIHandlers() {
+    public URIHandlerMapping() {
         this.map = new HashMap<>();
     }
 
