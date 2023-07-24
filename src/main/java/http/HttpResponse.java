@@ -10,6 +10,8 @@ import http.header.Header;
 import http.header.MimeType;
 import http.statusline.StatusCode;
 import http.statusline.ResponseLine;
+import session.Cookie;
+import session.SessionConst;
 
 public class HttpResponse {
 	private ResponseLine responseLine = new ResponseLine();
@@ -19,6 +21,10 @@ public class HttpResponse {
 	public HttpResponse(HttpRequest httpRequest) {
 		responseLine.setVersion(httpRequest.getVersion());
 		responseLine.setStatusCode(StatusCode.OK);
+	}
+
+	public HttpResponse() {
+
 	}
 
 	public void response(OutputStream out) throws IOException {
@@ -39,6 +45,11 @@ public class HttpResponse {
 	public void setRedirect(final String redirectPath, StatusCode statusCode) {
 		responseLine.setStatusCode(statusCode);
 		header.addHeader("Location", redirectPath);
+	}
+
+	public void addCookie(String cookieName, String sessionId) {
+		Cookie cookie = Cookie.newCookie(SessionConst.sessionId, sessionId);
+		header.addHeader("Set-Cookie", cookie.toHeaderValue());
 	}
 
 	private void responseStatusLine(DataOutputStream dos) throws IOException {

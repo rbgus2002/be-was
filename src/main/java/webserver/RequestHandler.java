@@ -52,33 +52,32 @@ public class RequestHandler implements Runnable {
 		ReflectiveOperationException,
 		IOException,
 		IllegalArgumentException {
-		String path = runController(httpRequest);
+		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		String path = runController(httpRequest, httpResponse);
 		if (path.contains(REDIRECT)) {
-			return redirectHttpResponse(httpRequest, path);
+			return redirectHttpResponse(httpResponse, path);
 		}
-		return getHttpResponse(httpRequest, path);
+		return addFile(httpResponse, path);
 	}
 
-	private HttpResponse redirectHttpResponse(final HttpRequest httpRequest, final String path) {
-		HttpResponse httpResponse = new HttpResponse(httpRequest);
+	private HttpResponse redirectHttpResponse(final HttpResponse httpResponse, final String path) {
 		httpResponse.setRedirect(path.replace("redirect:", ""), StatusCode.FOUND);
 		return httpResponse;
 	}
 
-	private String runController(final HttpRequest httpRequest) throws
+	private String runController(final HttpRequest httpRequest, final HttpResponse httpResponse) throws
 		InvocationTargetException,
 		IllegalAccessException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest.getParameter());
+			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest.getParameter(), httpResponse);
 		}
 		return path;
 	}
 
-	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws
+	private HttpResponse addFile(final HttpResponse httpResponse, final String path) throws
 		IOException,
 		IllegalArgumentException {
-		HttpResponse httpResponse = new HttpResponse(httpRequest);
 		httpResponse.addFile(getValidPath(path));
 		logger.debug("{} added", path);
 		return httpResponse;
