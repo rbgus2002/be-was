@@ -21,20 +21,29 @@ public class ControllerHandler {
             throws InstantiationException, IllegalAccessException, InvocationTargetException, IOException {
         Class<UserController> userController = UserController.class;
         Method[] declaredMethod = userController.getDeclaredMethods();
+
         for (Method method : declaredMethod) {
             RequestMapping requestMappingAnnotation = method.getAnnotation(RequestMapping.class);
-            String url = requestMappingAnnotation.value();
-            if (url.equals(path)) {
+            if (checkAnnotation(request, requestMappingAnnotation)) {
                 method.invoke(userController.newInstance(), request, response);
                 return;
             }
         }
-        handleBasicController(request, response, path);
+
+        handleStaticFile(request, response, path);
     }
 
-    private void handleBasicController(HttpRequest request, HttpResponse response, String path) throws IOException {
+    private boolean checkAnnotation(HttpRequest request, RequestMapping requestMapping) {
+        String requestPath = request.getPath();
+        String annotationUrl = requestMapping.value();
+        String requestMethod = request.getMethod();
+        String annotationMethod = requestMapping.method();
+        return requestPath.equals(annotationUrl) && requestMethod.equals(annotationMethod);
+    }
+
+    private void handleStaticFile(HttpRequest request, HttpResponse response, String path) throws IOException {
         String filePath = FileUtils.findFilePath(path);
-        BasicController controller = new BasicController();
+        StaticFileController controller = new StaticFileController();
         if (filePath == null) {
             controller.handleFileNotFound(request, response);
             return;
