@@ -36,7 +36,7 @@ public class HttpResponse {
                 .append(SPACE)
                 .append(this.statusCode.getDescription())
                 .append(NEXTLINE)
-                .append(httpHeader.stringfy())
+                .append(httpHeader.stringify())
                 .append(NEXTLINE)
                 .toString();
     }

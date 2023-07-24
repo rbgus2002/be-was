@@ -29,7 +29,7 @@ public class HttpHeader {
         return new HttpHeader(contents);
     }
 
-    public String stringfy() {
+    public String stringify() {
         return mapToHeaderFormat(contents);
     }
 
