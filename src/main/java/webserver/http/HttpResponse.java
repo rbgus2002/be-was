@@ -5,10 +5,12 @@ import webserver.utils.HttpConstants;
 public class HttpResponse {
     private HttpStatus status;
     private final HttpHeaders headers;
+    private final Cookie cookie;
     private byte[] body;
 
     public HttpResponse() {
         headers = new HttpHeaders();
+        cookie = new Cookie();
     }
 
     public String get(String name) {
@@ -31,6 +33,14 @@ public class HttpResponse {
         this.status = status;
     }
 
+    public Cookie getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String directive) {
+        cookie.add(directive);
+    }
+
     public void setBody(byte[] body) {
         this.body = body;
     }
@@ -42,8 +52,17 @@ public class HttpResponse {
     public String getHeaderMessage() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(status.getStatusLine()).append(HttpConstants.CRLF);
+        addStatusLineMessage(stringBuilder);
+        addHeaderFields(stringBuilder);
 
+        return stringBuilder.toString();
+    }
+
+    private void addStatusLineMessage(StringBuilder stringBuilder) {
+        stringBuilder.append(status.getStatusLine()).append(HttpConstants.CRLF);
+    }
+
+    private void addHeaderFields(StringBuilder stringBuilder) {
         for (String fieldName : headers.getFieldNames()) {
             stringBuilder.append(fieldName)
                     .append(": ")
@@ -51,7 +70,13 @@ public class HttpResponse {
                     .append(HttpConstants.CRLF);
         }
 
-        return stringBuilder.toString();
+        addCookieField(stringBuilder);
+    }
+
+    private void addCookieField(StringBuilder stringBuilder) {
+        stringBuilder.append("Set-Cookie: ");
+        stringBuilder.append(cookie.getMessage());
+        stringBuilder.append(HttpConstants.CRLF);
     }
 
     public byte[] getHeaderBytes() {
