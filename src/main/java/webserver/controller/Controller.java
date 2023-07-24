@@ -14,6 +14,15 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 
 public class Controller {
+    private static final Controller controller = new Controller();
+
+    private Controller() {
+    }
+
+    public static Controller getInstance() {
+        return controller;
+    }
+
     @Handler(method = HttpMethod.GET, path = "/user/create")
     public HttpResponse createUser(HttpRequest request) {
         UserService.addUser(request.createUserFromQuery());
