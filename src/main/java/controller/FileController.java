@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static http.HttpUtil.*;
+import static webserver.model.Request.Method;
 import static service.FileService.readStaticFile;
 import static service.SessionService.getUserIdBySid;
 
@@ -63,7 +64,7 @@ public class FileController {
                 httpDocument = removeElement(httpDocument, BUTTON_SIGNUP);
             }
 
-            // userList
+            // 유저 목록(/user/list.html)
             if(targetUri.equals(USER_LIST_URL)) {
                 if(sid == null) {
                     Map<String, String> headerMap = new HashMap<>();
@@ -79,6 +80,15 @@ public class FileController {
                         sb.append(tr);
                     }
                     httpDocument = appendElement(httpDocument, USER_LIST_TBODY, sb.toString());
+                }
+            }
+
+            // 글 쓰기(/qna/form.html) 미로그인시
+            if(targetUri.equals(QNA_FORM_URL) && request.getMethod() == Method.GET) {
+                if(sid == null) {
+                    Map<String, String> headerMap = new HashMap<>();
+                    headerMap.put(HEADER_REDIRECT_LOCATION, USER_LOGIN_URL);
+                    return new Response(STATUS.SEE_OTHER, headerMap, null);
                 }
             }
 
