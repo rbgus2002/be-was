@@ -18,7 +18,7 @@ class HttpRequestMapperTest {
     @Test
     @DisplayName("url을 입력했을 때 해당 url과 매핑 된 컨트롤러를 반환해야 한다.")
     void getController() throws IOException{
-        verifyController("GET /user/create?id=id&password=password&email=email&name=name HTTP/1.1", SignUpController.class);
+        verifyController("POST /user/create?id=id&password=password&email=email&name=name HTTP/1.1", SignUpController.class);
     }
 
     void verifyController(String statusLine, Class clazz) throws IOException {

@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FrontControllerTest {
 
-    String badRequestInput = "GET /user/create?id=1&password=1234 HTTP/1.1\n" +
+    String badRequestInput = "POST /user/create?id=1&password=1234 HTTP/1.1\n" +
             "Host: localhost:8080\n" +
             "Connection: keep-alive\n" +
             "sec-ch-ua: \"Not.A/Brand\";v=\"8\", \"Chromium\";v=\"114\", \"Google Chrome\";v=\"114\"\n" +
@@ -29,12 +29,14 @@ class FrontControllerTest {
             "Referer: http://localhost:8080/\n" +
             "Accept-Encoding: gzip, deflate, br\n" +
             "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
+            "Content-Type: text/plain\n" +
+            "Content-Length: 64\n" +
             "\n" +
             "{\n" +
-            "  \"name\": \"John Doe\",\n" +
-            "  \"email\": \"john@example.com\",\n" +
-            "  \"age\": 30\n" +
-            "}\n";
+            "    name: John Doe,\n" +
+            "    email: john@example.com,\n" +
+            "    age: 30\n" +
+            "}";
     @Test
     @DisplayName("요청과 일치하는 method나 url이 없으면 NotFoundException 반환한다.")
     void NotFoundException() {

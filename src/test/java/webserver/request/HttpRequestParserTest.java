@@ -28,12 +28,14 @@ class HttpRequestParserTest {
             "Referer: http://localhost:8080/\n" +
             "Accept-Encoding: gzip, deflate, br\n" +
             "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
+            "Content-Type: text/plain\n" +
+            "Content-Length: 64\n" +
             "\n" +
             "{\n" +
-            "  \"name\": \"John Doe\",\n" +
-            "  \"email\": \"john@example.com\",\n" +
-            "  \"age\": 30\n" +
-            "}\n";
+            "    name: John Doe,\n" +
+            "    email: john@example.com,\n" +
+            "    age: 30\n" +
+            "}";
 
     String header = "GET /url?id=1&password=1234 HTTP/1.1\n" +
             "Host: localhost:8080\n" +
@@ -48,13 +50,15 @@ class HttpRequestParserTest {
             "Sec-Fetch-Dest: image\n" +
             "Referer: http://localhost:8080/\n" +
             "Accept-Encoding: gzip, deflate, br\n" +
-            "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n";
+            "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
+            "Content-Type: text/plain\n" +
+            "Content-Length: 64\n";
 
     String body = "{\n" +
-            "  \"name\": \"John Doe\",\n" +
-            "  \"email\": \"john@example.com\",\n" +
-            "  \"age\": 30\n" +
-            "}\n";
+            "    name: John Doe,\n" +
+            "    email: john@example.com,\n" +
+            "    age: 30\n" +
+            "}";
     HttpRequest request;
 
     @BeforeEach
@@ -74,7 +78,7 @@ class HttpRequestParserTest {
     @DisplayName("http request byte 값이 들어오면 해당 헤더의 method와 url이 제대로 추출되어야 한다.")
     void methodAndUrl() {
         assertEquals("GET", request.getMethod());
-        assertEquals("/favicon.ico", request.getUrl());
+        assertEquals("/url", request.getUrl());
     }
 
     @Test
