@@ -12,6 +12,10 @@ public enum HttpStatusCode {
         this.code = code;
     }
 
+    public int getCode() {
+        return code;
+    }
+
     @Override
     public String toString() {
         return code + " " + this.name();
