@@ -2,7 +2,7 @@ package webserver.http.response.process;
 
 import common.annotation.RequestMapping;
 import common.annotation.RequestParam;
-import common.annotation.RestController;
+import common.annotation.Controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -26,11 +26,12 @@ import webserver.http.response.ResponseLine;
 
 public class ApplicationProcessStrategy implements ContentProcessStrategy {
     private static final String CLASS_EXTENSION = ".class";
+    private static final String REDIRECT_PREFIX = "redirect:";
 
     @Override
     public HttpResponse process(final HttpRequest httpRequest) {
         try {
-            List<Class> classes = findByHasAnnotationClasses(RestController.class);
+            List<Class> classes = findByHasAnnotationClasses(Controller.class);
             Method targetMethod = findTargetMethod(httpRequest, classes);
             return processMethod(httpRequest, targetMethod);
         } catch (
@@ -61,9 +62,18 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
                 getMethodParameters(method, queryParameter.getMap())
         );
 
+        if (isRedirect(invoke)) {
+            String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
+            return HttpResponse.found(redirectUrl);
+        }
+
         return new HttpResponse(
                 new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
         );
+    }
+
+    private boolean isRedirect(final Object invoke) {
+        return invoke.getClass().equals(String.class) && ((String) invoke).startsWith(REDIRECT_PREFIX);
     }
 
     private Object[] getMethodParameters(final Method method, final Map<String, String> map) {

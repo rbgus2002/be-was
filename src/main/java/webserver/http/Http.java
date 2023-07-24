@@ -14,7 +14,8 @@ public class Http {
 
     public enum Headers {
         CONTENT_LENGTH("Content-Length"),
-        CONTENT_TYPE("Content-Type");
+        CONTENT_TYPE("Content-Type"),
+        LOCATION("Location");
 
         private final String name;
 
