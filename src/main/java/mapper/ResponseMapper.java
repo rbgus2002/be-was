@@ -20,7 +20,7 @@ public class ResponseMapper {
     public static final int VALUE_INDEX = 1;
 
     public static HttpResponse createNoBodyHttpResponse(HttpRequest request, HttpStatusCode statusCode) {
-        return createHttpResponse(request, statusCode, NO_CONTENT.getBytes(), MIME.JSON);
+        return createHttpResponse(request, statusCode, NO_CONTENT.getBytes(), MIME.DEFAULT);
     }
 
     public static HttpResponse createHttpResponse(HttpRequest request, HttpStatusCode statusCode, byte[] body, MIME extension) {
@@ -52,10 +52,10 @@ public class ResponseMapper {
     }
 
     public static HttpResponse createNotFoundResponse(HttpRequest httpRequest) {
-        return createHttpResponse(httpRequest, HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND.getBytes(), MIME.JSON);
+        return createHttpResponse(httpRequest, HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND.getBytes(), MIME.DEFAULT);
     }
 
     public static HttpResponse createBadRequestResponse(HttpRequest httpRequest) {
-        return createHttpResponse(httpRequest, HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST.getBytes(), MIME.JSON);
+        return createHttpResponse(httpRequest, HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST.getBytes(), MIME.DEFAULT);
     }
 }
