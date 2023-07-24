@@ -19,7 +19,7 @@ Java Web Application Server 2023
   - REST API Controller 생성
   - 404 에러, 400 에러 처리
   - request uri, resource path 상수 분리하여 관리
-  -> 요청 경로와 실제 경로가 같다는 가정하에 정적인 파일 response 할 수 있도
+  - 요청 경로와 실제 경로가 같다는 가정하에 정적인 파일 response 할 수 있도
   - Thread -> concurrent 메소드로 이동
   - request line에서의 query parameter 저장
   - MIME enum 클래스 추가
