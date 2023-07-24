@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static global.constant.ContentType.HTML;
+import static global.constant.Headers.CHARSET_UTF8;
+
 public class ResponseEntity {
     private final static String NEW_LINE = "\n";
 
@@ -21,7 +24,7 @@ public class ResponseEntity {
         private final Map<String, String> headers;
         private StatusCode statusCode = StatusCode.OK;
         private byte[] responseBody = new byte[0];
-        private ContentType contentType = ContentType.HTML;
+        private ContentType contentType = HTML;
 
         private Builder() {
             this.headers = new HashMap<>();
@@ -29,7 +32,7 @@ public class ResponseEntity {
         }
 
         private void setDefaultHeaders() {
-            headers.put(Headers.CONTENT_TYPE.getKey(), "text/html;charset=utf-8");
+            headers.put(Headers.CONTENT_TYPE.getKey(), HTML + ";" + CHARSET_UTF8);
             headers.put(Headers.CONTENT_LENGTH.getKey(), "0");
         }
 
