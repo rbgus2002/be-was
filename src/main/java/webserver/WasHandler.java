@@ -2,7 +2,6 @@ package webserver;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import controller.Controller;
 import controller.FrontController;
 import controller.annotation.RequestMapping;
 import webserver.request.HttpWasRequest;
-import webserver.response.HttpFileHandler;
 import webserver.response.HttpWasResponse;
 import webserver.utils.HttpMethod;
 import webserver.utils.HttpMimeType;
@@ -23,19 +21,16 @@ public class WasHandler {
 	private final HttpWasRequest httpWasRequest;
 	private final HttpWasResponse httpWasResponse;
 	private final FrontController frontController;
-	private final HttpFileHandler httpFileHandler;
 	public WasHandler(final HttpWasRequest httpWasRequest, final HttpWasResponse httpWasResponse, FrontController frontController) {
 		this.httpWasRequest = httpWasRequest;
 		this.httpWasResponse = httpWasResponse;
 		this.frontController = frontController;
-		httpFileHandler = new HttpFileHandler();
 	}
 
 	public void service() {
 		final String resourcePath = httpWasRequest.getResourcePath();
-		if (httpFileHandler.isExistResource(resourcePath)) {
-			final Path filePath = httpFileHandler.getFilePath(resourcePath);
-			httpWasResponse.responseResource(filePath, resourcePath);
+		if (httpWasResponse.isExistResource(resourcePath)) {
+			httpWasResponse.responseResource(resourcePath);
 			return;
 		}
 

@@ -25,14 +25,16 @@ public class HttpWasResponse {
 	private final HttpResponseHeader header = new HttpResponseHeader();
 	private byte[] body = new byte[0];
 	private final List<Cookie> cookies = new ArrayList<>();
-
+	private final HttpFileHandler httpFileHandler;
 
 	public HttpWasResponse(OutputStream outputStream) {
 		this.dos = new DataOutputStream(outputStream);
+		httpFileHandler = new HttpFileHandler();
 	}
 
-	public void responseResource(Path path, String resourcePath) {
+	public void responseResource(String resourcePath) {
 		try {
+			Path path = httpFileHandler.getFilePath(resourcePath);
 			final byte[] files = Files.readAllBytes(path);
 			header.clearHeader();
 			httpStatus = HttpStatus.OK;
@@ -98,12 +100,15 @@ public class HttpWasResponse {
 		}
 	}
 
-
 	public void addHeader(HttpHeader headerType, String value) {
 		header.addHeader(headerType, value);
 	}
 
 	public void addCookie(Cookie cookie) {
 		cookies.add(cookie);
+	}
+
+	public boolean isExistResource(String resourcePath) {
+		return httpFileHandler.isExistResource(resourcePath);
 	}
 }
