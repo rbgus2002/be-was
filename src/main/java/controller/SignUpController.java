@@ -18,6 +18,10 @@ public class SignUpController implements Controller {
     private String name;
     private String email;
 
+    private static final int SIGN_UP_PARAMS_LENGTH = 4;
+    private static final int KEY_VALUE_PAIR_LENGTH = 2;
+    private static final int VALUE_INDEX = 1;
+
     @Override
     public void execute(HttpRequest request) {
         Database.addUser(new User(userId, password, name, email));
@@ -27,7 +31,7 @@ public class SignUpController implements Controller {
     public void verifyRequest(HttpRequest request){
         String[] bodys = request.getBody().split("[&]");
 
-        if(bodys.length != 4) {
+        if(bodys.length != SIGN_UP_PARAMS_LENGTH) {
             throw new BadRequestException();
         }
         parseBody(bodys);
@@ -37,7 +41,7 @@ public class SignUpController implements Controller {
         for (String body : bodys) {
             String[] param = body.split("[=]");
 
-            if(param.length != 2) {
+            if(param.length != KEY_VALUE_PAIR_LENGTH) {
                 throw new BadRequestException();
             }
 
@@ -48,16 +52,16 @@ public class SignUpController implements Controller {
     private void setParams(String[] param) {
         switch (param[0]) {
             case "userId":
-                userId = getDecodedString(param[1]);
+                userId = getDecodedString(param[VALUE_INDEX]);
                 break;
             case "password":
-                password = getDecodedString(param[1]);
+                password = getDecodedString(param[VALUE_INDEX]);
                 break;
             case "name":
-                name = getDecodedString(param[1]);
+                name = getDecodedString(param[VALUE_INDEX]);
                 break;
             case "email":
-                email = getDecodedString(param[1]);
+                email = getDecodedString(param[VALUE_INDEX]);
                 break;
             default:
                 throw new BadRequestException();
