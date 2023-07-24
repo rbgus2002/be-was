@@ -1,17 +1,20 @@
 package controller;
 
+import exception.BadRequestException;
 import http.HttpRequest;
 import http.HttpResponse;
+
+import static exception.ExceptionList.INVALID_URI;
 
 public class BasicController extends Controller {
 
     @Override
     public HttpResponse.ResponseBuilder doGet(String uri) {
-        return null;
+        throw new BadRequestException(INVALID_URI);
     }
 
     @Override
     public HttpResponse.ResponseBuilder doPost(HttpRequest httpRequest) {
-        return null;
+        throw new BadRequestException(INVALID_URI);
     }
 }
