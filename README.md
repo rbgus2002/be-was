@@ -33,7 +33,7 @@ Java Web Application Server 2023
 ### Step - 4
 
 - [ ] 회원 가입 방식을 POST 방식으로 변경한다.
-    - [ ] UserController POST 매핑으로 변경.
+    - [X] UserController POST 매핑으로 변경.
     - [ ] POST 방식으로 변경하기 위한 HTML 수정.
     - [ ] 데이터 파싱 로직 변경.
 - [ ] 리다이렉션 기능을 구현한다.

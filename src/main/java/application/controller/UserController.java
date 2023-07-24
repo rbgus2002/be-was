@@ -9,7 +9,7 @@ import webserver.annotation.RequestParameter;
 
 @Controller
 public class UserController {
-    @RequestMapping(path = "/user/create", method = HttpMethod.GET)
+    @RequestMapping(path = "/user/create", method = HttpMethod.POST)
     public String createUser(@RequestParameter(value = "userId") String userId,
                              @RequestParameter(value = "password") String password,
                              @RequestParameter(value = "name") String name,
