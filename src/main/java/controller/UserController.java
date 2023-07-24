@@ -9,6 +9,7 @@ import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
 import static exception.ExceptionList.NOT_ENOUGH_USER_INFORMATION;
+import static http.FileName.INDEX;
 import static utils.FileIOUtils.*;
 
 public class UserController extends Controller {
@@ -46,12 +47,12 @@ public class UserController extends Controller {
 
     private HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.FOUND, "/index.html");
+        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX);
     }
 
     private HttpResponse.ResponseBuilder loginUser(Map<String, String> parameters) {
         String sessionId = userService.loginUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.FOUND, "/index.html")
+        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX)
                 .setSessionId(sessionId);
     }
 

@@ -26,7 +26,7 @@ public abstract class Controller {
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
             if (MIME.getMIME().entrySet().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
-                return loadTemplatesFromPath(HttpStatus.NOT_FOUND, "/wrong_access.html");
+                return loadTemplatesFromPath(HttpStatus.NOT_FOUND, WRONG_ACCESS);
             }
             if (extension.equals(HTML)) {
                 return loadTemplatesFromPath(HttpStatus.OK, uri)
