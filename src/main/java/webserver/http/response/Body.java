@@ -38,4 +38,9 @@ public class Body {
     public void write(DataOutputStream dos) throws IOException {
         dos.write(content, 0, content.length);
     }
+
+    @Override
+    public String toString() {
+        return new String(content);
+    }
 }

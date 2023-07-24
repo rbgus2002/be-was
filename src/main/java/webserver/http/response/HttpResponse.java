@@ -38,4 +38,14 @@ public class HttpResponse {
         dos.writeBytes(CRLF);
         body.write(dos);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(appendNewLine(version + " " + statusCode.toString()));
+        stringBuilder.append(headers.toString());
+        stringBuilder.append(CRLF);
+        stringBuilder.append(body.toString());
+        return stringBuilder.toString();
+    }
 }
