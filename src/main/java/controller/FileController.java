@@ -73,7 +73,7 @@ public class FileController {
                         String tr = String.format(USER_LIST_ROW_FORM, i, user.getUserId(), user.getName(), user.getEmail());
                         sb.append(tr);
                     }
-                    httpDocument = httpDocument.replaceAll(USER_LIST_TBODY, USER_LIST_TBODY + sb);
+                    httpDocument = appendTail(httpDocument, USER_LIST_TBODY, sb.toString());
                 }
             }
             body = httpDocument.getBytes();
