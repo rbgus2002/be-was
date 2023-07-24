@@ -17,7 +17,6 @@ import webserver.utils.HttpRequestCreateUtil;
 
 class UserListControllerTest {
     UserListController userListController = new UserListController();
-    SessionManager sessionManager = SessionManager.getInstance();
     SoftAssertions softAssertions;
 
     @BeforeAll
@@ -37,7 +36,7 @@ class UserListControllerTest {
     public void requestUserListWithValidSessionId() throws Exception {
         //given
         Session loginUserSession = new Session("userC");
-        sessionManager.addSession(loginUserSession);
+        SessionManager.addSession(loginUserSession);
 
         String requestMessage = "GET /user/list HTTP/1.1\r\n" +
                 "Cookie: sid=" + loginUserSession.getSessionId() + "\r\n" +
@@ -52,9 +51,9 @@ class UserListControllerTest {
         String responseBodyMessage = new String(httpResponse.getBodyBytes());
 
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK);
-        softAssertions.assertThat(responseBodyMessage.contains("userA"));
-        softAssertions.assertThat(responseBodyMessage.contains("userB"));
-        softAssertions.assertThat(responseBodyMessage.contains("userC"));
+        softAssertions.assertThat(responseBodyMessage.contains("userA")).isEqualTo(true);
+        softAssertions.assertThat(responseBodyMessage.contains("userB")).isEqualTo(true);
+        softAssertions.assertThat(responseBodyMessage.contains("userC")).isEqualTo(true);
         softAssertions.assertAll();
     }
 
@@ -78,10 +77,10 @@ class UserListControllerTest {
 
     @Test
     @DisplayName("유효하지 않는 세션 아이디로 사용자 목록 페이지 요청 시, 로그인 페이지로 이동시킨다")
-    public void requestUserListWithoutSessionId() throws Exception {
+    public void requestUserListWithInvalidSessionId() throws Exception {
         //given
         Session loginUserSession = new Session("userC");
-        sessionManager.addSession(loginUserSession);
+        SessionManager.addSession(loginUserSession);
 
         String requestMessage = "GET /user/list HTTP/1.1\r\n" +
                 "Cookie: sid=" + loginUserSession.getSessionId() + "dummyString" + "\r\n" +
@@ -93,8 +92,6 @@ class UserListControllerTest {
         userListController.process(httpRequest, httpResponse);
 
         //then
-        String responseBodyMessage = new String(httpResponse.getBodyBytes());
-
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
         softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/login.html");
         softAssertions.assertAll();

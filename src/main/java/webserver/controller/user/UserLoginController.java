@@ -45,9 +45,7 @@ public class UserLoginController implements Controller {
 
     private String createSession(String userId) {
         Session session = new Session(userId);
-        SessionManager sessionManager = SessionManager.getInstance();
-
-        sessionManager.addSession(session);
+        SessionManager.addSession(session);
         return session.getSessionId();
     }
 
