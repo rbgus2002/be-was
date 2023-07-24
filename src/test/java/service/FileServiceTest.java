@@ -1,16 +1,17 @@
 package service;
 
+import model.enums.MIME;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
+import java.nio.file.NoSuchFileException;
 
-import static constant.SourcePath.BASIC_INDEX_PATH;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileServiceTest {
-    private String startTag = "<!DOCTYPE html>";
+    public static final String INDEX_HTML = "/index.html";
 
     private FileService fileService;
 
@@ -22,22 +23,19 @@ class FileServiceTest {
     @Test
     @DisplayName("위치에 있는 파일을 찾는다.")
     void findFile() {
-        String basicIndexPath = BASIC_INDEX_PATH;
 
         assertDoesNotThrow(() -> {
-            String fileContent = fileService.openFile(basicIndexPath);
-            assertTrue(fileContent.startsWith(startTag));
+            byte[] fileContent = fileService.openFile(INDEX_HTML, MIME.HTML);
         });
     }
 
     @Test
-    @DisplayName("위치에 있는 파일을 찾는다.")
+    @DisplayName("HTML mime 타입이여야 template 경로로 파일을 찾는다.")
     void dontFindFile() {
-        String basicIndexPath = "/somewhere";
+        String basicIndexPath = "/somewhere.html";
 
-        assertThrows(FileNotFoundException.class, () -> {
-            String fileContent = fileService.openFile(basicIndexPath);
-            assertTrue(fileContent.startsWith(startTag));
+        assertThrows(NoSuchFileException.class, () -> {
+            byte[] fileContent = fileService.openFile(basicIndexPath, MIME.CSS);
         });
     }
 }

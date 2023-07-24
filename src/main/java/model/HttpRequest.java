@@ -1,7 +1,11 @@
 package model;
 
-import dto.UserFormRequestDto;
 import model.enums.Method;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static util.StringUtils.*;
 
 public class HttpRequest {
     private final RequestUri requestUri;
@@ -10,12 +14,65 @@ public class HttpRequest {
     private final HttpHeader httpHeader;
     private final String body;
 
-    public HttpRequest(RequestUri requestUri, String protocol, Method method, HttpHeader httpHeader, String body) {
-        this.requestUri = requestUri;
-        this.protocol = protocol;
-        this.method = method;
-        this.httpHeader = httpHeader;
-        this.body = body;
+    public Map<String, String> getBodyMap() {
+        Map<String, String> map = new HashMap<>();
+        String[] splitByAmpersand = splitBy(body, AMPERSAND_MARK);
+        for(var values: splitByAmpersand) {
+            String[] splitParam = splitBy(values, EQUAL_MARK);
+            if(splitParam.length < 2) continue;
+
+            map.put(splitParam[0], splitParam[1]);
+        }
+
+        return map;
+    }
+
+    public static class Builder {
+        private RequestUri requestUri;
+        private String protocol;
+        private Method method;
+        private HttpHeader httpHeader;
+        private String body;
+
+        public Builder() {
+        }
+
+        public Builder requestUri(RequestUri uri) {
+            this.requestUri = uri;
+            return this;
+        }
+
+        public Builder protocol(String protocol) {
+            this.protocol = protocol;
+            return this;
+        }
+
+        public Builder method(Method method) {
+            this.method = method;
+            return this;
+        }
+
+        public Builder httpHeader(HttpHeader header) {
+            this.httpHeader = header;
+            return this;
+        }
+
+        public Builder body(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(this);
+        }
+    }
+
+    public HttpRequest(Builder builder) {
+        requestUri = builder.requestUri;
+        method = builder.method;
+        protocol = builder.protocol;
+        httpHeader = builder.httpHeader;
+        body = builder.body;
     }
 
     public boolean match(Method method, String uri) {
@@ -38,8 +95,4 @@ public class HttpRequest {
         return requestUri.getUri();
     }
 
-    //지워질 예정
-    public UserFormRequestDto paramsToDto() {
-        return this.requestUri.paramsToDto();
-    }
 }

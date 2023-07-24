@@ -17,9 +17,9 @@ public class RequestHandler implements Runnable {
     private Socket connection;
     private final RestController restController;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, RestController restController) {
         this.connection = connectionSocket;
-        restController = new RestController();
+        this.restController = restController;
     }
 
     public void run() {
@@ -27,18 +27,17 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            HttpRequest httpRequest = Parser.getHttpRequest(bufferedReader);
+            HttpRequest httpRequest = Parser.getHttpRequest(in);
 
             HttpResponse httpResponse = restController.route(httpRequest);
             String responseHeader = httpResponse.getHttpHeaderFormat();
-            logger.debug("Response Header : {}", responseHeader);
+//            logger.debug("Response Header : {}", responseHeader);
 
             DataOutputStream dos = new DataOutputStream(out);
 
             dos.writeBytes(responseHeader);
             dos.write(httpResponse.getByteArrayOfBody());
-        } catch (IOException e) {
+        } catch ( Exception e) {
             logger.error(e.getMessage());
         }
     }

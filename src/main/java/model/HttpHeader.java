@@ -29,12 +29,15 @@ public class HttpHeader {
         return new HttpHeader(contents);
     }
 
-    public HttpHeader newInstance() {
-        // ??
-        return new HttpHeader(new HashMap<String, String>(this.contents));
-    }
-
     public String stringfy() {
         return mapToHeaderFormat(contents);
+    }
+
+    public int getContentLength() {
+        // 10진수 바이트 단위
+        if(contents.containsKey("Content-Type")){
+            return Integer.parseInt(contents.get("Content-Length").trim());
+        }
+        return 0;
     }
 }

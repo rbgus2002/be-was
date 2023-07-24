@@ -1,10 +1,6 @@
 package model;
 
 import model.enums.HttpStatusCode;
-import model.enums.MIME;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static util.StringUtils.NEXTLINE;
 import static util.StringUtils.SPACE;
@@ -13,28 +9,20 @@ public class HttpResponse {
     private final String protocol;
     private final HttpStatusCode statusCode;
     private final HttpHeader httpHeader;
-    private final String body;
+    private final byte[] body;
 
-    // TODO 빌더 패턴 적용하기
-    private HttpResponse(String protocol, HttpStatusCode statusCode, HttpHeader header, String body) {
+    private HttpResponse(String protocol, HttpStatusCode statusCode, HttpHeader header, byte[] body) {
         this.protocol = protocol;
         this.statusCode = statusCode;
         this.httpHeader = header;
         this.body = body;
     }
 
-    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, String body, MIME extension) {
-        Map<String, String> header = new HashMap<>();
-        int lengthOfBody = body.getBytes().length;
-
-        header.put("Content-Type", extension.getContentType());
-        header.put("Content-Length", String.valueOf(lengthOfBody));
-        HttpHeader httpHeader = HttpHeader.of(header);
-
+    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header, byte[] body) {
         return new HttpResponse(
                 httpRequest.getProtocol(),
                 statusCode,
-                httpHeader,
+                header,
                 body
         );
     }
@@ -53,7 +41,7 @@ public class HttpResponse {
     }
 
     public byte[] getByteArrayOfBody() {
-        return body.getBytes();
+        return body;
     }
 }
 
