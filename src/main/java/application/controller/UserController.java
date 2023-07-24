@@ -7,12 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
-import webserver.Constants.ContentType;
 import webserver.Constants.HttpMethod;
-import webserver.Constants.HttpStatus;
+import webserver.ModelAndView;
 import webserver.request.HttpRequest;
 import webserver.request.RequestQuery;
-import webserver.response.HttpResponse;
 
 @Controller(value = "/user")
 public class UserController implements WebController {
@@ -25,7 +23,7 @@ public class UserController implements WebController {
     }
 
     @RequestMapping(method = HttpMethod.POST, value = "/user/create")
-    public HttpResponse createUser(final HttpRequest request) throws InvalidQueryParameterException {
+    public ModelAndView createUser(final HttpRequest request) throws InvalidQueryParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
         String userId = requestQuery.getValue("userId");
@@ -42,17 +40,20 @@ public class UserController implements WebController {
 
         userRepository.addUser(userDto);
 
-        return HttpResponse.ofWithStatusOnly(request.getVersion(), HttpStatus.CREATED);
+        logger.debug("{}라는 이름의 유저가 생성되었습니다.", name);
+
+        return new ModelAndView("/index.html", null);
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/user/search")
-    public HttpResponse getUser(HttpRequest request) throws InvalidQueryParameterException {
+    public ModelAndView getUser(HttpRequest request) throws InvalidQueryParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
         String userId = requestQuery.getValue("userId");
         UserDto userDto = userRepository.findUserById(userId);
 
-        return HttpResponse.ofWithBodyData(request.getVersion(), HttpStatus.OK, ContentType.HTML, userDto.toString().getBytes());
+        // TODO: 나중에 model 에 userDto 정보 넣어서 return 해야 한다.
+        return new ModelAndView("/index.html", null);
     }
 }
 
