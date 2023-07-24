@@ -39,7 +39,7 @@ public class HttpResponse {
         return path;
     }
 
-    public String getContentType() {
+    private String getContentType() {
         String contentType = mime.getContentType();
         logger.debug("content type: {}", contentType);
         return contentType;
@@ -47,12 +47,16 @@ public class HttpResponse {
 
     public void response(OutputStream out) {
         DataOutputStream dos = new DataOutputStream(out);
-        response200Header(dos, body.length);
+        if (this.status.equals("200 OK")) {
+            response200Header(dos, body.length);
+        } else if (this.status.equals("302 Found")) {
+            response302Header(dos);
+        }
         responseBody(dos, body);
     }
 
     public static HttpResponse redirect(String path) throws IOException {
-        return new HttpResponse("302 FOUND", path, null);
+        return new HttpResponse("302 Found", path, HttpMime.HTML);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
@@ -60,6 +64,20 @@ public class HttpResponse {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + getContentType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        try {
+            logger.debug("this.path: {}", this.path);
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: " + this.path + "\r\n");
+            dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
+            dos.writeBytes("Pragma: no-cache\r\n");
+            dos.writeBytes("Expires: 0\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());

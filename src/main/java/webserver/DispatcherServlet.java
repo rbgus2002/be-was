@@ -58,12 +58,13 @@ public class DispatcherServlet {
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
-        HttpResponse httpResponse;
-        if (methodHandle.type().parameterCount() > 0) {
-            httpResponse = (HttpResponse) methodHandle.invoke(request.getParams());
-        } else {
-            httpResponse = (HttpResponse) methodHandle.invoke();
+        if (methodHandle.type().parameterCount() > 1) {
+            throw new IllegalAccessException("1개의 인자만 받을 수 있습니다.");
         }
-        return httpResponse;
+        if (methodHandle.type().parameterCount() == 0){
+            return (HttpResponse) methodHandle.invoke();
+        }
+
+        return (HttpResponse) methodHandle.invoke(request.getParams());
     }
 }

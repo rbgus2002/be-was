@@ -22,8 +22,10 @@ public class Controller {
                 queryString.get("name"),
                 queryString.get("email")
         );
+
         Database.addUser(user);
         logger.debug("User: {}", user);
+
         return HttpResponse.redirect("/index.html");
     }
 }
