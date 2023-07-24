@@ -10,7 +10,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
@@ -18,7 +17,6 @@ import webserver.utils.HttpHeader;
 
 public class HttpWasRequest {
 
-	private static final String BASE64_PATTERN = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
 	private static final String PROTOCOL_VERSION = "ProtocolVersion";
 	private static final String HTTP_METHOD = "HttpMethod";
@@ -53,8 +51,8 @@ public class HttpWasRequest {
 	private String getBodyData(BufferedReader bufferedReader) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int data;
-		while(bufferedReader.ready() && (data = bufferedReader.read()) != -1) {
-			sb.append((char) data);
+		while (bufferedReader.ready() && (data = bufferedReader.read()) != -1) {
+			sb.append((char)data);
 		}
 		return sb.toString();
 	}
@@ -121,9 +119,6 @@ public class HttpWasRequest {
 	}
 
 	private String base64Decoder(String value) {
-		if (!Pattern.matches(BASE64_PATTERN, value)) {
-			return URLDecoder.decode(value, StandardCharsets.UTF_8);
-		}
-		return value;
+		return URLDecoder.decode(value, StandardCharsets.UTF_8);
 	}
 }
