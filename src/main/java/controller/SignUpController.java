@@ -25,6 +25,8 @@ public class SignUpController implements Controller {
     @Override
     public void execute(HttpRequest request) {
         Database.addUser(new User(userId, password, name, email));
+        //중복처리
+        //동시성 처리 어떻게?
     }
 
     @Override
@@ -32,17 +34,18 @@ public class SignUpController implements Controller {
         String[] bodys = request.getBody().split("[&]");
 
         if(bodys.length != SIGN_UP_PARAMS_LENGTH) {
-            throw new BadRequestException();
+            throw new BadRequestException("파라미터의 개수가 잘못되었습니다!");
         }
         parseBody(bodys);
     }
 
     private void parseBody(String[] bodys) {
+        //바디 파싱을 여기서 하는게 맞을까?
         for (String body : bodys) {
             String[] param = body.split("[=]");
 
             if(param.length != KEY_VALUE_PAIR_LENGTH) {
-                throw new BadRequestException();
+                throw new BadRequestException("Body의 형식이 잘못되었습니다!");
             }
 
             setParams(param);
@@ -64,7 +67,7 @@ public class SignUpController implements Controller {
                 email = getDecodedString(param[VALUE_INDEX]);
                 break;
             default:
-                throw new BadRequestException();
+                throw new BadRequestException("알맞은 key값을 넣어주세요!");
         }
     }
 

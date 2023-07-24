@@ -49,10 +49,10 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
             FrontController.service(request, response);
         } catch (NotFoundException e) {
             response.setStatus(HttpResponseStatus.STATUS_404);
-            response.setBodyByText("404 NOT FOUND");
+            response.setBodyByText(e.getMessage());
         } catch (BadRequestException e) {
             response.setStatus(HttpResponseStatus.STATUS_400);
-            response.setBodyByText("400 BAD REQUEST");
+            response.setBodyByText(e.getMessage());
         }
     }
 

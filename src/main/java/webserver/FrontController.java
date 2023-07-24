@@ -22,7 +22,7 @@ public class FrontController {
         Controller controller = HttpRequestMapper.getInstance().getController(request.getMethod(), request.getUrl());
 
         if(controller == null){
-            throw new NotFoundException();
+            throw new NotFoundException("요청과 일치하는 페이지를 찾을 수 없습니다!");
         }
 
         controller.verifyRequest(request);
