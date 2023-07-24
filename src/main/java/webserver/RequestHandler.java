@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static http.HttpUtil.*;
 import static http.HttpParser.*;
+import static service.SessionService.isSessionValid;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -69,6 +70,9 @@ public class RequestHandler implements Runnable {
         String sid = null;
         if(headerMap.containsKey(HEADER_COOKIE)) {
             sid = headerMap.get(HEADER_COOKIE).split("=")[1];
+            if(!isSessionValid(sid)) {
+                sid = null;
+            }
         }
 
         // Body
