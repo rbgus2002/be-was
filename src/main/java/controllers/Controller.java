@@ -14,6 +14,8 @@ import http.HttpParameter;
 import http.HttpRequest;
 import http.HttpResponse;
 import model.User;
+import session.Session;
+import session.SessionConst;
 
 public class Controller {
 	private static Logger logger = LoggerFactory.getLogger(Controller.class);
@@ -39,6 +41,7 @@ public class Controller {
 			String password = httpRequest.getParameter().getParameter("password");
 			if (Database.verifyUser(userId, password)) {
 				logger.debug("{} LOGIN 성공", userId);
+				httpResponse.addCookie(SessionConst.sessionId, Session.newInstance().createSession(userId));
 				return "redirect:/";
 			}
 		} catch (IllegalArgumentException e) {
