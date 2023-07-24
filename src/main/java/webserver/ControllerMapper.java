@@ -3,7 +3,7 @@ package webserver;
 import application.controller.UserController;
 import application.controller.WebController;
 import support.annotation.RequestMapping;
-import webserver.Constants.PathConstants;
+import webserver.exception.InvalidPathParameterException;
 import webserver.request.HttpRequest;
 
 import java.lang.reflect.Method;
@@ -21,13 +21,18 @@ public class ControllerMapper {
         controllers.put("/user", new UserController());
     }
 
-    private WebController getController(HttpRequest httpRequest) {
-        return controllers.get(httpRequest.getPathSegment(ROOT_PATH));
+    private Optional<WebController> getController(HttpRequest httpRequest) {
+        WebController controller = controllers.get(httpRequest.getPathSegment(ROOT_PATH));
+        if(controller == null) return Optional.empty();
+        return Optional.of(controller);
     }
 
     public Optional<Method> getMethod(HttpRequest httpRequest) {
-        WebController controller = getController(httpRequest);
-        for (Method method : controller.getClass().getMethods()) {
+        Optional<WebController> controllerOpt = getController(httpRequest);
+        if(controllerOpt.isEmpty()) throw new InvalidPathParameterException();
+
+        WebController controller = controllerOpt.get();
+        for (Method method : controller.getClass().getDeclaredMethods()) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping annotation = method.getAnnotation(RequestMapping.class);
                 if (annotation.value().equals(httpRequest.getPathSegment(SUB_FIRST_PATH)) && annotation.method().equals(httpRequest.getHttpMethod())) {
