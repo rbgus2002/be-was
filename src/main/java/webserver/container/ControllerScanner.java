@@ -18,23 +18,25 @@ public class ControllerScanner {
 	private static final String EXTENSION = ".java";
 
 	private static ControllerScanner instance = null;
+	private final ControllerMapping controllerMapping = ControllerMapping.getInstance();
 	private final UrlMapping urlMapping = UrlMapping.getInstance();
 
 	private ControllerScanner() {
-		try {
-			scanControllers();
-		} catch (ReflectiveOperationException e) {
-			logger.debug(e.getMessage());
-		}
 	}
 
 	public static void initialize() {
-		if (instance == null) {
-			instance = new ControllerScanner();
+		if (instance != null) {
+			return;
+		}
+		instance = new ControllerScanner();
+		try {
+			instance.scanControllers();
+		} catch (ReflectiveOperationException e) {
+			logger.error(e.getMessage());
 		}
 	}
 
-	private void scanControllers() throws ClassNotFoundException {
+	private void scanControllers() throws ReflectiveOperationException {
 		File appDirectory = new File(PROJECT_PATH + APP_PATH);
 		if (!appDirectory.exists()) {
 			throw new ClassNotFoundException();
@@ -42,7 +44,7 @@ public class ControllerScanner {
 		findControllerRecur(appDirectory);
 	}
 
-	private void findControllerRecur(File directory) throws ClassNotFoundException {
+	private void findControllerRecur(File directory) throws ReflectiveOperationException {
 		for (File file : directory.listFiles()) {
 			if (file.isFile()) {
 				addController(file);
@@ -52,12 +54,13 @@ public class ControllerScanner {
 		}
 	}
 
-	private void addController(File controller) throws ClassNotFoundException {
+	private void addController(File controller) throws ReflectiveOperationException {
 		String classFilePath = controller.getPath();
 		String className = classFilePath.substring(PROJECT_PATH.length(), classFilePath.indexOf(EXTENSION))
 			.replace("/", ".");
 		Class<?> clazz = Class.forName(className);
 		if (clazz.isAnnotationPresent(Controller.class)) {
+			controllerMapping.add(clazz, clazz.getConstructor().newInstance());
 			scanRequestMapping(clazz);
 		}
 	}
@@ -69,7 +72,7 @@ public class ControllerScanner {
 				continue;
 			}
 			UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.of(annotation.path(), annotation.method());
-			urlMapping.addRequestMapping(urlHttpMethodPair, method);
+			urlMapping.add(urlHttpMethodPair, method);
 		}
 	}
 }

@@ -17,11 +17,11 @@ public class UrlMapping {
 		return LazyHolder.instance;
 	}
 
-	public void addRequestMapping(UrlHttpMethodPair pair, Method method) {
+	public void add(UrlHttpMethodPair pair, Method method) {
 		mapping.put(pair, method);
 	}
 
-	public Method findRequestMapping(String path, HttpMethod httpMethod) {
+	public Method find(String path, HttpMethod httpMethod) {
 		return mapping.get(UrlHttpMethodPair.of(path, httpMethod));
 	}
 
