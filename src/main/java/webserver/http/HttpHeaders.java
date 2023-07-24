@@ -19,8 +19,8 @@ public class HttpHeaders {
     public String getContentType() {
         return headers.get(CONTENT_TYPE);
     }
-    public int getContentLength() {
-        return Integer.parseInt(headers.get(CONTENT_LENGTH));
+    public String getContentLength() {
+        return headers.get(CONTENT_LENGTH);
     }
 
     public void show(StringBuilder sb) {
