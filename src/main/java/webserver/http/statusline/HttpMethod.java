@@ -1,4 +1,4 @@
-package http.statusline;
+package webserver.http.statusline;
 
 public enum HttpMethod {
 	GET, POST, PUT, DELETE, CONNECT, HEAD, OPTIONS, TRACE, NOT_ANNOUNCED;

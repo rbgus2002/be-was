@@ -1,6 +1,4 @@
-package http;
-
-import static http.header.HeaderConst.*;
+package webserver.http;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,11 +6,12 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import http.header.Header;
-import http.header.MimeType;
-import http.statusline.StatusCode;
-import http.statusline.ResponseLine;
-import session.Cookie;
+import webserver.http.header.Header;
+import webserver.http.header.MimeType;
+import webserver.http.statusline.StatusCode;
+import webserver.http.statusline.ResponseLine;
+import webserver.http.header.Cookie;
+import webserver.http.header.HeaderConst;
 
 public class HttpResponse {
 	private ResponseLine responseLine = new ResponseLine();
@@ -51,12 +50,11 @@ public class HttpResponse {
 	public void addCookie(String cookieName, String sessionId) {
 		Cookie cookie = Cookie.newCookie();
 		cookie.add(cookieName, sessionId);
-		cookie.add("Path", "/");
 		header.addHeader("Set-Cookie", cookie.toHeaderValue());
 	}
 
 	private void responseStatusLine(DataOutputStream dos) throws IOException {
-		dos.writeBytes(responseLine.getStatusLineForHeader() + CRLF);
+		dos.writeBytes(responseLine.getStatusLineForHeader() + HeaderConst.CRLF);
 	}
 
 	private void responseHeader(DataOutputStream dos) throws IOException {

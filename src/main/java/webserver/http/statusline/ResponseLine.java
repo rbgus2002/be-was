@@ -1,4 +1,4 @@
-package http.statusline;
+package webserver.http.statusline;
 
 public class ResponseLine {
 	public static final String STATUS_LINE_DELIMETER = " ";

@@ -1,4 +1,4 @@
-package http.header;
+package webserver.http.header;
 
 public interface HeaderConst {
 	public static final String HEADER_DELIMITER = ": ";

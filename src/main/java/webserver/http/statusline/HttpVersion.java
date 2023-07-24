@@ -1,4 +1,4 @@
-package http.statusline;
+package webserver.http.statusline;
 
 public enum HttpVersion {
 	HTTP_1_1("HTTP/1.1"), HTTP_2("HTTP/2.0");

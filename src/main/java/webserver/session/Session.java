@@ -1,11 +1,9 @@
-package session;
+package webserver.session;
 
 import java.util.Map;
 import java.util.UUID;
 
 import com.google.common.collect.Maps;
-
-import model.User;
 
 public class Session {
 	private static Session SESSION = new Session();

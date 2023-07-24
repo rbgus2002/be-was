@@ -1,4 +1,4 @@
-package session;
+package webserver.http.header;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +27,7 @@ public class Cookie {
 			headerValues.add(stringBuilder.append(cookieName).append("=").append(cookies.get(cookieName)).toString());
 			stringBuilder.setLength(0);
 		}
+		headerValues.add("Path=/");
 		return String.join(COOKIE_DELIMITER, headerValues);
 	}
 }
