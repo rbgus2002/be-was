@@ -1,8 +1,10 @@
 package controller;
 
 import http.HttpUtil;
+import model.Post;
 import model.User;
 import service.FileService;
+import service.PostService;
 import service.UserService;
 import webserver.model.Request;
 import webserver.model.Response;
@@ -15,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static http.HttpUtil.*;
+import static http.HttpParser.*;
 import static webserver.model.Request.Method;
 import static service.FileService.readStaticFile;
 import static service.SessionService.getUserIdBySid;
@@ -90,6 +93,16 @@ public class FileController {
                     headerMap.put(HEADER_REDIRECT_LOCATION, USER_LOGIN_URL);
                     return new Response(STATUS.SEE_OTHER, headerMap, null);
                 }
+            }
+
+            // 글 쓰기(/qna/form.html) 글 작성 완료 후 전송시
+            if(targetUri.equals(QNA_FORM_URL) && request.getMethod() == Method.POST) {
+                Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
+                PostService.addPost(bodyParameterMap);
+
+                Map<String, String> headerMap = new HashMap<>();
+                headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+                return new Response(STATUS.SEE_OTHER, headerMap, null);
             }
 
             body = httpDocument.getBytes();
