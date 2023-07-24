@@ -6,6 +6,7 @@ import support.web.ControllerResolver;
 import support.exception.FoundException;
 import support.exception.HttpException;
 import support.exception.NotSupportedException;
+import support.web.ViewResolver;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -30,7 +31,13 @@ public class HttpHandler {
             return;
         }
 
-        searchAndReturnPage(response, path);
+        try {
+            ViewResolver.buildView(response, path);
+            response.setStatus(HttpStatus.OK);
+        } catch (IOException e) {
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.buildHeader(new NotFound());
+        }
     }
 
     public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
