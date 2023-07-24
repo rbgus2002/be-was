@@ -36,7 +36,15 @@ Java Web Application Server 2023
 - [x] redirection 기능 구현
   - [x] 회원가입 완료하면 "/index.html'로 redirection
   - [x] http status code 302 사용
-
+#### Web Server step-5
+- 로그인
+  - [x] 로그인 메뉴 클릭 시 /user/login.html 이동
+  - 성공
+    - [ ] redirect
+    - [ ] 응답 header의 Set-Cookie 값 설정
+    - [ ] user 정보에 접근할 수 있는 세션 ID 적용
+  - [ ] 로그인 실패 시 /user/login_failed.html 이동
+  - 
 
 ## To Study List
 #### Web Server step-1
@@ -51,3 +59,5 @@ Java Web Application Server 2023
 - [x] MIME 타가입 이해하기
 #### Web Server step-4
 - [x] 자주 사용하는 status code 정리
+#### Web Server step-5
+- [x] 쿠키, 세션 간단하게 학습
