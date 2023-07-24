@@ -12,7 +12,7 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    public static byte[] readFile(String path) throws IOException {
+    public static byte[] readFileBytes(String path) throws IOException {
         if (FileUtils.isStaticFile(path)) {
             return Files.readAllBytes(Paths.get(STATIC_DIRECTORY + path));
         }

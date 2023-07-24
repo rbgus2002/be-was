@@ -72,7 +72,7 @@ public class IndexPageController implements Controller {
     }
 
     private BufferedReader getIndexFileReader() throws IOException {
-        byte[] htmlBytes = FileUtils.readFile("/index.html");
+        byte[] htmlBytes = FileUtils.readFileBytes("/index.html");
         return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(htmlBytes)));
     }
 }

@@ -19,7 +19,7 @@ public class FileController implements Controller {
     }
 
     private void processFileResponse(HttpResponse httpResponse, String filePath) throws IOException {
-        byte[] body = FileUtils.readFile(filePath);
+        byte[] body = FileUtils.readFileBytes(filePath);
         HttpStatus status = resolveHttpStatus(filePath);
         String contentType = ContentTypeResolver.getContentType(filePath);
 

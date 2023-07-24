@@ -46,7 +46,7 @@ public class UserListController implements Controller {
     }
 
     private BufferedReader getUserListTemplateFileReader() throws IOException {
-        byte[] htmlBytes = FileUtils.readFile("/user/list.html");
+        byte[] htmlBytes = FileUtils.readFileBytes("/user/list.html");
         return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(htmlBytes)));
     }
 
