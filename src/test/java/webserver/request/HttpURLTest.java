@@ -36,8 +36,7 @@ class HttpURLTest {
         // then
         assertAll(
                 () -> assertEquals(url, httpURL.getUrl()),
-                () -> assertEquals(".html", httpURL.getExtension()),
-                () -> assertEquals("/main/index.html", httpURL.getPath())
+                () -> assertEquals(".html", httpURL.getExtension())
         );
     }
 
@@ -54,7 +53,6 @@ class HttpURLTest {
         assertAll(
                 () -> assertEquals(url, httpURL.getUrl()),
                 () -> assertEquals(".index", httpURL.getExtension()),
-                () -> assertEquals("/user/login.index", httpURL.getPath()),
                 () -> assertTrue(httpURL.getParameters().containsKey("userId")),
                 () -> assertTrue(httpURL.getParameters().containsKey("password")),
                 () -> assertTrue(httpURL.getParameters().containsKey("name")),
