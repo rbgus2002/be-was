@@ -1,6 +1,5 @@
 package db;
 
-import com.google.common.collect.Maps;
 import model.Session;
 import model.User;
 
@@ -10,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Database {
 
-    private static Map<String, User> users = Maps.newHashMap();
-    private static Map<String, Session> sessions = new ConcurrentHashMap();
+    private static Map<String, User> users = new ConcurrentHashMap<>();
+    private static Map<String, Session> sessions = new ConcurrentHashMap<>();
 
     public static void clear() {
         users.clear();
