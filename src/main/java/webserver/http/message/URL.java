@@ -10,7 +10,7 @@ public class URL {
 	private URL() {
 	}
 
-	public static URL of(String urlString) {
+	public static URL from(String urlString) {
 		URL url = new URL();
 		String[] tokens = urlString.split("\\?");
 		url.path = tokens[0];
