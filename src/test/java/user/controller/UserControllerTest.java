@@ -16,6 +16,7 @@ import webserver.myframework.session.SessionManager;
 import webserver.myframework.session.SessionManagerImpl;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
@@ -42,15 +43,10 @@ class UserControllerTest {
             @DisplayName("요청으로부터 파라미터를 받아 유저 객체를 생성하고 데이터베이스에 저장한다")
             void createUserByRequestParametersAndSaveToDatabase() {
                 //given
-                HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
-                        .addHeader("Content-Length", String.valueOf(body.length))
-                        .body(body)
-                        .build();
-
                 HttpResponse httpResponse = HttpResponse.getInstance();
 
                 //when
-                userController.signUp(httpRequest, httpResponse);
+                userController.signUp(new String(body, StandardCharsets.UTF_8), httpResponse);
 
                 //then
                 User user = Database.findUserById("syuaID");
@@ -65,14 +61,10 @@ class UserControllerTest {
             @Test
             @DisplayName("BAD_REQUEST가 발생한다")
             void occurBAD_REQUESET() {
-                HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
-                        .body("userId=&password=asdf".getBytes())
-                        .build();
-
                 HttpResponse httpResponse = HttpResponse.getInstance();
 
                 //when
-                userController.signUp(httpRequest, httpResponse);
+                userController.signUp("userId=&password=asdf", httpResponse);
 
                 //then
                 assertThat(httpResponse.getStatus())
