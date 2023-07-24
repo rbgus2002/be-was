@@ -2,6 +2,7 @@ package service;
 
 import db.Database;
 import db.SessionDatabase;
+import exception.NotExistUserException;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 
@@ -111,7 +112,7 @@ class UserServiceTest {
         Map<String, String> loginInformation = new HashMap<>();
         loginInformation.put("userId", "honggildong");
         loginInformation.put("password", "0000");
-        Exception exception = assertThrows(Exception.class, () -> {
+        Exception exception = assertThrows(NotExistUserException.class, () -> {
             userService.loginUser(loginInformation);
         });
 

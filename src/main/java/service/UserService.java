@@ -1,6 +1,7 @@
 package service;
 
 import exception.BadRequestException;
+import exception.NotExistUserException;
 import model.User;
 
 import java.util.Map;
@@ -37,7 +38,7 @@ public class UserService {
     private void checkUserExist(Map<String, String> userInfo) {
         if (findAll().stream().noneMatch(user -> user.getUserId().equals(userInfo.get(USERID)) &&
                 user.getPassword().equals(userInfo.get(PASSWORD))))
-            throw new BadRequestException(NOT_EXIST_USER);
+            throw new NotExistUserException(NOT_EXIST_USER);
     }
 
     private boolean checkSessionIdExist(String sessionId) {

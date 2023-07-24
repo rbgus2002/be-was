@@ -1,13 +1,13 @@
 package controller;
 
 import exception.BadRequestException;
+import exception.NotExistUserException;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
 import http.MIME;
 import view.Page;
 
-import static exception.ExceptionList.NOT_EXIST_USER;
 import static http.Extension.HTML;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
@@ -37,9 +37,9 @@ public abstract class Controller {
             }
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
+        } catch (NotExistUserException e) {
+            return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED);
         } catch (BadRequestException e) {
-            if (e.getMessage().equals(NOT_EXIST_USER))
-                return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED);
             String errorPage = page.getErrorPage(e.getMessage());
             return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
                     .setContentType(MIME.getMIME().get(HTML));
