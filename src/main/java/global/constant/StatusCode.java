@@ -2,6 +2,7 @@ package global.constant;
 
 public enum StatusCode {
     OK("200", "OK"),
+    FOUND("302", "Redirect"),
     INTERNAL_SERVER_ERROR("500", "Internal Server Error"),
     BAD_REQUEST("400", "Bad Request");
 
