@@ -40,7 +40,7 @@ public class HttpSession {
 			return false;
 		}
 
-		if (sessionData.getExpiredTime().isAfter(LocalDateTime.now())) {
+		if (sessionData.getExpiredTime().isBefore(LocalDateTime.now())) {
 			return false;
 		}
 
