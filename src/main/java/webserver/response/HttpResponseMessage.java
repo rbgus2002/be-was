@@ -1,5 +1,6 @@
 package webserver.response;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,5 +51,16 @@ public class HttpResponseMessage {
 
     public byte[] getResponseBody() {
         return body;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpResponseMessage{" +
+                "version='" + version + '\'' +
+                ", statusCode='" + statusCode + '\'' +
+                ", statusMessage='" + statusMessage + '\'' +
+                ", headerMap=" + headerMap +
+                ", body=" + Arrays.toString(body) +
+                '}';
     }
 }

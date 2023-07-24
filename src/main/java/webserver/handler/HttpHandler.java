@@ -1,6 +1,5 @@
 package webserver.handler;
 
-import webserver.exception.BadRequestException;
 import webserver.request.HttpRequestMessage;
 import webserver.response.HttpMIME;
 import webserver.response.HttpResponseMessage;
@@ -10,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static utils.StringUtils.HOST_DOMAIN;
 import static webserver.WebServer.logger;
 import static webserver.controller.ApplicationControllerHandler.executeMethod;
 
@@ -23,20 +23,15 @@ public class HttpHandler {
     }
 
     public void handling() {
-        try {
+        if (httpRequestMessage.getExtension() != null) {
             // 자원을 요청하는 경우
-            if (httpRequestMessage.getExtension() != null) {
-                handlingResource();
-                return;
-            }
-            handlingController();
-        } catch (BadRequestException badRequestException) {
-            logger.error("찾을 수 없는 리소스입니다. {}", badRequestException.getLocalizedMessage());
-            httpResponseMessage.setStatusLine(HttpStatus.BAD_REQUEST);
+            handlingResource();
+            return;
         }
+        handlingController();
     }
 
-    private void handlingResource() throws BadRequestException {
+    private void handlingResource() {
         try {
             logger.debug(httpRequestMessage.getPath());
             byte[] body = Files.readAllBytes(Paths.get(httpRequestMessage.getPath()));
@@ -44,23 +39,40 @@ public class HttpHandler {
             httpResponseMessage.setBody(body);
             httpResponseMessage.setHeader("Content-Type", HttpMIME.findBy(httpRequestMessage.getExtension()).getType() + "; charset=UTF-8");
         } catch (IOException | IllegalArgumentException e) {
-            throw new BadRequestException("요청 파일 경로에 파일이 존재하지 않습니다.");
+            httpResponseMessage.setStatusLine(HttpStatus.NOT_FOUND);
+            httpResponseMessage.setBody("");
+            logger.error("요청 파일 경로에 파일이 존재하지 않습니다. {}", e.getLocalizedMessage());
         }
     }
 
-    private void handlingController() throws BadRequestException {
+    private void handlingController() {
         try {
-            executeMethod(httpRequestMessage);
+            // 결과값 반환
+            Object returnValue = executeMethod(httpRequestMessage);
             httpResponseMessage.setStatusLine(HttpStatus.CREATED);
-            httpResponseMessage.setHeader("Location", httpRequestMessage.getPath());
 
-            // todo 리다이렉트 만들어 주기.
+            if (returnValue == null) {
+                return;
+            }
+            // String을 받은 상황
+            if (returnValue.getClass().equals(String.class)) {
+                String resultStringValue = String.valueOf(returnValue);
+
+                // 리다이렉트를 처리해야 하는 상황
+                if (resultStringValue.startsWith("redirect:")) {
+                    String redirectPath = resultStringValue.substring(resultStringValue.indexOf(":") + 1);
+                    logger.debug(redirectPath);
+                    httpResponseMessage.setStatusLine(HttpStatus.FOUND);
+                    httpResponseMessage.setHeader("Location", HOST_DOMAIN + redirectPath);
+                    logger.debug(httpResponseMessage.toString());
+                    return;
+                }
+            }
+
         } catch (ReflectiveOperationException e) {
-            throw new BadRequestException("올바르지 않은 수행 요청입니다.");
+            httpResponseMessage.setStatusLine(HttpStatus.BAD_REQUEST);
+            httpResponseMessage.setBody("");
+            logger.error("올바르지 않은 수행 요청입니다.");
         }
-    }
-
-    public HttpResponseMessage getHttpResponseMessage() {
-        return httpResponseMessage;
     }
 }

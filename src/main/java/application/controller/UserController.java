@@ -15,6 +15,6 @@ public class UserController {
                              @RequestParameter(value = "name") String name,
                              @RequestParameter(value = "email") String email) {
         Database.addUser(new User(userId, password, name, email));
-        return "/index.html";
+        return "redirect:/index.html";
     }
 }
