@@ -24,6 +24,11 @@ Java Web Application Server 2023
   - request line에서의 query parameter 저장
   - MIME enum 클래스 추가
   - 다양한 Content-Type 지원하도록
+  - 빌더패턴 적용해 생성자 코드 깔끔하게 정리
+  - Main 클래스 생성해서, 실행하는 코드 분리
+  - request 통합 테스트
+  - 회원가입 구현가
+  - 로그인 성공 시 쿠키 생성하여 세션 저장
 
 - 해야 할 일
   - HTTP wiki에 정리
