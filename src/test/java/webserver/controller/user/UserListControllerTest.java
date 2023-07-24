@@ -71,7 +71,7 @@ class UserListControllerTest {
 
         //then
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
-        softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/login.html");
+        softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/user/login.html");
         softAssertions.assertAll();
     }
 
@@ -93,7 +93,7 @@ class UserListControllerTest {
 
         //then
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
-        softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/login.html");
+        softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/user/login.html");
         softAssertions.assertAll();
     }
 }
