@@ -19,6 +19,7 @@ import static webserver.WebServer.logger;
 public class HttpRequestParser {
     public static final String TEMPLATES_PATH = "src/main/resources/templates";
     public static final String STATIC_PATH = "src/main/resources/static";
+    public static final String WELCOME_PATH = "/index.html";
 
     public static HttpRequestMessage parseRequest(InputStream inputStream) throws BadRequestException {
         try {
@@ -97,9 +98,8 @@ public class HttpRequestParser {
     }
 
     private static String extractPath(String url, int queryIndex) {
-        // todo 기본 경로에 접속할 경우 파서가 재설정 해주는 것이 맞는것인지..?
         if (url.equals("/")) {
-            url = "/index.html";
+            url = WELCOME_PATH;
         }
         if (queryIndex != -1) {
             return url.substring(0, queryIndex);
