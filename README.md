@@ -31,11 +31,11 @@ Java Web Application Server 2023
   - [x] png
   - [x] jpg 
 #### Web Server step-4
-- [ ] POST를 통한 회원가입 구현
-  - [ ] HttpRequest 객체에 body 추가&적용 
-- [ ] redirection 기능 구현
-  - [ ] 회원가입 완료하면 "/index.html'로 redirection
-  - [ ] http status code 302 사용
+- [x] POST를 통한 회원가입 구현
+  - [x] HttpRequest 객체에 body 추가&적용 
+- [x] redirection 기능 구현
+  - [x] 회원가입 완료하면 "/index.html'로 redirection
+  - [x] http status code 302 사용
 
 
 ## To Study List
@@ -43,11 +43,11 @@ Java Web Application Server 2023
 - 단순 구현이 아닌 동작 원리 파악하기
   - [x] 자바 스레드 모델 
     - [x] 버전별 변경점
-    - [ ] 향후 지향점
+    - [] 향후 지향점
   - [x] Concurrent 패키지 학습
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
 #### Web Server step-3
 - [x] MIME 타가입 이해하기
 #### Web Server step-4
-- [ ] 자주 사용하는 status code 정리
+- [x] 자주 사용하는 status code 정리
