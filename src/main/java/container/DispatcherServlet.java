@@ -27,7 +27,7 @@ public class DispatcherServlet {
             viewPath = path;
         }
 
-        ViewResolver view = new ViewResolver();
+        ViewResolver view = new ViewResolver(viewPath, response);
 
     }
 }
