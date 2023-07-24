@@ -24,6 +24,11 @@ public class Controller {
 		return "redirect:/";
 	}
 
+	@PostMapping(path = "/user/login")
+	public String login(HttpParameter httpParameter) {
+		throw new UnsupportedOperationException();
+	}
+
 	private User parameterToUser(HttpParameter httpParameter) {
 		return new User(
 			httpParameter.getParameter("userId"),
