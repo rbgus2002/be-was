@@ -11,10 +11,11 @@ import static exception.ExceptionList.ALREADY_EXIST_USER;
 import static exception.ExceptionList.NOT_EXIST_USER;
 
 public class UserService {
-    private String USERID = "userId";
-    private String PASSWORD = "password";
-    private String NAME = "name";
-    private String EMAIL = "email";
+    private final String USERID = "userId";
+    private final String PASSWORD = "password";
+    private final String NAME = "name";
+    private final String EMAIL = "email";
+
     public void createUser(Map<String, String> userInfo) {
         checkUserAlreadyExist(userInfo.get(USERID));
         User user = new User(userInfo.get(USERID), userInfo.get(PASSWORD), userInfo.get(NAME), userInfo.get(EMAIL));
@@ -35,7 +36,7 @@ public class UserService {
 
     private void checkUserExist(Map<String, String> userInfo) {
         if (findAll().stream().noneMatch(user -> user.getUserId().equals(userInfo.get(USERID)) &&
-                                                 user.getPassword().equals(userInfo.get(PASSWORD))))
+                user.getPassword().equals(userInfo.get(PASSWORD))))
             throw new BadRequestException(NOT_EXIST_USER);
     }
 
