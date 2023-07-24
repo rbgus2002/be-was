@@ -50,6 +50,7 @@ public class HttpResponse {
 	public void addCookie(String cookieName, String sessionId) {
 		Cookie cookie = Cookie.newCookie();
 		cookie.add(cookieName, sessionId);
+		cookie.add("Path", "/");
 		header.addHeader("Set-Cookie", cookie.toHeaderValue());
 	}
 
