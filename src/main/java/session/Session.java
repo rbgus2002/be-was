@@ -26,6 +26,7 @@ public class Session {
 	public void removeSession(String sessionId) {
 		if (sessionStore.containsKey(sessionId)) {
 			sessionStore.remove(sessionId);
+			return;
 		}
 		throw new IllegalArgumentException("세션 ID가 등록되지 않아 세션을 제거할 수 없습니다.");
 	}
