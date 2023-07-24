@@ -3,7 +3,6 @@ package webserver.http;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.response.ResponseMessageHeader;
-import webserver.http.response.header.MimeType;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +21,8 @@ class ResponseMessageHeaderTest {
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
         //when
-        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, MimeType.HTML.getMimeType(), null);
+
+        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, "text/html", null);
 
         //then
         assertEquals(expected, header);

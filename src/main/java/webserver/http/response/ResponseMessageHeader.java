@@ -5,8 +5,6 @@ import webserver.server.WebServer;
 import static webserver.http.response.header.ResponseHeader.*;
 import static webserver.http.response.header.StatusLine.*;
 
-
-//todo: 나중에 빌더 타입으로 수정
 public class ResponseMessageHeader {
     private static final String KEY_VALUE_PARSER = ":";
     private static final String SEMI_COLUMN = ";";

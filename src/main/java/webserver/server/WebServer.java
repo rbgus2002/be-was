@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
-    private static final int THREAD_NUMBER = 100;
+    private static final int THREAD_NUMBER = Runtime.getRuntime().availableProcessors();
 
     public static final String HOME_URL = "http://localhost:" + DEFAULT_PORT;
 

@@ -3,7 +3,7 @@ package webserver.http.response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.response.body.ResponseBody;
-import webserver.http.response.header.HttpContentType;
+import webserver.http.response.header.MimeType;
 import webserver.util.Parser;
 
 import java.io.DataOutputStream;
@@ -34,9 +34,9 @@ public class ResponseWriter {
     }
 
     public void forward(String url) {
-        HttpContentType httpContentType = HttpContentType.createHttpContentType();
+        MimeType mimeType = MimeType.createHttpContentType();
         String extension = Parser.getUrlExtension(url);
-        String contentType = httpContentType.getContentType(extension);
+        String contentType = mimeType.getContentType(extension);
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         ResponseBody responseBody = httpResponse.getBody();
         try {

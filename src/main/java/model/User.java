@@ -1,18 +1,18 @@
 package model;
 
-import java.util.UUID;
 
 public class User {
 
-    private final UUID sessionId;
     private final String userId;
     private final String password;
     private final String name;
     private final String email;
+    public static final String USERID_KEY = "userId";
+    public static final String PASSWORD_KEY = "password";
+    public static final String NAME_KEY = "name";
+    public static final String EMAIL_KEY = "email";
 
     public User(String userId, String password, String name, String email) {
-
-        this.sessionId = UUID.randomUUID();
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -31,9 +31,6 @@ public class User {
         return name;
     }
 
-    public String getSessionId() {
-        return sessionId.toString();
-    }
 
     @Override
     public String toString() {

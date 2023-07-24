@@ -15,20 +15,14 @@ public class HttpRequest {
     private final HttpMethod method;
     private final String url;
     private final String version;
-    private FormData formData;
+    private final FormData formData;
 
     public HttpRequest(String request, String requestBody) {
         String[] req = request.split(BLANK);
-        this.formData = null;
         ValidRequest(req);
         method = HttpMethod.valueOf(req[0]);
-        String tmpUrl = req[1];
-        String[] parseUrlData = Parser.parseUrlData(tmpUrl, method, requestBody);
-        if(parseUrlData[0] != null) {
-            this.formData = new FormData(parseUrlData[0]);
-        }
-        this.url = parseUrlData[1];
-
+        this.url = Parser.parseUrl(req[1]);
+        this.formData = new FormData(Parser.parseQuery(req[1]), Parser.parseBody(requestBody));
         this.version = req[2];
         logger.info("HttpRequest Create end url = " + url);
     }
@@ -48,7 +42,11 @@ public class HttpRequest {
     public String getVersion() {
         return version;
     }
-    public Map<String, String> getFormDataMap() {
-        return formData == null?null:formData.getFormDataMap();
+    public Map<String, String> getQueries() {
+        return formData == null ? null : formData.getQueries();
+    }
+
+    public Map<String, String> getBodies() {
+        return formData == null ? null : formData.getBodies();
     }
 }

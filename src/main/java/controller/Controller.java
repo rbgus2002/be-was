@@ -5,6 +5,6 @@ import webserver.http.response.HttpResponse;
 
 
 public interface Controller {
-    String execute(HttpRequest request, HttpResponse response);
+    HttpResponse execute(HttpRequest request, HttpResponse response);
 }
     

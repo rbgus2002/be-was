@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 
 class ForwardControllerTest {
@@ -11,7 +12,7 @@ class ForwardControllerTest {
     ForwardController forwardController;
 
     @Test
-    @DisplayName("Home Controller 가 잘 작동하는 지??")
+    @DisplayName("url을 그대로 반환해야 한다!")
     void home() {
         // given
         String url = "/sss";
@@ -19,7 +20,8 @@ class ForwardControllerTest {
         HttpRequest httpRequest = new HttpRequest("GET " + url + " HTTP/1.1", null);
 
         // when
-        String s = forwardController.execute(httpRequest, null);
+        HttpResponse httpResponse = forwardController.execute(httpRequest, new HttpResponse());
+        String s = httpResponse.getToUrl();
 
         // then
         Assertions.assertEquals(url, s);

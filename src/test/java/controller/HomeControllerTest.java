@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 
 
 class HomeControllerTest {
@@ -16,7 +17,8 @@ class HomeControllerTest {
         HttpRequest httpRequest = new HttpRequest("GET /index.html HTTP/1.1", null);
 
         // when
-        String s = homeController.execute(httpRequest, null);
+        HttpResponse httpResponse = homeController.execute(httpRequest, new HttpResponse());
+        String s = httpResponse.getToUrl();
 
         // then
         Assertions.assertEquals("/index.html", s);

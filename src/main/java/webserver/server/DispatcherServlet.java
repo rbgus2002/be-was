@@ -19,21 +19,21 @@ public class DispatcherServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
+    public static final String REDIRECT = "redirect:";
+
     protected void service(HttpRequest req, HttpResponse resp, DataOutputStream dataOutputStream) {
-        final String REDIRECT = "redirect";
 
         logger.info("DispatcherServlet service");
         Controller controller = requestMapper.getController(req.getUrl());
-        String toUrl;
         if (controller == null) {
             controller = new ForwardController();
         }
-        toUrl = controller.execute(req, resp);
-        ResponseBody responseBody = new ResponseBody(toUrl);
-        resp.setBody(responseBody);
-        ResponseWriter responseWriter = new ResponseWriter(dataOutputStream, resp);
+        HttpResponse response = controller.execute(req, resp);
+        String toUrl = response.getToUrl();
+        response.setBody(new ResponseBody(toUrl));
+        ResponseWriter responseWriter = new ResponseWriter(dataOutputStream, response);
         if (toUrl.contains(REDIRECT)) {
-            String redirectUrl = toUrl.split(":")[1];
+            String redirectUrl = toUrl.split(REDIRECT)[1];
             if(redirectUrl.contains(BLANK)) {
                 redirectUrl = redirectUrl.trim();
             }

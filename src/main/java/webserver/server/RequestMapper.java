@@ -6,9 +6,11 @@ import controller.HomeController;
 import controller.LoginController;
 import controller.SignupController;
 
+import java.util.Map;
+
 
 public class RequestMapper {
-    private final ImmutableMap<String, Controller> map;
+    private final Map<String, Controller> map;
     private static final RequestMapper requestMapper = new RequestMapper();
 
     private RequestMapper() {

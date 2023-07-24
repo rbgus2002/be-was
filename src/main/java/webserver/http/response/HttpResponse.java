@@ -6,6 +6,8 @@ import webserver.http.response.body.ResponseBody;
 public class HttpResponse {
 
     private final ResponseMessageHeader responseMessageHeader;
+
+    private String toUrl;
     private ResponseBody responseBody;
 
     private String cookie;
@@ -19,6 +21,14 @@ public class HttpResponse {
 
     public ResponseMessageHeader getHeader() {
         return responseMessageHeader;
+    }
+
+    public void setToUrl(String url) {
+        toUrl = url;
+    }
+
+    public String getToUrl() {
+        return toUrl;
     }
 
     public void setBody(ResponseBody body) {
