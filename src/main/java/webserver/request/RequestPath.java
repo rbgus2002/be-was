@@ -1,7 +1,5 @@
 package webserver.request;
 
-import exception.InvalidPathException;
-
 public class RequestPath {
 
     private final int ROOT_PATH_INDEX = 1;
