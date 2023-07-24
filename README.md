@@ -32,3 +32,37 @@ Java Web Application Server 2023
     - Java.HttpRequest class를 참고하여 새롭게 HttpRequest class 및 builder를 생성하였다.
 3. 새롭게 생성한 HttpRequest 클래스를 이용하여 코드를 구현하였다.
 4. Concurrent Package의 ExecutorService와 Executors 등을 이용해 코드를 수정하였다.
+
+## Mission 2. 웹 서버 2단계 - GET으로 회원가입
+
+### 기능요구사항
+- “회원가입” 메뉴를 클릭하면 http://localhost:8080/user/form.html 으로 이동, 회원가입 폼을 표시한다.
+- 회원가입 폼을 통해 가입할 수 있다.
+
+### 프로그래밍 요구사항
+- get 요청 뒤의 parameter을 파싱하여 사용자의 입력값을 받아 온다.
+
+### 구현에 대한 설명
+1. /user/create에 대한 로직을 처리할 수 있는 Controller 클래스를 생성한다.
+2. ? 문자를 통해 파라미터 부분을 구분하고 파싱을 통해 입력값을 받아온다.
+3. DB addUser를 통해 사용자 정보를 저장한다.
+
+### 고려한 부분
+- 같은 아이디를 가진 요청이 올 경우 가입할 수 없다.
+- 동시에 같은 아이디를 가진 요청이 올 경우 lock을 통해 concurrency를 관리한다.
+- Contorller 클래스가 너무 커지지 않도록 분리하였다.
+
+
+## Mission 3. 웹 서버 3단계 - 다양한 컨텐츠 타입 지원
+
+### 기능요구사항
+- .html 파일 외에도 다양한 컨텐츠 타입을 지원하도록 한다.
+
+### 프로그래밍 요구사항
+- 기능요구사항의 정상 작동 + static 폴더의 파일들에 대한 요청이 잘 처리되는지 확인한다.
+
+### 구현에 대한 설명
+1. 처음에는 요청의 Accept 헤더를 참고하여 response의 content-type을 결정하였다.
+2. MIME 타입에 대해 공부한 뒤 Enum을 추가하여 파일의 확장자에 따라 response의 Content-type 헤더를 넣어주었다.
+3. 구조에 대한 피드백을 통해 더 좋은 구조를 만들기 위하여 수정하였다.
+
