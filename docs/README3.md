@@ -1,5 +1,8 @@
 # step-3 다양한 컨텐츠 타입 지원
 
 ## 기능 구현
-- [ ] 다양한 컨텐츠 타입 지원
-  - [ ] Response Header의 Content-Type을 Request Header의 Accept 이용해서 처리
+- [x] 다양한 컨텐츠 타입 지원
+    - [x] Request Header의 요청 경로를 이용해 컨텐츠 타입 지정
+
+- [ ] 공통으로 사용되는 문자열 상수화
+- [ ] 코드 리팩토링
