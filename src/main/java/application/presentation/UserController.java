@@ -19,7 +19,7 @@ public class UserController {
 
     @RequestMapping(value = "/user/create", method = Method.POST)
     public String create(@RequestBody final String body) {
-        Map<String, String> map = StringUtils.extractText(body);
+        Map<String, String> map = StringUtils.extractBy(body);
 
         UserRequest userRequest = new UserRequest(
                 map.get("userId"),
