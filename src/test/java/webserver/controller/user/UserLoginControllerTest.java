@@ -4,7 +4,6 @@ import db.Database;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.HttpRequest;
@@ -53,7 +52,7 @@ public class UserLoginControllerTest {
     @DisplayName("로그인 실패 시, 로그인 실패 페이지로 리다이렉트 시키고, Set-Cookie 헤더가 없어야 한다")
     void invalidLoginTest() throws Exception {
         //given
-        String body = "userId=userId&password=password";
+        String body = "userId=userId&password=qweqwe";
 
         String requestMessage = "POST /user/login HTTP/1.1\r\n"
                 + "Content-Type: application/x-www-form-urlencoded\r\n"
@@ -72,8 +71,9 @@ public class UserLoginControllerTest {
         //then
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
-        softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/user/login_failed.htm");
-        softAssertions.assertThat(httpResponse.getHeaderMessage()).doesNotContain("Set-Cookie");
+        softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/user/login_failed.html");
+        softAssertions.assertThat(httpResponse.getHeaderMessage()).doesNotContain("sid");
+        softAssertions.assertAll();
     }
 
 }
