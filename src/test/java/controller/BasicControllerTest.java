@@ -31,7 +31,7 @@ class BasicControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 리소스에 대한 요청 시 NOT_FOUND 404 상태를 반환해야 한다")
-    void wrongRequestNoFile() {
+    void badRequestNoFile() {
         // Given
         HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, "/no_index.html", "HTTP/1.1").build();
 

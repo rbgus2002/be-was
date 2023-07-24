@@ -29,21 +29,8 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 리소스에 대한 요청 시 NOT_FOUND 404 상태를 반환해야 한다")
-    void wrongRequestNoFile() {
-        // Given
-        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, "/no_index.html", "HTTP/1.1").build();
-
-        // When
-        HttpResponse httpResponse = userController.loadFileByRequest(httpRequest).build();
-
-        // Then
-        assertThat(httpResponse.getHttpStatus()).isEqualTo(NOT_FOUND);
-    }
-
-    @Test
     @DisplayName("GET 방식 사용 시: 존재하지 않는 경로인 경우 NOT_FOUND 404 상태를 반환해야 한다")
-    void wrongRequestUriUsingGet() {
+    void badRequestUriUsingGet() {
         // Given
         String uri = "/user/user/create?userId=kimahhh&password=1234&name=김아현&email=kimahyunn132@gmail.com";
         HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, uri, "HTTP/1.1").build();
@@ -57,7 +44,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("POST 방식 사용 시: 존재하지 않는 경로인 경우 NOT_FOUND 404 상태를 반환해야 한다")
-    void wrongRequestUriUsingPost() {
+    void badRequestUriUsingPost() {
         // Given
         String uri = "/user/user/create";
         HttpRequest httpRequest = new HttpRequest.RequestBuilder(POST, uri, "HTTP/1.1")
@@ -72,7 +59,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 회원가입 시 Database에 정보가 추가되어야 한다")
+    @DisplayName("유저가 회원가입 시, Database에 정보가 추가되어야 한다")
     void signUp() {
         // Given
         clear();
