@@ -19,7 +19,7 @@ import static service.SessionService.getUserIdBySid;
 public class FileController {
     private static final String STATIC_FILEPATH = "./src/main/resources/static";
     private static final String TEMPLATE_FILEPATH = "./src/main/resources/templates";
-    private static final String NAVBAR_RIGHT = "<li><a href=\"./user/list.html\"><i class=\"glyphicon glyphicon-user\"></i></a></li>";
+    private static final String NAVBAR_RIGHT = "/user/list.html\"><i class=\"glyphicon glyphicon-user\"></i></a></li>";
     private static final String USERNAME_FORMAT = "<li>%s</li>";
     private static final String BUTTON_LOGOUT = "<li><a href=\"#\" role=\"button\">로그아웃</a></li>";
     private static final String BUTTON_LOGIN = "<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>";
