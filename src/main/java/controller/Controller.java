@@ -7,9 +7,12 @@ import http.HttpStatus;
 import http.MIME;
 import view.Page;
 
+import static exception.ExceptionList.NOT_EXIST_USER;
 import static http.Extension.HTML;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
+import static http.FileName.LOGIN_FAILED;
+import static http.FileName.WRONG_ACCESS;
 
 public abstract class Controller {
     private final Page page = new Page();
@@ -35,6 +38,8 @@ public abstract class Controller {
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (BadRequestException e) {
+            if (e.getMessage().equals(NOT_EXIST_USER))
+                return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED);
             String errorPage = page.getErrorPage(e.getMessage());
             return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
                     .setContentType(MIME.getMIME().get(HTML));
