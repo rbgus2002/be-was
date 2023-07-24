@@ -1,6 +1,7 @@
 package webserver;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 import org.slf4j.Logger;
@@ -21,15 +22,12 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-
             HttpRequest httpRequest = HttpRequest.of(in);
-
             DataOutputStream dos = new DataOutputStream(out);
-
             DispatcherServlet dispatcherServlet = new DispatcherServlet(httpRequest);
             dispatcherServlet.dispatch(dos);
 
-        } catch (IOException e) {
+        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
             logger.error(e.getMessage());
         }
     }
