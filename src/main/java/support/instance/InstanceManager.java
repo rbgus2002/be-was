@@ -1,4 +1,4 @@
-package support;
+package support.instance;
 
 public interface InstanceManager {
 

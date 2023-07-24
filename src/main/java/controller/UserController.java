@@ -5,7 +5,7 @@ import model.Session;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.HttpMethod;
+import support.web.HttpMethod;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;

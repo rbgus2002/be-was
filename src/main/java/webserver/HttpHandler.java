@@ -2,7 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.ControllerResolver;
+import support.web.ControllerResolver;
 import support.exception.FoundException;
 import support.exception.HttpException;
 import support.exception.NotSupportedException;

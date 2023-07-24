@@ -1,4 +1,4 @@
-package support;
+package support.web;
 
 import exception.ExceptionName;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static support.DefaultInstanceManager.getInstanceMagager;
+import static support.instance.DefaultInstanceManager.getInstanceMagager;
 
 public abstract class ControllerResolver {
 

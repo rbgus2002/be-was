@@ -1,6 +1,6 @@
 package webserver.request;
 
-import support.HttpMethod;
+import support.web.HttpMethod;
 import webserver.Header;
 
 import java.util.ArrayList;

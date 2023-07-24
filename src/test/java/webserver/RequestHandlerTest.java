@@ -5,8 +5,8 @@ import db.Database;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
-import support.DefaultInstanceManager;
-import support.HttpMethod;
+import support.instance.DefaultInstanceManager;
+import support.web.HttpMethod;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
