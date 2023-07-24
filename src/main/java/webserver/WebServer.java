@@ -16,7 +16,6 @@ import webserver.myframework.bean.exception.BeanException;
 import webserver.myframework.requesthandler.RequestHandlerInitializerImpl;
 import webserver.myframework.requesthandler.RequestHandlerResolver;
 import webserver.myframework.requesthandler.exception.RequestHandlerException;
-import webserver.myframework.servlet.DispatcherServlet;
 
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
@@ -25,8 +24,6 @@ public class WebServer {
     public static void main(String[] args) throws Exception {
         int port = getPort(args);
         BeanContainer beanContainer = initializeFramework();
-        DispatcherServlet dispatcherServlet = (DispatcherServlet) beanContainer.findBean(DispatcherServlet.class);
-
 
         ExecutorService executorService = Executors.newWorkStealingPool();
 
@@ -35,7 +32,7 @@ public class WebServer {
 
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
-                executorService.execute(new RequestHandler(connection, dispatcherServlet));
+                executorService.execute(new RequestHandler(connection, beanContainer));
             }
         }
     }

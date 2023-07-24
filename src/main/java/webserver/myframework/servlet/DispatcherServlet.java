@@ -2,6 +2,7 @@ package webserver.myframework.servlet;
 
 import webserver.http.ContentType;
 import webserver.http.request.HttpRequest;
+import webserver.http.response.Cookie;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.bean.annotation.Autowired;
@@ -10,6 +11,7 @@ import webserver.myframework.requesthandler.RequestHandler;
 import webserver.myframework.requesthandler.RequestHandlerResolver;
 import webserver.myframework.requesthandler.exception.NotMatchedMethodException;
 import webserver.myframework.requesthandler.exception.NotMatchedUriException;
+import webserver.myframework.session.Session;
 import webserver.myframework.view.View;
 import webserver.myframework.view.ViewResolver;
 
@@ -41,6 +43,7 @@ public class DispatcherServlet {
             httpResponse.setStatus(HttpStatus.METHOD_NOT_ALLOW);
         }
 
+        setSession(httpRequest, httpResponse);
         HttpStatus httpResponseStatus = httpResponse.getStatus();
         if (httpResponseStatus.getStatusNumber() >= 400 &&
             !httpResponseStatus.equals(HttpStatus.NOT_FOUND)) {
@@ -52,6 +55,14 @@ public class DispatcherServlet {
             httpResponse.setStatus(HttpStatus.OK);
             httpResponse.setContentType(ContentType.getContentType(view.getFileExtension()));
             httpResponse.setBody(view.render());
+        }
+    }
+
+    private static void setSession(HttpRequest httpRequest, HttpResponse httpResponse) {
+        Session session = httpRequest.getSession(false);
+        if(session != null) {
+            Cookie cookie = new Cookie(Session.SESSION_KEY, session.getSessionId());
+            httpResponse.addCookie(cookie);
         }
     }
 }

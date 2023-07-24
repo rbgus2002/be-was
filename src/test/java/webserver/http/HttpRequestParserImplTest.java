@@ -1,5 +1,6 @@
 package webserver.http;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,8 @@ import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpRequestParser;
 import webserver.http.request.HttpRequestParserImpl;
 import webserver.http.request.exception.IllegalRequestParameterException;
+import webserver.myframework.session.SessionManager;
+import webserver.myframework.session.SessionManagerImpl;
 
 
 import java.io.ByteArrayInputStream;
@@ -21,7 +24,16 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("HttpRequestParserImpl 테스트")
 class HttpRequestParserImplTest {
-    final HttpRequestParser httpRequestParser = new HttpRequestParserImpl();
+    HttpRequestParser httpRequestParser;
+    SessionManager sessionManager;
+
+    @BeforeEach
+    void setUp() {
+        sessionManager = new SessionManagerImpl();
+        sessionManager.createSession("session_id");
+        httpRequestParser = new HttpRequestParserImpl(sessionManager);
+    }
+
     static final String httpMessage =
             "GET /index.html?parameter1=hello1&parameter2=hello2 HTTP/1.1\r\n" +
             "Host: localhost:8080\r\n" +
@@ -39,7 +51,7 @@ class HttpRequestParserImplTest {
             "Sec-Fetch-Dest: document\r\n" +
             "Accept-Encoding: gzip, deflate, br\r\n" +
             "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\r\n" +
-            "Cookie: Idea-13020a74=01685f19-8588-4907-88e8-60ee76288f21\r\n"
+            "Cookie: Idea-13020a74=01685f19-8588-4907-88e8-60ee76288f21; JSESSIONID=session_id\r\n"
             + "\r\n" +
             "BodyBodyBody";
 
@@ -63,9 +75,9 @@ class HttpRequestParserImplTest {
                     .isTrue();
             verifyHeaders(httpRequest, expectHeaders);
 
-            byte[] body = httpRequest.getBody();
-            String resultBody = new String(body);
-            assertThat(resultBody).isEqualTo("BodyBodyBody");
+            assertThat(new String(httpRequest.getBody())).isEqualTo("BodyBodyBody");
+            assertThat(httpRequest.getSession(false))
+                    .isEqualTo(sessionManager.findSession("session_id"));
         }
     }
 
@@ -79,7 +91,7 @@ class HttpRequestParserImplTest {
             @DisplayName("IllegalRequestParameterException 예외가 발생한다")
             void throwIllegalRequestParameterException() throws ReflectiveOperationException {
                 //given
-                HttpRequest.Builder builder = HttpRequest.builder();
+                HttpRequest.Builder builder = HttpRequest.builder(new SessionManagerImpl());
                 String wrongParameters = "wrong";
                 Method parseRequestParameterMethod = HttpRequestParserImpl.class
                         .getDeclaredMethod("parseRequestParameter", HttpRequest.Builder.class, String.class);
@@ -104,7 +116,7 @@ class HttpRequestParserImplTest {
             @DisplayName("아무 일도 발생하지 않는다")
             void NottingOccurred() throws ReflectiveOperationException {
                 //given
-                HttpRequest.Builder builder = HttpRequest.builder();
+                HttpRequest.Builder builder = HttpRequest.builder(new SessionManagerImpl());
                 String wrongParameters = "correct=correct";
                 Method parseRequestParameterMethod = HttpRequestParserImpl.class
                         .getDeclaredMethod("parseRequestParameter", HttpRequest.Builder.class, String.class);
@@ -169,7 +181,7 @@ class HttpRequestParserImplTest {
         headers.put("Sec-Fetch-Dest", "document");
         headers.put("Accept-Encoding", "gzip, deflate, br");
         headers.put("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7");
-        headers.put("Cookie", "Idea-13020a74=01685f19-8588-4907-88e8-60ee76288f21");
+        headers.put("Cookie", "Idea-13020a74=01685f19-8588-4907-88e8-60ee76288f21; JSESSIONID=session_id");
         return headers;
     }
 }

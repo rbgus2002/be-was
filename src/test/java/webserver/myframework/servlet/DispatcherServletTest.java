@@ -5,8 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import webserver.http.ContentType;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
+import webserver.http.response.Cookie;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.requesthandler.RequestHandlerImpl;
 import webserver.myframework.requesthandler.RequestHandlerResolver;
@@ -15,11 +17,15 @@ import webserver.myframework.requesthandler.RequestInfo;
 import webserver.myframework.requesthandler.annotation.Controller;
 import webserver.myframework.requesthandler.annotation.RequestMapping;
 import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
+import webserver.myframework.session.Session;
+import webserver.myframework.session.SessionManager;
+import webserver.myframework.session.SessionManagerImpl;
 import webserver.myframework.view.StaticViewResolverImpl;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -35,6 +41,8 @@ class DispatcherServletTest {
                 getTestRequestInfo("/exist"), getTestHandler("existHandler"));
         handlerResolver.registerHandler(
                 getTestRequestInfo("/notExist"), getTestHandler("notExistHandler"));
+        handlerResolver.registerHandler(
+                getTestRequestInfo("/createSession"), getTestHandler("createSessionHandler"));
         dispatcherServlet = new DispatcherServlet(handlerResolver, new StaticViewResolverImpl());
     }
 
@@ -64,7 +72,7 @@ class DispatcherServletTest {
                 @DisplayName("404 에러 페이지를 랜더링한다")
                 void render404ErrorPage() throws IOException {
                     //given
-                    HttpRequest httpRequest = HttpRequest.builder()
+                    HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                             .uri("/notExistFile").build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
 
@@ -84,7 +92,7 @@ class DispatcherServletTest {
                 @DisplayName("헤딩하는 파일을 랜더링한다")
                 void renderFileMatchedURI() throws IOException {
                     //given
-                    HttpRequest httpRequest = HttpRequest.builder()
+                    HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                             .uri("/index.html").build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
 
@@ -105,7 +113,7 @@ class DispatcherServletTest {
             @DisplayName("405 에러 페이지를 랜더링한다")
             void render405ErrorPage() throws IOException {
                 //given
-                HttpRequest httpRequest = HttpRequest.builder()
+                HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                         .uri("/exist")
                         .method(HttpMethod.POST).build();
                 HttpResponse httpResponse = HttpResponse.getInstance();
@@ -128,7 +136,7 @@ class DispatcherServletTest {
                 @Test
                 @DisplayName("핸들러에게 요청을 위임한다")
                 void delegateRequestToHandler() throws IOException {
-                    HttpRequest httpRequest = HttpRequest.builder()
+                    HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                             .uri("/exist")
                             .method(HttpMethod.GET).build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
@@ -137,8 +145,32 @@ class DispatcherServletTest {
                     dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
                     //then
+                    assertThat(httpResponse.getContentType()).isEqualTo(ContentType.CSS);
                     assertThat(httpResponse.getBody())
-                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/form.html")));
+                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/static/css/styles.css")));
+                }
+            }
+
+            @Nested
+            @DisplayName("요청에 대해 세션이 존재하는 경우")
+            class WhenSessionExistAboutRequest {
+                @Test
+                @DisplayName("응답에 세션 id를 갖는 쿠키를 추가한다")
+                void addCookieHasSessionIdToResponse() throws IOException {
+                    //given
+                    SessionManager sessionManager = new SessionManagerImpl();
+                    HttpRequest httpRequest = HttpRequest.builder(sessionManager)
+                            .uri("/createSession")
+                            .method(HttpMethod.GET).build();
+                    HttpResponse httpResponse = HttpResponse.getInstance();
+
+                    //when
+                    dispatcherServlet.handleRequest(httpRequest, httpResponse);
+
+                    //then
+                    List<Cookie> cookies = httpResponse.getCookies();
+                    assertThat(cookies.size()).isEqualTo(1);
+                    assertThat(cookies.get(0).getName()).isEqualTo(Session.SESSION_KEY);
                 }
             }
             
@@ -148,7 +180,7 @@ class DispatcherServletTest {
                 @Test
                 @DisplayName("404 에러 페이지를 렌더링한다")
                 void render404ErrorPage() throws IOException {
-                    HttpRequest httpRequest = HttpRequest.builder()
+                    HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                             .uri("/notExist")
                             .method(HttpMethod.GET).build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
@@ -169,12 +201,17 @@ class DispatcherServletTest {
     public static class TestController {
         @RequestMapping("/exist")
         public void existHandler(HttpRequest request, HttpResponse response) {
-            response.setUri("/user/form.html");
+            response.setUri("/css/styles.css");
         }
 
         @RequestMapping("/notExist")
         public void notExistHandler(HttpRequest request, HttpResponse response) {
             response.setUri("/notExist/notExist");
+        }
+
+        @RequestMapping("/createSession")
+        public void createSessionHandler(HttpRequest request, HttpResponse response) {
+            request.getSession();
         }
     }
 }

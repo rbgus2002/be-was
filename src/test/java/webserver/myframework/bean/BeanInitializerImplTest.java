@@ -27,6 +27,33 @@ class BeanInitializerImplTest {
         beanContainer = new DefaultBeanContainer();
         beanInitializer = new BeanInitializerImpl(beanContainer);
     }
+    
+    @Nested
+    @DisplayName("getBeanConstructor method")
+    class GetBeanConstructor {
+        @Nested
+        @DisplayName("@Autowired가 붙은 생성자가 1개 넘게 있을 경우")
+        class autowiredConstructorIsNotUnique {
+            @Test
+            @DisplayName("BeanConstructorException 예외를 발생시킨다")
+            void throwBeanConstructorException() throws ReflectiveOperationException, FileNotFoundException, BeanConstructorException {
+                //given
+                beanInitializer.initialize("webserver.myframework.bean");
+                Method getBeanConstructorMethod =
+                        BeanInitializerImpl.class.getDeclaredMethod("getBeanConstructor", Constructor[].class);
+                getBeanConstructorMethod.setAccessible(true);
+                Constructor<?>[] constructors = ConstructorErrorBean.class.getConstructors();
+
+                //when
+                //then
+                try {
+                    getBeanConstructorMethod.invoke(beanInitializer, (Object) constructors);
+                } catch (InvocationTargetException e) {
+                    assertThat(e.getTargetException()).isInstanceOf(BeanConstructorException.class);
+                }
+            }
+        }   
+    }
 
     @Nested
     @DisplayName("checkBeanConstructorParameters method")
@@ -45,10 +72,10 @@ class BeanInitializerImplTest {
                 Method checkBeanConstructorParametersMethod = beanInitializer.getClass()
                         .getDeclaredMethod("checkBeanConstructorParameters", List.class, List.class);
                 checkBeanConstructorParametersMethod.setAccessible(true);
-                Constructor<?>[] constructors = ErrorBean.class.getConstructors();
+                Constructor<?>[] constructors = ParameterErrorBean.class.getConstructors();
 
                 try {
-                    checkBeanConstructorParametersMethod.invoke(beanInitializer, List.of(ErrorBean.class), List.of(constructors));
+                    checkBeanConstructorParametersMethod.invoke(beanInitializer, List.of(ParameterErrorBean.class), List.of(constructors));
                 } catch (InvocationTargetException e) {
                     Throwable targetException = e.getTargetException();
                     assertThat(targetException).isInstanceOf(BeanConstructorException.class);
@@ -122,12 +149,25 @@ class BeanInitializerImplTest {
         }
     }
 
-    static class ErrorBean {
+    static class ParameterErrorBean {
         @SuppressWarnings({"FieldCanBeLocal", "unused"})
         private final String errorParameter;
 
-        public ErrorBean(String errorParameter) {
+        public ParameterErrorBean(String errorParameter) {
             this.errorParameter = errorParameter;
+        }
+    }
+
+    static class ConstructorErrorBean {
+        private final NotInjectedBean bean;
+        @Autowired
+        public ConstructorErrorBean() {
+            bean = new NotInjectedBean();
+        }
+
+        @Autowired
+        public ConstructorErrorBean(NotInjectedBean bean) {
+            this.bean = bean;
         }
     }
 }
