@@ -42,7 +42,6 @@ public class RequestHandler implements Runnable {
 			HttpRequest httpRequest = new HttpRequest(reader);
 			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
 
-			//
 			HttpResponse httpResponse = handleRequest(httpRequest);
 			httpResponse.response(out);
 

@@ -48,16 +48,6 @@ public class Controller {
 			logger.debug(e.getMessage());
 		}
 		return "user/login_failed.html";
-
-		// Session session = Session.newInstance();
-		// try {
-		// 	String userId = session.getUserId(httpRequest.getCookieValue(SessionConst.sessionId));
-		// 	User user = Database.findUserById(userId);
-		// 	logger.debug("{} LOGIN 성공", user.getUserId());
-		// } catch (IllegalArgumentException | NoSuchElementException e) {
-		// 	logger.debug(e.getMessage());
-		// 	return "user/login_failed.html";
-		// }
 	}
 
 	private User parameterToUser(HttpParameter httpParameter) {
