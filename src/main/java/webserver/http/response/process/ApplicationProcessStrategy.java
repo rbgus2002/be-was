@@ -58,29 +58,31 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
 
     private HttpResponse processMethod(final HttpRequest httpRequest, final Method method)
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
-
-        QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
-
         Object targetClass = method.getDeclaringClass().getDeclaredConstructor().newInstance();
-
-        Object invoke = Optional.empty();
-
-        if (Optional.ofNullable(httpRequest.getBody()).isPresent()) {
-            invoke = method.invoke(targetClass, httpRequest.getBody());
-        } else if (getMethodParameters(method, queryParameter.getMap()).length > 0) {
-            invoke = method.invoke(targetClass, getMethodParameters(method, queryParameter.getMap()));
-        } else {
-            method.invoke(targetClass);
-        }
+        Object invoke = invokeMethod(method, targetClass, httpRequest);
 
         if (isRedirect(invoke)) {
             String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
             return HttpResponse.found(redirectUrl);
         }
-
         return new HttpResponse(
                 new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
         );
+    }
+
+    private Object invokeMethod(
+            final Method method,
+            final Object targetClass,
+            final HttpRequest httpRequest
+    ) throws IllegalAccessException, InvocationTargetException {
+        if (Optional.ofNullable(httpRequest.getBody()).isPresent()) {
+            return method.invoke(targetClass, httpRequest.getBody());
+        }
+        QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
+        if (getMethodParameters(method, queryParameter.getMap()).length > 0) {
+            return method.invoke(targetClass, getMethodParameters(method, queryParameter.getMap()));
+        }
+        return method.invoke(targetClass);
     }
 
     private boolean isRedirect(final Object invoke) {
