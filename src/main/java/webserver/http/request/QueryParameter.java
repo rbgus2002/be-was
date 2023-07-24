@@ -22,7 +22,7 @@ public class QueryParameter {
         String queryParameterText = text.substring(text.indexOf(DELIMITER) + 1);
         Map<String, String> map = Arrays.stream(queryParameterText.split(ENTRY_SEPARATOR))
                 .map(entry -> entry.split(ENTRY_DELIMITER))
-                .filter(strings -> strings.length > 2)
+                .filter(strings -> strings.length == 2)
                 .collect(Collectors.toMap(strings -> decode(strings[0]), strings -> decode(strings[1])));
         return new QueryParameter(map);
     }
