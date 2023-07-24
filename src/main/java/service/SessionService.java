@@ -26,6 +26,10 @@ public class SessionService {
                 .findFirst()
                 .orElse(null);
     }
+    public static boolean isSessionValid(String sid) {
+        String userId = getUserIdBySid(sid);
+        return userId != null;
+    }
 
     public static Collection<Session> getAllSession() {
         return Database.findAllSession();
