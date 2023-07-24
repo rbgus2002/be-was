@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
@@ -23,8 +23,8 @@ public class HttpWasRequest {
 	private static final String PROTOCOL_VERSION = "ProtocolVersion";
 	private static final String HTTP_METHOD = "HttpMethod";
 
-	private final Map<String, String> map = new ConcurrentHashMap<>();
-	private final Map<String, String> requestParam = new ConcurrentHashMap<>();
+	private final Map<String, String> map = new HashMap<>();
+	private final Map<String, String> requestParam = new HashMap<>();
 
 	public HttpWasRequest(InputStream inputStream) throws IOException {
 		parseHttpRequestToMap(inputStream);
