@@ -3,25 +3,31 @@ package container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
+import webserver.HTTPServletResponse;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DispatcherServlet {
-    private static final ConcurrentHashMap<String, Servlet> map = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Controller> map = new ConcurrentHashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
     private static final String LOGIN_PATH = "/user/create";
 
     public DispatcherServlet() {
-        map.put("/user/login", new LogInTestServlet());
-        map.put(LOGIN_PATH, new LogInServlet());
+        map.put("/user/login", new LogInTestController());
+        map.put(LOGIN_PATH, new LogInController());
     }
 
-    public Servlet findServlet(HTTPServletRequest request) {
-        if (map.contains(request.getUrl())) {
-            return map.get(request.getUrl());
+    public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
+        String url = request.getUrl();
+        Controller controller = map.get(url);
+        String viewPath = url;
+        if (controller != null) {
+            String path = controller.process(request, response);
+            viewPath = path;
         }
 
-        map.put(request.getUrl(), new BaseServlet());
-        return map.get(request.getUrl());
+        ViewResolver view = new ViewResolver();
+
     }
 }

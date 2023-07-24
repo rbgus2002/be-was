@@ -1,7 +1,7 @@
 package webserver;
 
 import container.DispatcherServlet;
-import container.Servlet;
+import container.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import parser.ParserFactory;
@@ -31,11 +31,11 @@ public class RequestHandler implements Runnable {
             
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
-            Servlet servlet = dispatcherServlet.findServlet(request);
+            Controller controller = dispatcherServlet.findServlet(request);
             HTTPServletResponse response = new HTTPServletResponse(dos);
             
-            logger.debug("servlet = {}", servlet);
-            servlet.service(request, response);
+            logger.debug("servlet = {}", controller);
+            controller.process(request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

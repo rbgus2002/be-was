@@ -5,9 +5,9 @@ import webserver.HTTPServletResponse;
 
 import java.io.IOException;
 
-public interface Servlet {
+public interface Controller {
 
-    void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException;
+    String process(HTTPServletRequest request, HTTPServletResponse response) throws IOException;
  
 
 }
