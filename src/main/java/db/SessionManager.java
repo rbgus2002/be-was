@@ -24,12 +24,19 @@ public class SessionManager {
     }
 
     public static User getSession(HTTPServletRequest request) {
-        String sessionId = request.getHeader("Cookie").split("=")[1].trim();
-        logger.debug("sessionId = {}", sessionId);
-        if (sessionId == null) {
-            throw new IllegalArgumentException("없는 쿠키입니다.");
+        logger.debug("Cookie = {}", request.getHeader("Cookie"));
+        String cookie = request.getHeader("Cookie");
+
+        String[] tokens = cookie.split("sessionId=");
+
+        for (String token : tokens) {
+            String id = token.substring(0, token.indexOf(';') == token.length() ? token.length() - 1 : token.length());
+            if (store.containsKey(id)) {
+                return store.get(id);
+            }
         }
-        return store.get(sessionId);
+
+        return null;
     }
 
 }

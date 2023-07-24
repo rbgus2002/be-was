@@ -16,6 +16,7 @@ public class DispatcherServlet {
     public DispatcherServlet() {
         map.put("/user/login", new LogInTestController());
         map.put(LOGIN_PATH, new LogInController());
+        map.put("/user/list", new ListController());
     }
 
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {

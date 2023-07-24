@@ -12,8 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static util.PathList.STATIC_PATH;
-import static util.PathList.TEMPLATE_PATH;
+import static util.PathList.*;
 
 public class ViewResolver {
 
@@ -22,8 +21,6 @@ public class ViewResolver {
 
     private final HTTPServletRequest request;
     private static final Logger logger = LoggerFactory.getLogger(ViewResolver.class);
-    private static final String BUTTON_LOGIN = "<li>.*?로그인.*?</li>";
-    private static final String BUTTON_SIGNUP = "<li>.*?회원가입.*?</li>";
 
     public ViewResolver(String viewPath, HTTPServletResponse response, HTTPServletRequest request) {
         this.viewPath = viewPath;
@@ -42,19 +39,25 @@ public class ViewResolver {
 
         File file;
         byte[] body = null;
-
         if ((file = new File(STATIC_PATH.getPath() + viewPath)).exists()) {
             body = Files.readAllBytes(file.toPath());
         } else if ((file = new File(TEMPLATE_PATH.getPath() + viewPath)).exists()) {
-            logger.debug("request = {}", request.toString());
-
             User findUser = SessionManager.getSession(request);
-            logger.debug("findUser = {} and viewPath = {}", findUser,  viewPath);
+            logger.debug("findUser = {}", findUser);
             if (viewPath.equals("/index.html") && findUser != null) {
-                String httpBody = new String(Files.readAllBytes(new File(TEMPLATE_PATH.getPath() + viewPath).toPath()));
-                logger.debug("통과");
                 body = MainView.changeForDynamic(findUser).getBytes();
-            } else {
+            } else if(viewPath.startsWith("/user/list.html")){
+                logger.debug("들어옴");
+                if (findUser != null) {
+                    body = ListView.changeToDynamic().getBytes();
+                }else{
+                    response.setHeader("Location", HOME_PATH.getPath());
+                    response.setStatusMessage("Found");
+                    response.setStatusCode("302");
+                    return;
+                }
+            }
+            else {
                 body = Files.readAllBytes(file.toPath());
             }
             //body = httpBody.getBytes();

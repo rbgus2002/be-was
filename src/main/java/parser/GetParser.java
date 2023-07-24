@@ -61,8 +61,6 @@ public class GetParser implements Parser {
         while ((header = br.readLine()) != null && (header.length() != 0)) {
             logger.debug("header = {}", header);
             String[] token = header.split(":");
-            logger.debug("첫번째 = {}", token[0].trim());
-            logger.debug("두번째 = {}", token[1].trim());
             headers.put(token[0].trim(), token[1].trim());
         }
     }
