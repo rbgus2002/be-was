@@ -7,6 +7,7 @@ import http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpUtils;
+import view.ViewResolver;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -28,7 +29,7 @@ public class ResponseHandler {
         this.sessionManager = sessionManager;
     }
 
-    public void response(DataOutputStream dos, HttpRequest httpRequest) throws IOException {
+    public void response(DataOutputStream dos, HttpRequest httpRequest) throws Throwable {
         HttpResponse httpResponse;
         try {
             httpResponse = handleHttpRequest(httpRequest);
@@ -83,10 +84,18 @@ public class ResponseHandler {
         return HttpResponse.redirect("/error.html");
     }
 
-    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws Throwable {
         HttpStatus status = httpResponse.getHttpStatus();
-        InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
-        byte[] body = fileInputStream.readAllBytes();
+        String view = (String) httpResponse.getViewParameter("view");
+
+        byte[] body;
+        if (view != null) {
+            logger.debug("{}를 실행합니다.", view);
+            body = ViewResolver.resolve(httpResponse);
+        } else {
+            InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
+            body = fileInputStream.readAllBytes();
+        }
         httpResponse.setBody(body);
 
         dos.writeBytes("HTTP/1.1 " + status.value() + " " + status.reasonPhrase() + " \r\n");
