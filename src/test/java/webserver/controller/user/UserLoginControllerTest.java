@@ -20,7 +20,7 @@ public class UserLoginControllerTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("로그인 성공 시, Set-Cookie에 세션 아이디와 Path 속성이 설정되어야 한다")
     void validLoginTest() throws Exception {
         //given
         String body = "userId=userId&password=password";
@@ -43,12 +43,12 @@ public class UserLoginControllerTest {
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
         softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/index.html");
-        softAssertions.assertThat(httpResponse.get(HttpField.SET_COOKIE)).contains("SID");
-        softAssertions.assertThat(httpResponse.get(HttpField.SET_COOKIE)).contains("Path=/");
+        softAssertions.assertThat(httpResponse.getCookie().getMessage()).contains("SID");
+        softAssertions.assertThat(httpResponse.getCookie().getMessage()).contains("Path=/");
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("로그인 실패 시, 로그인 실패 페이지로 리다이렉트 시키고, Set-Cookie 헤더가 없어야 한다")
     void invalidLoginTest() throws Exception {
         //given
         String body = "userId=userId&password=password";
@@ -71,8 +71,7 @@ public class UserLoginControllerTest {
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.FOUND);
         softAssertions.assertThat(httpResponse.get(HttpField.LOCATION)).isEqualTo("/user/login_failed.htm");
-        softAssertions.assertThat(httpResponse.get(HttpField.SET_COOKIE)).doesNotContain("SID");
-        softAssertions.assertThat(httpResponse.get(HttpField.SET_COOKIE)).doesNotContain("Path=/");
+        softAssertions.assertThat(httpResponse.getHeaderMessage()).doesNotContain("Set-Cookie");
     }
 
 }
