@@ -40,7 +40,7 @@ class UserControllerTest {
     @DisplayName("중복된 유저는 추가할 수 없다.")
     void createExistUser() {
         // given
-        String userId = "abc123";
+        String userId = "abcd";
         String password = "password12345";
         String name = "honggildong";
         String email = "abc123@gmail.com";
