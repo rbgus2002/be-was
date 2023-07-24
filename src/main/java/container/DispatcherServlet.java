@@ -24,10 +24,9 @@ public class DispatcherServlet {
         String viewPath = url;
         if (controller != null) {
             viewPath = controller.process(request, response);
-
         }
         logger.debug("viewName = {}", viewPath);
-        ViewResolver view = new ViewResolver(viewPath, response);
+        ViewResolver view = new ViewResolver(viewPath, response, request);
         view.service();
         view.render();
 

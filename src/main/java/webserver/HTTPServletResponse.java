@@ -18,6 +18,16 @@ public class HTTPServletResponse {
     private String statusCode = "OK";
     private String statusMessage = "200";
 
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     private final DataOutputStream dos;
 
     public HTTPServletResponse(DataOutputStream dos) {

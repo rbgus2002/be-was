@@ -45,4 +45,15 @@ public class HTTPServletRequest {
     public String getHeader(String key) {
         return headers.getOrDefault(key, null);
     }
+
+    @Override
+    public String toString() {
+        return "HTTPServletRequest{" +
+                "method='" + method + '\'' +
+                ", url='" + url + '\'' +
+                ", query=" + query +
+                ", version='" + version + '\'' +
+                ", headers=" + headers +
+                '}';
+    }
 }
