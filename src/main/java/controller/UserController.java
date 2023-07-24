@@ -21,7 +21,7 @@ public class UserController {
     public HttpResponse createUserByGET(HttpRequest request) throws IOException {
         Map<String, String> params = request.getParams();
 
-        User user = new User(params.get("userId"),params.get("password"),params.get("name"),params.get("email"));
+        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         Database.addUser(user);
 
         return HttpResponse.redirect("/index.html", MIME.html);
@@ -31,9 +31,25 @@ public class UserController {
     public HttpResponse createUserByPOST(HttpRequest request) throws IOException {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
-        User user = new User(params.get("userId"),params.get("password"),params.get("name"),params.get("email"));
+        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         Database.addUser(user);
 
+        return HttpResponse.redirect("/index.html", MIME.html);
+    }
+
+    @RequestMapping(path = "/user/login", method = HttpMethod.POST)
+    public HttpResponse login(HttpRequest request) throws IOException {
+        Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
+        String userId = params.get("userId");
+        String password = params.get("password");
+
+        // login 실패시 /user/index_failed.html 로 이동
+        User user = Database.findUserById(userId);
+        if (user == null || !user.getPassword().equals(password)) {
+            return HttpResponse.redirect("/user/login_failed.html", MIME.html);
+        }
+
+        // login 성공시 /index.html 로 이동
         return HttpResponse.redirect("/index.html", MIME.html);
     }
 }
