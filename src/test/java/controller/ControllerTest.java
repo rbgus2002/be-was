@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.*;
 
-import static db.Database.deleteAll;
-import static db.Database.findAll;
+import static model.db.Database.deleteAll;
+import static model.db.Database.findAll;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Controller 테스트")

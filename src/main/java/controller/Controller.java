@@ -6,7 +6,6 @@ import global.constant.Headers;
 import global.constant.StatusCode;
 import global.request.RequestBody;
 import global.response.ResponseEntity;
-import model.UserParam;
 import service.UserService;
 
 import java.io.IOException;
