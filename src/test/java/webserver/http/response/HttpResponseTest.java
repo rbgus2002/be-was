@@ -23,7 +23,7 @@ class HttpResponseTest {
         stringBuilder.append(appendNewLine("Content-Type: " + MIME.TXT.getContentType()));
         stringBuilder.append(appendNewLine("Content-Length: " + body.getLength()));
         stringBuilder.append(CRLF);
-        stringBuilder.append(body.getContent().toString());
+        stringBuilder.append(body.toString());
 
         // when
         HttpResponse response = HttpResponse.of(version, statusCode, body);

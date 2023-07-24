@@ -31,10 +31,6 @@ public class Body {
         return mime.getContentType();
     }
 
-    public byte[] getContent() {
-        return content;
-    }
-
     public void write(DataOutputStream dos) throws IOException {
         dos.write(content, 0, content.length);
     }
