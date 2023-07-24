@@ -26,12 +26,17 @@ public class HttpRequest {
     public String getRequestUri() {
         return httpRequestLine.getUri();
     }
+    public RequestMethod getRequestMethod() {
+        return httpRequestLine.getMethod();
+    }
+    public String getHttpRequestBody() {
+        return httpRequestBody;
+    }
 
     public String show() {
         StringBuilder sb = new StringBuilder();
         httpRequestLine.show(sb);
         httpHeaders.show(sb);
-
         return sb.toString();
     }
 
