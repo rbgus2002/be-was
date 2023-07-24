@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
 import static exception.ExceptionList.NOT_ENOUGH_USER_INFORMATION;
-import static http.FileName.INDEX;
+import static http.FilePath.INDEX;
 import static utils.FileIOUtils.*;
 
 public class UserController extends Controller {

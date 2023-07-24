@@ -11,8 +11,8 @@ import static exception.ExceptionList.NOT_EXIST_USER;
 import static http.Extension.HTML;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
-import static http.FileName.LOGIN_FAILED;
-import static http.FileName.WRONG_ACCESS;
+import static http.FilePath.LOGIN_FAILED;
+import static http.FilePath.WRONG_ACCESS;
 
 public abstract class Controller {
     private final Page page = new Page();
