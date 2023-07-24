@@ -1,6 +1,5 @@
 package webserver;
 
-import application.controller.StaticController;
 import application.controller.UserController;
 import application.controller.WebController;
 import support.annotation.RequestMapping;
@@ -13,27 +12,21 @@ import java.util.Map;
 
 public class ControllerMapper {
 
-    private final Map<String, WebController> controllers = new HashMap<>();
-    private final WebController staticController = new StaticController();
+    private static final Map<String, WebController> controllers = new HashMap<>();
 
-    public ControllerMapper() {
+    static {
         controllers.put("/user", new UserController());
     }
 
-    private WebController getController(HttpRequest httpRequest) {
-        WebController controller = controllers.get(httpRequest.getRootPath());
-        if(controller == null) {
-            return staticController;
-        }
-        return controller;
+    public WebController getController(HttpRequest request) {
+        return controllers.get(request.getRootPath());
     }
 
-    public Method getMethod(HttpRequest httpRequest) {
-        WebController controller = getController(httpRequest);
+    public Method getMethod(WebController controller, HttpRequest request) {
         for (Method method : controller.getClass().getDeclaredMethods()) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping annotation = method.getAnnotation(RequestMapping.class);
-                if (annotation.value().equals(httpRequest.getFullPath()) && annotation.method().equals(httpRequest.getHttpMethod())) {
+                if (annotation.value().equals(request.getFullPath()) && annotation.method().equals(request.getHttpMethod())) {
                     return method;
                 }
             }
