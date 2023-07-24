@@ -1,10 +1,10 @@
 package webserver.session;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class SessionManagerTest {
@@ -18,18 +18,18 @@ class SessionManagerTest {
     @DisplayName("세션 추가 및 조회 테스트")
     @Test
     void addSession() {
-        String sessionId = sessionManager.addSession("1");
+        Session session = sessionManager.addNewSession();
 
-        Assertions.assertThat(sessionManager.find(sessionId)).isEqualTo("1");
+        assertThat(sessionManager.getSession(session.getId())).isEqualTo(session);
     }
 
     @DisplayName("세션 제거 테스트")
     @Test
     void removeSession() {
-        String sessionId = sessionManager.addSession("1");
+        Session session = sessionManager.addNewSession();
 
-        sessionManager.remove(sessionId);
+        sessionManager.remove(session.getId());
 
-        assertFalse(sessionManager.contains(sessionId));
+        assertFalse(sessionManager.contains(session.getId()));
     }
 }

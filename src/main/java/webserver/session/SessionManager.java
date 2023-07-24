@@ -5,23 +5,27 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
-    private final Map<String, Object> sessions = new ConcurrentHashMap<>();
+    private final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
-    public String addSession(Object object) {
+    public Session getSession(String sessionId) {
+        if (sessionId == null || !sessions.containsKey(sessionId)) {
+            return addNewSession();
+        }
+        return sessions.get(sessionId);
+    }
+
+    public Session addNewSession() {
         String sessionId = UUID.randomUUID().toString();
         while (sessions.containsKey(sessionId)){
             sessionId = UUID.randomUUID().toString();
         }
-        sessions.put(sessionId, object);
-        return sessionId;
+        Session session = new Session(sessionId);
+        sessions.put(sessionId, session);
+        return session;
     }
 
     public boolean contains(String sessionId) {
         return sessions.containsKey(sessionId);
-    }
-
-    public Object find(String sessionId) {
-        return sessions.get(sessionId);
     }
 
     public void remove(String sessionId) {
