@@ -1,4 +1,4 @@
-package webserver.myframework.requesthandler;
+package webserver.myframework.handler.request;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
+import webserver.myframework.handler.argument.ArgumentResolver;
+import webserver.myframework.handler.argument.ArgumentResolverImpl;
+import webserver.myframework.handler.request.RequestHandlerImpl;
 import webserver.myframework.session.SessionManagerImpl;
 
 import static org.assertj.core.api.Assertions.*;
@@ -13,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("RequestHandlerImpl 테스트")
 class RequestHandlerImplTest {
+    ArgumentResolver argumentResolver = new ArgumentResolverImpl();
     @Nested
     @DisplayName("handle method")
     class Handle {
@@ -21,7 +25,8 @@ class RequestHandlerImplTest {
         void invokeMethodOfFieldAndReturnString() throws ReflectiveOperationException {
             //given
             RequestHandlerImpl requestHandler = new RequestHandlerImpl(new TestClass(),
-                    TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class));
+                    TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class),
+                    argumentResolver);
             HttpResponse httpResponse = HttpResponse.getInstance();
             HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
                     .uri("uri")
@@ -42,7 +47,8 @@ class RequestHandlerImplTest {
             void StatusCodeIs50() throws NoSuchMethodException {
                 //given
                 RequestHandlerImpl requestHandler = new RequestHandlerImpl(new TestClass(),
-                        TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class));
+                        TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class),
+                        argumentResolver);
                 HttpResponse httpResponse = HttpResponse.getInstance();
                 requestHandler.handle(null, httpResponse);
 

@@ -1,4 +1,4 @@
-package webserver.myframework.requesthandler;
+package webserver.myframework.handler.request;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -8,11 +8,14 @@ import org.junit.jupiter.api.Test;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
-import webserver.myframework.requesthandler.annotation.Controller;
-import webserver.myframework.requesthandler.annotation.RequestMapping;
-import webserver.myframework.requesthandler.exception.NotMatchedUriException;
-import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
-import webserver.myframework.requesthandler.exception.RequestHandlerException;
+import webserver.myframework.handler.argument.ArgumentResolver;
+import webserver.myframework.handler.argument.ArgumentResolverImpl;
+import webserver.myframework.handler.request.*;
+import webserver.myframework.handler.request.annotation.Controller;
+import webserver.myframework.handler.request.annotation.RequestMapping;
+import webserver.myframework.handler.request.exception.NotMatchedUriException;
+import webserver.myframework.handler.request.exception.DuplicateRequestHandlerException;
+import webserver.myframework.handler.request.exception.RequestHandlerException;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("RequestHandlerResolverImpl 테스트")
 class RequestHandlerResolverImplTest {
+    static ArgumentResolver argumentResolver = new ArgumentResolverImpl();
     RequestHandlerResolver requestHandlerResolver;
 
     @BeforeEach
@@ -115,7 +119,8 @@ class RequestHandlerResolverImplTest {
     private static RequestHandlerImpl getHandler() throws NoSuchMethodException {
         TestRequestResolver controller = new TestRequestResolver();
         return new RequestHandlerImpl(controller,
-                controller.getClass().getMethod("handlerMethod", HttpRequest.class, HttpResponse.class));
+                controller.getClass().getMethod("handlerMethod", HttpRequest.class, HttpResponse.class),
+                argumentResolver);
     }
 
     private static RequestInfo getRequestInfo() {

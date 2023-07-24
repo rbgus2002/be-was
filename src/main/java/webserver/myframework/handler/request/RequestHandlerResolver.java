@@ -1,9 +1,9 @@
-package webserver.myframework.requesthandler;
+package webserver.myframework.handler.request;
 
 import webserver.http.HttpMethod;
-import webserver.myframework.requesthandler.exception.NotMatchedMethodException;
-import webserver.myframework.requesthandler.exception.NotMatchedUriException;
-import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
+import webserver.myframework.handler.request.exception.DuplicateRequestHandlerException;
+import webserver.myframework.handler.request.exception.NotMatchedMethodException;
+import webserver.myframework.handler.request.exception.NotMatchedUriException;
 
 public interface RequestHandlerResolver {
     void registerHandler(RequestInfo requestInfo, RequestHandler handler) throws DuplicateRequestHandlerException;

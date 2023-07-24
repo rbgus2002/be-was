@@ -19,7 +19,7 @@ public abstract class HttpRequest {
 
     public abstract String getHeader(String headerName);
 
-    public abstract Optional<String> getParameter(String parameterName);
+    public abstract String getParameter(String parameterName);
 
     public abstract byte[] getBody();
 

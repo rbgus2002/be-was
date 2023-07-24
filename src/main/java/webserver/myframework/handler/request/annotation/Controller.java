@@ -1,15 +1,16 @@
-package webserver.myframework.requesthandler.annotation;
+package webserver.myframework.handler.request.annotation;
 
-import webserver.http.HttpMethod;
+
+import webserver.myframework.bean.annotation.Component;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequestMapping {
+@Component
+public @interface Controller {
     String value() default "";
-    HttpMethod method() default HttpMethod.GET;
 }

@@ -1,4 +1,4 @@
-package webserver.myframework.requesthandler;
+package webserver.myframework.handler.request;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,11 +14,13 @@ import webserver.myframework.bean.DefaultBeanContainer;
 import webserver.myframework.bean.annotation.Component;
 import webserver.myframework.bean.exception.BeanConstructorException;
 import webserver.myframework.bean.exception.BeanNotFoundException;
-import webserver.myframework.requesthandler.annotation.Controller;
-import webserver.myframework.requesthandler.annotation.RequestMapping;
-import webserver.myframework.requesthandler.exception.IllegalHandlerReturnTypeException;
-import webserver.myframework.requesthandler.exception.IllegalHandlerParameterTypeException;
-import webserver.myframework.requesthandler.exception.RequestHandlerException;
+import webserver.myframework.bean.exception.DuplicateBeanException;
+import webserver.myframework.handler.argument.ArgumentResolverImpl;
+import webserver.myframework.handler.request.annotation.Controller;
+import webserver.myframework.handler.request.annotation.RequestMapping;
+import webserver.myframework.handler.request.exception.IllegalHandlerReturnTypeException;
+import webserver.myframework.handler.request.exception.IllegalHandlerParameterTypeException;
+import webserver.myframework.handler.request.exception.RequestHandlerException;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -36,13 +38,14 @@ class RequestHandlerInitializerImplTest {
     RequestHandlerInitializer requestHandlerInitializer;
 
     @BeforeEach
-    void setUp() throws ReflectiveOperationException, FileNotFoundException, BeanConstructorException {
+    void setUp() throws ReflectiveOperationException, FileNotFoundException, BeanConstructorException, DuplicateBeanException {
         beanContainer = new DefaultBeanContainer();
         beanInitializer = new BeanInitializerImpl(beanContainer);
         requestHandlerResolver = new RequestHandlerResolverImpl();
         requestHandlerInitializer = new RequestHandlerInitializerImpl(beanContainer, requestHandlerResolver);
 
-        beanInitializer.initialize("webserver.myframework.requesthandler");
+        beanInitializer.initialize("webserver.myframework.handler");
+        beanContainer.register(ArgumentResolverImpl.class, new ArgumentResolverImpl());
     }
 
     @Nested

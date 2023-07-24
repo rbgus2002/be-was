@@ -21,7 +21,6 @@ public class HttpRequestParserImpl implements HttpRequestParser {
         this.sessionManager = sessionManager;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public HttpRequest parse(InputStream inputStream) throws IOException, IllegalRequestParameterException {
         HttpRequest.Builder builder = HttpRequest.builder(sessionManager);
@@ -29,11 +28,15 @@ public class HttpRequestParserImpl implements HttpRequestParser {
 
         parseRequestLine(builder, bufferedReader);
         int bodyLength = parseHeaders(builder, bufferedReader);
+        parseBody(builder, bufferedReader, bodyLength);
 
+        return builder.build();
+    }
+
+    private static void parseBody(HttpRequest.Builder builder, BufferedReader bufferedReader, int bodyLength) throws IOException {
         char[] chars = new char[bodyLength];
         bufferedReader.read(chars);
         builder.body(charArrayToByteArray(chars));
-        return builder.build();
     }
 
     private static void parseRequestLine(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException, IllegalRequestParameterException {

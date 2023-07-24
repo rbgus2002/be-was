@@ -1,14 +1,15 @@
-package webserver.myframework.requesthandler;
+package webserver.myframework.handler.request;
 
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.myframework.bean.BeanContainer;
 import webserver.myframework.bean.exception.BeanNotFoundException;
-import webserver.myframework.requesthandler.annotation.Controller;
-import webserver.myframework.requesthandler.annotation.RequestMapping;
-import webserver.myframework.requesthandler.exception.IllegalHandlerParameterTypeException;
-import webserver.myframework.requesthandler.exception.IllegalHandlerReturnTypeException;
-import webserver.myframework.requesthandler.exception.RequestHandlerException;
+import webserver.myframework.handler.argument.ArgumentResolver;
+import webserver.myframework.handler.request.annotation.Controller;
+import webserver.myframework.handler.request.annotation.RequestMapping;
+import webserver.myframework.handler.request.exception.IllegalHandlerParameterTypeException;
+import webserver.myframework.handler.request.exception.IllegalHandlerReturnTypeException;
+import webserver.myframework.handler.request.exception.RequestHandlerException;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -45,20 +46,16 @@ public class RequestHandlerInitializerImpl implements RequestHandlerInitializer 
     }
 
     private static void verifyHandlerCondition(Method method)
-            throws IllegalHandlerReturnTypeException, IllegalHandlerParameterTypeException {
+            throws IllegalHandlerReturnTypeException {
         if(method.getReturnType() != void.class) {
             throw new IllegalHandlerReturnTypeException();
-        }
-        List<Class<?>> parameterTypes = List.of(method.getParameterTypes());
-        if(parameterTypes.size() != 2 ||
-           !parameterTypes.containsAll(List.of(HttpRequest.class, HttpResponse.class))) {
-            throw new IllegalHandlerParameterTypeException();
         }
     }
 
     private RequestHandler getRequestHandler(Class<?> beanClass, Method method) throws BeanNotFoundException {
         Object bean = beanContainer.findBean(beanClass);
-        return new RequestHandlerImpl(bean, method);
+        Object argumentResolver = beanContainer.findBean(ArgumentResolver.class);
+        return new RequestHandlerImpl(bean, method, (ArgumentResolver) argumentResolver);
     }
 
     private static RequestInfo getRequestInfo(String baseURI, Method method) {

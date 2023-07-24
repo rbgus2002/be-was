@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import webserver.myframework.bean.annotation.Autowired;
 import webserver.myframework.bean.annotation.Component;
-import webserver.myframework.requesthandler.annotation.Controller;
+import webserver.myframework.handler.request.annotation.Controller;
 import webserver.myframework.utils.ReflectionUtils;
 
 import java.io.FileNotFoundException;
