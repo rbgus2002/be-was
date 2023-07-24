@@ -12,6 +12,8 @@ import java.nio.file.Files;
 public class HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
+    private static final String HTML_PATH = "src/main/resources/templates";
+    private static final String STATIC_PATH = "src/main/resources/static";
     private final String status;
     private final String path;
     private final HttpMime mime;
@@ -28,9 +30,9 @@ public class HttpResponse {
         byte[] body;
 
         if (mime.getExtension().equals("html")) {
-            body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
+            body = Files.readAllBytes(new File(HTML_PATH + path).toPath());
         } else {
-            body = Files.readAllBytes(new File("src/main/resources/static" + path).toPath());
+            body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
         }
         return body;
     }

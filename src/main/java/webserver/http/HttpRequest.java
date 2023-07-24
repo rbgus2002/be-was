@@ -14,6 +14,11 @@ import java.util.Map;
 public class HttpRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+    private static final String QUERY_STRING_SEPARATOR = "\\?";
+    private static final String EMPTY_SPACE_SEPARATOR = " ";
+    private static final String EXTENSION_SEPARATOR = "\\.";
+    private static final String QUERY_STRING_PARAM_SEPARATOR = "=";
+    private static final String HEADER_PARAM_SEPARATOR = ":";
     private final String method;
     private final String requestPath;
     private final String version;
@@ -50,7 +55,7 @@ public class HttpRequest {
     }
 
     public HttpMime mime(String requestPath) {
-        String[] tokens = requestPath.split("\\.");
+        String[] tokens = requestPath.split(EXTENSION_SEPARATOR);
         String extension = tokens[tokens.length - 1];
         logger.debug("extension: {}", extension);
         return Arrays.stream(HttpMime.values())
@@ -60,7 +65,7 @@ public class HttpRequest {
     }
 
     public static String method(String firstLine) {
-        String[] tokens = firstLine.split(" ");
+        String[] tokens = firstLine.split(EMPTY_SPACE_SEPARATOR);
         String method = tokens[0];
         logger.debug("request method: {}", method);
 
@@ -68,11 +73,11 @@ public class HttpRequest {
     }
 
     public static String requestPath(String firstLine) {
-        String[] tokens = firstLine.split(" ");
+        String[] tokens = firstLine.split(EMPTY_SPACE_SEPARATOR);
 
         String requestPath = tokens[1];
         if (requestPath.contains("?")) {
-            requestPath = tokens[1].split("\\?")[0];
+            requestPath = tokens[1].split(QUERY_STRING_SEPARATOR)[0];
         }
         logger.debug("request url: {}", requestPath);
 
@@ -80,7 +85,7 @@ public class HttpRequest {
     }
 
     public static String version(String firstLine) {
-        String[] tokens = firstLine.split(" ");
+        String[] tokens = firstLine.split(EMPTY_SPACE_SEPARATOR);
         String version = tokens[2];
         logger.debug("request version: {}", version);
 
@@ -96,8 +101,8 @@ public class HttpRequest {
             if (line.equals("")) {
                 break;
             }
-            String key = line.split(":")[0].trim();
-            String value = line.split(":")[1].trim();
+            String key = line.split(HEADER_PARAM_SEPARATOR)[0].trim();
+            String value = line.split(HEADER_PARAM_SEPARATOR)[1].trim();
             headers.put(key, value);
         }
 
@@ -105,18 +110,18 @@ public class HttpRequest {
     }
 
     public static Map<String, String> parseQueryString(String firstLine) {
-        String[] tokens = firstLine.split(" ");
+        String[] tokens = firstLine.split(EMPTY_SPACE_SEPARATOR);
 
         String queryString = tokens[1];
         if (!queryString.contains("?")) {
             return new HashMap<>();
         }
 
-        String params = queryString.split("\\?")[1];
+        String params = queryString.split(QUERY_STRING_SEPARATOR)[1];
         Map<String, String> paramsMap = new HashMap<>();
         for (String param : params.split("&")) {
-            String key = param.split("=")[0];
-            String value = param.split("=")[1];
+            String key = param.split(QUERY_STRING_PARAM_SEPARATOR)[0];
+            String value = param.split(QUERY_STRING_PARAM_SEPARATOR)[1];
             paramsMap.put(key, value);
         }
 
