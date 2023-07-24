@@ -4,10 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
 
@@ -41,15 +42,12 @@ public class SessionManager {
     }
 
     private void setTimer(Session session, String sessionId) {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (session.getLastAccessedTime() + SESSION_TIMEOUT_MS <= System.currentTimeMillis()) {
-                    sessions.remove(sessionId);
-                    timer.cancel();
-                }
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            if (session.getLastAccessedTime() + SESSION_TIMEOUT_MS <= System.currentTimeMillis()) {
+                sessions.remove(sessionId);
+                scheduler.shutdown();
             }
-        }, SESSION_TIMEOUT_MS, SESSION_TIMEOUT_MS);
+        }, SESSION_TIMEOUT_MS, SESSION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
     }
 }
