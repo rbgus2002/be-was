@@ -1,4 +1,4 @@
-package webserver.exception;
+package exception;
 
 public class InvalidVersionException extends RuntimeException {
     public InvalidVersionException(String version) {

@@ -28,7 +28,7 @@ public class UserDto {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
@@ -47,22 +47,22 @@ public class UserDto {
             userDto = new UserDto();
         }
 
-        public Builder withUserId(String userId) {
+        public Builder withUserId(final String userId) {
             userDto.userId = userId;
             return this;
         }
 
-        public Builder withPassword(String password) {
+        public Builder withPassword(final String password) {
             userDto.password = password;
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder withName(final String name) {
             userDto.name = name;
             return this;
         }
 
-        public Builder withEmail(String email) {
+        public Builder withEmail(final String email) {
             userDto.email = email;
             return this;
         }

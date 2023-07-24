@@ -1,4 +1,4 @@
-package application.exception;
+package exception;
 
 public class InvalidQueryParameterException extends RuntimeException {
     public InvalidQueryParameterException() {

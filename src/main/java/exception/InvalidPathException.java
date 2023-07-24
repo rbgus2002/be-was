@@ -1,4 +1,4 @@
-package webserver.exception;
+package exception;
 
 public class InvalidPathException extends RuntimeException {
     public InvalidPathException() {

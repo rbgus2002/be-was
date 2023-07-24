@@ -2,10 +2,10 @@ package application.repositiory;
 
 import application.dto.UserDto;
 import db.Database;
+import exception.InvalidQueryParameterException;
 import model.User;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public enum UserRepository {
@@ -14,28 +14,26 @@ public enum UserRepository {
 
     private final Database database;
 
-    private UserRepository(Database database) {
+    UserRepository(Database database) {
         this.database = database;
     }
 
-    public void addUser(UserDto userDto) {
+    public void addUser(final UserDto userDto) {
         User user = User.of(userDto);
         database.addUser(user);
     }
 
-    public Optional<UserDto> findUserById(String userId) {
+    public UserDto findUserById(final String userId) {
         User user = database.findUserById(userId);
 
-        if (user == null) {
-            return Optional.empty();
-        }
+        if (user == null) throw new InvalidQueryParameterException();
 
-        return Optional.of(new UserDto.Builder()
+        return new UserDto.Builder()
                 .withUserId(user.getUserId())
                 .withPassword(user.getPassword())
                 .withName(user.getName())
                 .withEmail(user.getEmail())
-                .build());
+                .build();
     }
 
     public List<UserDto> findAll() {

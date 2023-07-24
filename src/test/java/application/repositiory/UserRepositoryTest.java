@@ -1,6 +1,8 @@
 package application.repositiory;
 
 import application.dto.UserDto;
+import exception.InvalidPathException;
+import exception.InvalidQueryParameterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +13,6 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserRepositoryTest {
-
 
     private UserRepository userRepository;
 
@@ -36,8 +37,8 @@ class UserRepositoryTest {
                 .build();
 
         userRepository.addUser(userDto);
-        assertEquals(userDto, userRepository.findUserById("1").get());
-        assertThrows(NoSuchElementException.class, () -> userRepository.findUserById("2").get());
+        assertEquals(userDto, userRepository.findUserById("1"));
+        assertThrows(InvalidQueryParameterException.class, () -> userRepository.findUserById("2"));
     }
 
     @Test

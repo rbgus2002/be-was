@@ -1,6 +1,6 @@
 package webserver.request;
 
-import webserver.exception.InvalidPathException;
+import exception.InvalidPathException;
 
 public class RequestPath {
 
@@ -12,11 +12,11 @@ public class RequestPath {
         this.paths = path.split("/");
     }
 
-    public static RequestPath of(String path) {
+    public static RequestPath of(final String path) {
         return new RequestPath(path);
     }
 
-    public String getPathSegment(int idx) {
+    public String getPathSegment(final int idx) {
         if (idx < 0 || idx >= paths.length - INDEX_ADJUSTMENT) throw new InvalidPathException();
         return SLASH + paths[idx + INDEX_ADJUSTMENT];
     }

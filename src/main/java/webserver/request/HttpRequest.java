@@ -1,5 +1,6 @@
 package webserver.request;
 
+import exception.InvalidQueryParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.utils.StringUtils;
@@ -38,7 +39,7 @@ public class HttpRequest {
         this.requestHeader = RequestHeader.of(header);
     }
 
-    public static HttpRequest of(InputStream in) throws IOException {
+    public static HttpRequest of(final InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
         String line = br.readLine();
         String requestLine = line;
@@ -54,7 +55,7 @@ public class HttpRequest {
         return new HttpRequest(requestLine, header.toString());
     }
 
-    private RequestQuery parseRequestQuery(String[] pathAndQueries) {
+    private RequestQuery parseRequestQuery(final String[] pathAndQueries) {
         return Optional.of(pathAndQueries)
                 .filter(p -> p.length == 2)
                 .map(p -> RequestQuery.of(p[1]))
@@ -69,15 +70,13 @@ public class HttpRequest {
         return this.version;
     }
 
-    public String getPathSegment(int idx) {
+    public String getPathSegment(final int idx) {
         return path.getPathSegment(idx);
     }
 
-    public Optional<RequestQuery> getRequestQuery() {
-        if(requestQuery == null) {
-            return Optional.empty();
-        }
+    public RequestQuery getRequestQuery() {
+        if(requestQuery == null) throw new InvalidQueryParameterException();
 
-        return Optional.of(requestQuery);
+        return requestQuery;
     }
 }

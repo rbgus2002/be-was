@@ -32,11 +32,11 @@ class UserControllerTest {
         RequestQuery mockQuery = Mockito.mock(RequestQuery.class);
 
         when(mockRequest.getVersion()).thenReturn(HttpVersion.HTTP_1_1);
-        when(mockRequest.getRequestQuery()).thenReturn(Optional.of(mockQuery));
-        when(mockQuery.getValue("userId")).thenReturn(Optional.of("1"));
-        when(mockQuery.getValue("password")).thenReturn(Optional.of("password"));
-        when(mockQuery.getValue("name")).thenReturn(Optional.of("name"));
-        when(mockQuery.getValue("email")).thenReturn(Optional.of("email@example.com"));
+        when(mockRequest.getRequestQuery()).thenReturn(mockQuery);
+        when(mockQuery.getValue("userId")).thenReturn("1");
+        when(mockQuery.getValue("password")).thenReturn("password");
+        when(mockQuery.getValue("name")).thenReturn("name");
+        when(mockQuery.getValue("email")).thenReturn("email@example.com");
 
         HttpResponse response = userController.createUser(mockRequest);
 

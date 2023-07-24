@@ -1,6 +1,5 @@
 package webserver;
 
-import webserver.Constants.PathConstants;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
 import webserver.request.HttpRequest;
@@ -26,9 +25,9 @@ public class DispatcherServlet {
         StaticViewResolver staticViewResolver = new StaticViewResolver();
         Optional<View> view = staticViewResolver.resolve(httpRequest.getPathSegment(ROOT_PATH));
 
-        if(view.isPresent()) view.get().render(httpRequest.getVersion(), null, dos);
+        if (view.isPresent()) view.get().render(httpRequest.getVersion(), null, dos);
 
-        if(view.isEmpty()) {
+        if (view.isEmpty()) {
             HttpResponse httpResponse = HttpResponse.ofWithStatusOnly(httpRequest.getVersion(), HttpStatus.NOT_FOUND);
             httpResponse.sendResponse(dos);
         }

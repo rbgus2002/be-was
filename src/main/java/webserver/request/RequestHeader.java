@@ -13,7 +13,7 @@ public class RequestHeader {
         this.headers = headers;
     }
 
-    public static RequestHeader of(String string) {
+    public static RequestHeader of(final String string) {
         String[] tokens = string.split(StringUtils.NEWLINE);
 
         HashMap<String, String> headers = new HashMap<>();

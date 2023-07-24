@@ -13,11 +13,11 @@ public enum Database {
 
     private final Map<String, User> users = Maps.newConcurrentMap();
 
-    public void addUser(User user) {
+    public void addUser(final User user) {
         users.put(user.getUserId(), user);
     }
 
-    public User findUserById(String userId) {
+    public User findUserById(final String userId) {
         return users.get(userId);
     }
 

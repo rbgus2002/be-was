@@ -1,6 +1,6 @@
 package webserver.Constants;
 
-import webserver.exception.InvalidVersionException;
+import exception.InvalidVersionException;
 
 import java.util.Arrays;
 
