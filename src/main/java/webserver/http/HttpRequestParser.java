@@ -27,9 +27,7 @@ public class HttpRequestParser {
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
         String oneLine = bufferedReader.readLine();
         while (oneLine.length() != 0) {
-            int colonIndex = oneLine.indexOf(":");
             builder.setHeader(oneLine);
-//            logger.info("HEADERS: {}", oneLine);
             oneLine = bufferedReader.readLine();
         }
     }
@@ -38,7 +36,6 @@ public class HttpRequestParser {
         String[] tokens = firstLine.split(" ");
         builder.method(tokens[0].trim())
                 .uri(tokens[1].trim())
-                .path(tokens[1].split("\\?")[0])
                 .version(tokens[2].trim());
     }
 }

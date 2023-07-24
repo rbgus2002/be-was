@@ -23,13 +23,12 @@ class UserCreateControllerTest {
     void handleUserCreateRequest() throws IOException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
+                .setHeader("Host: localhost:8080")
                 .uri("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
-                .path("/user/create")
                 .version("HTTP/1.1")
                 .build();
 
-        Controller controller = ResolveController.getInstance().resolveRequest(testRequest);
-        HttpResponse response = controller.handle(testRequest);
+        HttpResponse response = FrontController.getInstance().resolveRequest(testRequest);
 
         User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
 
@@ -37,12 +36,41 @@ class UserCreateControllerTest {
                 .status(FOUND)
                 .version("HTTP/1.1")
                 .contentType(HTML)
-                .setHeader("Location", "http://localhost:8080".concat("/user/form.html"))
+                .setHeader("Location: http://localhost:8080/index.html")
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
         softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
         softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.getHeader("Location")).isEqualTo(actual.getHeader("Location"));
+        softly.assertThat(response.body()).isEqualTo(actual.body());
+    }
+
+    @Test
+    @DisplayName("중복된 userId로 create 요청이 들어올 경우 두번째 요청은 form.html을 반환")
+    void handleUserCreateRequestWithSameUserId() throws IOException {
+        HttpRequest.Builder builder = HttpRequest.newBuilder();
+        HttpRequest testRequest = builder
+                .setHeader("Host: localhost:8080")
+                .uri("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .version("HTTP/1.1")
+                .build();
+
+        HttpResponse response = FrontController.getInstance().resolveRequest(testRequest);
+
+        User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
+
+        HttpResponse actual = HttpResponse.newBuilder()
+                .status(FOUND)
+                .version("HTTP/1.1")
+                .contentType(HTML)
+                .setHeader("Location: http://localhost:8080/user/form.html")
+                .build();
+
+        softly.assertThat(response.version()).isEqualTo(actual.version());
+        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
+        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.getHeader("Location")).isEqualTo(actual.getHeader("Location"));
         softly.assertThat(response.body()).isEqualTo(actual.body());
     }
 
@@ -54,14 +82,12 @@ class UserCreateControllerTest {
     @DisplayName("handleUserCreateRequest의 기능 확인 테스트2")
     void handleUserCreateRequest2(String wrongUri) throws IOException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
-        HttpRequest testRequest = builder.path("/user/create")
+        HttpRequest testRequest = builder
                 .uri(wrongUri)
-                .path("/user/create")
                 .version("HTTP/1.1")
                 .build();
 
-        Controller controller = ResolveController.getInstance().resolveRequest(testRequest);
-        HttpResponse response = controller.handle(testRequest);
+        HttpResponse response = FrontController.getInstance().resolveRequest(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(BAD_REQUEST)

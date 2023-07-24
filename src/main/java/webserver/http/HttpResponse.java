@@ -3,8 +3,7 @@ package webserver.http;
 import webserver.http.enums.ContentType;
 import webserver.http.enums.HttpResponseStatus;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 import static webserver.http.enums.ContentType.PLAIN;
 
@@ -12,28 +11,29 @@ public class HttpResponse {
     private String version;
     private int statusCode;
     private String statusText;
-    private String contentType;
-    private Map<String, String> headers;
+    private ContentType contentType;
+    private HttpHeaders headers;
     private byte[] body;
 
-    private HttpResponse(HttpResponse.Builder builder) {
-        this.version = builder.version();
-        this.statusCode = builder.status().getStatusCode();
-        this.statusText = builder.status().getStatusText();
-        this.contentType = builder.contentType().getContentType();
-        this.headers = builder.headers();
-        this.body = builder.body();
+    private HttpResponse(String version, HttpResponseStatus status,
+                         ContentType contentType, HttpHeaders headers, byte[] body) {
+        this.version = version;
+        this.statusCode = status.getStatusCode();
+        this.statusText = status.getStatusText();
+        this.contentType = contentType;
+        this.headers = headers;
+        this.body = body;
     }
 
     public static class Builder {
         private String version;
         private HttpResponseStatus status;
         private ContentType contentType = PLAIN;
-        private Map<String, String> headers;
+        private HttpHeaders headers;
         private byte[] body = new byte[0];
 
         public Builder() {
-            this.headers = new HashMap<>();
+            this.headers = new HttpHeaders();
         }
 
         public HttpResponse.Builder version(String version) {
@@ -56,35 +56,16 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse.Builder setHeader(String name, String value) {
-            this.headers.put(name, value);
+        public HttpResponse.Builder setHeader(String headerString) {
+            int splitIndex = headerString.indexOf(":");
+            this.headers.setHeader(headerString.substring(0, splitIndex).trim(),
+                    headerString.substring(splitIndex + 1).trim());
             return this;
         }
 
         public HttpResponse build() {
-            return new HttpResponse(this);
+            return new HttpResponse(version, status, contentType, headers, body);
         }
-
-        String version() {
-            return version;
-        }
-
-        HttpResponseStatus status() {
-            return status;
-        }
-
-        ContentType contentType() {
-            return contentType;
-        }
-
-        Map headers() {
-            return headers;
-        }
-
-        byte[] body() {
-            return body;
-        }
-
 
     }
 
@@ -104,10 +85,16 @@ public class HttpResponse {
         return this.statusText;
     }
 
-    public String contentType() { return this.contentType; }
+    public ContentType contentType() {
+        return this.contentType;
+    }
 
-    public Map<String, String> headers() {
-        return headers;
+    public Set<String> headers() {
+        return headers.headers();
+    }
+
+    public String getHeader(String header) {
+        return headers.getHeader(header);
     }
 
     public byte[] body() {

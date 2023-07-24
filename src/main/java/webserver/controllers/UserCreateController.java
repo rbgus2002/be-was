@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
-import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,11 +15,16 @@ import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
 import static webserver.http.enums.HttpResponseStatus.FOUND;
 
 public class UserCreateController implements Controller {
-    private final static Logger logger = LoggerFactory.getLogger(UserCreateController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserCreateController.class);
+    private static final UserCreateController USER_CREATE_CONTROLLER = new UserCreateController();
+
+    public static UserCreateController getInstance() {
+        return USER_CREATE_CONTROLLER;
+    }
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        Map<String, String> parameters = parseUri(request.uri());
+        Map<String, String> parameters = request.uri().getParameters();
 
         if (!verifyParameter(parameters)) {
             return createErrorResponse(request, BAD_REQUEST);
@@ -32,7 +35,6 @@ public class UserCreateController implements Controller {
         User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
-        // TODO: http:// 왜 붙였나요....
         String path = "http://".concat(request.getHeader("Host").concat("/index.html"));
         if (!addUser(user)) {
             path = "http://".concat(request.getHeader("Host").concat("/user/form.html"));
@@ -41,7 +43,7 @@ public class UserCreateController implements Controller {
         return builder.version(request.version())
                 .status(FOUND)
                 .contentType(HTML)
-                .setHeader("Location", path)
+                .setHeader("Location: ".concat(path))
                 .build();
     }
 
@@ -50,34 +52,10 @@ public class UserCreateController implements Controller {
         if (!parameters.keySet().equals(essentialField)) {
             return false;
         }
+        for (String field : essentialField) {
+            if ("".equals(parameters.get(field)))
+                return false;
+        }
         return true;
-    }
-
-    // TODO: URI 객체로 구분
-    private Map<String, String> parseUri(String uri) {
-        Map<String, String> result = new HashMap<>();
-
-        if (!uri.contains("?") || uri.indexOf("?") == uri.length() - 1) {
-            return result;
-        }
-
-        String paramString = uri.substring(uri.indexOf("?") + 1);
-
-        String[] parameters = paramString.split("&");
-
-        if (parameters.length < 4) {
-            return result;
-        }
-
-        // Stream
-        for (String parameter : parameters) {
-            int splitIndex = parameter.indexOf("=");
-            if (splitIndex < 0 || splitIndex == parameter.length() - 1)
-                break;
-            String value = URLDecoder.decode(parameter.substring(splitIndex + 1));
-            result.put(parameter.substring(0, splitIndex), value);
-        }
-
-        return result;
     }
 }

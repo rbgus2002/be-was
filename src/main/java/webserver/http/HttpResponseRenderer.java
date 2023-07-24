@@ -2,14 +2,16 @@ package webserver.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.enums.ContentType;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import static webserver.utils.StringUtils.NEW_LINE;
+
 public class HttpResponseRenderer {
-    // todo static final
-    private final static Logger logger = LoggerFactory.getLogger(HttpResponseRenderer.class);
-    private final static HttpResponseRenderer HTTP_RESPONSE_RENDERER = new HttpResponseRenderer();
+    private static final Logger logger = LoggerFactory.getLogger(HttpResponseRenderer.class);
+    private static final HttpResponseRenderer HTTP_RESPONSE_RENDERER = new HttpResponseRenderer();
 
     public static HttpResponseRenderer getInstance() {
         return HTTP_RESPONSE_RENDERER;
@@ -22,18 +24,24 @@ public class HttpResponseRenderer {
 
     private void responseHeader(DataOutputStream dos, HttpResponse response) {
         try {
-            // TODO: \r\n appendNewLine으로 바꾸기?
-            dos.writeBytes(String.format("%s %d %s \r\n", response.version(), response.statusCode(), response.statusText()));
+            dos.writeBytes(String.format("%s %d %s %s", response.version(), response.statusCode(), response.statusText(), NEW_LINE));
             logger.debug("{} {} {}", response.version(), response.statusCode(), response.statusText());
-            dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", response.contentType()));
-//            logger.debug("Content-Type: {} ", response.contentType());
-            dos.writeBytes("Content-Length: " + response.body().length + "\r\n");
-//            logger.debug("response headers: {}", response.headers().toString());
-            for(String header: response.headers().keySet()) {
-                dos.writeBytes(String.format("%s: %s\r\n", header, response.headers().get(header)));
-                logger.debug("{}: {}", header, response.headers().get(header));
+
+            for(String header: response.headers()) {
+                dos.writeBytes(String.format("%s: %s%s", header, response.getHeader(header), NEW_LINE));
+                logger.debug("{}: {}", header, response.getHeader(header));
             }
-            dos.writeBytes("\r\n");
+
+            String contentType = String.format("Content-Type: %s", response.contentType().getTypeString());
+            if(response.contentType() == ContentType.HTML) contentType = contentType.concat(";charset=utf-8");
+            dos.writeBytes(contentType.concat(NEW_LINE));
+//            logger.debug("Content-Type: {} ", response.contentType());
+
+            dos.writeBytes("Content-Length: " + response.body().length + NEW_LINE);
+//            logger.debug("response headers: {}", response.headers().toString());
+
+            dos.writeBytes(NEW_LINE);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

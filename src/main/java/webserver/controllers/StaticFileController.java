@@ -16,11 +16,16 @@ import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
 import static webserver.http.enums.HttpResponseStatus.OK;
 
 public class StaticFileController implements Controller {
-    private final static Logger logger = LoggerFactory.getLogger(StaticFileController.class);
+    private static final Logger logger = LoggerFactory.getLogger(StaticFileController.class);
+    private static final StaticFileController STATIC_FILE_CONTROLLER = new StaticFileController();
+
+    public static StaticFileController getInstance() {
+        return STATIC_FILE_CONTROLLER;
+    }
 
     @Override
     public HttpResponse handle(HttpRequest request) {
-        String extension = request.uri().substring(request.uri().lastIndexOf("."));
+        String extension = request.uri().getExtension();
         ContentType contentType = getContentTypeByExtension(extension);
         String path = getPathString(request, contentType);
 
@@ -42,7 +47,7 @@ public class StaticFileController implements Controller {
     }
 
     private String getPathString(HttpRequest request, ContentType contentType) {
-        String fileName = request.uri();
+        String fileName = request.uri().getPath();
 
         if (contentType == HTML) {
             return System.getProperty("user.dir").concat("/src/main/resources/templates").concat(fileName);

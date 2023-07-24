@@ -5,18 +5,16 @@ import java.util.Map;
 
 public class HttpRequest {
     private String method;
-    private String uri;
-    private String path;
+    private HttpUri uri;
     private String version;
     private String contentType = "text/plain";
     private HttpHeaders headers;
     private Map<String, String> body;
 
-    private HttpRequest(String method, String uri, String path, String version,
-                        String contentType, HttpHeaders headers, Map<String, String> body) {
+    private HttpRequest(String method, HttpUri uri, String version, String contentType,
+                        HttpHeaders headers, Map<String, String> body) {
         this.method = method;
         this.uri = uri;
-        this.path = path;
         this.version = version;
         this.contentType = contentType;
         this.headers = headers;
@@ -25,8 +23,7 @@ public class HttpRequest {
 
     public static class Builder {
         private String method;
-        private String uri;
-        private String path;
+        private HttpUri uri;
         private String version;
         private String contentType = "text/plain";
         private HttpHeaders headers;
@@ -38,12 +35,7 @@ public class HttpRequest {
         }
 
         public HttpRequest.Builder uri(String uri) {
-            this.uri = uri;
-            return this;
-        }
-
-        public HttpRequest.Builder path(String path) {
-            this.path = path;
+            this.uri = new HttpUri(uri);
             return this;
         }
 
@@ -65,7 +57,7 @@ public class HttpRequest {
         }
 
         public HttpRequest build() {
-            return new HttpRequest(method, uri, path, version, contentType, headers, body);
+            return new HttpRequest(method, uri, version, contentType, headers, body);
         }
     }
 
@@ -77,12 +69,8 @@ public class HttpRequest {
         return method;
     }
 
-    public String uri() {
+    public HttpUri uri() {
         return uri;
-    }
-
-    public String path() {
-        return path;
     }
 
     public String version() {

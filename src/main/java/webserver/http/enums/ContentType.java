@@ -38,12 +38,12 @@ public enum ContentType {
         this.contentType = contentType;
     }
 
-    public String getContentType() {
+    public String getTypeString() {
         return contentType;
     }
 
     public static ContentType getContentTypeByExtension(String extension) {
-        return contentTypeMap.containsKey(extension)?
-                contentTypeMap.get(extension): contentTypeMap.get("default");
+        if(extension == null) return contentTypeMap.get("default");
+        return contentTypeMap.getOrDefault(extension, contentTypeMap.get("default"));
     }
 }

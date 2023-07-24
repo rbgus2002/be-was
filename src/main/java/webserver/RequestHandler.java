@@ -6,7 +6,7 @@ import webserver.controllers.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpRequestParser;
 import webserver.http.HttpResponse;
-import webserver.controllers.ResolveController;
+import webserver.controllers.FrontController;
 import webserver.http.HttpResponseRenderer;
 
 import java.io.DataOutputStream;
@@ -33,9 +33,7 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = HttpRequestParser.parseHttpRequest(in);
 
-            Controller handler = ResolveController.getInstance().resolveRequest(request);
-
-            HttpResponse response = handler.handle(request);
+            HttpResponse response = FrontController.getInstance().resolveRequest(request);
 
             HttpResponseRenderer.getInstance().responseRender(dos, response);
         } catch (IOException e) {
