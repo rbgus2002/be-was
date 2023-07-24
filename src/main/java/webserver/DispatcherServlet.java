@@ -36,16 +36,16 @@ public class DispatcherServlet {
 
     public void doDispatch(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
         Method method = HandlerMapping.getMethodMapped(request);
-        handle(request, response, method);
-        processDispatchResult(request, response, out);
+        String filePath = handle(request, response, method);
+        processDispatchResult(filePath, response, out);
     }
 
-    private void handle(HttpRequest request, HttpResponse response, Method method) throws Throwable {
+    private String handle(HttpRequest request, HttpResponse response, Method method) throws Throwable {
         String path = request.getPath();
         if (hasRequestPathMapped(method)) {
             path = executeRequest(request, method);
         }
-        processResources(response, path);
+        return processResources(response, path);
     }
 
     private static boolean hasRequestPathMapped(Method method) {
@@ -64,7 +64,7 @@ public class DispatcherServlet {
         return path;
     }
 
-    private void processResources(HttpResponse response, String filePath) throws IOException {
+    private String processResources(HttpResponse response, String filePath) throws IOException {
         try {
             ContentType type = ContentType.findBy(filePath);
             filePath = type.mapResourceFolders(filePath);
@@ -76,6 +76,7 @@ public class DispatcherServlet {
             response.setResults(null, NOT_FOUND);
             logger.debug(e.getMessage());
         }
+        return filePath;
     }
 
     private MethodHandle getMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException {
@@ -93,8 +94,8 @@ public class DispatcherServlet {
         return method.getParameterCount() != 0;
     }
 
-    private void processDispatchResult(HttpRequest request, HttpResponse response, OutputStream out) {
-        ContentType type = ContentType.findBy(request.getPath());
+    private void processDispatchResult(String filePath, HttpResponse response, OutputStream out) {
+        ContentType type = ContentType.findBy(filePath);
         response.writeResponseToOutputStream(out, type);
     }
 }
