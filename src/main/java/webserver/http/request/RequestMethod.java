@@ -5,7 +5,9 @@ public enum RequestMethod {
     POST,
     PUT,
     PATCH,
-    DELETE
+    DELETE;
 
-
+    public static RequestMethod of(String method) {
+        return RequestMethod.valueOf(method);
+    }
 }
