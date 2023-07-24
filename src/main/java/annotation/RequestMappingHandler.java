@@ -58,6 +58,10 @@ public class RequestMappingHandler {
     private RequestMappingHandler() {
     }
 
+    public static MethodHandle getMethod(HttpUtils.Method method, String path) {
+        return methodHandles.get(method).get(path);
+    }
+
     public static HttpResponse invokeMethod(HttpRequest httpRequest, Session session) throws Throwable {
         String path = httpRequest.uri().getPath();
         HttpUtils.Method httpMethod = httpRequest.method();

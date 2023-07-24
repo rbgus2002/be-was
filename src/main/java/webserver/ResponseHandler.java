@@ -13,6 +13,7 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.invoke.MethodHandle;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,22 +63,28 @@ public class ResponseHandler {
     }
 
     private HttpResponse processHttpRequest(HttpRequest httpRequest, Session session) {
+        String path = httpRequest.uri().getPath();
+        HttpUtils.Method httpMethod = httpRequest.method();
+        MethodHandle method = RequestMappingHandler.getMethod(httpMethod, path);
+        if (method == null) {
+            logger.debug("정적 파일을 응답합니다.");
+            return HttpResponse.ok(path, httpRequest.mime());
+        }
+
         try {
+            logger.debug("controller를 실행합니다.");
             return RequestMappingHandler.invokeMethod(httpRequest, session);
         } catch (Throwable e) {
-            logger.debug("정적 파일을 응답합니다.");
-            String path = httpRequest.uri().getPath();
-            String extension = StringUtils.getExtension(path);
-            if (!Objects.equals(extension, path)) {
-                // 정적 파일 응답
-                return HttpResponse.ok(path, httpRequest.mime());
-            }
-            logger.error("메소드를 실행하거나 정적파일을 응답하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
-            if (httpRequest.method().equals(HttpUtils.Method.GET)) {
-                return HttpResponse.notFound("/error.html", Mime.HTML);
-            }
-            return HttpResponse.redirect("/error.html");
+            return errorHandle(httpRequest, e);
         }
+    }
+
+    private HttpResponse errorHandle(HttpRequest httpRequest, Throwable e) {
+        logger.error("메소드를 실행하거나 정적파일을 응답하는데 오류가 발생했습니다.\n{}", (Object) e.getStackTrace());
+        if (httpRequest.method().equals(HttpUtils.Method.GET)) {
+            return HttpResponse.notFound("/error.html", Mime.HTML);
+        }
+        return HttpResponse.redirect("/error.html");
     }
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
