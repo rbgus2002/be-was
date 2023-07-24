@@ -14,12 +14,12 @@ public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private static final String HTML_PATH = "src/main/resources/templates";
     private static final String STATIC_PATH = "src/main/resources/static";
-    private final String status;
+    private final HttpStatus status;
     private final String path;
     private final HttpMime mime;
     private final byte[] body;
 
-    public HttpResponse(String status, String path, HttpMime mime) throws IOException {
+    public HttpResponse(HttpStatus status, String path, HttpMime mime) throws IOException {
         this.status = status;
         this.path = path;
         this.mime = mime;
@@ -49,16 +49,16 @@ public class HttpResponse {
 
     public void response(OutputStream out) {
         DataOutputStream dos = new DataOutputStream(out);
-        if (this.status.equals("200 OK")) {
+        if (this.status == HttpStatus.OK) {
             response200Header(dos, body.length);
-        } else if (this.status.equals("302 Found")) {
+        } else if (this.status == HttpStatus.FOUND) {
             response302Header(dos);
         }
         responseBody(dos, body);
     }
 
     public static HttpResponse redirect(String path) throws IOException {
-        return new HttpResponse("302 Found", path, HttpMime.HTML);
+        return new HttpResponse(HttpStatus.FOUND, path, HttpMime.HTML);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import webserver.http.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 
 import java.io.OutputStream;
 import java.lang.invoke.MethodHandle;
@@ -27,7 +28,7 @@ public class DispatcherServlet {
         HttpResponse httpResponse;
 
         if (handler == null) {
-            httpResponse = new HttpResponse("200 OK", request.getRequestPath(), request.getMime());
+            httpResponse = new HttpResponse(HttpStatus.OK, request.getRequestPath(), request.getMime());
             httpResponse.response(out);
             return;
         }
