@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import webserver.session.Cookie;
 import webserver.utils.HttpHeader;
 import webserver.utils.HttpMimeType;
 import webserver.utils.HttpStatus;
@@ -21,6 +24,7 @@ public class HttpWasResponse {
 	private HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 	private final HttpResponseHeader header = new HttpResponseHeader();
 	private byte[] body = new byte[0];
+	private final List<Cookie> cookies = new ArrayList<>();
 
 
 	public HttpWasResponse(OutputStream outputStream) {
@@ -97,5 +101,9 @@ public class HttpWasResponse {
 
 	public void addHeader(HttpHeader headerType, String value) {
 		header.addHeader(headerType, value);
+	}
+
+	public void addCookie(Cookie cookie) {
+		cookies.add(cookie);
 	}
 }
