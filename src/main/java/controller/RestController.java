@@ -4,6 +4,7 @@ import dto.LoginRequestDto;
 import dto.UserFormRequestDto;
 import model.HttpRequest;
 import model.HttpResponse;
+import model.User;
 import model.enums.HttpStatusCode;
 import model.enums.MIME;
 import model.enums.Method;
@@ -12,14 +13,18 @@ import service.UserService;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 import static constant.Uri.*;
 import static mapper.ResponseMapper.*;
+import static util.Authorization.needAuthorization;
+import static util.Authorization.setSessionInCookie;
 import static util.StringUtils.COMMA_MARK;
 import static util.StringUtils.splitBy;
 
 public class RestController {
+    public static final String USER_ID = "userId";
+    public static final String PASSWORD = "password";
     private final FileService fileService;
     private final UserService userService;
 
@@ -40,6 +45,9 @@ public class RestController {
             }
 
             if (isNotRestfulRequest(httpRequest)) {
+                if (needAuthorization(httpRequest)) {
+
+                }
                 response = sendNotRestfulResponse(httpRequest);
             }
             return response;
@@ -48,14 +56,22 @@ public class RestController {
         }
     }
 
+    private boolean needAuthorization(HttpRequest httpRequest) {
+        return needAuthorization.contains(httpRequest.getUri());
+    }
+
+    private HttpResponse getUserList(HttpRequest httpRequest) {
+        return null;
+    }
+
     private HttpResponse loginUser(HttpRequest httpRequest) {
         Map<String, String> bodyMap = httpRequest.getBodyMap();
-        LoginRequestDto dto = new LoginRequestDto(bodyMap);
-        boolean loginResult = userService.login(dto);
-        if (loginResult) {
+        LoginRequestDto dto = new LoginRequestDto(bodyMap.get(USER_ID), bodyMap.get(PASSWORD));
+        Optional<User> loginUser = userService.login(dto);
+
+        if (loginUser.isPresent()) {
             HttpResponse response = createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
-            String sessionId = UUID.randomUUID().toString();
-            response.setCookie(sessionId);
+            setSessionInCookie(response, loginUser.get());
             return response;
         }
         return createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, USER_LOGIN_FAILED_URI);
