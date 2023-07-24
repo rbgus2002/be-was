@@ -2,7 +2,6 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 
 import model.HttpRequest;
 import model.HttpResponse;
@@ -10,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ServletContainer implements Runnable {
-
-    private final String STATIC_PATH = "./src/main/resources/static";
-    private final String DYNAMIC_PATH = "./src/main/resources/templates";
 
     private static final Logger logger = LoggerFactory.getLogger(ServletContainer.class);
 
@@ -31,32 +27,11 @@ public class ServletContainer implements Runnable {
             HttpResponse response = new HttpResponse(request);
 
             DispatcherServlet dispatcherServlet = new DispatcherServlet(request, response);
-
+            dispatcherServlet.doService(request, response);
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(DYNAMIC_PATH + request.getRequestURI()).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
+            response.write(dos);
             dos.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
