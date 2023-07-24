@@ -46,7 +46,7 @@ class StaticFileHandlerTest {
     private void verifyContentTypeWithAccept(String path, String contentType) {
         HttpRequest staticRequest = getStaticRequest(path, contentType);
 
-        HttpResponse httpResponse = staticFileHandler.handle(staticRequest);
+        HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session);
         HttpHeaders headers = httpResponse.getHttpHeaders();
 
         assertThat(headers.getSingleValue(CONTENT_TYPE)).isEqualTo(contentType);
@@ -55,7 +55,7 @@ class StaticFileHandlerTest {
     private void verifyContentTypeWithOutAccept(String path, String contentType) {
         HttpRequest staticRequest = getStaticRequestWithOutAccept(path);
 
-        HttpResponse httpResponse = staticFileHandler.handle(staticRequest);
+        HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session);
         HttpHeaders headers = httpResponse.getHttpHeaders();
 
         assertThat(headers.getSingleValue(CONTENT_TYPE)).isEqualTo(contentType);

@@ -4,9 +4,10 @@ import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.session.Session;
 
-public class NotFoundHandler implements Handler{
+public class LoginHandler implements Handler{
+
     @Override
     public HttpResponse handle(HttpRequest request, Session session) {
-        return HttpResponse.notFound();
+        return null;
     }
 }

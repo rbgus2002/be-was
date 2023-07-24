@@ -1,6 +1,5 @@
 package webserver.handlers;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.fixture.HttpRequestFixture;
@@ -17,7 +16,7 @@ class UserFormHandlerTest {
         HttpRequest requestUserForm = HttpRequestFixture.getRequestUserForm();
 
         Handler handler = new UserFormHandler();
-        HttpResponse response = handler.handle(requestUserForm);
+        HttpResponse response = handler.handle(requestUserForm, session);
 
         assertThat(response.getBody())
                 .isEqualTo(FileUtils.readFileFromTemplate("/user/form.html"));
