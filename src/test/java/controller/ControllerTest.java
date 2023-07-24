@@ -28,7 +28,11 @@ class ControllerTest {
 		// given
 		Controller controller = new Controller();
 
-		String input = "GET /user/create?userId=chan&password=123&name=chan&email=a%40naver.com HTTP/1.1\r\n";
+		String input = "POST /user/create HTTP/1.1\r\n"
+			+ "Content-Type: application/x-www-form-urlencoded\r\n"
+			+ "Content-Length: 53\r\n"
+			+ "\r\n"
+			+ "userId=chan&password=123&name=chan&email=a%40naver.com";
 		InputStream inputStream = new ByteArrayInputStream(input.getBytes());
 		final HttpWasRequest httpWasRequest = new HttpWasRequest(inputStream);
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(new ByteArrayOutputStream());
