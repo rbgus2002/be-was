@@ -14,9 +14,11 @@ public class FileController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String filePath = httpRequest.get(HttpField.PATH);
-
         filePath = FileUtils.preprocessFilePath(filePath);
+        processFileResponse(httpResponse, filePath);
+    }
 
+    private void processFileResponse(HttpResponse httpResponse, String filePath) throws IOException {
         byte[] body = FileUtils.readFile(filePath);
         HttpStatus status = resolveHttpStatus(filePath);
         String contentType = ContentTypeResolver.getContentType(filePath);

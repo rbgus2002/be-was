@@ -23,9 +23,6 @@ public final class FileUtils {
         if (isFileExist(path)) {
             return path;
         }
-        if (path.equals("/")) {
-            return "/index.html";
-        }
         return "/404.html";
     }
 

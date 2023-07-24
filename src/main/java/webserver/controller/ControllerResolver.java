@@ -1,5 +1,6 @@
 package webserver.controller;
 
+import webserver.IndexPageController;
 import webserver.controller.file.FileController;
 import webserver.controller.user.UserListController;
 import webserver.controller.user.UserLoginController;
@@ -29,6 +30,9 @@ public class ControllerResolver {
     }
 
     private void initControllers() {
+        IndexPageController indexPageController = new IndexPageController();
+        controllers.put(new ControllerSignature("/", HttpMethod.GET), indexPageController);
+        controllers.put(new ControllerSignature("/index.html", HttpMethod.GET), indexPageController);
         controllers.put(new ControllerSignature("/user/create", HttpMethod.POST), new UserSaveController());
         controllers.put(new ControllerSignature("/user/login", HttpMethod.POST), new UserLoginController());
         controllers.put(new ControllerSignature("/user/list", HttpMethod.GET), new UserListController());
