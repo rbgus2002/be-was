@@ -11,7 +11,7 @@ public enum UserListController implements HttpController {
     public String process(HttpRequest request, HttpResponse response) {
         HttpSession session = request.getSession();
         if (session == null || !session.isValid()) {
-            return "redirect:/index.html";
+            return "redirect:/user/login.html";
         }
         return "/user/list.html";
     }
