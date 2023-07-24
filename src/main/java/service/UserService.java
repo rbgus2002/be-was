@@ -39,8 +39,8 @@ public class UserService {
             return false;
         }
 
-        // 아이디/비밀번호 검증
-        return userId.equals(user.getUserId()) && password.equals(user.getPassword());
+        // 비밀번호 검증
+        return password.equals(user.getPassword());
     }
 
     public static void clearUserDatabase() {
