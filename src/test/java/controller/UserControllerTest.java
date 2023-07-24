@@ -5,6 +5,7 @@ import model.HttpRequest;
 import model.HttpResponse;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -51,6 +52,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("controller에서 user를 생성하고, 잘 저장되는지 확인한다.")
     void getUserCreate() {
         User expectedUser = new User("asdf", "asdf", "asdf", "asdf@naver.com");
 
