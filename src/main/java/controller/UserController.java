@@ -15,6 +15,17 @@ import static utils.FileIOUtils.*;
 public class UserController extends Controller {
     private final UserService userService = new UserService();
 
+    private UserController() {
+    }
+
+    private static class Holder {
+        private static final UserController INSTANCE = new UserController();
+    }
+
+    public static UserController getInstance() {
+        return UserController.Holder.INSTANCE;
+    }
+
     public HttpResponse.ResponseBuilder doGet(String uri) {
         String[] apis = uri.split("\\?");
         if (apis[0].equals("/user/create") && apis.length == 2) {

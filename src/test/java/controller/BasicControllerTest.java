@@ -20,7 +20,7 @@ class BasicControllerTest {
 
     @BeforeEach
     void setup() {
-        basicController = new BasicController();
+        basicController = BasicController.getInstance();
         softAssertions = new SoftAssertions();
     }
 

@@ -6,6 +6,7 @@ import http.HttpResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 
+import static controller.UserController.getInstance;
 import static db.Database.clear;
 import static http.HttpMethod.GET;
 import static http.HttpMethod.POST;
@@ -19,7 +20,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setup() {
-        userController = new UserController();
+        userController = getInstance();
         softAssertions = new SoftAssertions();
     }
 
@@ -68,7 +69,6 @@ class UserControllerTest {
         HttpRequest httpRequest = new HttpRequest.RequestBuilder("POST", uri, "HTTP/1.1")
                 .setBody(body)
                 .build();
-        UserController userController = new UserController();
 
         // When
         userController.loadFileByRequest(httpRequest);
@@ -89,7 +89,6 @@ class UserControllerTest {
         HttpRequest httpRequest = new HttpRequest.RequestBuilder("POST", uri, "HTTP/1.1")
                 .setBody(body)
                 .build();
-        UserController userController = new UserController();
 
         // When
         HttpResponse httpResponse = userController.loadFileByRequest(httpRequest).build();

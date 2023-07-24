@@ -7,8 +7,19 @@ import http.HttpRequest;
 
 public class ControllerMappingHandler {
 
-    UserController userController = new UserController();
-    BasicController basicController = new BasicController();
+    UserController userController = UserController.getInstance();
+    BasicController basicController = BasicController.getInstance();
+
+    private ControllerMappingHandler() {
+    }
+
+    private static class Holder {
+        private static final ControllerMappingHandler INSTANCE = new ControllerMappingHandler();
+    }
+
+    public static ControllerMappingHandler getInstance() {
+        return Holder.INSTANCE;
+    }
 
     public Controller mappingController(HttpRequest httpRequest) {
         String uri = httpRequest.getUri();

@@ -13,14 +13,13 @@ import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static db.Database.addUserTest;
 import static http.HttpMethod.POST;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connection;
-
-
-    private final ControllerMappingHandler controllerMappingHandler = new ControllerMappingHandler();
+    private final ControllerMappingHandler controllerMappingHandler = ControllerMappingHandler.getInstance();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -34,6 +33,8 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             // 사용자 요청에 대한 처리 구현
             HttpRequest httpRequest = createRequest(in);
+            // todo test 지우기~
+            addUserTest();
 
             assert httpRequest != null;
             Controller controller = controllerMappingHandler.mappingController(httpRequest);
