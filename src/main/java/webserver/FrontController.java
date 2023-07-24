@@ -60,6 +60,7 @@ public class FrontController {
         dos.writeBytes(response.getVersion() + " " + response.getMethod() + " " + response.getStatusMessage() + "\r\n");
         Map<String, String> headers = response.getHeaders();
         for (Map.Entry<String, String> header : headers.entrySet()) {
+            logger.debug(header.getKey() + ": " + header.getValue() + "\r\n");
             dos.writeBytes(header.getKey() + ": " + header.getValue() + "\r\n");
         }
         dos.writeBytes("\r\n");
