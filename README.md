@@ -61,6 +61,15 @@ Java Web Application Server 2023
 - [x] 회원가입 요청 방식을 GET에서 POST로 변경
 - [x] 회원가입 완료 후 /index.html 페이지로 이동
 ## 학습 내용
-- [HTTP Redirect](https://github.com/csct3434/be-was/wiki/HTTP-Redirect)
 - [HTTP Method : GET vs POST](https://github.com/csct3434/be-was/wiki/GET-vs-POST)
 - [Idempotent Method vs Safe Method](https://github.com/csct3434/be-was/wiki/Idempotent-Method-vs-Safe-Method)
+- [HTTP Redirect](https://github.com/csct3434/be-was/wiki/HTTP-Redirect)
+---
+# Step-5
+## 구현 사항
+- [x] 로그인 기능 구현
+  - 로그인이 성공하면 index.html로 이동한다.
+  - 로그인이 성공할 경우 HTTP 헤더의 쿠키 값을 SID=세션 ID 로 응답한다.
+  - 로그인이 실패하면 /user/login_failed.html로 이동한다.
+## 학습 내용
+- [Cookie & Session](https://github.com/csct3434/be-was/wiki/Cookie-&-Session)
