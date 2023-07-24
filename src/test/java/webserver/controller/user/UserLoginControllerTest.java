@@ -4,6 +4,7 @@ import db.Database;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.HttpRequest;
@@ -15,7 +16,7 @@ import webserver.utils.HttpRequestCreateUtil;
 public class UserLoginControllerTest {
 
     @BeforeAll
-    void init() {
+    static void init() {
         Database.addUser(new User("userId", "password", "name", "email@test.com"));
     }
 
@@ -23,6 +24,7 @@ public class UserLoginControllerTest {
     @DisplayName("로그인 성공 시, Set-Cookie에 세션 아이디와 Path 속성이 설정되어야 한다")
     void validLoginTest() throws Exception {
         //given
+
         String body = "userId=userId&password=password";
 
         String requestMessage = "POST /user/login HTTP/1.1\r\n"
