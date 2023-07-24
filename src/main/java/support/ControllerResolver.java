@@ -107,7 +107,7 @@ public abstract class ControllerResolver {
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
     private static Object[] transformQuery(HttpRequest request, HttpResponse response, Method method) throws BadRequestException {
-        KeyValue requestQuery = request.getRequestOrParameter()
+        KeyValue requestQuery = request.getPathQueryOrParameter()
                 .orElseThrow(() -> new BadRequestException(ExceptionName.WRONG_ARGUMENT));
         Parameter[] parameters = method.getParameters();
 

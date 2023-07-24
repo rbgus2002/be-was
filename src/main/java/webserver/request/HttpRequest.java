@@ -73,7 +73,7 @@ public class HttpRequest {
         return path;
     }
 
-    public Optional<KeyValue> getRequestOrParameter() {
+    public Optional<KeyValue> getPathQueryOrParameter() {
         return body != null ? Optional.of(body) : Optional.ofNullable(query);
     }
 
