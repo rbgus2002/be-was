@@ -55,7 +55,7 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
             response.setStatus(HttpResponseStatus.STATUS_400);
             response.setBodyByText(e.getMessage());
         } catch (ConflictException e) {
-            response.setStatus(HttpResponseStatus.STATUS_405);
+            response.setStatus(HttpResponseStatus.STATUS_409);
             response.setBodyByText(e.getMessage());
         }
     }

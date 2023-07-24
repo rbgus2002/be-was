@@ -23,9 +23,9 @@ public class HttpRequestParser {
     }
 
     private static HttpRequest parseRequest(BufferedReader br) throws IOException {
-        if(!br.ready()){
-            return new HttpRequest();
-        }
+//        if(!br.ready()){
+//            return new HttpRequest();
+//        }
         String line = br.readLine();
         String[] firstLine = line.split(" ");
         return new HttpRequest(firstLine[0], firstLine[1].split("[?]")[0], initParams(firstLine[1]), initHeader(br, line), initBody(br));
