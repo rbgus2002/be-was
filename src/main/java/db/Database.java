@@ -1,17 +1,21 @@
 package db;
 
 import com.google.common.collect.Maps;
+import model.Session;
 import model.User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class Database {
+public abstract class Database {
 
     private static Map<String, User> users = Maps.newHashMap();
+    private static Map<String, Session> sessions = new ConcurrentHashMap();
 
     public static void clear() {
         users.clear();
+        sessions.clear();
     }
 
     public static void addUser(User user) {
@@ -24,6 +28,14 @@ public class Database {
 
     public static Collection<User> findAll() {
         return users.values();
+    }
+
+    public static void addSession(Session session) {
+        sessions.put(session.getSessionId(), session);
+    }
+
+    public static Session findSessionById(String sessionId) {
+        return sessions.get(sessionId);
     }
 
 }
