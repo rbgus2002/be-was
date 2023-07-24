@@ -1,6 +1,6 @@
 package webserver.request;
 
-import webserver.exception.InvalidPathLengthException;
+import webserver.exception.InvalidPathException;
 
 public class RequestPath {
 
@@ -17,7 +17,7 @@ public class RequestPath {
     }
 
     public String getPathSegment(int idx) {
-        if (idx < 0 || idx >= paths.length - INDEX_ADJUSTMENT) throw new InvalidPathLengthException();
+        if (idx < 0 || idx >= paths.length - INDEX_ADJUSTMENT) throw new InvalidPathException();
         return SLASH + paths[idx + INDEX_ADJUSTMENT];
     }
 }
