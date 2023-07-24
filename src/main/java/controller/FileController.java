@@ -64,7 +64,7 @@ public class FileController {
             }
 
             // userList
-            if(targetUri.equals("/user/list.html")) {
+            if(targetUri.equals(USER_LIST_URL)) {
                 if(sid != null) {
                     StringBuilder sb = new StringBuilder();
                     int i = 0;
@@ -76,6 +76,7 @@ public class FileController {
                     httpDocument = appendElement(httpDocument, USER_LIST_TBODY, sb.toString());
                 }
             }
+
             body = httpDocument.getBytes();
         }
 
