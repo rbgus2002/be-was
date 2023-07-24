@@ -1,9 +1,14 @@
 package webserver.http;
 
+import utils.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static utils.StringUtils.appendNewLine;
 
@@ -13,7 +18,7 @@ public class Body {
     private Body(BufferedReader br, int contentLength) throws IOException {
         char[] buffer = new char[contentLength];
         br.read(buffer);
-        Uri.setQuery(body, String.valueOf(buffer));
+        Uri.setQuery(body, StringUtils.decode(String.valueOf(buffer)));
     }
 
     public static Body of(BufferedReader br, int contentLength) throws IOException {
@@ -26,10 +31,8 @@ public class Body {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String key : body.keySet()) {
-            sb.append(key + ": ").append(appendNewLine(body.get(key)));
-        }
-        return sb.toString();
+        return body.keySet().stream()
+                .map(key -> key + ": " + appendNewLine(body.get(key)))
+                .collect(Collectors.joining());
     }
 }

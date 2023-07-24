@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import static utils.StringUtils.appendNewLine;
 
@@ -43,10 +44,8 @@ public class Header {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (String key : header.keySet()) {
-            sb.append(key + ": ").append(appendNewLine(header.get(key)));
-        }
-        return sb.toString();
+        return header.keySet().stream()
+                .map(key -> key + ": " + appendNewLine(header.get(key)))
+                .collect(Collectors.joining());
     }
 }
