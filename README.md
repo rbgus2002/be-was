@@ -1,6 +1,28 @@
 # java-was-2023
 Java Web Application Server 2023
 
+# Step4
+## 미션 수행 목표
+- [X] : HTTP POST의 동작 방식 이해
+- [X] : redirection 기능 이해
+- [X] : 회원가입 구현 (GET -> POST 수정)
+- [X] : 회원가입 후 리다이렉션을 통해 페이지 이동 (/index.html 페이지로 이동)
+
+## 미션 수행 기록
+- get 요청 방식을 post 요청으로 변경
+  - 기존의 쿼리스트링으로 들어오던 폼 데이터는 post로 변경 시 requestBody로 들어온다.
+  - requestBody를 파싱할 수 있도록 코드 추가
+  - form.html의 method도 post로 변경
+- 기존의 Controller 인터페이스를 구현한 방식을 수정
+- @RequestMapping 구현
+  - 컨트롤러의 메서드 단위에 해당 어노테이션을 붙이고 method와 value를 지정한다.
+  - HandlerMapper의 map에 requestMethod와 value 값을 필드로 가지는 ValueAndMethod 객체를 key로 지정한다.
+  - 리플렉션을 통해 얻은 Method 객체를 map의 value로 지정한다.
+- @Controller 구현
+  - 컨트롤러 클래스 단위에 해당 어노테이션을 붙인다.
+  - HandlerMapper 클래스의 static 블록에서 해당 어노테이션이 붙은 클래스(컨트롤러)의 메서드들을 HandlerMapper의 map 필드에 저장한다.
+- 요청이 들어오면 HandlerAdapter에서 컨트롤러의 메서드를 실행한다.
+
 # Step3
 ## 미션 수행 목표
 - [ ] : HTTP Response 학습 및 위키 정리
