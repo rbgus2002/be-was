@@ -111,8 +111,23 @@ public abstract class ViewResolver {
                 }
             }
             return "";
+        } else if ("SESSION.IS_EMPTY".equals(command)) {
+            String cookieHeader = request.getHeaderValue("Cookie");
+            if (cookieHeader == null) {
+                return argument;
+            }
+            String[] headerValue = cookieHeader.split(" ");
+            Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
+            if (sid.isPresent()) {
+                String rsid = sid.get();
+                Session session = Database.findSessionById(rsid.substring(4));
+                if (session != null) {
+                    return "";
+                }
+            }
+            return argument;
         }
-        return START_TAG + " " + command + " " + argument + " " + END_TAG;
+        return "";
     }
 
     public static void buildView(HttpRequest request, HttpResponse response, String path) throws IOException {
