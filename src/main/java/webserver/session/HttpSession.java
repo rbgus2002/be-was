@@ -7,14 +7,26 @@ import java.util.concurrent.ConcurrentMap;
 
 public class HttpSession {
 
+	public static final String SESSION_ID = "SID";
 	private static final long EXPIRED_TIME = 1L;
 	private ConcurrentMap<String, SessionData> attributes = new ConcurrentHashMap<>();
+	private static HttpSession instance = null;
 
-	public void createSession(String username) {
+	public static HttpSession getInstance() {
+		if (instance == null) {
+			instance = new HttpSession();
+		}
+		return instance;
+	}
+
+	private HttpSession() {}
+
+	public String createSession(String username) {
 		final UUID sessionId = UUID.randomUUID();
 		final SessionData sessionData = new SessionData(sessionId.toString(), createExpiredTime());
 
 		attributes.put(username, sessionData);
+		return sessionId.toString();
 	}
 
 	private LocalDateTime createExpiredTime() {
