@@ -43,6 +43,6 @@ public class HTTPServletRequest {
     }
 
     public String getHeader(String key) {
-        return headers.containsKey(key) ? headers.get(key) : null;
+        return headers.getOrDefault(key, null);
     }
 }

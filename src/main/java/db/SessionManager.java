@@ -19,7 +19,7 @@ public class SessionManager {
     public static void createSession(User user, HTTPServletResponse response) {
         String sessionId = UUID.randomUUID().toString();
         store.put(sessionId, user);
-        response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + sessionId);
+        response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + sessionId  + "; Path=/");
         logger.debug("Cookie = {}", SESSION_COOKIE_NAME + "=" + sessionId);
     }
 

@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Map;
 
 import static util.PathList.FAILED_PATH;
@@ -20,7 +18,7 @@ public class LogInTestController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(LogInTestController.class);
 
     @Override
-    public String process(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
+    public String process(HTTPServletRequest request, HTTPServletResponse response) {
         Map<String, String> query = request.getQuery();
         String userId = query.get("userId");
         User findUser = Database.findUserById(userId);

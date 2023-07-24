@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ public class LogInController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
 
     @Override
-    public String process(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
+    public String process(HTTPServletRequest request, HTTPServletResponse response){
         Map<String, String> query = request.getQuery();
         User user = new User(query.get("userId"), query.get("password"), query.get("name"), query.get("email"));
         logger.debug("user = {}", user);

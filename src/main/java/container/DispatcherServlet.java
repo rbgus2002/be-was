@@ -23,11 +23,13 @@ public class DispatcherServlet {
         Controller controller = map.get(url);
         String viewPath = url;
         if (controller != null) {
-            String path = controller.process(request, response);
-            viewPath = path;
-        }
+            viewPath = controller.process(request, response);
 
+        }
+        logger.debug("viewName = {}", viewPath);
         ViewResolver view = new ViewResolver(viewPath, response);
+        view.service();
+        view.render();
 
     }
 }
