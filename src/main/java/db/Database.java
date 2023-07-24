@@ -47,8 +47,7 @@ public class Database {
     }
 
     // Post
-    public static Post addPost(String userId, String title, String content) {
-        Post post = new Post(userId, title, content);
+    public static Post addPost(Post post) {
         posts.put(post.getPostId(), post);
         return post;
     }
