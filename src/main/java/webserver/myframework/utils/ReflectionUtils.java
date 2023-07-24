@@ -104,4 +104,10 @@ public class ReflectionUtils {
     public static boolean isCustomAnnotation(Class<? extends Annotation> annotationType) {
         return !annotationType.getPackage().getName().equals("java.lang.annotation");
     }
+
+    public static Object getField(Object object, String fieldName) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        return field.get(object);
+    }
 }

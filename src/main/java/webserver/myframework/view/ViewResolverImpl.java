@@ -5,7 +5,7 @@ import webserver.myframework.bean.annotation.Component;
 import java.io.File;
 
 @Component
-public class StaticViewResolverImpl implements ViewResolver {
+public class ViewResolverImpl implements ViewResolver {
     private static final String RESOURCE_PREFIX = "src/main/resources";
     private static final String DYNAMIC_VIEW = "/templates";
     private static final String STATIC_VIEW = "/static";

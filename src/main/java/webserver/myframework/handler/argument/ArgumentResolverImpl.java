@@ -68,7 +68,6 @@ public class ArgumentResolverImpl implements ArgumentResolver {
     }
 
     private static String getStringRequestParameter(HttpRequest httpRequest, Parameter parameterInfo) {
-        //TODO: 파라미터 이름이 arg0, arg1, ... 로 되어있어서 파라미터 이름을 가져오지 못함
         String parameterName = getParameterName(parameterInfo);
         String parameter = httpRequest.getParameter(parameterName);
         if (parameter == null) {

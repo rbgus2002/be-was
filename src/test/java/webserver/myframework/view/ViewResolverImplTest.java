@@ -10,9 +10,9 @@ import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.*;
 
 
-@DisplayName("HtmlViewResolverImpl 테스트")
-class StaticViewResolverImplTest {
-    final ViewResolver viewResolver = new StaticViewResolverImpl();
+@DisplayName("ViewResolverImpl 테스트")
+class ViewResolverImplTest {
+    final ViewResolver viewResolver = new ViewResolverImpl();
 
     @Nested
     @DisplayName("resolve method")

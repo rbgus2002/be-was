@@ -51,7 +51,6 @@ public class UserController {
             Session session = httpRequest.getSession();
             session.setAttribute("userId", user.getUserId());
             httpResponse.sendRedirection("/index.html");
-
         } catch (IllegalArgumentException exception) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         }

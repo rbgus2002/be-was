@@ -22,7 +22,7 @@ import webserver.myframework.handler.request.exception.DuplicateRequestHandlerEx
 import webserver.myframework.session.Session;
 import webserver.myframework.session.SessionManager;
 import webserver.myframework.session.SessionManagerImpl;
-import webserver.myframework.view.StaticViewResolverImpl;
+import webserver.myframework.view.ViewResolverImpl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,7 +46,7 @@ class DispatcherServletTest {
                 getTestRequestInfo("/notExist"), getTestHandler("notExistHandler"));
         handlerResolver.registerHandler(
                 getTestRequestInfo("/createSession"), getTestHandler("createSessionHandler"));
-        dispatcherServlet = new DispatcherServlet(handlerResolver, new StaticViewResolverImpl());
+        dispatcherServlet = new DispatcherServlet(handlerResolver, new ViewResolverImpl());
     }
 
     private static RequestInfo getTestRequestInfo(String uri) {
