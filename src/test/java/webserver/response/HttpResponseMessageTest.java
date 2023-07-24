@@ -13,7 +13,6 @@ class HttpResponseMessageTest {
     @DisplayName("응답 메시지를 생성한다.")
     void create() {
         // given
-        HttpStatus ok = HttpStatus.OK;
         String body = "<!DOCTYPE html>" + NEW_LINE +
                 "<html>" + NEW_LINE +
                 "<head>" + NEW_LINE +
@@ -25,10 +24,11 @@ class HttpResponseMessageTest {
                 "</body>" + NEW_LINE +
                 "</html>";
         String header = "HTTP/1.1 200 OK" + NEW_LINE +
-                "Content-Length: " + body.length() + NEW_LINE +
-                "Content-Type: text/html;charset=utf-8" + NEW_LINE;
+                "Content-Length: " + body.length() + NEW_LINE;
         // when
-        HttpResponseMessage message = new HttpResponseMessage(ok, body.getBytes());
+        HttpResponseMessage message = new HttpResponseMessage();
+        message.setStatusLine(HttpStatus.OK);
+        message.setBody(body);
 
         // then
         assertAll(

@@ -1,5 +1,6 @@
 package webserver.request;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class HttpURL {
@@ -28,7 +29,7 @@ public class HttpURL {
     }
 
     public Map<String, String> getParameters() {
-        return parameters;
+        return Collections.unmodifiableMap(parameters);
     }
 
     @Override

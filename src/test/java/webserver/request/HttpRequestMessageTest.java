@@ -45,10 +45,10 @@ class HttpRequestMessageTest {
         String message = "POST /api/data.image?user=me&name=김&id=iidd HTTP/1.1" + NEW_LINE +
                 "Host: example.com" + NEW_LINE +
                 "Content-Type: application/json" + NEW_LINE +
-                "Content-Length: 25" + NEW_LINE +
+                "Content-Length: 27" + NEW_LINE +
                 NEW_LINE +
-                "{\"name\": \"John\", \"age\": 30}" + NEW_LINE;
-        String targetBody = "{\"name\": \"John\", \"age\": 30}" + NEW_LINE;
+                "{\"name\": \"John\", \"age\": 30}";
+        String targetBody = "{\"name\": \"John\", \"age\": 30}";
 
         // when
         HttpRequestMessage httpRequestMessage = parseRequest(new ByteArrayInputStream(message.getBytes()));
@@ -90,7 +90,7 @@ class HttpRequestMessageTest {
         assertAll(
                 () -> assertEquals(method, httpRequestMessage.getMethod()),
                 () -> assertEquals(version, httpRequestMessage.getVersion()),
-                () -> assertEquals(body, httpRequestMessage.getBody())
+                () -> assertEquals("", httpRequestMessage.getBody())
         );
     }
 

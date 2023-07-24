@@ -1,7 +1,6 @@
 package webserver.controller;
 
 import webserver.annotation.RequestParameter;
-import webserver.exception.BadRequestException;
 import webserver.request.HttpRequestMessage;
 
 import java.lang.reflect.Method;
@@ -13,22 +12,22 @@ import static webserver.controller.ApplicationMethod.apiRouteToMethodMap;
 
 public class ApplicationControllerHandler {
 
-    public static void executeMethod(HttpRequestMessage httpRequestMessage) throws BadRequestException, ReflectiveOperationException {
+    public static Object executeMethod(HttpRequestMessage httpRequestMessage) throws ReflectiveOperationException {
         ApiRoute requestApiRoute = new ApiRoute(httpRequestMessage.getPath(), httpRequestMessage.getMethod());
 
         if (!apiRouteToClassMap.containsKey(requestApiRoute)) {
-            throw new BadRequestException("존재하지 않은 요청입니다.");
+            throw new IllegalArgumentException("존재하지 않은 파라미터입니다.");
         }
 
         Class<?> targetClass = apiRouteToClassMap.get(requestApiRoute);
         Method targetMethod = apiRouteToMethodMap.get(requestApiRoute);
 
-        targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, httpRequestMessage.getParameters()));
+        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, httpRequestMessage.getParameters()));
     }
 
-    private static Object[] getArguments(Method targetMethod, Map<String, String> requestParameters) throws BadRequestException {
+    private static Object[] getArguments(Method targetMethod, Map<String, String> requestParameters) {
         if (requestParameters.size() != targetMethod.getParameterCount()) {
-            throw new BadRequestException("요청된 파라미터의 갯수가 다릅니다.");
+            throw new IllegalArgumentException("요청된 파라미터의 갯수가 다릅니다.");
         }
 
         Object[] arguments = new Object[targetMethod.getParameterCount()];

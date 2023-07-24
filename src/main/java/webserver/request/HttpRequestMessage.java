@@ -12,12 +12,12 @@ public class HttpRequestMessage {
     private final String body;
     private final Map<String, String> headers;
 
-    public HttpRequestMessage(String method, HttpURL url, String version, Map<String, String> headers, String body) {
-        this.method = HttpMethod.valueOf(method);
+    public HttpRequestMessage(HttpMethod method, HttpURL url, String version, Map<String, String> headers, String body) {
+        this.method = method;
         this.url = url;
         this.version = version;
         this.body = body;
-        this.headers = Collections.unmodifiableMap(headers);
+        this.headers = headers;
     }
 
     public HttpMethod getMethod() {
@@ -33,7 +33,7 @@ public class HttpRequestMessage {
     }
 
     public String getHeader(String key) {
-        return headers.get(key);
+        return Collections.unmodifiableMap(headers).get(key);
     }
 
     public String getBody() {
