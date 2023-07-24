@@ -1,6 +1,6 @@
 package http;
 
-import static http.header.Header.*;
+import static http.header.HeaderConst.*;
 import static http.statusline.ResponseLine.*;
 
 import java.io.BufferedReader;

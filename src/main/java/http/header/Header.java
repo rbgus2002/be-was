@@ -1,14 +1,12 @@
 package http.header;
 
+import static http.header.HeaderConst.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import session.Cookie;
-
 public class Header {
-	public static final String HEADER_DELIMITER = ": ";
-	private static final String CRLF = "\r\n";
 	private Map<String, String> header = new HashMap<>();
 
 	public String getHeaderLines() {
@@ -25,11 +23,11 @@ public class Header {
 	}
 
 	public boolean containsCookie() {
-		return header.containsKey("Cookie");
+		return header.containsKey(COOKIE);
 	}
 
 	public String getCookieValue(String cookieName) throws NoSuchElementException {
-		String cookieLines = header.get("Cookie");
+		String cookieLines = header.get(COOKIE);
 		for (String cookieLine : cookieLines.split("; ")) {
 			if (cookieLine.split("=")[0].equals(cookieName)) {
 				return cookieLine.split("=")[1];
@@ -39,10 +37,10 @@ public class Header {
 	}
 
 	public boolean containsLength() {
-		return header.containsKey("Content-Length");
+		return header.containsKey(CONTENT_LENGTH);
 	}
 
 	public int getContentLength() {
-		return Integer.parseInt(header.get("Content-Length"));
+		return Integer.parseInt(header.get(CONTENT_LENGTH));
 	}
 }

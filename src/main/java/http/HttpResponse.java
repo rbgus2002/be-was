@@ -1,5 +1,7 @@
 package http;
 
+import static http.header.HeaderConst.*;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +13,6 @@ import http.header.MimeType;
 import http.statusline.StatusCode;
 import http.statusline.ResponseLine;
 import session.Cookie;
-import session.SessionConst;
 
 public class HttpResponse {
 	private ResponseLine responseLine = new ResponseLine();
@@ -55,7 +56,7 @@ public class HttpResponse {
 	}
 
 	private void responseStatusLine(DataOutputStream dos) throws IOException {
-		dos.writeBytes(responseLine.getStatusLineForHeader() + "\r\n");
+		dos.writeBytes(responseLine.getStatusLineForHeader() + CRLF);
 	}
 
 	private void responseHeader(DataOutputStream dos) throws IOException {
