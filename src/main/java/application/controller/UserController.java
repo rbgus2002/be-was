@@ -17,7 +17,7 @@ import webserver.response.HttpResponse;
 import java.util.Optional;
 
 @Controller(value = "/user")
-public class UserController {
+public class UserController implements WebController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
