@@ -62,6 +62,7 @@ class ArgumentResolverImplTest {
         }
     }
 
+    @SuppressWarnings("unused")
     static class TestClass {
         public void testMethod(
                 @RequestParam("requestParam1") String requestParam1,
