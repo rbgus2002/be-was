@@ -14,6 +14,7 @@ public class ControllerResolver {
     private static ControllerResolver instance;
 
     private final Map<ControllerSignature, Controller> controllers = new HashMap<>();
+    private final Controller indexPageController = new IndexPageController();
     private final Controller fileController = new FileController();
 
     private ControllerResolver() {
@@ -30,7 +31,6 @@ public class ControllerResolver {
     }
 
     private void initControllers() {
-        IndexPageController indexPageController = new IndexPageController();
         controllers.put(new ControllerSignature("/", HttpMethod.GET), indexPageController);
         controllers.put(new ControllerSignature("/index.html", HttpMethod.GET), indexPageController);
         controllers.put(new ControllerSignature("/user/create", HttpMethod.POST), new UserSaveController());
@@ -56,10 +56,10 @@ public class ControllerResolver {
         }
 
         public boolean verifySignature(String path, String method) {
-            if (path == null || path.isEmpty() || method == null || method.isEmpty()) {
+            if (path == null || method == null) {
                 return false;
             }
-            return path.equals(this.path) && method.equals(this.method);
+            return (path.equals(this.path)) && (method.equals(this.method));
         }
     }
 }
