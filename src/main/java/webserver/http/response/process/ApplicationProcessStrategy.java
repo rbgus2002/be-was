@@ -1,8 +1,8 @@
 package webserver.http.response.process;
 
+import common.annotation.Controller;
 import common.annotation.RequestMapping;
 import common.annotation.RequestParam;
-import common.annotation.Controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import webserver.Main;
 import webserver.http.Headers;
@@ -48,6 +49,9 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
                 .flatMap(clazz -> Arrays.stream(clazz.getMethods()))
                 .filter(method -> method.isAnnotationPresent(RequestMapping.class))
                 .filter(method -> method.getAnnotation(RequestMapping.class).value().equals(httpRequest.getPath()))
+                .filter(method -> method.getAnnotation(RequestMapping.class).method()
+                        .equals(httpRequest.getRequestLine().getMethod())
+                )
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 경로의 메서드를 찾을 수 없습니다."));
     }
@@ -57,10 +61,17 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
 
         QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
 
-        Object invoke = method.invoke(
-                method.getDeclaringClass().getDeclaredConstructor().newInstance(),
-                getMethodParameters(method, queryParameter.getMap())
-        );
+        Object targetClass = method.getDeclaringClass().getDeclaredConstructor().newInstance();
+
+        Object invoke = Optional.empty();
+
+        if (Optional.ofNullable(httpRequest.getBody()).isPresent()) {
+            invoke = method.invoke(targetClass, httpRequest.getBody());
+        } else if (getMethodParameters(method, queryParameter.getMap()).length > 0) {
+            invoke = method.invoke(targetClass, getMethodParameters(method, queryParameter.getMap()));
+        } else {
+            method.invoke(targetClass);
+        }
 
         if (isRedirect(invoke)) {
             String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
@@ -78,6 +89,7 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
 
     private Object[] getMethodParameters(final Method method, final Map<String, String> map) {
         return Arrays.stream(method.getParameters())
+                .filter(parameter -> parameter.isAnnotationPresent(RequestParam.class))
                 .filter(parameter -> map.containsKey(parameter.getDeclaredAnnotation(RequestParam.class).value()))
                 .map(parameter -> map.get(parameter.getDeclaredAnnotation(RequestParam.class).value()))
                 .toArray();

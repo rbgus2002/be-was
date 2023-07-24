@@ -59,14 +59,14 @@ public class HttpRequest implements Serializable {
         return new Headers(result);
     }
 
-    private static String extractBody(final BufferedReader bufferedReader, final Headers headers)
-            throws IOException {
+    private static String extractBody(final BufferedReader bufferedReader, final Headers headers) throws IOException {
         if (!headers.containsKey(Http.Headers.CONTENT_LENGTH.getName())) {
             return null;
         }
         int contentLength = Integer.parseInt(headers.get(Http.Headers.CONTENT_LENGTH));
         char[] chars = new char[contentLength];
-        return String.valueOf(bufferedReader.read(chars, 0, contentLength));
+        bufferedReader.read(chars, 0, contentLength);
+        return String.valueOf(chars);
     }
 
     public String getPath() {
