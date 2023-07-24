@@ -24,6 +24,7 @@ public class BaseServlet implements Servlet {
         String extension = url.substring(url.lastIndexOf("."));
         File file;
         byte[] body;
+        logger.debug("url = {}", url);
         logger.debug("boolean = {}", new File(TEMPLATE_PATH.getPath() + url).exists());
         if ((file = new File(STATIC_PATH.getPath() + url)).exists() || (file = new File(TEMPLATE_PATH.getPath()+ url)).exists()) {
             body = Files.readAllBytes(file.toPath());
@@ -31,12 +32,12 @@ public class BaseServlet implements Servlet {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
         logger.debug("path = {}", file.toPath());
-        
+
         response.setVersion(version);
         response.setContentType(extension);
         response.setBody(body);
         DataOutputStream writer = response.getWriter();
-        
+
         logger.debug("info = {}", response.info());
         writer.writeBytes(response.info());
         writer.write(body, 0, body.length);

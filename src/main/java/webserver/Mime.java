@@ -1,10 +1,6 @@
 package webserver;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public enum Mime {
     JPG(".jpg", "image/jpeg"), CSS(".css", "text/css"),

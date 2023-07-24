@@ -14,7 +14,6 @@ public class HTTPServletResponse {
 
     private final Map<String, String> headers = new HashMap<>();
     private byte[] body;
-
     private String version;
     private String statusCode = "OK";
     private String statusMessage = "200";
@@ -55,10 +54,11 @@ public class HTTPServletResponse {
         this.statusMessage = statusMessage;
     }
 
-    public DataOutputStream getWriter(){
+    public DataOutputStream getWriter() {
         return dos;
     }
-    public String info(){
+
+    public String info() {
         String line = "";
         line += version + " " + statusCode + " " + statusMessage + "\r\n";
         for (Map.Entry<String, String> header : headers.entrySet()) {

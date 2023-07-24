@@ -1,6 +1,7 @@
 package container;
 
 import db.Database;
+import db.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,23 +12,31 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+import static util.PathList.FAILED_PATH;
 import static util.PathList.HOME_PATH;
 
-public class LogInServlet implements Servlet {
+public class LogInTestServlet implements Servlet {
 
-    private static final Logger logger = LoggerFactory.getLogger(LogInServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogInTestServlet.class);
 
     @Override
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
         Map<String, String> query = request.getQuery();
-        User user = new User(query.get("userId"), query.get("password"), query.get("name"), query.get("email"));
-        logger.debug("user = {}", user);
-        Database.addUser(user);
+        String userId = query.get("userId");
+        User findUser = Database.findUserById(userId);
+        logger.debug("findUser = {}", findUser);
+        if(findUser == null){
+            logger.debug("failed");
+            response.setHeader("Location", FAILED_PATH.getPath());
+        }else {
+            response.setHeader("Location", HOME_PATH.getPath());
+            SessionManager.createSession(findUser, response);
+        }
+
         String version = request.getVersion();
         response.setVersion(version);
         response.setStatusCode("302");
         response.setStatusMessage("Found");
-        response.setHeader("Location", HOME_PATH.getPath());
 
         DataOutputStream writer = response.getWriter();
         writer.writeBytes(response.info());
