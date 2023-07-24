@@ -3,6 +3,7 @@ package webserver;
 import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
@@ -31,8 +32,8 @@ public class DispatcherServlet {
             return;
         }
 
-        String httpMethod = request.getMethod();
-        boolean isGet = httpMethod.equals("GET");
+        HttpMethod httpMethod = request.getHttpMethod();
+        boolean isGet = (httpMethod == HttpMethod.GET);
         if (isGet) {
             MethodType methodType = getMethodType(handler);
             MethodHandle methodHandle = getMethodHandle(handler, methodType);

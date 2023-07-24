@@ -19,7 +19,7 @@ public class HttpRequest {
     private static final String EXTENSION_SEPARATOR = "\\.";
     private static final String QUERY_STRING_PARAM_SEPARATOR = "=";
     private static final String HEADER_PARAM_SEPARATOR = ":";
-    private final String method;
+    private final HttpMethod httpMethod;
     private final String requestPath;
     private final String version;
     private final HttpMime mime;
@@ -30,7 +30,7 @@ public class HttpRequest {
     public HttpRequest(InputStream in) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         String firstLine = bufferedReader.readLine();
-        this.method = method(firstLine);
+        this.httpMethod = httpMethod(firstLine);
         this.requestPath = requestPath(firstLine);
         this.version = version(firstLine);
         this.params = parseQueryString(firstLine);
@@ -38,8 +38,8 @@ public class HttpRequest {
         this.mime = mime(requestPath);
     }
 
-    public String getMethod() {
-        return method;
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
     }
 
     public String getRequestPath() {
@@ -64,10 +64,13 @@ public class HttpRequest {
                 .orElse(null);
     }
 
-    public static String method(String firstLine) {
+    public static HttpMethod httpMethod(String firstLine) {
         String[] tokens = firstLine.split(EMPTY_SPACE_SEPARATOR);
-        String method = tokens[0];
-        logger.debug("request method: {}", method);
+        HttpMethod method = Arrays.stream(HttpMethod.values())
+                .filter(httpMethod -> httpMethod.getMethod().equals(tokens[0]))
+                .findFirst()
+                .orElse(null);
+        logger.debug("request method: {}", method.getMethod());
 
         return method;
     }
