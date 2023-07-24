@@ -1,69 +1,25 @@
 package http;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class HttpRequest {
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 
     private final String method;
-    private String url;
+    private final String url;
     private final String version;
 
-    private final Map<String, String> headers = new HashMap<>();
-    private final Map<String, String> params = new HashMap<>();
-    private final Map<String, String> cookies = new HashMap<>();
+    private final Map<String, String> headers;
+    private final Map<String, String> params;
+    private final Map<String, String> cookies;
 
-    public HttpRequest(InputStream in) throws IOException {
-        String input;
-        BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        String startLine = br.readLine();
-        logger.debug(startLine);
-        String[] statusLineTokens = startLine.split(" ");
-        method = statusLineTokens[0];
-        parseTarget(statusLineTokens[1]);
-        version = statusLineTokens[2];
-        while ((input = br.readLine()) != null && !input.isEmpty()) {
-            if (input.contains(":")) {
-                String[] tokens = input.split("\\s*:\\s*");
-                headers.put(tokens[0], tokens[1]);
-            }
-        }
-        String contentLength = getHeader("Content-Length");
-        if (contentLength != null) {
-            int length = Integer.parseInt(contentLength);
-            char[] buffer = new char[length];
-            int bytesRead = br.read(buffer, 0, length);
-            input = String.valueOf(buffer, 0, bytesRead);
-            parseParam(input);
-        }
-    }
-
-    private void parseTarget(String target) {
-        if (target.contains("?")) {
-            String[] targetTokens = target.split("\\?");
-            url = targetTokens[0];
-            parseParam(targetTokens[1]);
-        } else {
-            url = target;
-        }
-    }
-
-    private void parseParam(String query) {
-        String[] keyValues = query.split("&");
-        for (String keyValue : keyValues) {
-            String[] paramTokens = keyValue.split("=");
-            params.put(paramTokens[0], paramTokens[1]);
-        }
-        logger.debug("{}", params);
+    public HttpRequest(String method, String url, String version, Map<String, String> headers, Map<String, String> params, Map<String, String> cookies) {
+        this.method = method;
+        this.url = url;
+        this.version = version;
+        this.headers = headers;
+        this.params = params;
+        this.cookies = cookies;
     }
 
     public String getParam(String key) {

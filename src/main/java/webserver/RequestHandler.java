@@ -1,14 +1,12 @@
 package webserver;
 
 import http.HttpRequest;
+import http.HttpRequestParser;
 import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class RequestHandler implements Runnable {
@@ -25,10 +23,12 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
-        try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-
-            DataOutputStream dos = new DataOutputStream(out);
-            HttpRequest request = new HttpRequest(in);
+        try (InputStream in = connection.getInputStream();
+             OutputStream out = connection.getOutputStream();
+             DataOutputStream dos = new DataOutputStream(out);
+             BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        ) {
+            HttpRequest request = HttpRequestParser.parseRequest(br);
             HttpResponse response = new HttpResponse();
             FrontController controller = new FrontController();
             controller.service(dos, request, response);
