@@ -8,8 +8,16 @@ import com.google.common.collect.Maps;
 import model.User;
 
 public class Session {
+	private static Session SESSION = new Session();
 	private Map<String, User> sessionToUserStore = Maps.newConcurrentMap();
 	private Map<User, String> userToSessionStore = Maps.newConcurrentMap();
+
+	private Session() {
+	}
+
+	public static Session newInstance() {
+		return SESSION;
+	}
 
 	public String createSession(User user) {
 		String sessionId = UUID.randomUUID().toString();
