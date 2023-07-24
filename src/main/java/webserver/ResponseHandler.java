@@ -7,7 +7,6 @@ import http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpUtils;
-import util.StringUtils;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -29,17 +28,19 @@ public class ResponseHandler {
         this.sessionManager = sessionManager;
     }
 
-    public void response(DataOutputStream dos, HttpRequest httpRequest) {
+    public void response(DataOutputStream dos, HttpRequest httpRequest) throws IOException {
         HttpResponse httpResponse;
         try {
             httpResponse = handleHttpRequest(httpRequest);
             writeResponse(dos, httpResponse);
-        } catch (IOException e) {
+        } catch (Throwable e) {
             logger.error(e.getMessage());
+            httpResponse = errorHandle(httpRequest, e);
+            writeResponse(dos, httpResponse);
         }
     }
 
-    private HttpResponse handleHttpRequest(HttpRequest httpRequest) {
+    private HttpResponse handleHttpRequest(HttpRequest httpRequest) throws Throwable {
         Cookie sessionCookie = httpRequest.getCookie("sid");
         String sid = getSessionIdOrCreate(sessionCookie);
         Session session = sessionManager.getSession(sid);
@@ -62,7 +63,7 @@ public class ResponseHandler {
         return sessionCookie == null || !sid.equals(sessionCookie.getValue());
     }
 
-    private HttpResponse processHttpRequest(HttpRequest httpRequest, Session session) {
+    private HttpResponse processHttpRequest(HttpRequest httpRequest, Session session) throws Throwable {
         String path = httpRequest.uri().getPath();
         HttpUtils.Method httpMethod = httpRequest.method();
         MethodHandle method = RequestMappingHandler.getMethod(httpMethod, path);
@@ -70,13 +71,8 @@ public class ResponseHandler {
             logger.debug("정적 파일을 응답합니다.");
             return HttpResponse.ok(path, httpRequest.mime());
         }
-
-        try {
-            logger.debug("controller를 실행합니다.");
-            return RequestMappingHandler.invokeMethod(httpRequest, session);
-        } catch (Throwable e) {
-            return errorHandle(httpRequest, e);
-        }
+        logger.debug("controller를 실행합니다.");
+        return RequestMappingHandler.invokeMethod(httpRequest, session);
     }
 
     private HttpResponse errorHandle(HttpRequest httpRequest, Throwable e) {
@@ -125,7 +121,7 @@ public class ResponseHandler {
 
     private InputStream getResourceAsStream(String path) throws FileNotFoundException {
         String ext = getExtension(path);
-        InputStream fileInputStream = StringUtils.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
+        InputStream fileInputStream = ResponseHandler.class.getResourceAsStream((Objects.equals(ext, "html") ? "/templates" : "/static") + path);
         if (fileInputStream == null) {
             throw new FileNotFoundException(path + "에 파일이 존재하지 않습니다.");
         }
