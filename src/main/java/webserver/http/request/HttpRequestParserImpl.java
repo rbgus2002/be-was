@@ -33,6 +33,7 @@ public class HttpRequestParserImpl implements HttpRequestParser {
         return builder.build();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void parseBody(HttpRequest.Builder builder, BufferedReader bufferedReader, int bodyLength) throws IOException {
         char[] chars = new char[bodyLength];
         bufferedReader.read(chars);

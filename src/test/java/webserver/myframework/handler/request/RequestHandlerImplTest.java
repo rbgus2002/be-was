@@ -8,7 +8,6 @@ import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.handler.argument.ArgumentResolver;
 import webserver.myframework.handler.argument.ArgumentResolverImpl;
-import webserver.myframework.handler.request.RequestHandlerImpl;
 import webserver.myframework.session.SessionManagerImpl;
 
 import static org.assertj.core.api.Assertions.*;

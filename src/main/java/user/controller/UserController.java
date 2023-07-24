@@ -4,7 +4,6 @@ import model.User;
 import user.service.UserService;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
-import webserver.http.response.Cookie;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.HttpStatus;
 import webserver.myframework.handler.argument.annotation.RequestBody;
