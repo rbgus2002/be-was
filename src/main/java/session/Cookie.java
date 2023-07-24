@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Cookie {
 	private Map<String, String> cookies = new HashMap<>();
+	public final String COOKIE_DELIMITER = "; ";
 
 	private Cookie() {
 	}
@@ -26,6 +27,6 @@ public class Cookie {
 			headerValues.add(stringBuilder.append(cookieName).append("=").append(cookies.get(cookieName)).toString());
 			stringBuilder.setLength(0);
 		}
-		return String.join("; ", headerValues);
+		return String.join(COOKIE_DELIMITER, headerValues);
 	}
 }
