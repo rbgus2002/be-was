@@ -3,13 +3,13 @@ package controller;
 import annotation.RequestMapping;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
-import common.wrapper.Cookies;
 import common.wrapper.Queries;
 import model.User;
 import modelview.ModelView;
 import service.UserService;
 import session.UserSessionManager;
 
+import java.util.List;
 import java.util.Optional;
 
 import static common.enums.RequestMethod.GET;
@@ -24,7 +24,14 @@ public class Controller {
 
     @RequestMapping(method = GET, path = "/index.html")
     public ModelView index(HttpRequest request, HttpResponse response) {
-        return new ModelView("/index.html");
+        ModelView mv = new ModelView("/index.html");
+        User user = UserSessionManager.getSession(request);
+
+        if (user != null) {
+            mv.addModelAttribute("user", user);
+        }
+
+        return mv;
     }
 
     @RequestMapping(method = GET, path = "/user/form.html")
@@ -44,7 +51,7 @@ public class Controller {
         );
 
         ModelView mv = new ModelView("redirect:/index.html");
-        mv.addAttribute("user", user);
+        mv.addModelAttribute("user", user);
         return mv;
     }
 
@@ -72,6 +79,21 @@ public class Controller {
         }
 
         UserSessionManager.createSession(user.get(), response, "/");
+
+        return new ModelView("redirect:/index.html");
+    }
+
+    @RequestMapping(method = GET, path = "/user/list.html")
+    public ModelView listUser(HttpRequest request, HttpResponse response) {
+        User user = UserSessionManager.getSession(request);
+
+        if (user != null) {
+            ModelView mv = new ModelView("/user/list.html");
+            mv.addModelAttribute("user", user);
+            mv.addModelAttribute("users", UserService.getAllUsers());
+
+            return mv;
+        }
 
         return new ModelView("redirect:/index.html");
     }

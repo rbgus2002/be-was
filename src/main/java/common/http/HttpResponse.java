@@ -59,7 +59,7 @@ public class HttpResponse {
     }
 
     public void setUpStaticContentResponse(ContentType type, String path) {
-        byte[] body = FileUtils.readFile(STATIC_PATH + path);
+        byte[] body = FileUtils.readFileToBytes(STATIC_PATH + path);
 
         if (body != null) {
             setResponseLine(ResponseCode.OK);

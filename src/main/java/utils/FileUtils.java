@@ -6,7 +6,7 @@ import java.nio.file.Files;
 
 public class FileUtils {
 
-    public static byte[] readFile(String filePath) {
+    public static byte[] readFileToBytes(String filePath) {
         byte[] bytes;
 
         try {
@@ -16,6 +16,18 @@ public class FileUtils {
         }
 
         return bytes;
+    }
+
+    public static String readFileToString(String filePath) {
+        String string;
+
+        try {
+            string = Files.readString(new File(filePath).toPath());
+        } catch (IOException e) {
+            return null;
+        }
+
+        return string;
     }
 
 }

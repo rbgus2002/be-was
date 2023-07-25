@@ -3,6 +3,8 @@ package service;
 import db.Database;
 import model.User;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class UserService {
@@ -18,5 +20,9 @@ public class UserService {
     public static Optional<User> login(String userId, String password) {
         return Database.findUserById(userId)
                        .filter(user -> user.identify(password));
+    }
+
+    public static List<User> getAllUsers() {
+        return Database.findAll();
     }
 }

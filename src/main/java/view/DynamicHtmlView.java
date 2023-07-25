@@ -4,15 +4,19 @@ import common.enums.ContentType;
 import common.enums.ResponseCode;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
+import dynamic.DynamicHtml;
 import utils.FileUtils;
 
 import java.util.Map;
 
-public class HtmlView implements View {
-    private final String viewPath;
+public class DynamicHtmlView implements View {
 
-    public HtmlView(String viewPath) {
+    private final String viewPath;
+    private final DynamicHtml dynamicHtml;
+
+    public DynamicHtmlView(String viewPath, DynamicHtml dynamicHtml) {
         this.viewPath = viewPath;
+        this.dynamicHtml = dynamicHtml;
     }
 
     @Override
@@ -22,8 +26,11 @@ public class HtmlView implements View {
 
     @Override
     public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception {
-        byte[] body = FileUtils.readFileToBytes(viewPath);
-        response.setUpDefaultResponse(ResponseCode.OK, getContentType(), body);
+        String html = FileUtils.readFileToString(viewPath);
+        html = dynamicHtml.decorateHeader(html, model);
+        html = dynamicHtml.decorate(html, model);
+
+        response.setUpDefaultResponse(ResponseCode.OK, getContentType(), html.getBytes());
     }
 
 }

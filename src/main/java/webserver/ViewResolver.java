@@ -1,5 +1,7 @@
 package webserver;
 
+import dynamic.IndexHtml;
+import dynamic.UserListHtml;
 import view.*;
 
 import static webserver.ServerConfig.TEMPLATE_PATH;
@@ -11,6 +13,14 @@ public class ViewResolver {
         if (viewName.startsWith(REDIRECT_URL_PREFIX)) {
             viewName = viewName.substring(REDIRECT_URL_PREFIX.length()).trim();
             return new RedirectView(viewName);
+        }
+
+        if (viewName.endsWith("index.html")) {
+            return new DynamicHtmlView(TEMPLATE_PATH + viewName, new IndexHtml());
+        }
+
+        if (viewName.endsWith("list.html")) {
+            return new DynamicHtmlView(TEMPLATE_PATH + viewName, new UserListHtml());
         }
 
         if (viewName.endsWith(".html")) {
