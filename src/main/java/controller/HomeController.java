@@ -1,15 +1,15 @@
 package controller;
 
+import annotation.Controller;
+import annotation.RequestMapping;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
 
-public class HomeController implements Controller {
-    @Override
-    public HttpResponse execute(HttpRequest request, HttpResponse response) {
-        if(response != null) {
-            response.setToUrl("/index.html");
-        }
-        return response;
+@Controller
+public class HomeController {
+    @RequestMapping(path = "/")
+    public void execute(HttpRequest request, HttpResponse response) {
+        response.setToUrl("/index.html");
     }
 }

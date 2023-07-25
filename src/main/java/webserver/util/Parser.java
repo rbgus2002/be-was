@@ -40,6 +40,9 @@ public class Parser {
     }
 
     public static String getUrlExtension(String url) {
+        if(url == null) {
+            return null;
+        }
         return url.contains(".") ? url.substring(url.lastIndexOf(".")) : null;
     }
 

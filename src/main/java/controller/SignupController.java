@@ -1,5 +1,7 @@
 package controller;
 
+import annotation.Controller;
+import annotation.RequestMapping;
 import db.Database;
 import model.User;
 import org.slf4j.Logger;
@@ -14,14 +16,13 @@ import java.util.Map;
 
 import static model.User.*;
 
-public class SignupController implements Controller {
+@Controller
+public class SignupController {
 
     private static final Logger logger = LoggerFactory.getLogger(SignupController.class);
 
-
-
-    @Override
-    public HttpResponse execute(HttpRequest request, HttpResponse response) {
+    @RequestMapping(path = "/user/create")
+    public void execute(HttpRequest request, HttpResponse response) {
         Map<String, String> queries = request.getQueries();
         if(request.getMethod() == HttpMethod.POST) {
             queries = request.getBodies();
@@ -38,7 +39,5 @@ public class SignupController implements Controller {
         response.setCookie(sessionId);
         response.setToUrl(DispatcherServlet.REDIRECT + "/index.html");
         logger.info("signup ok, userId : {}", queries.get(USERID_KEY));
-
-        return response;
     }
 }

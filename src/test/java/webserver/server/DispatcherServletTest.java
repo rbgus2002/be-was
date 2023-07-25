@@ -13,6 +13,13 @@ class DispatcherServletTest {
     DispatcherServlet dispatcherServlet = new DispatcherServlet();
 
     @Test
+    @DisplayName("index.html이 반환되어야 한다.")
+    void index() {
+        String url = "GET /index.html HTTP/1.1";
+        sendRequest(url, "HTTP/1.1 200 OK");
+    }
+
+    @Test
     @DisplayName("forward 되는지?")
     void forward() {
         String url = "GET / HTTP/1.1";

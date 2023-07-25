@@ -17,7 +17,8 @@ class HomeControllerTest {
         HttpRequest httpRequest = new HttpRequest("GET /index.html HTTP/1.1", null);
 
         // when
-        HttpResponse httpResponse = homeController.execute(httpRequest, new HttpResponse());
+        HttpResponse httpResponse = new HttpResponse();
+        homeController.execute(httpRequest, httpResponse);
         String s = httpResponse.getToUrl();
 
         // then

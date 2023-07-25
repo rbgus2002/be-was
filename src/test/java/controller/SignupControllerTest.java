@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
+
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -38,7 +40,7 @@ class SignupControllerTest {
                     HttpRequest httpRequest = new HttpRequest("GET /user/create?userId="
                             + finalThread + "&password=sss&name=sss"
                             + finalThread + "&email=sss%40naver.com HTTP/1.1", null);
-                    signupController.execute(httpRequest, null);
+                    signupController.execute(httpRequest, new HttpResponse());
                 } catch(Exception e) {
                     logger.error(e.getMessage());
                 } finally {

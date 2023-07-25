@@ -1,5 +1,7 @@
 package controller;
 
+import annotation.Controller;
+import annotation.RequestMapping;
 import db.Database;
 import model.User;
 import webserver.http.request.HttpMethod;
@@ -8,20 +10,21 @@ import webserver.http.response.HttpResponse;
 
 import java.util.Map;
 
-public class LoginController implements Controller{
+@Controller
+public class LoginController{
 
     public static final String USERID_KEY = "userId";
     public static final String PASSWORD_KEY = "password";
     public static final String REDIRECT_LOGIN_FAILED = "redirect:/user/login_failed.html";
     public static final String REDIRECT_HOME = "redirect:/index.html";
-    @Override
-    public HttpResponse execute(HttpRequest request, HttpResponse response) {
+
+    @RequestMapping(path = "/user/login")
+    public void execute(HttpRequest request, HttpResponse response) {
 
         response.setToUrl(REDIRECT_LOGIN_FAILED);
         if(canLogin(request, response)) {
             response.setToUrl(REDIRECT_HOME);
         }
-        return response;
     }
 
     private boolean canLogin(HttpRequest httpRequest, HttpResponse httpResponse) {
