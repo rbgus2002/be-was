@@ -12,6 +12,7 @@ public class RequestLine {
     private static final String AND_PERCENT_SEPARATOR = "&";
     private static final String EQUAL_SEPARATOR = "=";
 
+    private static final String QUERY_PARAMETER_SEPARATOR = "\\?";
     private final String httpMethod;
     private final String path;
     private final Map<String, String> queryParams;
@@ -46,15 +47,15 @@ public class RequestLine {
     }
 
     private String splitURI(String uri) {
-        return uri.split("\\?")[0];
+        return uri.split(QUERY_PARAMETER_SEPARATOR)[0];
     }
 
     private String splitQueryParams(String uri) {
-        return uri.split("\\?")[1];
+        return uri.split(QUERY_PARAMETER_SEPARATOR)[1];
     }
 
     private boolean isQueryParameter(String uri) {
-        String[] result = uri.split("\\?");
+        String[] result = uri.split(QUERY_PARAMETER_SEPARATOR);
         return result.length > 1;
     }
 
