@@ -16,18 +16,18 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class SignupControllerTest {
+class SignUpControllerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(SignupControllerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SignUpControllerTest.class);
 
-    SignupController signupController = new SignupController();
+    SignUpController signupController = new SignUpController();
 
     @Test
     @DisplayName("멀티 쓰레드 시 잘 작동하는 지??")
     void multi() throws InterruptedException {
         // given
         final int THREADS = 100;
-        signupController = new SignupController();
+        signupController = new SignUpController();
         ExecutorService service = Executors.newFixedThreadPool(THREADS);
         CountDownLatch latch = new CountDownLatch(THREADS);
 
@@ -40,7 +40,7 @@ class SignupControllerTest {
                     HttpRequest httpRequest = new HttpRequest("GET /user/create?userId="
                             + finalThread + "&password=sss&name=sss"
                             + finalThread + "&email=sss%40naver.com HTTP/1.1", null);
-                    signupController.execute(httpRequest, new HttpResponse());
+                    signupController.signUp(httpRequest, new HttpResponse());
                 } catch(Exception e) {
                     logger.error(e.getMessage());
                 } finally {

@@ -18,7 +18,7 @@ class HomeControllerTest {
 
         // when
         HttpResponse httpResponse = new HttpResponse();
-        homeController.execute(httpRequest, httpResponse);
+        homeController.home(httpRequest, httpResponse);
         String s = httpResponse.getToUrl();
 
         // then

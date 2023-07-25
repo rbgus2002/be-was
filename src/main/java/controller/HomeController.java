@@ -9,7 +9,7 @@ import webserver.http.response.HttpResponse;
 @Controller
 public class HomeController {
     @RequestMapping(path = "/")
-    public void execute(HttpRequest request, HttpResponse response) {
+    public void home(HttpRequest request, HttpResponse response) {
         response.setToUrl("/index.html");
     }
 }

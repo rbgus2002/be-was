@@ -1,9 +1,9 @@
 package controller;
 
+import Service.UserService;
 import annotation.Controller;
 import annotation.RequestMapping;
-import db.Database;
-import model.User;
+import session.SessionStorage;
 import webserver.http.request.HttpMethod;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
@@ -19,28 +19,22 @@ public class LoginController{
     public static final String REDIRECT_HOME = "redirect:/index.html";
 
     @RequestMapping(path = "/user/login")
-    public void execute(HttpRequest request, HttpResponse response) {
-
+    public void login(HttpRequest request, HttpResponse response) {
+        UserService userService = new UserService();
         response.setToUrl(REDIRECT_LOGIN_FAILED);
-        if(canLogin(request, response)) {
+
+        Map<String, String> data = request.getQueries();
+        if(request.getMethod() == HttpMethod.POST) {
+            data = request.getBodies();
+        }
+        String userId = data.get(USERID_KEY);
+        String userPw = data.get(PASSWORD_KEY);
+        if(userService.canLogin(userId, userPw)) {
             response.setToUrl(REDIRECT_HOME);
+            String sessionId = SessionStorage.setSession(userId);
+            response.setCookie(sessionId);
         }
     }
 
-    private boolean canLogin(HttpRequest httpRequest, HttpResponse httpResponse) {
-        Map<String, String> data = httpRequest.getQueries();
-        if(httpRequest.getMethod() == HttpMethod.POST) {
-            data = httpRequest.getBodies();
-        }
 
-        User user = Database.findUserById(data.get(USERID_KEY));
-        if(user == null) {
-            return false;
-        }
-        if(!user.getPassword().equals(data.get(PASSWORD_KEY))) {
-            return false;
-        }
-        httpResponse.setCookie(httpResponse.getCookie());
-        return true;
-    }
 }
