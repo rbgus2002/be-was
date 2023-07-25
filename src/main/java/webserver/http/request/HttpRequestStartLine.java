@@ -15,7 +15,8 @@ public class HttpRequestStartLine {
     private static final String START_LINE_SEPARATOR = " ";
     private static final String QUERY_STRING_SEPARATOR = "\\?";
     private static final String EXTENSION_SEPARATOR = "\\.";
-
+    private static final String PARAMETER_SEPARATOR = "&";
+    private static final String KEY_VALUE_SEPARATOR = "=";
     private final HttpMethod httpMethod;
     private final String requestPath;
     private final HttpMime mime;
@@ -67,9 +68,9 @@ public class HttpRequestStartLine {
 
         String params = uri.split(QUERY_STRING_SEPARATOR)[1];
         Map<String, String> paramsMap = new HashMap<>();
-        for (String param : params.split("&")) {
-            String key = param.split("=")[0];
-            String value = param.split("=")[1];
+        for (String param : params.split(PARAMETER_SEPARATOR)) {
+            String key = param.split(KEY_VALUE_SEPARATOR)[0];
+            String value = param.split(KEY_VALUE_SEPARATOR)[1];
             paramsMap.put(key, value);
         }
 
