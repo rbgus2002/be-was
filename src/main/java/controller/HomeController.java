@@ -122,7 +122,7 @@ public enum HomeController implements HttpController {
                 .append("<span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button></div>")
                 .append("<div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">")
                 .append("<ul class=\"nav navbar-nav navbar-right\">")
-                .append("<li>").append(user.getName()).append("님 환영합니다.</li>")
+                .append("<li><p class=\"navbar-text\">").append(user.getName()).append("님 환영합니다.</p></li>")
                 .append("<li class=\"active\"><a href=\"index.html\">Posts</a></li>")
                 .append("<li><a href=\"#\" role=\"button\">로그아웃</a></li>")
                 .append("<li><a href=\"#\" role=\"button\">개인정보수정</a></li></ul></div></div></div>")
