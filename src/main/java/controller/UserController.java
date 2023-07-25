@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
-import static exception.ExceptionList.NOT_ENOUGH_USER_INFORMATION;
 import static http.FilePath.INDEX;
 import static utils.FileIOUtils.*;
 import static utils.StringUtils.decodeBody;
@@ -54,8 +53,6 @@ public class UserController extends Controller {
         Map<String, String> information = new HashMap<>();
         for (String param : params) {
             String[] info = param.split("=");
-            if (info.length != 2)
-                throw new BadRequestException(NOT_ENOUGH_USER_INFORMATION);
             information.put(info[0], decodeBody(info[1]));
         }
         return information;
