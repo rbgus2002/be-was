@@ -4,6 +4,7 @@ import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.HttpMethod;
+import webserver.http.HttpMime;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 import webserver.http.HttpStatus;
@@ -28,7 +29,9 @@ public class DispatcherServlet {
         HttpResponse httpResponse;
 
         if (handler == null) {
-            httpResponse = new HttpResponse(HttpStatus.OK, request.getRequestPath(), request.getMime());
+            String path = request.getRequestPath();
+            HttpMime mime = request.getMime();
+            httpResponse = new HttpResponse(HttpStatus.OK, path, mime);
             httpResponse.response(out);
             return;
         }
@@ -61,12 +64,14 @@ public class DispatcherServlet {
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
-        if (request.getParams().size() > 0) {
-            return (HttpResponse) methodHandle.invoke(request.getParams());
+        if (request.getParamMap().size() > 0) {
+            logger.debug("param");
+            return (HttpResponse) methodHandle.invoke(request.getParamMap());
         }
 
-        if (request.getBody().size() > 0) {
-            return (HttpResponse) methodHandle.invoke(request.getBody());
+        if (request.getBodyMap().size() > 0) {
+            logger.debug("body");
+            return (HttpResponse) methodHandle.invoke(request.getBodyMap());
         }
 
         return (HttpResponse) methodHandle.invoke();

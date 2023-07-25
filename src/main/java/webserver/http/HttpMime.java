@@ -1,5 +1,10 @@
 package webserver.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+
 public enum HttpMime {
     HTML("html", "text/html"),
     CSS("css", "text/css"),
@@ -13,7 +18,7 @@ public enum HttpMime {
     SVG("svg", "image/svg"),
     EOT("eot", "application/vnd.ms-fontobject");
 
-
+    private static final Logger logger = LoggerFactory.getLogger(HttpMime.class);
     private final String extension;
     private final String contentType;
 
