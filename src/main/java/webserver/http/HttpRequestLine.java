@@ -1,4 +1,7 @@
-package webserver.http.request;
+package webserver.http;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 public class HttpRequestLine {
     private String method;
@@ -16,8 +19,8 @@ public class HttpRequestLine {
         this.version = tokens[2];
     }
 
-    public static HttpRequestLine from(String requestLine){
-        return new HttpRequestLine(requestLine);
+    public static HttpRequestLine from(String requestLine) {
+        return new HttpRequestLine(URLDecoder.decode(requestLine, StandardCharsets.UTF_8));
     }
 
     String getMethod() {

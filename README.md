@@ -7,7 +7,6 @@ Java Web Application Server 2023
 이 프로젝트는 우아한 테크코스 박재성님의 허가를 받아 https://github.com/woowacourse/jwp-was
 를 참고하여 작성되었습니다.
 
-# Summary
 
 ---
 
@@ -31,15 +30,34 @@ Java Web Application Server 2023
   - [x] ico
   - [x] png
   - [x] jpg 
+#### Web Server step-4
+- [x] POST를 통한 회원가입 구현
+  - [x] HttpRequest 객체에 body 추가&적용 
+- [x] redirection 기능 구현
+  - [x] 회원가입 완료하면 "/index.html'로 redirection
+  - [x] http status code 302 사용
+#### Web Server step-5
+- 로그인
+  - [x] 로그인 메뉴 클릭 시 /user/login.html 이동
+  - 성공
+    - [ ] redirect
+    - [ ] 응답 header의 Set-Cookie 값 설정
+    - [ ] user 정보에 접근할 수 있는 세션 ID 적용
+  - [ ] 로그인 실패 시 /user/login_failed.html 이동
+  - 
 
 ## To Study List
 #### Web Server step-1
 - 단순 구현이 아닌 동작 원리 파악하기
   - [x] 자바 스레드 모델 
     - [x] 버전별 변경점
-    - [ ] 향후 지향점
+    - [] 향후 지향점
   - [x] Concurrent 패키지 학습
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
 #### Web Server step-3
-- [x] MIME 타입 이해하기
+- [x] MIME 타가입 이해하기
+#### Web Server step-4
+- [x] 자주 사용하는 status code 정리
+#### Web Server step-5
+- [x] 쿠키, 세션 간단하게 학습

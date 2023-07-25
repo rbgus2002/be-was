@@ -1,4 +1,4 @@
-package webserver.http.request;
+package webserver.http;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +12,7 @@ public class Uri {
         String[] tokens = uri.split("\\?");
         this.path = tokens[0];
         if(hasQuery(uri)){
-            setQuery(tokens[1]);
+            setQuery(this.query, tokens[1]);
         }
     }
 
@@ -24,7 +24,7 @@ public class Uri {
         return uri.contains("?");
     }
 
-    private void setQuery(String queryString) {
+    static void setQuery(Map<String, String> query, String queryString) {
         StringTokenizer st = new StringTokenizer(queryString, "&");
         while (st.hasMoreTokens()){
             String[] tokens = st.nextToken().split("=");

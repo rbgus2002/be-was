@@ -1,39 +1,43 @@
 package webserver;
 
 import controller.Controller;
+import exception.NotSupportedContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.request.HttpRequest;
-import webserver.http.response.HttpResponse;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
 
 import java.io.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;
 import static webserver.http.HttpStatus.*;
 
 public class DispatcherServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
+    private static final DispatcherServlet servlet = new DispatcherServlet();
 
     private DispatcherServlet() {
     }
 
     public static DispatcherServlet init() {
-        return new DispatcherServlet();
+        return servlet;
     }
 
-    public void doService(HttpRequest request, HttpResponse response) throws Throwable {
+    public void doService(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
         logger.debug("{}", request);
 
-        doDispatch(request, response);
+        doDispatch(request, response, out);
     }
 
-    public void doDispatch(HttpRequest request, HttpResponse response) throws Throwable {
+    public void doDispatch(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
         Method method = HandlerMapping.getMethodMapped(request);
         handle(request, response, method);
+        processDispatchResult(request, response, out);
     }
 
     private void handle(HttpRequest request, HttpResponse response, Method method) throws Throwable {
@@ -41,7 +45,7 @@ public class DispatcherServlet {
         if (hasRequestPathMapped(method)) {
             path = executeRequest(request, method);
         }
-        findResources(response, path);
+        processResources(response, path);
     }
 
     private static boolean hasRequestPathMapped(Method method) {
@@ -52,20 +56,25 @@ public class DispatcherServlet {
         MethodHandle methodHandle = getMethodHandle(method);
         String path;
         if (hasParameter(methodHandle.type())) {
-            path = (String) methodHandle.invoke(request.getQuery());;
+            Map<String, String> map = (request.isGetMethod()) ? request.getQuery() : request.getBody();
+            path = (String) methodHandle.invoke(map);
         } else {
             path = (String) methodHandle.invoke();
         }
         return path;
     }
 
-    private void findResources(HttpResponse response, String filePath) {
+    private void processResources(HttpResponse response, String filePath) throws IOException {
         try {
             ContentType type = ContentType.findBy(filePath);
             filePath = type.mapResourceFolders(filePath);
             response.setResults(filePath, OK);
+        } catch (NotSupportedContentTypeException e) {
+            response.setResults(null, BAD_REQUEST);
+            logger.debug(e.getMessage());
         } catch (IOException e) {
-            logger.debug("readAllBytes ERROR");
+            response.setResults(null, NOT_FOUND);
+            logger.debug(e.getMessage());
         }
     }
 
@@ -84,7 +93,7 @@ public class DispatcherServlet {
         return method.getParameterCount() != 0;
     }
 
-    public void processDispatchServlet(HttpRequest request, HttpResponse response, OutputStream out) {
+    private void processDispatchResult(HttpRequest request, HttpResponse response, OutputStream out) {
         ContentType type = ContentType.findBy(request.getPath());
         response.writeResponseToOutputStream(out, type);
     }
