@@ -25,8 +25,8 @@ public class FrontController {
         }
 
         Method method = HandlerMapper.getHandlerMethod(httpRequest);
-        HandlerAdapter.runHandlerMethod(method, httpRequest);
-        HttpResponse httpResponse = HttpResponse.createRedirect();
+        String viewPath = HandlerAdapter.runHandlerMethod(method, httpRequest);
+        HttpResponse httpResponse = HttpResponse.createRedirect(viewPath);
         httpResponse.responseDynamic(dos);
     }
 }

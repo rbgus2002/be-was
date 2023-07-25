@@ -47,7 +47,8 @@ public class HttpResponse {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: 0" + "\r\n");
-            dos.writeBytes("Location: http://localhost:8080/index.html" + "\r\n");
+            dos.writeBytes("Location: " + httpHeaders.getLocation() + "\r\n");
+            dos.writeBytes("Set-Cookie: " + httpHeaders.getCookie() + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -72,11 +73,11 @@ public class HttpResponse {
         );
     }
 
-    public static HttpResponse createRedirect() {
+    public static HttpResponse createRedirect(String viewPath) {
         byte[] emptyBody = new byte[0];
         return new HttpResponse(
                 HttpStatusLine.createRedirectStatusLine(),
-                HttpHeaders.createRedirectStatusHeaders(),
+                HttpHeaders.createRedirectStatusHeaders(viewPath),
                 emptyBody
         );
     }
