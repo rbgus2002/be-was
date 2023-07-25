@@ -9,6 +9,7 @@ import http.MIME;
 import view.Page;
 
 import static http.Extension.HTML;
+import static http.FilePath.*;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
 import static http.FilePath.LOGIN_FAILED;
