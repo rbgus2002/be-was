@@ -14,7 +14,6 @@ public class HttpResponseMessage {
     private byte[] body = new byte[0];
 
     public HttpResponseMessage() {
-        setHeader("Content-Length", "0");
     }
 
     public void setStatusLine(HttpStatus httpStatus) {
