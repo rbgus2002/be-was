@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 import support.exception.FoundException;
 import support.exception.HttpException;
 import support.exception.NotSupportedException;
+import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
-import support.web.ViewResolver;
+import support.web.view.ViewResolver;
+import support.web.view.View;
+import support.web.view.ViewFactory;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -28,7 +31,13 @@ public class HttpHandler {
         }
 
         try {
-            ViewResolver.buildView(request, response, path);
+            ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
+            try {
+                View view = viewFactory.getViewByName(path);
+                ViewResolver.buildView(response, view);
+            } catch (RuntimeException e) {
+                ViewResolver.buildView(request, response, path);
+            }
             response.setStatus(HttpStatus.OK);
         } catch (IOException e) {
             response.setStatus(HttpStatus.NOT_FOUND);

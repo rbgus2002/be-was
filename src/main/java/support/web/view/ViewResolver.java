@@ -1,4 +1,4 @@
-package support.web;
+package support.web.view;
 
 import db.Database;
 import model.Session;
@@ -143,4 +143,9 @@ public abstract class ViewResolver {
         response.buildHeader(new OK(MIME.getContentType(extension), bodyBytes.length));
     }
 
+    public static void buildView(HttpResponse response, View view) {
+        byte[] bodyBytes = view.view().getBytes();
+        response.setBody(bodyBytes);
+        response.buildHeader(new OK(MIME.getContentType(".html"), bodyBytes.length));
+    }
 }

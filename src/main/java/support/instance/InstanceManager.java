@@ -4,6 +4,6 @@ public interface InstanceManager {
 
     void addInstance(Class<?> clazz);
 
-    Object getInstance(Class<?> clazz);
+    <T> T getInstance(Class<T> clazz);
 
 }

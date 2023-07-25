@@ -38,8 +38,8 @@ public class DefaultInstanceManager implements InstanceManager {
     }
 
     @Override
-    public Object getInstance(Class<?> clazz) {
-        return instances.get(clazz);
+    public <T> T getInstance(Class<T> clazz) {
+        return clazz.cast(instances.get(clazz));
     }
 
 }
