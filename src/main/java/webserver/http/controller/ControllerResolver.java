@@ -6,12 +6,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 
-import webserver.container.ControllerMapping;
-import webserver.container.UrlMapping;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
 import webserver.http.utils.FileMapper;
+import webserver.mapping.ControllerMapping;
+import webserver.mapping.UrlMapping;
 
 public class ControllerResolver {
 

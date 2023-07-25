@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import webserver.container.ControllerScanner;
 import webserver.http.message.HttpMethod;
+import webserver.mapping.ControllerScanner;
 
 @ExtendWith(SoftAssertionsExtension.class)
 class ControllerResolverTest {

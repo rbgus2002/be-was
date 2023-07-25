@@ -1,4 +1,4 @@
-package webserver.container;
+package webserver.mapping;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package webserver.http.controller;
+package webserver.http.utils;
 
 import java.io.File;
 import java.util.ArrayList;

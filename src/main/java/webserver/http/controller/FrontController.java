@@ -2,10 +2,10 @@ package webserver.http.controller;
 
 import java.io.File;
 
-import webserver.container.ControllerScanner;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.utils.FileMapper;
+import webserver.mapping.ControllerScanner;
 
 public class FrontController {
 

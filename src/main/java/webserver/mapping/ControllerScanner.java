@@ -1,4 +1,4 @@
-package webserver.container;
+package webserver.mapping;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -71,6 +71,7 @@ public class ControllerScanner {
 			if (annotation == null) {
 				continue;
 			}
+			// TODO: 메소드 반환 타입이 String인지 확인
 			UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.of(annotation.path(), annotation.method());
 			urlMapping.add(urlHttpMethodPair, method);
 		}
