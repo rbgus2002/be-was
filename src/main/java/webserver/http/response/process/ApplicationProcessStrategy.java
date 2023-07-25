@@ -1,6 +1,7 @@
 package webserver.http.response.process;
 
 import common.annotation.Controller;
+import common.annotation.RequestBody;
 import common.annotation.RequestMapping;
 import common.annotation.RequestParam;
 import java.io.ByteArrayOutputStream;
@@ -9,14 +10,14 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import webserver.Main;
 import webserver.http.Headers;
 import webserver.http.Http.StatusCode;
@@ -41,69 +42,6 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
             return HttpResponse.internalError(httpRequest.getMIME());
         } catch (InvocationTargetException e) {
             return HttpResponse.badRequest(httpRequest.getMIME());
-        }
-    }
-
-    private Method findTargetMethod(final HttpRequest httpRequest, final List<Class> classes) {
-        return classes.stream()
-                .flatMap(clazz -> Arrays.stream(clazz.getMethods()))
-                .filter(method -> method.isAnnotationPresent(RequestMapping.class))
-                .filter(method -> method.getAnnotation(RequestMapping.class).value().equals(httpRequest.getPath()))
-                .filter(method -> method.getAnnotation(RequestMapping.class).method()
-                        .equals(httpRequest.getRequestLine().getMethod())
-                )
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 경로의 메서드를 찾을 수 없습니다."));
-    }
-
-    private HttpResponse processMethod(final HttpRequest httpRequest, final Method method)
-            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
-        Object targetClass = method.getDeclaringClass().getDeclaredConstructor().newInstance();
-        Object invoke = invokeMethod(method, targetClass, httpRequest);
-
-        if (isRedirect(invoke)) {
-            String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
-            return HttpResponse.found(redirectUrl);
-        }
-        return new HttpResponse(
-                new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
-        );
-    }
-
-    private Object invokeMethod(
-            final Method method,
-            final Object targetClass,
-            final HttpRequest httpRequest
-    ) throws IllegalAccessException, InvocationTargetException {
-        if (Optional.ofNullable(httpRequest.getBody()).isPresent()) {
-            return method.invoke(targetClass, httpRequest.getBody());
-        }
-        QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
-        if (getMethodParameters(method, queryParameter.getMap()).length > 0) {
-            return method.invoke(targetClass, getMethodParameters(method, queryParameter.getMap()));
-        }
-        return method.invoke(targetClass);
-    }
-
-    private boolean isRedirect(final Object invoke) {
-        return invoke.getClass().equals(String.class) && ((String) invoke).startsWith(REDIRECT_PREFIX);
-    }
-
-    private Object[] getMethodParameters(final Method method, final Map<String, String> map) {
-        return Arrays.stream(method.getParameters())
-                .filter(parameter -> parameter.isAnnotationPresent(RequestParam.class))
-                .filter(parameter -> map.containsKey(parameter.getDeclaredAnnotation(RequestParam.class).value()))
-                .map(parameter -> map.get(parameter.getDeclaredAnnotation(RequestParam.class).value()))
-                .toArray();
-    }
-
-    private byte[] convertObjectToBytes(Object obj) throws IOException {
-        try (
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)
-        ) {
-            objectOutputStream.writeObject(obj);
-            return byteArrayOutputStream.toByteArray();
         }
     }
 
@@ -146,6 +84,84 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
             }
         }
         return result;
+    }
+
+    private Method findTargetMethod(final HttpRequest httpRequest, final List<Class> classes) {
+        return classes.stream()
+                .flatMap(clazz -> Arrays.stream(clazz.getMethods()))
+                .filter(method -> method.isAnnotationPresent(RequestMapping.class))
+                .filter(method -> method.getAnnotation(RequestMapping.class).value().equals(httpRequest.getPath()))
+                .filter(method -> method.getAnnotation(RequestMapping.class).method()
+                        .equals(httpRequest.getRequestLine().getMethod())
+                )
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 경로의 메서드를 찾을 수 없습니다."));
+    }
+
+    private HttpResponse processMethod(final HttpRequest httpRequest, final Method method)
+            throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
+        Object targetClass = method.getDeclaringClass().getDeclaredConstructor().newInstance();
+        Object invoke = invokeMethod(method, targetClass, httpRequest);
+
+        if (isRedirect(invoke)) {
+            String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
+            return HttpResponse.found(redirectUrl);
+        }
+        return new HttpResponse(
+                new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
+        );
+    }
+
+    private Object invokeMethod(
+            final Method method,
+            final Object targetClass,
+            final HttpRequest httpRequest
+    ) throws IllegalAccessException, InvocationTargetException {
+        if (method.getParameters().length == 0) {
+            return method.invoke(targetClass);
+        }
+        return method.invoke(targetClass, mappingParameters(method, httpRequest));
+    }
+
+    private Object[] mappingParameters(final Method method, final HttpRequest httpRequest) {
+        Parameter[] parameters = method.getParameters();
+        Object[] result = new Object[parameters.length];
+        setRequestBody(httpRequest, parameters, result);
+        setQueryParam(httpRequest, parameters, result);
+        return result;
+    }
+
+    private void setQueryParam(final HttpRequest httpRequest, final Parameter[] parameters, final Object[] result) {
+        QueryParameter queryParameter = httpRequest.getRequestLine().getTarget().getQueryParameter();
+        if (queryParameter.getMap().size() == 0) {
+            return;
+        }
+        IntStream.range(0, parameters.length)
+                .filter(i -> parameters[i].isAnnotationPresent(RequestParam.class))
+                .forEach(i -> result[i] = queryParameter.get(parameters[i].getAnnotation(RequestParam.class).value()));
+    }
+
+    private void setRequestBody(final HttpRequest httpRequest, final Parameter[] parameters, final Object[] result) {
+        if (httpRequest.getBody() == null) {
+            return;
+        }
+        IntStream.range(0, parameters.length)
+                .filter(i -> parameters[i].isAnnotationPresent(RequestBody.class))
+                .forEach(i -> result[i] = httpRequest.getBody());
+    }
+
+    private boolean isRedirect(final Object invoke) {
+        return invoke.getClass().equals(String.class) && ((String) invoke).startsWith(REDIRECT_PREFIX);
+    }
+
+    private byte[] convertObjectToBytes(Object obj) throws IOException {
+        try (
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream)
+        ) {
+            objectOutputStream.writeObject(obj);
+            return byteArrayOutputStream.toByteArray();
+        }
     }
 
     @Override
