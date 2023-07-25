@@ -1,6 +1,7 @@
 package webserver.http.request;
 
 import model.User;
+import webserver.http.MIME;
 
 
 import static utils.StringUtils.*;
@@ -38,5 +39,17 @@ public class Uri {
 
     public boolean isSamePath(String path) {
         return this.path.equals(path);
+    }
+
+    public MIME getMime() {
+        String[] tokens = path.split(DOT);
+        if (isExistExtension(tokens)) {
+            return MIME.from(tokens[tokens.length - 1]);
+        }
+        return MIME.defaultMime();
+    }
+
+    private boolean isExistExtension(String[] tokens) {
+        return tokens.length > 1;
     }
 }

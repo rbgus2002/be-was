@@ -15,7 +15,7 @@ public class ResponseHandler {
 
     public static void response(OutputStream out, HttpRequest request) throws InvocationTargetException, IllegalAccessException, IOException {
         Method handler = HandlerMapper.getHandler(request);
-        HttpResponse response = (HttpResponse) handler.invoke(new Controller(), request);
+        HttpResponse response = (HttpResponse) handler.invoke(Controller.getInstance(), request);
         response.response(out);
     }
 }
