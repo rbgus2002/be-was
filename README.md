@@ -60,3 +60,12 @@ Java Web Application Server 2023
         - `ControllerResolver`에서 메소드를 호출할 때 `@RequestParam` 어노테이션이 붙은 매개변수에 필요한 값(파싱한 요청 파라미터 값)을 주입한다.
     - `User` 생성 후 DB에 회원 정보 저장
 - [ ] 단위 테스트
+
+## step-3 다양한 컨텐츠 타입 지원
+
+> **키워드**<br>
+> HTTP Response<br>
+> MIME
+
+- [x] 다양한 컨텐츠 타입 지원
+    - 서버의 `/static`에 위치한 정적 리소스에 대한 요청 처리
