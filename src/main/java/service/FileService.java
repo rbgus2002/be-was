@@ -10,7 +10,12 @@ import static service.SessionService.getUserIdBySid;
 
 public class FileService {
 
-    public static byte[] readStaticFile(String route) throws IOException {
-        return Files.readAllBytes(new File(route).toPath());
+    public static byte[] readStaticFile(String route) {
+        try {
+            return Files.readAllBytes(new File(route).toPath());
+        }
+        catch (IOException e) {
+            return null;
+        }
     }
 }
