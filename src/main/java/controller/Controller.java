@@ -2,6 +2,7 @@ package controller;
 
 import exception.BadRequestException;
 import exception.NotExistUserException;
+import exception.SessionIdException;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
@@ -12,8 +13,6 @@ import static http.Extension.HTML;
 import static http.FilePath.*;
 import static http.HttpMethod.POST;
 import static utils.FileIOUtils.*;
-import static http.FilePath.LOGIN_FAILED;
-import static http.FilePath.WRONG_ACCESS;
 
 public abstract class Controller {
     private final Page page = new Page();
@@ -39,10 +38,14 @@ public abstract class Controller {
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (NotExistUserException e) {
-            return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED);
+            return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED)
+                    .setContentType(MIME.getMIME().get(HTML));
+        } catch (SessionIdException e) {
+            return loadTemplatesFromPath(HttpStatus.OK, LOGIN)
+                    .setContentType(MIME.getMIME().get(HTML));
         } catch (BadRequestException e) {
             String errorPage = page.getErrorPage(e.getMessage());
-            return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
+            return loadFileFromString(HttpStatus.NOT_FOUND, errorPage, ERROR)
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (Exception e) {
             return null;
