@@ -1,4 +1,4 @@
-package webserver;
+package webserver.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +27,7 @@ public class HttpRequestParser {
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
         String oneLine = bufferedReader.readLine();
         while (oneLine.length() != 0) {
-            // TODO: Host에 : 들어오면 split 이상하게 나뉠 수 있음.
-            String[] header = oneLine.split(":");
-            builder.setHeader(header[0].trim(), header[1].trim());
-//            logger.info("HEADERS: {}", oneLine);
+            builder.setHeader(oneLine);
             oneLine = bufferedReader.readLine();
         }
     }
@@ -39,7 +36,6 @@ public class HttpRequestParser {
         String[] tokens = firstLine.split(" ");
         builder.method(tokens[0].trim())
                 .uri(tokens[1].trim())
-                .path(tokens[1].split("\\?")[0])
                 .version(tokens[2].trim());
     }
 }
