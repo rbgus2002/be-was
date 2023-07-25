@@ -14,6 +14,7 @@ public class HttpResponse {
     private HttpStatus httpStatus;
     private String contentType;
     private String location;
+    private String sessionId;
     private byte[] body;
 
     public static class ResponseBuilder {
@@ -21,6 +22,7 @@ public class HttpResponse {
         private HttpStatus httpStatus = HttpStatus.OK;
         private String contentType = MIME.getMIME().get(HTML);
         private String location = "/index.html";
+        private String sessionId;
         private byte[] body;
 
         public ResponseBuilder() {
@@ -41,6 +43,11 @@ public class HttpResponse {
             return this;
         }
 
+        public ResponseBuilder setSessionId(String sessionId) {
+            this.sessionId = sessionId;
+            return this;
+        }
+
         public ResponseBuilder setBody(byte[] body) {
             this.body = body;
             return this;
@@ -55,6 +62,7 @@ public class HttpResponse {
         this.httpStatus = builder.httpStatus;
         this.contentType = builder.contentType;
         this.location = builder.location;
+        this.sessionId = builder.sessionId;
         this.body = builder.body;
     }
 
@@ -70,15 +78,18 @@ public class HttpResponse {
             String contentTypeLine = String.format("Content-Type: %s;charset=utf-8 \r\n", contentType);
             String contentLengthLine = String.format("Content-Length: %d \r\n", body.length);
             String locationLine = String.format("Location: %s \r\n", location);
+            String setCookieLine = sessionId == null ? "" : String.format("Set-Cookie: SID = %s; Path=/ \r\n", sessionId);
             dos.writeBytes(statusLine);
             dos.writeBytes(contentTypeLine);
             dos.writeBytes(contentLengthLine);
             dos.writeBytes(locationLine);
+            dos.writeBytes(setCookieLine);
             dos.writeBytes("\r\n");
             logger.debug(statusLine);
             logger.debug(contentTypeLine);
             logger.debug(contentLengthLine);
             logger.debug(locationLine);
+            logger.debug(setCookieLine);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import controller.Controller;
+import handler.ControllerMappingHandler;
 import http.HttpResponse;
 import http.HttpRequest;
 import org.slf4j.Logger;
@@ -17,8 +18,7 @@ import static http.HttpMethod.POST;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connection;
-
-    private final Controller controller = new Controller();
+    private final ControllerMappingHandler controllerMappingHandler = ControllerMappingHandler.getInstance();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -34,6 +34,7 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = createRequest(in);
 
             assert httpRequest != null;
+            Controller controller = controllerMappingHandler.mappingController(httpRequest);
             HttpResponse.ResponseBuilder responseBuilder = controller.loadFileByRequest(httpRequest);
 
             HttpResponse httpResponse = responseBuilder.build();

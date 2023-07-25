@@ -2,10 +2,12 @@
 
 Java Web Application Server 2023
 
-## step-4 POST로 회원 가입
+## step-5 쿠키를 이용한 로그인
 
-- 로그인을 GET에서 POST로 수정
-- redirection - 가입을 완료하면 /index.html 페이지로 이동
+- [x]  회원 가입 후 로그인
+- [x]  로그인 성공 시 HTTP header의 Set-Cookie 값 `SID = 세션 ID; Path=/`로 응답
+- [x]  로그인 실패 시 /user/login_failed.html로 redirection
+- [x]  Controller, ControllerMappingHandler에 싱글톤 패턴 적용
 
 ### 프로젝트 정보 
 
