@@ -30,12 +30,12 @@ Java Web Application Server 2023
 - [x] static 폴더 내의 정적 콘텐츠에 대한 요청이 정상적으로 처리되어야 한다
 
 ### step4 - POST로 회원 가입
-- [ ] 회원가입 POST로 수정!
-  - [ ] user/form.html 파일의 form 태그 method를 post로 수정
-  - [ ] body에서 인자 읽어오기
-- [ ] 가입 완료시 index.html 페이지로 리다이렉트
-  - [ ] HTTP redirect 기능 구현하기
-  - [ ] statusCode 302로 설정
+- [x] 회원가입 POST로 수정!
+  - [x] user/form.html 파일의 form 태그 method를 post로 수정
+  - [x] body에서 인자 읽어오기
+- [x] 가입 완료시 index.html 페이지로 리다이렉트
+  - [x] HTTP redirect 기능 구현하기
+  - [x] statusCode 302로 설정
 
 ---
 ## 학습할 내용
