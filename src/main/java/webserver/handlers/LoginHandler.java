@@ -9,6 +9,7 @@ import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.Mime;
 import webserver.session.Session;
+import webserver.model.Model;
 import webserver.utils.FileUtils;
 
 import java.net.URLDecoder;
@@ -29,7 +30,7 @@ public class LoginHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handle(HttpRequest request, Session session) {
+    public HttpResponse handle(HttpRequest request, Session session, Model model) {
         try {
             Map<String, String> body = getBody(request);
             String loginUserId = body.get("userId");

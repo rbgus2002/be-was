@@ -8,6 +8,7 @@ import service.UserService;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.session.Session;
+import webserver.model.Model;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +33,7 @@ public class UserJoinHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handle(HttpRequest request, Session session) {
+    public HttpResponse handle(HttpRequest request, Session session, Model model) {
         try {
             char[] messageBody = request.getBody();
             String body = makeString(messageBody);

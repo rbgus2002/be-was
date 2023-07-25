@@ -7,6 +7,7 @@ import webserver.handlers.*;
 import webserver.http.message.*;
 import webserver.session.Session;
 import webserver.session.SessionManager;
+import webserver.model.Model;
 import webserver.utils.FileNameScanner;
 
 import java.util.HashMap;
@@ -39,9 +40,10 @@ public class FrontHandler {
 
     public HttpResponse handle(HttpRequest httpRequest) {
         Session session = getSession(httpRequest);
+        Model model = new Model();
         Handler handler = findHandler(httpRequest);
         try {
-            HttpResponse response = handler.handle(httpRequest, session);
+            HttpResponse response = handler.handle(httpRequest, session, model);
             if (session.isValid()) {
                 response.setCookie(session.getId(), "/");
             }

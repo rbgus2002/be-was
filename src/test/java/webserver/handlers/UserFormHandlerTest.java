@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import webserver.fixture.HttpRequestFixture;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.model.Model;
 import webserver.session.Session;
 import webserver.utils.FileUtils;
 
@@ -16,9 +17,10 @@ class UserFormHandlerTest {
     void handleTest() {
         HttpRequest requestUserForm = HttpRequestFixture.getRequestUserForm();
         Session session = new Session("1");
+        Model model = new Model();
 
         Handler handler = new UserFormHandler();
-        HttpResponse response = handler.handle(requestUserForm, session);
+        HttpResponse response = handler.handle(requestUserForm, session, model);
 
         assertThat(response.getBody())
                 .isEqualTo(FileUtils.readFileFromTemplate("/user/form.html"));
