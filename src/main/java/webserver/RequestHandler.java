@@ -54,11 +54,15 @@ public class RequestHandler implements Runnable {
 		ReflectiveOperationException,
 		IOException,
 		IllegalArgumentException {
-		HttpResponse httpResponse = new HttpResponse(httpRequest);
+		HttpResponse httpResponse = new HttpResponse();
 		String path = runController(httpRequest, httpResponse);
+
+		// 컨트롤러의 반환에 redirect:가 추가되어 있으면 리다이렉트 응답
 		if (path.contains(REDIRECT)) {
 			return redirectHttpResponse(httpResponse, path);
 		}
+
+		// 컨트롤러의 반환에 대한 파일 추가
 		return addFile(httpResponse, path);
 	}
 

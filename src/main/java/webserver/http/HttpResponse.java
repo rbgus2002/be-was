@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 import webserver.http.header.Header;
 import webserver.http.header.MimeType;
+import webserver.http.statusline.HttpVersion;
 import webserver.http.statusline.StatusCode;
 import webserver.http.statusline.ResponseLine;
 import webserver.http.header.Cookie;
@@ -17,15 +18,6 @@ public class HttpResponse {
 	private ResponseLine responseLine = new ResponseLine();
 	private Header header = new Header();
 	private byte[] body = new byte[0];
-
-	public HttpResponse(HttpRequest httpRequest) {
-		responseLine.setVersion(httpRequest.getVersion());
-		responseLine.setStatusCode(StatusCode.OK);
-	}
-
-	public HttpResponse() {
-
-	}
 
 	public void response(OutputStream out) throws IOException {
 		DataOutputStream dos = new DataOutputStream(out);
