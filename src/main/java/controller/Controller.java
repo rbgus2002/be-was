@@ -32,10 +32,11 @@ public class Controller {
     public String loginUser(Map<String, String> body){
         Optional<User> user = Database.findUserById(body.get("userId"));
         if(user.isEmpty() || !user.get().checkPassword(body.get("password"))){
-            logger.error("아이디 혹은 비밀번호가 일치하지 않습니다.");
+            logger.error("아이디 혹은 비밀번호가 일치하지 않습니다");
             return "/user/login_failed.html";
         }
-        SessionManager.createSession(user.get());
+        String sid = SessionManager.createSession(user.get());
+        logger.debug("session 생성 {}", sid);
         return "redirect:";
     }
 }
