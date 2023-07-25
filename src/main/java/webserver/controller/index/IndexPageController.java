@@ -14,7 +14,7 @@ import webserver.utils.HttpField;
 import java.io.IOException;
 
 public class IndexPageController implements Controller {
-    private final String articleInfoTemplateHtml = "<tr>\n"
+    private static final String articleInfoTemplateHtml = "<tr>\n"
                     + "<td>${createDate}</td>\n"
                     + "<td>${username}</td>\n"
                     + "<td><a href=\"/article/view?articleId=${articleId}\">${title}</a></td>\n"
@@ -23,7 +23,7 @@ public class IndexPageController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String indexPageHtml = createIndexPageHtml(httpRequest);
-        setHttpResponseWithHtml(httpResponse, indexPageHtml);
+        setHttpResponseWithIndexPageHtml(httpResponse, indexPageHtml);
     }
 
     private String createIndexPageHtml(HttpRequest httpRequest) throws IOException {
@@ -88,7 +88,7 @@ public class IndexPageController implements Controller {
         return UserDatabase.findUserById(userId).getName();
     }
 
-    private void setHttpResponseWithHtml(HttpResponse httpResponse, String html) {
+    private void setHttpResponseWithIndexPageHtml(HttpResponse httpResponse, String html) {
         httpResponse.setStatus(HttpStatus.OK);
         httpResponse.set(HttpField.CONTENT_TYPE, "text/html;charset=utf-8");
         httpResponse.set(HttpField.CONTENT_LENGTH, html.length());

@@ -13,7 +13,7 @@ public class ArticleDatabase {
         articles.add(article);
     }
 
-    public static Article findById(int articleId) {
+    public static Article findByArticleId(int articleId) {
         return articles.stream()
                 .filter(article -> article.getArticleId() == articleId)
                 .findFirst()

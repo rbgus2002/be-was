@@ -19,7 +19,7 @@ public class ArticleViewController implements Controller {
         String sessionId = httpRequest.getCookie().get("sid");
 
         if (isLoginStatus(sessionId)) {
-            respondWithArticleHtml(httpRequest, httpResponse);
+            setHttpResponseWithArticleViewHtml(httpRequest, httpResponse);
             return;
         }
         redirectToLoginPage(httpResponse);
@@ -29,7 +29,7 @@ public class ArticleViewController implements Controller {
         return SessionManager.verifySessionId(sessionId);
     }
 
-    private void respondWithArticleHtml(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    private void setHttpResponseWithArticleViewHtml(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         Article article = findArticle(httpRequest);
         String articleViewHtml = getArticleViewHtml(article);
         setHttpResponseWithHtml(httpResponse, articleViewHtml);
@@ -45,7 +45,7 @@ public class ArticleViewController implements Controller {
     private Article findArticle(HttpRequest httpRequest) {
         HttpParameters requestParameters = httpRequest.getParameters();
         int articleId = Integer.parseInt(requestParameters.get("articleId"));
-        return ArticleDatabase.findById(articleId);
+        return ArticleDatabase.findByArticleId(articleId);
     }
 
     private String getArticleViewHtml(Article article) throws IOException {
