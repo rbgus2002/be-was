@@ -1,6 +1,12 @@
 package support.web.view;
 
+import db.Database;
+import model.Session;
 import support.annotation.Container;
+import webserver.request.HttpRequest;
+import webserver.response.HttpResponse;
+
+import java.util.List;
 
 @Container
 public class UserListView implements View {
@@ -9,9 +15,9 @@ public class UserListView implements View {
         return "/user/list";
     }
 
-    public String view() {
+    public String view(HttpRequest request, HttpResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
-        return stringBuilder
+        stringBuilder
                 .append("<!DOCTYPE html>")
                 .append("<html lang=\"kr\">")
                 .append("<head>")
@@ -92,13 +98,26 @@ public class UserListView implements View {
                 .append("                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>")
                 .append("                </tr>")
                 .append("              </thead>")
-                .append("              <tbody>")
-                .append("                <tr>")
-                .append("                    <th scope=\"row\">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>")
-                .append("                </tr>")
-                .append("                <tr>")
-                .append("                    <th scope=\"row\">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>")
-                .append("                </tr>")
+                .append("              <tbody>");
+
+        List<Session> sessions = Database.findAllSession();
+        int count = 0;
+        for (Session session : sessions) {
+            stringBuilder
+                    .append("                <tr>")
+                    .append("                    <th scope=\"row\">")
+                    .append(count++)
+                    .append("</th> <td>")
+                    .append(session.getUser().getUserId())
+                    .append("</td> <td>")
+                    .append(session.getUser().getName())
+                    .append("</td> <td>")
+                    .append(session.getUser().getEmail())
+                    .append("</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>")
+                    .append("                </tr>");
+        }
+
+        stringBuilder
                 .append("              </tbody>")
                 .append("          </table>")
                 .append("        </div>")
@@ -109,8 +128,9 @@ public class UserListView implements View {
                 .append("<script src=\"../js/bootstrap.min.js\"></script>")
                 .append("<script src=\"../js/scripts.js\"></script>")
                 .append("	</body>")
-                .append("</html>")
-                .toString();
+                .append("</html>");
+
+        return stringBuilder.toString();
     }
 
 }
