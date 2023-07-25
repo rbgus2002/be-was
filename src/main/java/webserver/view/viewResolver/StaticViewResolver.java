@@ -9,12 +9,21 @@ import java.nio.file.Paths;
 
 public class StaticViewResolver implements ViewResolver {
 
-    private static final String RESOURCES_TEMPLATES = "src/main/resources/templates/";
+    private static final String RESOURCES_TEMPLATES = "src/main/resources/static/";
+    private static final String RESOURCES_STATIC = "src/main/resources/templates/";
 
     @Override
     public View resolve(final String viewName) {
         Path templatesFilePath = Paths.get(RESOURCES_TEMPLATES, viewName);
-        if (!Files.exists(templatesFilePath)) return null;
+
+        if (!Files.exists(templatesFilePath)) {
+            templatesFilePath = Paths.get(RESOURCES_STATIC, viewName);
+        }
+
+        if (!Files.exists(templatesFilePath)) {
+            return null;
+        }
+
         return new StaticView(templatesFilePath.toString());
     }
 }
