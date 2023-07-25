@@ -6,7 +6,7 @@ import webserver.exception.BadRequestException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
 import webserver.request.HttpRequest;
-import webserver.session.UserSession;
+import webserver.session.UserSessionManager;
 
 import static utils.StringUtils.getDecodedString;
 
@@ -39,7 +39,7 @@ public class LoginController implements Controller{
             response.setHeader("Location", "/user/login_failed.html");
         }
 
-        UserSession.getInstance().putSession(existedUser, response);
+        UserSessionManager.getInstance().putSession(existedUser, response);
         response.setStatus(HttpResponseStatus.STATUS_302);
         response.setHeader("Location", "/index.html");
     }
