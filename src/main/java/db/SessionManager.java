@@ -19,14 +19,17 @@ public class SessionManager {
     public static void createSession(User user, HTTPServletResponse response) {
         String sessionId = UUID.randomUUID().toString();
         store.put(sessionId, user);
-        response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + sessionId  + "; Path=/");
+        response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + sessionId + "; Path=/");
         logger.debug("Cookie = {}", SESSION_COOKIE_NAME + "=" + sessionId);
     }
 
     public static User getSession(HTTPServletRequest request) {
         logger.debug("Cookie = {}", request.getHeader("Cookie"));
-        String cookie = request.getHeader("Cookie");
-
+        String cookie = null;
+        cookie = request.getHeader("Cookie");
+        if (cookie == null) {
+            throw new IllegalArgumentException("Cookie 정보가 없습니다.");
+        }
         String[] tokens = cookie.split("sessionId=");
 
         for (String token : tokens) {

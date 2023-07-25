@@ -42,7 +42,12 @@ public class ViewResolver {
         if ((file = new File(STATIC_PATH.getPath() + viewPath)).exists()) {
             body = Files.readAllBytes(file.toPath());
         } else if ((file = new File(TEMPLATE_PATH.getPath() + viewPath)).exists()) {
-            User findUser = SessionManager.getSession(request);
+            User findUser = null;
+            try {
+                findUser = SessionManager.getSession(request);
+            } catch (IllegalArgumentException e) {
+                logger.debug(e.getMessage());
+            }
             body = Files.readAllBytes(file.toPath());
             if (viewPath.equals("/index.html") && findUser != null) {
                 body = MainView.changeToDynamic(findUser).getBytes();

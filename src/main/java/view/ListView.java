@@ -84,7 +84,6 @@ public class ListView {
                 "        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">\n" +
                 "            <ul class=\"nav navbar-nav navbar-right\">\n" +
                 "                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n" +
-                "                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>\n" +
                 "                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n" +
                 "                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n" +
                 "            </ul>\n" +
