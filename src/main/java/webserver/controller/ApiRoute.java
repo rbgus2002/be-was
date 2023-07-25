@@ -13,6 +13,14 @@ public class ApiRoute {
         this.method = method;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public HttpMethod getMethod() {
+        return method;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
