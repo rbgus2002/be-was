@@ -40,7 +40,7 @@ public class LoginController implements Controller{
             return;
         }
 
-        UserSessionManager.getInstance().putSession(existedUser, response);
+        String sessionId = UserSessionManager.getInstance().putSession(existedUser, response);
         response.setStatus(HttpResponseStatus.STATUS_302);
         response.setHeader("Location", "/index.html");
     }

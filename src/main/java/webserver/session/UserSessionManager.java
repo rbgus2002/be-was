@@ -25,16 +25,23 @@ public class UserSessionManager {
         return userSessionManager;
     }
 
-    public void putSession(User user, HttpResponse response) {
-        String uuid = UUID.randomUUID().toString();
-        userSessionMap.put(uuid, new UserSession(user, LocalDateTime.now().plusMinutes(30)));
-        response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + uuid +"; Path=/");
+    public String putSession(User user, HttpResponse response) {
+        String sessionId = UUID.randomUUID().toString();
+        userSessionMap.put(sessionId, new UserSession(user, LocalDateTime.now().plusMinutes(30)));
+        response.setHeader("Set-Cookie", SESSION_COOKIE_NAME + "=" + sessionId +"; Path=/");
+        return sessionId;
     }
 
     public User getSession(HttpRequest request) {
-        UserSession userSession = userSessionMap.get(request.getSessionIdBySessionName(SESSION_COOKIE_NAME));
+        String sessionId = request.getSessionIdBySessionName(SESSION_COOKIE_NAME);
+
+        if(sessionId == null) {
+            return null;
+        }
+
+        UserSession userSession = userSessionMap.get(sessionId);
         if(userSession == null || userSession.isExpired()) {
-            expireSession(request);
+            removeSession(request);
             return null;
         }
 
@@ -43,7 +50,11 @@ public class UserSessionManager {
 
     public void expireSession(HttpRequest request) {
         if (getSession(request) != null) {
-            userSessionMap.remove(request.getSessionIdBySessionName(SESSION_COOKIE_NAME));
+            removeSession(request);
         }
+    }
+
+    private void removeSession(HttpRequest request) {
+        userSessionMap.remove(request.getSessionIdBySessionName(SESSION_COOKIE_NAME));
     }
 }
