@@ -37,7 +37,7 @@ public class RequestHandler implements Runnable {
             Method method = HandlerMapping.getHandler(httpRequest);
 
             if (method != null) {
-                String redirectPath = (String) method.invoke(new UserController(), httpRequest, httpResponse);
+                String redirectPath = (String) method.invoke(UserController.getInstance(), httpRequest, httpResponse);
                 String responsePath = Parser.parsePathFromRedirect(redirectPath);
                 httpResponse.redirect(responsePath);
             } else {

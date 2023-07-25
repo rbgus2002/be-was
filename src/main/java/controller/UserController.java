@@ -18,6 +18,14 @@ import java.util.UUID;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final UserController instance = new UserController();
+
+    private UserController() {
+    }
+
+    public static UserController getInstance() {
+        return instance;
+    }
 
     @RequestMapping(path = "/user/create", method = HttpMethod.GET)
     public String createUserByGET(HttpRequest request, HttpResponse response) throws IOException {
