@@ -1,8 +1,7 @@
 package controller;
 
 import exception.BadRequestException;
-import exception.NotExistUserException;
-import exception.SessionIdException;
+import exception.CustomException;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
@@ -53,11 +52,8 @@ public abstract class Controller {
             }
             return loadStaticFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
-        } catch (NotExistUserException e) {
-            return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED)
-                    .setContentType(MIME.getMIME().get(HTML));
-        } catch (SessionIdException e) {
-            return loadTemplatesFromPath(HttpStatus.OK, LOGIN)
+        } catch (CustomException e) {
+            return loadTemplatesFromPath(e.getHttpStatus(), e.getFilePath())
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (BadRequestException e) {
             String errorPage = page.getErrorPage(e.getMessage());
