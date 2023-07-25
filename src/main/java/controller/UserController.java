@@ -30,7 +30,11 @@ public class UserController {
     public String createUserByPOST(HttpRequest request, HttpResponse response) throws IOException {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
-        // TODO: 중복 검증 로직 추가
+        // TODO: 예외처리 및 에러페이지로 이동
+        if(UserDatabase.findUserById(params.get("userId")) != null) {
+            return "redirect:/index.html";
+        }
+
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         UserDatabase.addUser(user);
 
