@@ -37,7 +37,6 @@ public class SignUpController implements Controller {
         verifyRequest(request, user);
         addUser(user);
         manageResponse(response);
-        //동시성 처리 어떻게?
     }
 
     private void addUser(User user) {

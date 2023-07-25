@@ -37,6 +37,7 @@ public class LoginController implements Controller{
         if(existedUser == null || existedUser.isCorrectPassword(tempUser.getUserId())) {
             response.setStatus(HttpResponseStatus.STATUS_302);
             response.setHeader("Location", "/user/login_failed.html");
+            return;
         }
 
         UserSessionManager.getInstance().putSession(existedUser, response);
