@@ -30,6 +30,7 @@ public class FrontController {
         controllerMap.put("/index.html", HOME_CONTROLLER);
         controllerMap.put("/user/create", JOIN_CONTROLLER);
         controllerMap.put("/user/login", LOGIN_CONTROLLER);
+        controllerMap.put("/user/login.html", LOGIN_CONTROLLER);
         controllerMap.put("/user/list", USER_LIST_CONTROLLER);
         controllerMap.put("/user/list.html", USER_LIST_CONTROLLER);
     }

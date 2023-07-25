@@ -11,6 +11,20 @@ public enum LoginController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
+        if ("POST".equals(request.getMethod())) {
+            return doPost(request, response);
+        }
+        return doGet(request, response);
+    }
+
+    private String doGet(HttpRequest request, HttpResponse response) {
+        if (request.hasValidSession()) {
+            return "redirect:/index.html";
+        }
+        return "/user/login.html";
+    }
+
+    private String doPost(HttpRequest request, HttpResponse response) {
         String userId = request.getParam("userId");
         String password = request.getParam("password");
         User user = Database.findUserById(userId);
