@@ -1,5 +1,6 @@
 package webserver.http;
 
+import utils.GMTStringConverter;
 import utils.Parser;
 
 import java.io.BufferedReader;
@@ -59,9 +60,10 @@ public class HttpHeaders {
         responseHeaders.put(CONTENT_LENGTH, "0");
         responseHeaders.put(LOCATION, viewPath);
         if (cookie != null) {
+            System.out.println(cookie.getExpires().atZone(ZoneId.of("GMT")));
             responseHeaders.put(SET_COOKIE, cookie.getName() + "=" + cookie.getValue() + ";"
                     + " Path=/;"
-                    + "expires=" + cookie.getExpires().atZone(ZoneId.of("GMT")) + ";"
+                    + "Expires=" + GMTStringConverter.convertToGMTString(cookie.getExpires()) + ";"
                     + " HttpOnly");
         }
         return new HttpHeaders(responseHeaders);
