@@ -14,36 +14,50 @@ import static utils.StringUtils.getDecodedString;
 
 public class SignUpController implements Controller {
 
-    private String userId;
-    private String password;
-    private String name;
-    private String email;
-
     private static final int SIGN_UP_PARAMS_LENGTH = 4;
     private static final int KEY_VALUE_PAIR_LENGTH = 2;
     private static final int VALUE_INDEX = 1;
 
-    @Override
-    public void execute(HttpRequest request) {
-        if(Database.findUserById(userId) != null) {
-            throw new ConflictException("이미 존재하는 아이디입니다!");
+    private static SignUpController signUpController;
+
+    private SignUpController() {
+
+    }
+
+    public static SignUpController getInstance() {
+        if(signUpController == null) {
+            signUpController = new SignUpController();
         }
-        Database.addUser(new User(userId, password, name, email));
-        //중복처리
-        //동시성 처리 어떻게?
+        return signUpController;
     }
 
     @Override
-    public void verifyRequest(HttpRequest request){
+    public void execute(HttpRequest request, HttpResponse response) {
+        User user = new User();
+        verifyRequest(request, user);
+        addUser(user);
+        manageResponse(response);
+        //동시성 처리 어떻게?
+    }
+
+    private void addUser(User user) {
+        if(Database.findUserById(user.getUserId()) != null) {
+            throw new ConflictException("이미 존재하는 아이디입니다!");
+        }
+        Database.addUser(user);
+    }
+
+    private void verifyRequest(HttpRequest request, User user){
         String[] bodys = request.getBody().split("[&]");
 
         if(bodys.length != SIGN_UP_PARAMS_LENGTH) {
             throw new BadRequestException("파라미터의 개수가 잘못되었습니다!");
         }
-        parseBody(bodys);
+
+        parseBody(bodys, user);
     }
 
-    private void parseBody(String[] bodys) {
+    private void parseBody(String[] bodys, User user) {
         //바디 파싱을 여기서 하는게 맞을까?
         for (String body : bodys) {
             String[] param = body.split("[=]");
@@ -52,31 +66,30 @@ public class SignUpController implements Controller {
                 throw new BadRequestException("Body의 형식이 잘못되었습니다!");
             }
 
-            setParams(param);
+            setParams(param, user);
         }
     }
 
-    private void setParams(String[] param) {
+    private void setParams(String[] param, User user) {
         switch (param[0]) {
             case "userId":
-                userId = getDecodedString(param[VALUE_INDEX]);
+                user.setUserId(getDecodedString(param[VALUE_INDEX]));
                 break;
             case "password":
-                password = getDecodedString(param[VALUE_INDEX]);
+                user.setPassword(getDecodedString(param[VALUE_INDEX]));
                 break;
             case "name":
-                name = getDecodedString(param[VALUE_INDEX]);
+                user.setName(getDecodedString(param[VALUE_INDEX]));
                 break;
             case "email":
-                email = getDecodedString(param[VALUE_INDEX]);
+                user.setEmail(getDecodedString(param[VALUE_INDEX]));
                 break;
             default:
                 throw new BadRequestException("알맞은 key값을 넣어주세요!");
         }
     }
 
-    @Override
-    public void manageResponse(HttpResponse response) {
+    private void manageResponse(HttpResponse response) {
         response.setStatus(HttpResponseStatus.STATUS_302);
         response.setHeader("Location","/index.html");
     }

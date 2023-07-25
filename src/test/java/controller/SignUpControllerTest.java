@@ -24,7 +24,7 @@ class SignUpControllerTest {
 
     @BeforeEach
     void init() throws IOException {
-        signUpController = new SignUpController();
+        signUpController = SignUpController.getInstance();
         request= HttpRequestParser.getRequest(new ByteArrayInputStream(("POST /user/create HTTP/1.1\n" +
                 "Content-Type: text/plain\n" +
                 "User-Agent: PostmanRuntime/7.32.3\n" +
@@ -36,12 +36,14 @@ class SignUpControllerTest {
                 "Content-Length: 93\n" +
                 "\n" +
                 "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net").getBytes()));
+
+        response = new HttpResponse();
     }
 
     @Test
     @DisplayName("request에 담긴 회원의 정보를 토대로 새로운 회원을 추가해야 한다")
     void signUp(){
-        signUpController.execute(request);
+        signUpController.execute(request, response);
         User user = Database.findUserById("javajigi");
         assertEquals("javajigi", user.getUserId());
         assertEquals("password", user.getPassword());

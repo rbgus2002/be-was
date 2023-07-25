@@ -26,37 +26,19 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
-        HttpResponse response = new HttpResponse();
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-//            if(in == null) {
-//                return;
-//            }
             HttpRequest request = HttpRequestParser.getRequest(in);
             logger.debug("Request Header : \n{}", request.getHeader());
             logger.debug("Request Body : \n{}", request.getBody());
+            HttpResponse response = new HttpResponse();
 
-            process(request, response);
+            FrontController.service(request, response);
             DataOutputStream dos = new DataOutputStream(out);
             responseHeader(dos, response);
             responseBody(dos, response);
         } catch (IOException e) {
             //인터널 서버 에러
             logger.error(e.getMessage());
-        }
-    }
-
-    private void process(HttpRequest request, HttpResponse response) throws IOException {
-        try {
-            FrontController.service(request, response);
-        } catch (NotFoundException e) {
-            response.setStatus(HttpResponseStatus.STATUS_404);
-            response.setBodyByText(e.getMessage());
-        } catch (BadRequestException e) {
-            response.setStatus(HttpResponseStatus.STATUS_400);
-            response.setBodyByText(e.getMessage());
-        } catch (ConflictException e) {
-            response.setStatus(HttpResponseStatus.STATUS_409);
-            response.setBodyByText(e.getMessage());
         }
     }
 

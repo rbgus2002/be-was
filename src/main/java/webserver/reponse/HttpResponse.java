@@ -41,6 +41,10 @@ public class HttpResponse {
 
     }
 
+    public HttpResponseStatus getStatus() {
+        return this.status;
+    }
+
     private String getHeaderFromMap() {
         StringBuilder headerBuilder = new StringBuilder();
         header.entrySet().stream()

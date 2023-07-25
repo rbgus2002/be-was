@@ -8,13 +8,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestMapper {
-    private static final Map<String, Controller> controllerMap = new HashMap<>();
-    private static final HttpRequestMapper requestMapper = new HttpRequestMapper();
+    private Map<String, Controller> controllerMap;
+    private static HttpRequestMapper requestMapper;
+
     private HttpRequestMapper(){
-        controllerMap.put("POST /user/create", new SignUpController());
+        controllerMap = new HashMap<>();
+        controllerMap.put("POST /user/create", SignUpController.getInstance());
     }
 
     public static HttpRequestMapper getInstance(){
+        if(requestMapper == null) {
+            requestMapper = new HttpRequestMapper();
+        }
         return requestMapper;
     }
 
