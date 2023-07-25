@@ -21,6 +21,13 @@ public class HttpRequest {
     private final HttpRequestHeaders headers;
     private final HttpRequestBody body;
 
+    public HttpRequest(BufferedReader bufferedReader, HttpRequestStartLine startLine, HttpRequestHeaders headers, HttpRequestBody body) {
+        this.bufferedReader = bufferedReader;
+        this.startLine = startLine;
+        this.headers = headers;
+        this.body = body;
+    }
+
     public HttpRequest(InputStream in) throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(in));
         this.startLine = new HttpRequestStartLine(readStartLine());
