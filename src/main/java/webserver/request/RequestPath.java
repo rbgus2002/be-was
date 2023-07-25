@@ -1,6 +1,6 @@
 package webserver.request;
 
-import exception.InvalidPathException;
+import exception.InvalidContentTypeException;
 import webserver.Constants.ContentType;
 
 public class RequestPath {
@@ -29,7 +29,12 @@ public class RequestPath {
 
     public ContentType getContentType() {
         int idx = fullPath.lastIndexOf(".");
-        if(idx == -1) throw new InvalidPathException();
-        return ContentType.valueOf(fullPath.substring(idx + 1).toUpperCase());
+        String fileExtension = fullPath.substring(idx + 1).toUpperCase();
+
+        try {
+            return ContentType.valueOf(fileExtension);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidContentTypeException(fileExtension);
+        }
     }
 }
