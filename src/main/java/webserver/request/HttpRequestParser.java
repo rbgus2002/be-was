@@ -54,7 +54,7 @@ public class HttpRequestParser {
                 body = new char[Integer.parseInt(headers.get("Content-Length"))];
                 bufferedReader.read(body, 0, body.length);
             }
-            logger.debug("[request message] [body]\n{}", new String(body));
+            logger.debug("[request message] [body]\n{}", URLDecoder.decode(new String(body), StandardCharsets.UTF_8));
 
             return new HttpRequestMessage(method, url, version, headers, URLDecoder.decode(new String(body), StandardCharsets.UTF_8));
         } catch (IOException | IndexOutOfBoundsException e) {
