@@ -1,19 +1,17 @@
 package support.web.view;
 
-import db.Database;
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.LoginUtils;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.MIME;
 import webserver.response.strategy.OK;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static webserver.WebPageReader.readStringLineByPath;
@@ -25,9 +23,9 @@ public abstract class ViewResolver {
     private static final String END_TAG = "%>";
 
     public static List<String> parseHtml(HttpRequest request, List<String> body) {
-        return body.stream().map(
-                line -> parseLoop(line, request)
-        ).collect(Collectors.toList());
+        return body.stream()
+                .map(line -> parseLoop(line, request))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -73,58 +71,20 @@ public abstract class ViewResolver {
         }
         return syntax;
     }
-
-    // TODO: 구조 리팩토링 및 메소드 분리
-
+    
     /**
      * 사전에 정의된 명령어를 기준으로 새로운 결과값으로 변화한다.
      */
     private static String parseCommand(String command, String argument, HttpRequest request) {
         if ("SESSION.GET_USERNAME".equals(command)) {
-            String cookieHeader = request.getHeaderValue("Cookie");
-            if (cookieHeader != null) {
-                String[] headerValue = cookieHeader.split(" ");
-                Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
-                if(sid.isPresent()) {
-                    String rsid = sid.get();
-                    Session session = Database.findSessionById(rsid.substring(4));
-                    if (session != null) {
-                        return session.getUser().getName();
-                    }
-                }
-                return "";
-            }
+            Session loginSession = LoginUtils.getLoginSession(request);
+            return LoginUtils.getLoginSession(request) != null ? loginSession.getUser().getName() : "";
         } else if ("SESSION.IS_PRESENT".equals(command)) {
-            String cookieHeader = request.getHeaderValue("Cookie");
-            if (cookieHeader != null) {
-                String[] headerValue = cookieHeader.split(" ");
-                Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
-                if (sid.isPresent()) {
-                    String rsid = sid.get();
-                    Session session = Database.findSessionById(rsid.substring(4));
-                    if (session != null) {
-                        return argument;
-                    }
-                }
-            }
-
-            return "";
+            return LoginUtils.getLoginSession(request) != null ? argument : "";
         } else if ("SESSION.IS_EMPTY".equals(command)) {
-            String cookieHeader = request.getHeaderValue("Cookie");
-            if (cookieHeader != null) {
-                String[] headerValue = cookieHeader.split(" ");
-                Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
-                if (sid.isPresent()) {
-                    String rsid = sid.get();
-                    Session session = Database.findSessionById(rsid.substring(4));
-                    if (session != null) {
-                        return "";
-                    }
-                }
-            }
-            return argument;
+            return LoginUtils.getLoginSession(request) != null ? "" : argument;
         }
-        return "";
+        return START_TAG + " " + command + " " + argument + " " + END_TAG;
     }
 
     public static void buildView(HttpRequest request, HttpResponse response, String path) throws IOException {
