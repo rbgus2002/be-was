@@ -2,8 +2,8 @@ package webserver;
 
 import application.controller.UserController;
 import application.controller.WebController;
-import exception.path.InvalidControllerPathException;
-import exception.path.InvalidMethodPathException;
+import exception.notFound.InvalidControllerPathException;
+import exception.notFound.InvalidMethodPathException;
 import support.annotation.RequestMapping;
 import webserver.request.HttpRequest;
 

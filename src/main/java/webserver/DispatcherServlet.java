@@ -1,9 +1,9 @@
 package webserver;
 
 import application.controller.WebController;
-import exception.path.InvalidPathException;
+import exception.notFound.NotFoundException;
 import exception.InvalidQueryParameterException;
-import exception.path.InvalidResourcePathException;
+import exception.notFound.InvalidResourcePathException;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
 import webserver.request.HttpRequest;
@@ -22,7 +22,7 @@ public class DispatcherServlet {
         this.request = request;
     }
 
-    public void dispatch(final DataOutputStream dos) throws IOException, InvalidPathException, InvalidQueryParameterException, InvocationTargetException, IllegalAccessException {
+    public void dispatch(final DataOutputStream dos) throws IOException, NotFoundException, InvalidQueryParameterException, InvocationTargetException, IllegalAccessException {
         StaticViewResolver staticViewResolver = new StaticViewResolver();
 
         Optional<View> viewOpt = staticViewResolver.resolve(request.getFullPath());
