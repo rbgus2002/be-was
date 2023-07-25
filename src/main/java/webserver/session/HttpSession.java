@@ -41,4 +41,8 @@ public class HttpSession {
 
 		return !sessionData.getExpiredTime().isBefore(LocalDateTime.now());
 	}
+
+	public SessionData getSessionData(String key) {
+		return attributes.get(key);
+	}
 }
