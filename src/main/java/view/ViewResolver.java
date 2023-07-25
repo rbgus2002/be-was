@@ -30,7 +30,7 @@ public class ViewResolver {
 
     public void service() throws IOException {
         if (viewPath.contains("redirect:")) {
-            String path = viewPath.substring(viewPath.indexOf(":") + 1);
+            String path = viewPath.substring(viewPath.indexOf(":") + 1).trim();
             response.setHeader("Location", path);
             response.setStatusMessage("Found");
             response.setStatusCode("302");

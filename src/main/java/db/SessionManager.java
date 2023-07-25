@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
 
-    private static final String SESSION_COOKIE_NAME = "sessionId";
+    private static final String SESSION_COOKIE_NAME = "SID";
     public static final Map<String, User> store = new ConcurrentHashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
 

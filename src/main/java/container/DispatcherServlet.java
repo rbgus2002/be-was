@@ -7,14 +7,29 @@ import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
 import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DispatcherServlet {
-    private static final ConcurrentHashMap<String, Controller> map = new ConcurrentHashMap<>();
+    private static final Map<String, Controller> map = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
     private static final String LOGIN_PATH = "/user/create";
 
-    public DispatcherServlet() {
+    private static DispatcherServlet instance = null;
+
+    public static DispatcherServlet getInstance(){
+        if (instance == null) {
+            initialize();
+            logger.debug("map.size() = {}", map.size());
+            return instance = new DispatcherServlet();
+        }
+        return instance;
+    }
+
+    private DispatcherServlet() {
+    }
+
+    public static void initialize(){
         map.put("/user/login", new LogInTestController());
         map.put(LOGIN_PATH, new LogInController());
         map.put("/user/list", new ListController());

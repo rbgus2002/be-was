@@ -8,6 +8,8 @@ import parser.ParserFactory;
 import java.io.*;
 import java.net.Socket;
 
+import static container.DispatcherServlet.*;
+
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
@@ -27,7 +29,8 @@ public class RequestHandler implements Runnable {
             logger.debug("startLine = {}", startLine);
 
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
-            DispatcherServlet dispatcherServlet = new DispatcherServlet();
+            DispatcherServlet dispatcherServlet = getInstance();
+            logger.debug("dispatcherServlet = {}", dispatcherServlet);
             HTTPServletResponse response = new HTTPServletResponse(dos);
             dispatcherServlet.service(request, response);
         } catch (IOException e) {
