@@ -33,4 +33,8 @@ public class URL {
 	public String getPath() {
 		return path;
 	}
+
+	public String getQueryValue(String key) {
+		return queryMap.get(key);
+	}
 }

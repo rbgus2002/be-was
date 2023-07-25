@@ -33,6 +33,9 @@ public class HttpRequest {
 		String startLine = bufferedReader.readLine();
 		// 로그
 		logger.debug(startLine);
+		if (startLine == null) {
+			return;
+		}
 
 		String[] requestLineTokens = startLine.split(SINGLE_SPACE);
 		httpMethod = HttpMethod.from(requestLineTokens[0]);
@@ -53,7 +56,15 @@ public class HttpRequest {
 		return url.getPath();
 	}
 
+	public HttpMethod getHttpMethod() {
+		return httpMethod;
+	}
+
 	public String getHttpVersion() {
 		return httpVersion;
+	}
+
+	public String getParam(String key) {
+		return url.getQueryValue(key);
 	}
 }
