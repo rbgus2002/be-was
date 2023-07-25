@@ -29,7 +29,6 @@ public class UserCreateController implements Controller {
 
     @RequestMethod(method = "POST")
     public HttpResponse handlePost(HttpRequest request) throws IOException {
-        logger.debug("HERE");
         Map<String, String> parameters = request.body();
         return handleRequest(request, parameters);
     }

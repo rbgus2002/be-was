@@ -18,18 +18,20 @@ import static webserver.http.enums.HttpResponseStatus.OK;
 
 class StaticFileControllerTest {
     SoftAssertions softly = new SoftAssertions();
+    StaticFileController staticFileController = new StaticFileController();
 
     @ParameterizedTest
     @ValueSource(strings = {"/index.html", "/user/form.html"})
-    @DisplayName("정적 파일 리턴 기능 확인 테스트")
+    @DisplayName("정적 html 파일 리턴 기능 확인 테스트")
     void handleStaticFileReturn(String fileName) throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .uri(fileName)
+                .method("GET")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
+        HttpResponse response = staticFileController.handleGet(testRequest);
 
         String template_path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
         HttpResponse actual = HttpResponse.newBuilder()
@@ -46,17 +48,16 @@ class StaticFileControllerTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"/notExistingFile.html"})
-    @DisplayName("정적 파일 리턴 기능 확인 테스트2")
+    @DisplayName("정적 html 파일 리턴 기능 확인 테스트2")
     void handleStaticFileReturn2(String fileName) throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .uri(fileName)
+                .method("GET")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
-
-        String template_path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
+        HttpResponse response = staticFileController.handleGet(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .version("HTTP/1.1")
@@ -77,10 +78,11 @@ class StaticFileControllerTest {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .uri(fileName)
+                .method("GET")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
+        HttpResponse response = staticFileController.handleGet(testRequest);
 
         String template_path = System.getProperty("user.dir") + "/src/main/resources/static/" + fileName;
         HttpResponse actual = HttpResponse.newBuilder()
@@ -102,12 +104,11 @@ class StaticFileControllerTest {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .uri(fileName)
+                .method("GET")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
-
-        String template_path = System.getProperty("user.dir") + "/src/main/resources/static/" + fileName;
+        HttpResponse response = staticFileController.handleGet(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .version("HTTP/1.1")

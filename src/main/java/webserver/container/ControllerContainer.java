@@ -31,10 +31,9 @@ public class ControllerContainer {
     private ControllerContainer() {
     }
 
-    public void initialize() throws ClassNotFoundException, URISyntaxException {
+    public void initialize(String packageName) throws ClassNotFoundException, URISyntaxException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        String packageName = "webserver.controllers";
         String packagePath = packageName.replace(".", "/");
 
         File controllerDir = Paths.get(classLoader.getResource(packagePath).toURI()).toFile();
@@ -91,7 +90,6 @@ public class ControllerContainer {
         if (method == null) {
             method = methodMap.get(defaultPoint);
             controller = controllerMap.get(defaultPoint.path);
-            logger.debug(controller.toString());
             return (HttpResponse) method.invoke(controller, request);
         }
         return (HttpResponse) method.invoke(controller, request);

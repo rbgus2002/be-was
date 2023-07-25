@@ -21,7 +21,7 @@ public class WebServer {
             port = Integer.parseInt(args[0]);
         }
 
-        ControllerContainer.getInstance().initialize();
+        ControllerContainer.getInstance().initialize("webserver.controllers");
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 

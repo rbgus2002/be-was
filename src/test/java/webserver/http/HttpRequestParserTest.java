@@ -1,10 +1,8 @@
 package webserver.http;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.assertj.core.api.SoftAssertions;
-import webserver.http.HttpRequest;
-import webserver.http.HttpRequestParser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,8 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HttpRequestParserTest {
 
@@ -35,9 +31,16 @@ class HttpRequestParserTest {
         s.assertThat(request.version()).isEqualTo(HttpClient.Version.HTTP_1_1);
 
         Map<String, List<String>> actualHeaders = new HashMap<>();
-        actualHeaders.put("Accept", new ArrayList<String>(){{add("application/json");}});
-        actualHeaders.put("Accept-Encoding", new ArrayList<String>(){{add("gzip"); add("deflate");}});
-        actualHeaders.put("Content-Type", new ArrayList<String>(){{add("application/json");}});
+        actualHeaders.put("Accept", new ArrayList<String>() {{
+            add("application/json");
+        }});
+        actualHeaders.put("Accept-Encoding", new ArrayList<String>() {{
+            add("gzip");
+            add("deflate");
+        }});
+        actualHeaders.put("Content-Type", new ArrayList<String>() {{
+            add("application/json");
+        }});
 //        assertEquals(request.headers().keySet(), actualHeaders.keySet());
     }
 }

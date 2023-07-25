@@ -19,6 +19,7 @@ import static webserver.http.enums.HttpResponseStatus.*;
 class UserCreateControllerTest {
 
     SoftAssertions softly = new SoftAssertions();
+    UserCreateController userCreateController = new UserCreateController();
 
     @Test
     @DisplayName("handleUserCreateRequest의 기능 확인 테스트")
@@ -26,11 +27,15 @@ class UserCreateControllerTest {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .setHeader("Host: localhost:8080")
-                .uri("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .uri("/user/create")
+                .setBody("userId=javajigi")
+                .setBody("password=password")
+                .setBody("name=%EB%B0%95%EC%9E%AC%EC%84%B1")
+                .setBody("email=javajigi%40slipp.net")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
+        HttpResponse response = userCreateController.handlePost(testRequest);
 
         User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
 
@@ -54,13 +59,15 @@ class UserCreateControllerTest {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .setHeader("Host: localhost:8080")
-                .uri("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .uri("/user/create")
+                .setBody("userId=javajigi")
+                .setBody("password=password")
+                .setBody("name=%EB%B0%95%EC%9E%AC%EC%84%B1")
+                .setBody("email=javajigi%40slipp.net")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
-
-        User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
+        HttpResponse response = userCreateController.handleGet(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(FOUND)
@@ -77,19 +84,23 @@ class UserCreateControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/user/create", "/user/create?"
-            , "/user/create?password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net"
-            , "/user/create?userId=&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net"
-            , "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email="})
+    @ValueSource(strings = {
+            "password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net"
+            , "userId=&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net"
+            , "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email="})
     @DisplayName("handleUserCreateRequest의 기능 확인 테스트2")
     void handleUserCreateRequest2(String wrongUri) throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
+        String[] wrongBody = wrongUri.split("&");
+        for(String wrongParam: wrongBody) {
+            builder.setBody(wrongParam);
+        }
         HttpRequest testRequest = builder
-                .uri(wrongUri)
+                .uri("/user/create")
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
+        HttpResponse response = userCreateController.handlePost(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(BAD_REQUEST)
