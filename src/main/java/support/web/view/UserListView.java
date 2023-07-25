@@ -11,10 +11,6 @@ import java.util.List;
 @Container
 public class UserListView implements View {
 
-    public String getName() {
-        return "/user/list";
-    }
-
     public String view(HttpRequest request, HttpResponse response) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder

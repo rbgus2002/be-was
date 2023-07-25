@@ -5,8 +5,6 @@ import webserver.response.HttpResponse;
 
 public interface View {
 
-    String getName();
-
     String view(HttpRequest request, HttpResponse response);
 
 }

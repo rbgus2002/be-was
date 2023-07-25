@@ -30,6 +30,10 @@ public class HttpHandler {
             return;
         }
 
+        callViewResolver(request, response, path);
+    }
+
+    private static void callViewResolver(HttpRequest request, HttpResponse response, String path) {
         try {
             ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
             View view = viewFactory.getViewByName(path);
@@ -59,8 +63,7 @@ public class HttpHandler {
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
         try {
             String viewName = ControllerResolver.invoke(path, request, response);
-            response.setStatus(HttpStatus.FOUND);
-            response.appendHeader("Location", viewName);
+            callViewResolver(request, response, viewName);
             return true;
         } catch (NotSupportedException e) {
             return false;
