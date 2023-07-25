@@ -85,14 +85,12 @@ public class RequestHandler implements Runnable {
 		IOException,
 		IllegalArgumentException {
 		httpResponse.addFile(getValidPath(path));
-		logger.debug("{} added", path);
 		return httpResponse;
 	}
 
 	private Path getValidPath(final String path) throws IllegalArgumentException {
 		Path templatePath = new File(TEMPLATES_PATH + path).toPath();
 		Path staticPath = new File(STATIC_PATH + path).toPath();
-		logger.debug("{} path created", path);
 
 		if (Files.exists(templatePath)) {
 			return templatePath;
