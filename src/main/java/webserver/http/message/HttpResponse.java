@@ -33,6 +33,13 @@ public class HttpResponse {
         return new HttpResponse(HttpVersion.V1_1, HttpStatus.OK, httpHeaders, file);
     }
 
+    public static HttpResponse badRequestWithFile(byte[] file, Mime mime) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.addHeader(HttpHeaders.CONTENT_TYPE, mime.getContentType());
+        httpHeaders.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length));
+        return new HttpResponse(HttpVersion.V1_1, HttpStatus.OK, httpHeaders, file);
+    }
+
     public static HttpResponse notFound() {
         byte[] notFoundHtml = NOT_FOUND_BODY_HTML.getBytes(StandardCharsets.UTF_8);
 
