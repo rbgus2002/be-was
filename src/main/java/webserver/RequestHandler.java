@@ -10,8 +10,6 @@ import http.HttpResponse;
 import http.MIME;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Parser;
-
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -35,6 +33,7 @@ public class RequestHandler implements Runnable {
             HttpResponse httpResponse;
 
             Method method = HandlerMapping.getHandler(httpRequest);
+
             if (method != null) {
                 httpResponse = (HttpResponse) method.invoke(new UserController(), httpRequest);
             } else {

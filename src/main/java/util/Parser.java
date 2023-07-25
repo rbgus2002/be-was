@@ -19,6 +19,10 @@ public class Parser {
     }
 
     public static String parsePathFromUrl(String url) {
+        if(url.equals("/")) {
+            return "/index.html";
+        }
+
         int queryIndex = url.indexOf("?");
         if(queryIndex == -1) {
             return url;
@@ -46,6 +50,21 @@ public class Parser {
         return params;
     }
 
+    public static Map<String, String> parseParamsFromBody(String body) {
+        Map<String, String> params = new HashMap<>();
+
+        StringTokenizer tokenizer = new StringTokenizer(body, "&");
+        while (tokenizer.hasMoreTokens()) {
+            String query = tokenizer.nextToken();
+            int equalIndex = query.indexOf("=");
+
+            String key = query.substring(0,equalIndex);
+            String value = query.substring(equalIndex + 1);
+            params.put(key, value);
+        }
+        return params;
+    }
+
     public static Map<String, String> parseHeaders(BufferedReader br) throws IOException {
         Map<String, String> headers = new HashMap<>();
         String[] tokens;
@@ -60,6 +79,15 @@ public class Parser {
         }
 
         return headers;
+    }
+
+    public static String parseBody(BufferedReader br, int bodyLength) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[bodyLength];
+        br.read(buffer, 0, bodyLength);
+        sb.append(buffer);
+
+        return sb.toString();
     }
 
     public static String getExtension(String path){
