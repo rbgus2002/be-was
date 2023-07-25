@@ -47,7 +47,8 @@ public class WasHandler {
 		final List<Method> methods = getResourcePathMethod();
 
 		if (methods.isEmpty()) {
-			httpWasResponse.response404();
+			httpWasResponse.setHttpStatus(HttpStatus.NOT_FOUND);
+			httpWasResponse.setBody(HttpStatus.NOT_FOUND.getName(), HttpMimeType.PLAIN);
 			return;
 		}
 
@@ -58,7 +59,8 @@ public class WasHandler {
 			return;
 		}
 
-		httpWasResponse.response405();
+		httpWasResponse.setHttpStatus(HttpStatus.METHOD_NOT_ALLOWED);
+		httpWasResponse.setBody(HttpStatus.METHOD_NOT_ALLOWED.getName(), HttpMimeType.PLAIN);
 	}
 
 	private void runApiMethod(final Method method) throws InvocationTargetException, IllegalAccessException {

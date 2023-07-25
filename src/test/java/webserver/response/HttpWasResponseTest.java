@@ -6,6 +6,10 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import webserver.utils.HttpHeader;
+import webserver.utils.HttpMimeType;
+import webserver.utils.HttpStatus;
+
 class HttpWasResponseTest {
 
 	@Test
@@ -15,12 +19,13 @@ class HttpWasResponseTest {
 		String requestLine = "HTTP/1.1 404 NOT FOUND\r\n";
 		String contentType = "Content-Type: text/plain;charset=utf-8\r\n";
 		String contentLength = "Content-Length: 13\r\n";
-		String body = "404 Not Found";
+		String body = "Not Found";
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
 
 		// when
-		httpWasResponse.response404();
+		httpWasResponse.setHttpStatus(HttpStatus.NOT_FOUND);
+		httpWasResponse.setBody(HttpStatus.NOT_FOUND.getName(), HttpMimeType.PLAIN);
 		httpWasResponse.doResponse();
 
 		// then
@@ -42,7 +47,8 @@ class HttpWasResponseTest {
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
 
 		// when
-		httpWasResponse.response302Header(locationPath);
+		httpWasResponse.setHttpStatus(HttpStatus.FOUND);
+		httpWasResponse.addHeader(HttpHeader.LOCATION, locationPath);
 		httpWasResponse.doResponse();
 
 		// then
@@ -58,12 +64,13 @@ class HttpWasResponseTest {
 		String requestLine = "HTTP/1.1 405 Method Not Allowed\r\n";
 		String contentType = "Content-Type: text/plain;charset=utf-8\r\n";
 		String contentLength = "Content-Length: 22\r\n";
-		String body = "405 Method Not Allowed\r\n";
+		String body = "Method Not Allowed\r\n";
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
 
 		// when
-		httpWasResponse.response405();
+		httpWasResponse.setHttpStatus(HttpStatus.METHOD_NOT_ALLOWED);
+		httpWasResponse.setBody(HttpStatus.METHOD_NOT_ALLOWED.getName(), HttpMimeType.PLAIN);
 		httpWasResponse.doResponse();
 
 		// then
