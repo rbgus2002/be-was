@@ -14,7 +14,7 @@ import static db.SessionDatabase.findAllSessionIds;
 import static exception.ExceptionList.NOT_EXIST_SESSION_ID;
 import static exception.ExceptionList.NO_SESSION_ID;
 import static http.FilePath.LIST;
-import static utils.FileIOUtils.TEMPLATES_RESOURCES;
+import static utils.FileIOUtils.TEMPLATES_DIRECTORY;
 
 public class ListPage {
     public String getListPage(HttpRequest httpRequest) {
@@ -38,7 +38,7 @@ public class ListPage {
         userList.append("</tbody>\n");
 
         StringBuilder listBuilder = new StringBuilder();
-        File indexFile = new File(TEMPLATES_RESOURCES + LIST);
+        File indexFile = new File(TEMPLATES_DIRECTORY + LIST);
         String line;
         boolean tbodyFlag = true;
         try {

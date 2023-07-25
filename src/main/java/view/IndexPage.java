@@ -6,14 +6,14 @@ import java.io.*;
 
 import static db.SessionDatabase.findAllSessionIds;
 import static http.FilePath.INDEX;
-import static utils.FileIOUtils.TEMPLATES_RESOURCES;
+import static utils.FileIOUtils.TEMPLATES_DIRECTORY;
 
 public class IndexPage {
     public String getIndexPage(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
 
         StringBuilder indexBuilder = new StringBuilder();
-        File indexFile = new File(TEMPLATES_RESOURCES + INDEX);
+        File indexFile = new File(TEMPLATES_DIRECTORY + INDEX);
         String line;
         try {
             BufferedReader index = new BufferedReader(new FileReader(indexFile));

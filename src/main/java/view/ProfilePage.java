@@ -15,7 +15,7 @@ import static db.SessionDatabase.findUserIdBySessionId;
 import static exception.ExceptionList.NOT_EXIST_SESSION_ID;
 import static exception.ExceptionList.NO_SESSION_ID;
 import static http.FilePath.PROFILE;
-import static utils.FileIOUtils.TEMPLATES_RESOURCES;
+import static utils.FileIOUtils.TEMPLATES_DIRECTORY;
 
 public class ProfilePage {
     public String getProfilePage(HttpRequest httpRequest) {
@@ -28,7 +28,7 @@ public class ProfilePage {
         User user = findUserById(userId);
 
         StringBuilder profileBuilder = new StringBuilder();
-        File indexFile = new File(TEMPLATES_RESOURCES + PROFILE);
+        File indexFile = new File(TEMPLATES_DIRECTORY + PROFILE);
         String line;
         try {
             BufferedReader index = new BufferedReader(new FileReader(indexFile));

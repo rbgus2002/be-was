@@ -18,13 +18,8 @@ import static http.Extension.HTML;
 import static http.FilePath.ERROR;
 
 public class FileIOUtils {
-    public static final String STATIC_RESOURCES = "src/main/resources/static";
-    public static final String TEMPLATES_RESOURCES = "src/main/resources/templates";
-    private static final Page page = new Page();
-
-    public static HttpResponse.ResponseBuilder loadStaticFromPath(HttpStatus httpStatus, String uri) {
-        return loadFromPath(STATIC_RESOURCES, httpStatus, uri);
-    }
+    public static final String STATIC_DIRECTORY = "src/main/resources/static";
+    public static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
 
     public static HttpResponse.ResponseBuilder loadTemplatesFromPath(HttpStatus httpStatus, String uri) {
         return loadFromPath(TEMPLATES_RESOURCES, httpStatus, uri);
