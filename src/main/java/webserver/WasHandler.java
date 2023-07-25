@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import controller.Controller;
 import controller.FrontController;
 import controller.annotation.RequestMapping;
 import webserver.request.HttpWasRequest;
@@ -89,7 +88,7 @@ public class WasHandler {
 	}
 
 	private List<Method> getResourcePathMethod(String resourcePath) {
-		final Method[] declaredMethods = Controller.class.getDeclaredMethods();
+		final Method[] declaredMethods = frontController.getDeclaredMethods();
 		return Arrays.stream(declaredMethods)
 			.filter(method -> method.isAnnotationPresent(RequestMapping.class))
 			.filter(method -> {
