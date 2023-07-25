@@ -1,6 +1,6 @@
 package webserver.request;
 
-import utils.StringUtils;
+import support.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ public class RequestHeader {
         this.headers = headers;
     }
 
-    public static RequestHeader of(String string) {
+    public static RequestHeader of(final String string) {
         String[] tokens = string.split(StringUtils.NEWLINE);
 
         HashMap<String, String> headers = new HashMap<>();

@@ -7,18 +7,21 @@ import model.User;
 import java.util.Collection;
 import java.util.Map;
 
-public class Database {
-    private static Map<String, User> users = Maps.newHashMap();
+public enum Database {
 
-    public static void addUser(User user) {
+    INSTANCE;
+
+    private final Map<String, User> users = Maps.newConcurrentMap();
+
+    public void addUser(final User user) {
         users.put(user.getUserId(), user);
     }
 
-    public static User findUserById(String userId) {
+    public User findUserById(final String userId) {
         return users.get(userId);
     }
 
-    public static Collection<User> findAll() {
+    public Collection<User> findAll() {
         return users.values();
     }
 }
