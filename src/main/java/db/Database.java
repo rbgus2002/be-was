@@ -1,5 +1,6 @@
 package db;
 
+import model.Post;
 import model.Session;
 import model.User;
 
@@ -13,10 +14,12 @@ public abstract class Database {
 
     private static final Map<String, User> users = new ConcurrentHashMap<>();
     private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
+    private static final Map<Long, Post> posts = new ConcurrentHashMap<>();
 
     public static void clear() {
         users.clear();
         sessions.clear();
+        posts.clear();
     }
 
     public static void addUser(User user) {
@@ -41,6 +44,14 @@ public abstract class Database {
 
     public static List<Session> findAllSession() {
         return new ArrayList<>(sessions.values());
+    }
+
+    public static void addPost(Long id, Post post) {
+        posts.put(id, post);
+    }
+
+    public static List<Post> findAllPost() {
+        return new ArrayList<>(posts.values());
     }
 
 }
