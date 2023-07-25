@@ -18,8 +18,8 @@ public class HandlerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(HandlerAdapter.class);
 
-    private final String STATIC_PATH = "./src/main/resources/static";
-    private final String DYNAMIC_PATH = "./src/main/resources/templates";
+    private final String STATIC_PATH = "src/main/resources/static";
+    private final String DYNAMIC_PATH = "src/main/resources/templates";
 
     /**
      * Dynamic View 요청에 대한 처리
@@ -52,8 +52,15 @@ public class HandlerAdapter {
 
         String path = request.getRequestURI();
 
+        mv.setStatus(HttpStatus.OK);
+
         if(!(result == null)) {
             path = (String) result;
+        }
+
+        if(path.startsWith("redirect:")) {
+            mv.setStatus(HttpStatus.FOUND);
+            path = path.substring("redirect:".length());
         }
 
         if(path.equals("/")) {
@@ -68,7 +75,6 @@ public class HandlerAdapter {
 
         mv.setViewName(path);
         mv.setContentType(ContentType.TEXT_HTML);
-        mv.setStatus(HttpStatus.OK);
 
         return mv;
     }
@@ -117,6 +123,14 @@ public class HandlerAdapter {
 
         if(requestURI.endsWith(".png")) {
             mv.setContentType(ContentType.IMAGE_PNG);
+        }
+
+        if(requestURI.endsWith(".ttf")) {
+            mv.setContentType(ContentType.FONT_TTF);
+        }
+
+        if(requestURI.endsWith(".woff")) {
+            mv.setContentType(ContentType.FONT_WOFF);
         }
 
         return mv;

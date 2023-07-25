@@ -6,6 +6,7 @@ import dto.UserDTO;
 import model.HttpMethod;
 import model.HttpRequest;
 import model.HttpResponse;
+import model.HttpStatus;
 import service.UserService;
 
 @Controller
@@ -25,6 +26,7 @@ public class UserController {
 
         userService.createUser(userDTO);
 
-        return "/";
+        response.setStatus(HttpStatus.CREATED);
+        return "redirect:/";
     }
 }

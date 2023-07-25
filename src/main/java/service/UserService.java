@@ -10,8 +10,7 @@ public class UserService {
 
     public void createUser(UserDTO userDTO) {
         User user = userMapper(userDTO);
-
-
+        Database.addUser(user);
     }
 
     private User userMapper(UserDTO userDTO) {
