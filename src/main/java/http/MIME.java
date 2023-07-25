@@ -2,6 +2,7 @@ package http;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MIME {
     private static final Map<String, String> MIME = new HashMap<>();
@@ -26,6 +27,10 @@ public class MIME {
 
     public static Map<String, String> getMIME() {
         return MIME;
+    }
+
+    public static Set<Map.Entry<String, String>> getExtension() {
+        return MIME.entrySet();
     }
 
 }

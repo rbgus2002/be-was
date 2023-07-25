@@ -15,6 +15,7 @@ import view.ProfilePage;
 import static http.Extension.HTML;
 import static http.FilePath.*;
 import static http.HttpMethod.POST;
+import static http.MIME.getExtension;
 import static utils.FileIOUtils.*;
 
 public abstract class Controller {
@@ -34,7 +35,7 @@ public abstract class Controller {
             }
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
-            if (MIME.getMIME().entrySet().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
+            if (getExtension().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
                 return loadTemplatesFromPath(HttpStatus.NOT_FOUND, WRONG_ACCESS);
             }
             if (extension.equals(HTML)) {
