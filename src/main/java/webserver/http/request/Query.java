@@ -1,7 +1,5 @@
 package webserver.http.request;
 
-import model.User;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,20 +36,5 @@ public class Query {
             query.forEach((key, value) -> stringBuilder.append(key + EQUAL + value + AMPERSAND));
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
-    }
-
-    public User createUser() {
-        String userId = query.get("userId");
-        String password = query.get("password");
-        String name = query.get("name");
-        String email = query.get("email");
-        if (hasMissingValue(userId, password, name, email)) {
-            throw new IllegalArgumentException("모든 필드값이 존재해야 합니다!");
-        }
-        return new User(userId, password, name, email);
-    }
-
-    private boolean hasMissingValue(String userId, String password, String name, String email) {
-        return userId == null || password == null || name == null || email == null;
     }
 }
