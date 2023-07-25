@@ -1,5 +1,6 @@
 package http;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,6 +9,9 @@ public class HttpSessionManager {
 
     private HttpSessionManager() {}
 
+    public static Collection<HttpSession> getAllSessions() {
+        return sessionMap.values();
+    }
 
     public static HttpSession getSession(String sid) {
         return sessionMap.get(sid);
