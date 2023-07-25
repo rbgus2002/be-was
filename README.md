@@ -23,6 +23,14 @@ Java Web Application Server 2023
 - [X] 주어진 파라미터를 User 클래스에 담는다.
 - [X] User 도메인에 담긴 객체를 DB에 넣는 기능을 구현한다.
 
+### step - 3
+
+- [X] 컨텐츠 확장자에 따라 파싱한다.
+- [X] MIME 클래스로 관리한다.
+- [X] 예외처리 및 리팩토링한다.
+    - [X] 유저의 생성 로직의 예외를 구현.
+    -
+
 ## 학습 내용
 
 - 코드 분석 및 동작
@@ -30,4 +38,5 @@ Java Web Application Server 2023
 - HTTP
   메시지 - https://github.com/ddingmin/be-was/wiki/HTTP-Request,-Response-%EB%A9%94%EC%8B%9C%EC%A7%80-%EA%B5%AC%EC%A1%B0
 - 자바의 스레드 - https://github.com/ddingmin/be-was/wiki/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%8A%A4%EB%A0%88%EB%93%9C
-- 자바의 concurrent 패키지 - 
+- 자바의 concurrent 패키지 -
+- 불변 객체 - https://github.com/ddingmin/be-was/wiki/%EB%B6%88%EB%B3%80-%EA%B0%9D%EC%B2%B4-(Immutable-Object)
