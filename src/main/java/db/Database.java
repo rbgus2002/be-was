@@ -20,7 +20,7 @@ public class Database {
     public static Collection<User> findAll() {
         return users.values();
     }
-    
+
     public static boolean validateUser(String userId, String password) {
         User user = users.get(userId);
         return user.getPassword().equals(password);
