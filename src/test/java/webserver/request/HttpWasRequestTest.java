@@ -79,7 +79,7 @@ class HttpWasRequestTest {
 		// given
 		String request = "POST /user/login HTTP/1.1 \r\n"
 			+ "Host: localhost:8080\r\n"
-			+ "Set-Cookie: SID=12345";
+			+ "Cookie: SID=12345";
 		final ByteArrayInputStream inputStream = new ByteArrayInputStream(request.getBytes());
 
 		// when

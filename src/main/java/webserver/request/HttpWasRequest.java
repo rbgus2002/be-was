@@ -15,7 +15,6 @@ import java.util.Objects;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
-import webserver.session.Cookie;
 import webserver.utils.HttpHeader;
 
 public class HttpWasRequest {
@@ -126,7 +125,7 @@ public class HttpWasRequest {
 	}
 
 	public String getSessionId() {
-		final String value = map.get(Cookie.COOKIE_NAME);
+		final String value = map.get("Cookie");
 		if (value == null || value.isBlank())
 			return "";
 
