@@ -2,6 +2,7 @@ package container;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import view.ViewResolver;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
@@ -30,6 +31,5 @@ public class DispatcherServlet {
         ViewResolver view = new ViewResolver(viewPath, response, request);
         view.service();
         view.render();
-
     }
 }

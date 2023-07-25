@@ -1,4 +1,4 @@
-package container;
+package view;
 
 import db.SessionManager;
 import model.User;
@@ -38,30 +38,25 @@ public class ViewResolver {
         }
 
         File file;
-        byte[] body = null;
+        byte[] body;
         if ((file = new File(STATIC_PATH.getPath() + viewPath)).exists()) {
             body = Files.readAllBytes(file.toPath());
         } else if ((file = new File(TEMPLATE_PATH.getPath() + viewPath)).exists()) {
             User findUser = SessionManager.getSession(request);
-            logger.debug("findUser = {}", findUser);
             if (viewPath.equals("/index.html") && findUser != null) {
                 body = MainView.changeForDynamic(findUser).getBytes();
-            } else if(viewPath.startsWith("/user/list.html")){
-                logger.debug("들어옴");
+            } else if (viewPath.equals("/user/list.html")) {
                 if (findUser != null) {
                     body = ListView.changeToDynamic().getBytes();
-                }else{
+                } else {
                     response.setHeader("Location", HOME_PATH.getPath());
                     response.setStatusMessage("Found");
                     response.setStatusCode("302");
                     return;
                 }
-            }
-            else {
+            } else {
                 body = Files.readAllBytes(file.toPath());
             }
-            //body = httpBody.getBytes();
-
         } else {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }
@@ -73,7 +68,6 @@ public class ViewResolver {
     public void render() throws IOException {
         DataOutputStream writer = response.getWriter();
         writer.writeBytes(response.info());
-        logger.debug("response = {}", response.info());
         writer.write(response.getBody(), 0, response.getBody().length);
         writer.flush();
     }

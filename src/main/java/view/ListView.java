@@ -1,4 +1,4 @@
-package container;
+package view;
 
 import db.Database;
 import model.User;

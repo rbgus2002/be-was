@@ -1,4 +1,4 @@
-package container;
+package view;
 
 import model.User;
 
