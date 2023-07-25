@@ -25,6 +25,7 @@ class HttpRequestTest {
                 "Connection: keep-alive\r\n" +
                 "Upgrade-Insecure-Requests: 1\r\n" +
                 "Cache-Control: max-age=0\r\n" +
+                "Cookie: sid=1234; authorization=U3213e!K\r\n" +
                 "\r\n";
 
         InputStream inputStream = new ByteArrayInputStream(requestMessage.getBytes());
@@ -32,6 +33,7 @@ class HttpRequestTest {
         try {
             //when
             HttpRequest httpRequest = new HttpRequest(inputStream);
+            Cookie cookie = httpRequest.getCookie();
 
             //then
             softAssertions.assertThat(httpRequest.get("Method")).isEqualTo("GET");
@@ -45,6 +47,8 @@ class HttpRequestTest {
             softAssertions.assertThat(httpRequest.get("Connection")).isEqualTo("keep-alive");
             softAssertions.assertThat(httpRequest.get("Upgrade-Insecure-Requests")).isEqualTo("1");
             softAssertions.assertThat(httpRequest.get("Cache-Control")).isEqualTo("max-age=0");
+            softAssertions.assertThat("1234").isEqualTo(cookie.get("sid"));
+            softAssertions.assertThat("U3213e!K").isEqualTo(cookie.get("authorization"));
             softAssertions.assertAll();
         } catch (IOException e) {
             e.printStackTrace();

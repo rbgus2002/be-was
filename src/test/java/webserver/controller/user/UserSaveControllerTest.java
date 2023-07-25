@@ -1,4 +1,4 @@
-package webserver.controller;
+package webserver.controller.user;
 
 import db.Database;
 import model.User;
@@ -11,8 +11,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import static webserver.utils.HttpRequestCreateUtil.createHttpRequest;
 
 @DisplayName("회원가입 컨트롤러")
 class UserSaveControllerTest {
@@ -124,10 +123,5 @@ class UserSaveControllerTest {
 
         //then
         Assertions.assertEquals(HttpStatus.CONFLICT, httpResponse.getStatus());
-    }
-
-    private HttpRequest createHttpRequest(String requestMessage) throws IOException {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(requestMessage.getBytes());
-        return new HttpRequest(byteArrayInputStream);
     }
 }

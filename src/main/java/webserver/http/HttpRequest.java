@@ -15,6 +15,7 @@ public class HttpRequest {
 
     private final HttpHeaders httpHeaders;
     private HttpParameters httpParameters;
+    private Cookie cookie;
     private String body = "";
 
 
@@ -23,6 +24,7 @@ public class HttpRequest {
 
         httpHeaders = new HttpHeaders();
         httpParameters = new HttpParameters();
+        cookie = new Cookie();
 
         parseRequestMessage();
     }
@@ -35,6 +37,7 @@ public class HttpRequest {
     private void parseHeader() throws IOException {
         parseRequestLine();
         parseHeaderFields();
+        parseCookie();
     }
 
     private void parseRequestLine() throws IOException {
@@ -67,6 +70,16 @@ public class HttpRequest {
         }
     }
 
+    private void parseCookie() {
+        if (httpHeaders.get("Cookie") == null) {
+            return;
+        }
+
+        for (String directive : httpHeaders.get("Cookie").split(";")) {
+            cookie.add(directive.trim());
+        }
+    }
+
     private void parseBody() throws IOException {
         String contentLength = httpHeaders.get(HttpField.CONTENT_LENGTH);
         int bodyLength;
@@ -85,6 +98,10 @@ public class HttpRequest {
 
     public HttpParameters getParameters() {
         return httpParameters;
+    }
+
+    public Cookie getCookie() {
+        return cookie;
     }
 
     public String getBody() {

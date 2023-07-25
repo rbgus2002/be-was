@@ -1,5 +1,6 @@
-package webserver.controller;
+package webserver.controller.file;
 
+import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
@@ -9,7 +10,8 @@ import webserver.utils.HttpField;
 
 import java.io.IOException;
 
-public class FileController {
+public class FileController implements Controller {
+    @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String filePath = httpRequest.get(HttpField.PATH);
 
@@ -25,7 +27,7 @@ public class FileController {
         httpResponse.setBody(body);
     }
 
-    private static HttpStatus resolveHttpStatus(String path) {
+    private HttpStatus resolveHttpStatus(String path) {
         if (path.equals("/404.html")) {
             return HttpStatus.NOT_FOUND;
         }
