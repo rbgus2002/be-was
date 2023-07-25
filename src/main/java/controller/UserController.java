@@ -72,4 +72,5 @@ public class UserController {
 
         throw new FoundException("/user/login.html");
     }
+
 }
