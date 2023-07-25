@@ -7,6 +7,7 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
 import http.MIME;
+import view.IndexPage;
 import view.Page;
 import view.ProfilePage;
 
@@ -18,6 +19,7 @@ import static utils.FileIOUtils.*;
 public abstract class Controller {
     private final Page page = new Page();
     private final ProfilePage profilePage = new ProfilePage();
+    private final IndexPage indexPage = new IndexPage();
 
     public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) {
         try {
@@ -34,6 +36,9 @@ public abstract class Controller {
                 return loadTemplatesFromPath(HttpStatus.NOT_FOUND, WRONG_ACCESS);
             }
             if (extension.equals(HTML)) {
+                if (uri.endsWith(INDEX))
+                    return loadFileFromString(HttpStatus.OK, indexPage.getIndexPage(httpRequest), INDEX)
+                            .setContentType(MIME.getMIME().get(HTML));
                 if (uri.endsWith(PROFILE))
                     return loadFileFromString(HttpStatus.OK, profilePage.getProfilePage(httpRequest), PROFILE)
                             .setContentType(MIME.getMIME().get(HTML));
