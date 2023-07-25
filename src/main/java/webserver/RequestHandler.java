@@ -1,9 +1,8 @@
 package webserver;
 
-import controller.FileController;
-import controller.ServiceController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import router.Router;
 import webserver.model.Request;
 import webserver.model.Request.Method;
 import webserver.model.Response;
@@ -91,12 +90,7 @@ public class RequestHandler implements Runnable {
     private Response generateResponse(Request request) throws Exception {
         Response response;
 
-        response = FileController.genereateResponse(request);
-        if(response != null) {
-            return response;
-        }
-
-        response = ServiceController.generateResponse(request);
+        response = Router.generateResponse(request);
         if(response != null) {
             return response;
         }

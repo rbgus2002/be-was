@@ -62,6 +62,8 @@ public class HttpUtil {
         }
     }
 
+    public static final String STATIC_FILEPATH = "./src/main/resources/static";
+    public static final String TEMPLATE_FILEPATH = "./src/main/resources/templates";
     public static final String HEADER_HTTP = "HTTP/";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_CHARSET = ";charset=utf-8";

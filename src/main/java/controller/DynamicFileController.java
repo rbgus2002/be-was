@@ -3,7 +3,7 @@ package controller;
 import http.HttpUtil;
 import model.Post;
 import model.User;
-import service.FileService;
+import router.RequestMapping;
 import service.PostService;
 import service.UserService;
 import webserver.model.Request;
@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,9 +23,7 @@ import static webserver.model.Request.Method;
 import static service.FileService.readStaticFile;
 import static service.SessionService.getUserIdBySid;
 
-public class FileController {
-    private static final String STATIC_FILEPATH = "./src/main/resources/static";
-    private static final String TEMPLATE_FILEPATH = "./src/main/resources/templates";
+public class DynamicFileController {
     private static final String NAVBAR_RIGHT = "<li>.*?/user/list\\.html.*?</li>";
     private static final String USERNAME_FORMAT = "<li>%s</li>";
     private static final String BUTTON_LOGOUT = "<li>.*?로그아웃.*?</li>";
@@ -55,24 +52,92 @@ public class FileController {
             "                  </div>\n" +
             "              </li>";
 
-    public static Response genereateResponse(Request request) throws IOException {
+    @RequestMapping(value=USER_LIST_URL, method=Method.GET)
+    public Response showUserList(Request request) {
+        String httpDocument = generateHttpDocument(request);
+        MIME mime = parseMime(request.getTargetUri());
+        String sid = request.getSid();
+
+        if(sid == null) {
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+            return new Response(STATUS.SEE_OTHER, headerMap, null);
+        }
+        else {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            for (User user : UserService.getAllUser()) {
+                i++;
+                String tr = String.format(USER_LIST_ROW_FORM, i, user.getUserId(), user.getName(), user.getEmail());
+                sb.append(tr);
+            }
+            httpDocument = appendElement(httpDocument, USER_LIST_TBODY, sb.toString());
+        }
+
+        byte[] body = httpDocument.getBytes();
+
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
+        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
+
+        return new Response(STATUS.OK, headerMap, body);
+    }
+
+    @RequestMapping(value="/qna/form.html", method=Method.GET)
+    public Response qnaForm(Request request) {
+        String httpDocument = generateHttpDocument(request);
+        MIME mime = parseMime(request.getTargetUri());
+        String sid = request.getSid();
+
+        if(sid == null) {
+            Map<String, String> headerMap = new HashMap<>();
+            headerMap.put(HEADER_REDIRECT_LOCATION, USER_LOGIN_URL);
+            return new Response(STATUS.SEE_OTHER, headerMap, null);
+        }
+
+        byte[] body = httpDocument.getBytes();
+
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
+        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
+
+        return new Response(STATUS.OK, headerMap, body);
+    }
+
+    @RequestMapping(value="/qna/form.html", method=Method.POST)
+    public Response createQna(Request request) {
+        Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
+        PostService.addPost(bodyParameterMap);
+
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+        return new Response(STATUS.SEE_OTHER, headerMap, null);
+    }
+
+    @RequestMapping(value="/index.html", method=Method.GET)
+    public Response listQna(Request request) {
+        String httpDocument = generateHttpDocument(request);
+        MIME mime = parseMime(request.getTargetUri());
+
+        Collection<Post> postList = PostService.getAllPost();
+        StringBuilder sb = new StringBuilder();
+        for(Post post: postList) {
+            sb.append(String.format(POST_LIST_LI, post.getTitle(), post.getUserId(), post.getPostId()));
+        }
+        httpDocument = appendElement(httpDocument, POST_LIST_UL, sb.toString());
+
+        byte[] body = httpDocument.getBytes();
+
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
+        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
+
+        return new Response(STATUS.OK, headerMap, body);
+    }
+
+    private static String generateHttpDocument(Request request) {
         String targetUri = request.getTargetUri();
-
-        // Static Files
-        String[] tokens = targetUri.split("\\.");
-        String extension = tokens[tokens.length-1];
-        HttpUtil.MIME mime = HttpUtil.MIME.getMimeByExtension(extension);
-        if(mime == null) {
-            return null;
-        }
-        String targetPath;
-        byte[] body = null;
-
-        targetPath = STATIC_FILEPATH + targetUri;
-        if(new File(targetPath).exists()) {
-            body = readStaticFile(targetPath);
-        }
-        targetPath = TEMPLATE_FILEPATH + targetUri;
+        String targetPath = TEMPLATE_FILEPATH + targetUri;
         if(new File(targetPath).exists()) {
             String sid = request.getSid();
             String httpDocument = new String(readStaticFile(TEMPLATE_FILEPATH + targetUri));
@@ -88,62 +153,10 @@ public class FileController {
                 httpDocument = removeElement(httpDocument, BUTTON_SIGNUP);
             }
 
-            // 유저 목록(/user/list.html)
-            if(targetUri.equals(USER_LIST_URL)) {
-                if(sid == null) {
-                    Map<String, String> headerMap = new HashMap<>();
-                    headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-                    return new Response(STATUS.SEE_OTHER, headerMap, null);
-                }
-                else {
-                    StringBuilder sb = new StringBuilder();
-                    int i = 0;
-                    for(User user: UserService.getAllUser()) {
-                        i++;
-                        String tr = String.format(USER_LIST_ROW_FORM, i, user.getUserId(), user.getName(), user.getEmail());
-                        sb.append(tr);
-                    }
-                    httpDocument = appendElement(httpDocument, USER_LIST_TBODY, sb.toString());
-                }
-            }
-
-            // 글 쓰기(/qna/form.html) 미로그인시
-            if(targetUri.equals(QNA_FORM_URL) && request.getMethod() == Method.GET) {
-                if(sid == null) {
-                    Map<String, String> headerMap = new HashMap<>();
-                    headerMap.put(HEADER_REDIRECT_LOCATION, USER_LOGIN_URL);
-                    return new Response(STATUS.SEE_OTHER, headerMap, null);
-                }
-            }
-
-            // 글 쓰기(/qna/form.html) 글 작성 완료 후 전송시
-            if(targetUri.equals(QNA_FORM_URL) && request.getMethod() == Method.POST) {
-                Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
-                PostService.addPost(bodyParameterMap);
-
-                Map<String, String> headerMap = new HashMap<>();
-                headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-                return new Response(STATUS.SEE_OTHER, headerMap, null);
-            }
-
-            // 글 목록(index.html)
-            if(targetUri.equals(INDEX_URL) && request.getMethod() == Method.GET) {
-                Collection<Post> postList = PostService.getAllPost();
-                StringBuilder sb = new StringBuilder();
-                for(Post post: postList) {
-                    sb.append(String.format(POST_LIST_LI, post.getTitle(), post.getUserId(), post.getPostId()));
-                }
-                httpDocument = appendElement(httpDocument, POST_LIST_UL, sb.toString());
-            }
-
-            body = httpDocument.getBytes();
+            return httpDocument;
         }
 
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-        return new Response(STATUS.OK, headerMap, body);
+        return null;
     }
 
     private static String removeElement(String source, String regex) {

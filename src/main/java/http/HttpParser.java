@@ -6,6 +6,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import http.HttpUtil.MIME;
 
 public class HttpParser {
     public static String readSingleHTTPLine(BufferedReader br) throws IOException, NullPointerException {
@@ -39,4 +40,12 @@ public class HttpParser {
     public static Map<String, String> parseBodyParameter(String body) {
         return parseParameterMap(body);
     }
+
+    public static MIME parseMime(String targetUri) {
+        String[] tokens = targetUri.split("\\.");
+        String extension = tokens[tokens.length-1];
+
+        return MIME.getMimeByExtension(extension);
+    }
+
 }
