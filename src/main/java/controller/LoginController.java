@@ -1,11 +1,13 @@
 package controller;
 
+import annotation.RequestMapping;
 import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
+@RequestMapping(path = "/user/login")
 public class LoginController implements HttpController {
 
     @Override

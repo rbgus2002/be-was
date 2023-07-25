@@ -1,10 +1,12 @@
 package controller;
 
+import annotation.RequestMapping;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
+@RequestMapping(path = "/")
 public class HomeController implements HttpController {
 
     @Override

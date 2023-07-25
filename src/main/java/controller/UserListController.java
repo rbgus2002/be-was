@@ -1,8 +1,10 @@
 package controller;
 
+import annotation.RequestMapping;
 import http.HttpRequest;
 import http.HttpResponse;
 
+@RequestMapping(path = "/user/list")
 public class UserListController implements HttpController {
 
     @Override

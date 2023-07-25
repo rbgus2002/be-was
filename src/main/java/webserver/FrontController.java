@@ -12,12 +12,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 
 public class FrontController {
     private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
-    private final Map<String, HttpController> controllerMap = new HashMap<>();
+    private final Map<String, HttpController> controllerMap;
 
     public static FrontController getInstance() {
         return LazyHolder.INSTANCE;
@@ -28,13 +27,7 @@ public class FrontController {
     }
 
     private FrontController() {
-        controllerMap.put("/", new HomeController());
-        controllerMap.put("/index.html", new HomeController());
-        controllerMap.put("/user/create", new JoinController());
-        controllerMap.put("/user/login", new LoginController());
-        controllerMap.put("/user/login.html", new LoginController());
-        controllerMap.put("/user/list", new UserListController());
-        controllerMap.put("/user/list.html", new UserListController());
+        controllerMap = ControllerScanner.scan();
     }
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
