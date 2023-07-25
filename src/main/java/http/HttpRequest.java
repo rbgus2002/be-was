@@ -1,12 +1,15 @@
 package http;
 
+import db.SessionDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import static util.Parser.*;
 import static util.StringUtil.*;
@@ -32,7 +35,7 @@ public class HttpRequest {
         this.params = parseParamsFromUrl(tokens[1]);
         this.httpVersion = tokens[2];
         this.headers = parseHeaders(br);
-        if(headers.containsKey("Content-Length")) {
+        if (headers.containsKey("Content-Length")) {
             this.body = parseBody(br, Integer.parseInt(headers.get("Content-Length")));
         }
     }
@@ -44,6 +47,7 @@ public class HttpRequest {
     public String getPath() {
         return this.path;
     }
+
     public MIME getMime() {
         return this.mime;
     }
@@ -94,11 +98,21 @@ public class HttpRequest {
                     .append(appendNewLine());
         }
 
-        if(headers.containsKey("Content-Length")) {
+        if (headers.containsKey("Content-Length")) {
             sb.append(appendNewLine());
             sb.append(body);
         }
 
         return sb.toString();
+    }
+
+    public String getCookie() {
+        return this.headers.get("Cookie");
+    }
+
+    public HttpSession getSession() {
+        Map<String, String> cookies = parseCookies(this.headers.get("Cookie"));
+        String sessionId = cookies.get("sid");
+        return SessionDatabase.getSession(sessionId);
     }
 }
