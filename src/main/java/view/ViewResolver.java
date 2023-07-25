@@ -40,8 +40,8 @@ public class ViewResolver {
                 .bindTo(views);
     }
 
-    public static byte[] resolve(HttpResponse httpResponse) throws Throwable {
-        MethodHandle methodHandle = viewMethods.get((String) httpResponse.getViewParameter("view"));
-        return (byte[]) methodHandle.invoke(httpResponse);
+    public static byte[] resolve(Map<String, Object> viewParameters) throws Throwable {
+        MethodHandle methodHandle = viewMethods.get((String) viewParameters.get("view"));
+        return (byte[]) methodHandle.invoke(viewParameters);
     }
 }

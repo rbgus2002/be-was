@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static util.StringUtils.getExtension;
@@ -86,12 +87,12 @@ public class ResponseHandler {
 
     private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws Throwable {
         HttpStatus status = httpResponse.getHttpStatus();
-        String view = (String) httpResponse.getViewParameter("view");
+        Map<String, Object> viewParameters = httpResponse.getViewParameters();
 
         byte[] body;
-        if (view != null) {
-            logger.debug("{}를 실행합니다.", view);
-            body = ViewResolver.resolve(httpResponse);
+        if (viewParameters.get("view") != null) {
+            logger.debug("{}를 실행합니다.", viewParameters);
+            body = ViewResolver.resolve(viewParameters);
         } else {
             InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
             body = fileInputStream.readAllBytes();

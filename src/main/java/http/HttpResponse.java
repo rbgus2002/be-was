@@ -67,7 +67,7 @@ public class HttpResponse {
         this.viewParameters.put(key, value);
     }
 
-    public Object getViewParameter(String key) {
-        return this.viewParameters.get(key);
+    public Map<String, Object> getViewParameters() {
+        return this.viewParameters;
     }
 }

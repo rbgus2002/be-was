@@ -1,12 +1,11 @@
 package view;
 
-import http.HttpResponse;
-
 import java.io.IOException;
+import java.util.Map;
 
 public class Views {
 
-    public byte[] index(HttpResponse httpResponse) throws IOException {
+    public byte[] index(Map<String, Object> viewParameters) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<!DOCTYPE html>\n");
         stringBuilder.append("<html lang=\"kr\">\n");
@@ -72,7 +71,7 @@ public class Views {
         stringBuilder.append("                    <ul class=\"nav navbar-nav navbar-right\">\n");
         stringBuilder.append("                        <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
 
-        makeLoginForm(httpResponse, stringBuilder);
+        makeLoginForm(viewParameters, stringBuilder);
 
         stringBuilder.append("                    </ul>\n");
         stringBuilder.append("                </div>\n");
@@ -149,8 +148,8 @@ public class Views {
         return stringBuilder.toString().getBytes();
     }
 
-    private void makeLoginForm(HttpResponse httpResponse, StringBuilder stringBuilder) {
-        String name = (String) httpResponse.getViewParameter("name");
+    private void makeLoginForm(Map<String, Object> viewParameters, StringBuilder stringBuilder) {
+        String name = (String) viewParameters.get("name");
         if (name != null) {
             stringBuilder.append("                        <li><span>").append(name).append("님</span></li>\n");
             stringBuilder.append("                        <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
