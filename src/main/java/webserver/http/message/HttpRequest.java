@@ -1,5 +1,6 @@
 package webserver.http.message;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -8,12 +9,62 @@ public class HttpRequest {
     private final URI uri;
     private final String version;
     private final Map<String, String> headers;
+    private final Map<String, String> body;
 
-    public HttpRequest(HttpMethod method, URI uri, String version, Map<String, String> headers) {
+    public static class Builder {
+
+        private HttpMethod httpMethod;
+        private URI uri;
+        private String version;
+        private Map<String, String> headers;
+        private Map<String, String> body;
+        public Builder httpMethod(HttpMethod httpMethod) {
+            this.httpMethod = httpMethod;
+            return this;
+        }
+
+        public Builder URI(URI uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        public Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder headers(Map<String, String> headers) {
+            this.headers = new HashMap<>(headers);
+            return this;
+        }
+
+        public Builder body(Map<String, String> body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpRequest build() {
+            if (body == null) {
+                body = Map.of();
+            }
+            if (headers == null) {
+                headers = Map.of();
+            }
+
+            return new HttpRequest(httpMethod, uri, version, headers, body);
+        }
+
+    }
+    public HttpRequest(HttpMethod method, URI uri, String version, Map<String, String> headers, Map<String, String> body) {
         this.httpMethod = method;
         this.uri = uri;
         this.version = version;
         this.headers = headers;
+        this.body = body;
+    }
+
+    public boolean containsBody() {
+        return !body.isEmpty();
     }
 
     public HttpMethod getHttpMethod() {
@@ -30,6 +81,10 @@ public class HttpRequest {
 
     public Map<String, String> getHeaders() {
         return headers;
+    }
+
+    public Map<String, String> getBody() {
+        return body;
     }
 
     @Override

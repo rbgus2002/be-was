@@ -41,14 +41,17 @@ public class RequestHandler implements Runnable {
             dos.write(outputStream.toByteArray());
             dos.flush();
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage() + " : " + e.getClass().getName());
         }
     }
 
-    private static void printHttpRequestHeader(HttpRequest httpRequest) {
+    private synchronized static void printHttpRequestHeader(HttpRequest httpRequest) {
+        logger.debug("============================request arrived=============================");
         logger.debug("method : " + httpRequest.getHttpMethod());
         logger.debug("version : " + httpRequest.getVersion());
         logger.debug("URI : " + httpRequest.getURI());
         logger.debug("headers : " + httpRequest.getHeaders());
+        logger.debug("body : " + httpRequest.getBody());
+        logger.debug("=======================================================================");
     }
 }
