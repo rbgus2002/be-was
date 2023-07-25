@@ -1,7 +1,7 @@
-# step-3 다양한 컨텐츠 타입 지원
+# step-4 POST로 회원가입
 
 ## 기능 구현
-- [x] POST로 로그인
+- [x] POST로 회원가입
   - [x] http://localhost:8080/user/form.html 파일의 form 태그 method를 get에서 post로 수정
   - [x] 단위 테스트
 
