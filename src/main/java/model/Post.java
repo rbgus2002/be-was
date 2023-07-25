@@ -19,4 +19,16 @@ public class Post {
     public Long getId() {
         return id;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getWriter() {
+        return writer;
+    }
+
+    public String getContents() {
+        return contents;
+    }
 }

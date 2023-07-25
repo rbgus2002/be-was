@@ -1,10 +1,14 @@
 package support.web.view;
 
+import db.Database;
+import model.Post;
 import model.Session;
 import support.annotation.Container;
 import utils.LoginUtils;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
+
+import java.util.List;
 
 @Container
 public class IndexView implements View {
@@ -78,15 +82,12 @@ public class IndexView implements View {
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession != null) {
-            stringBuilder.append("                <li><a>")
-                    .append(loginSession.getUser().getName())
-                    .append("</a></li>");
+            stringBuilder.append("                <li><a>").append(loginSession.getUser().getName()).append("</a></li>");
         }
         stringBuilder
                 .append("                <li class=\"active\"><a href=\"index\">Posts</a></li>");
         if (loginSession == null) {
-            stringBuilder
-                    .append("                <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>");
+            stringBuilder.append("                <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>");
         }
         stringBuilder
                 .append("                <li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>")
@@ -103,43 +104,34 @@ public class IndexView implements View {
                 .append("<div class=\"container\" id=\"main\">")
                 .append("   <div class=\"col-md-12 col-sm-12 col-lg-10 col-lg-offset-1\">")
                 .append("      <div class=\"panel panel-default qna-list\">")
-                .append("          <ul class=\"list\">")
-                .append("              <li>")
-                .append("                  <div class=\"wrap\">")
-                .append("                      <div class=\"main\">")
-                .append("                          <strong class=\"subject\">")
-                .append("                              <a href=\"post/show.html\">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>")
-                .append("                          </strong>")
-                .append("                          <div class=\"auth-info\">")
-                .append("                              <i class=\"icon-add-comment\"></i>")
-                .append("                              <span class=\"time\">2016-01-15 18:47</span>")
-                .append("                              <a href=\"./user/profile.html\" class=\"author\">자바지기</a>")
-                .append("                          </div>")
-                .append("                          <div class=\"reply\" title=\"댓글\">")
-                .append("                              <i class=\"icon-reply\"></i>")
-                .append("                              <span class=\"point\">8</span>")
-                .append("                          </div>")
-                .append("                      </div>")
-                .append("                  </div>")
-                .append("              </li>")
-                .append("              <li>")
-                .append("                  <div class=\"wrap\">")
-                .append("                      <div class=\"main\">")
-                .append("                          <strong class=\"subject\">")
-                .append("                              <a href=\"post/show.html\">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>")
-                .append("                          </strong>")
-                .append("                          <div class=\"auth-info\">")
-                .append("                              <i class=\"icon-add-comment\"></i>")
-                .append("                              <span class=\"time\">2016-01-05 18:47</span>")
-                .append("                              <a href=\"./user/profile.html\" class=\"author\">김문수</a>")
-                .append("                          </div>")
-                .append("                          <div class=\"reply\" title=\"댓글\">")
-                .append("                              <i class=\"icon-reply\"></i>")
-                .append("                              <span class=\"point\">12</span>")
-                .append("                          </div>")
-                .append("                      </div>")
-                .append("                  </div>")
-                .append("              </li>")
+                .append("          <ul class=\"list\">");
+
+        List<Post> posts = Database.findAllPost();
+        posts.forEach(
+                post -> {
+                    stringBuilder
+                            .append("              <li>")
+                            .append("                  <div class=\"wrap\">")
+                            .append("                      <div class=\"main\">")
+                            .append("                          <strong class=\"subject\">")
+                            .append("                              <a href=\"post/show.html\">").append(post.getTitle()).append("</a>")
+                            .append("                          </strong>")
+                            .append("                          <div class=\"auth-info\">")
+                            .append("                              <i class=\"icon-add-comment\"></i>")
+                            .append("                              <span class=\"time\">2016-01-15 18:47</span>")
+                            .append("                              <a href=\"./user/profile.html\" class=\"author\">").append(post.getWriter()).append("</a>")
+                            .append("                          </div>")
+                            .append("                          <div class=\"reply\" title=\"댓글\">")
+                            .append("                              <i class=\"icon-reply\"></i>")
+                            .append("                              <span class=\"point\">8</span>")
+                            .append("                          </div>")
+                            .append("                      </div>")
+                            .append("                  </div>")
+                            .append("              </li>");
+                }
+        );
+
+        stringBuilder
                 .append("          </ul>")
                 .append("          <div class=\"row\">")
                 .append("              <div class=\"col-md-3\"></div>")
