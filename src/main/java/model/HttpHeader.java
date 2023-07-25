@@ -1,5 +1,7 @@
 package model;
 
+import com.google.common.net.HttpHeaders;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,8 +37,8 @@ public class HttpHeader {
 
     public int getContentLength() {
         // 10진수 바이트 단위
-        if (contents.containsKey("Content-Type")) {
-            return Integer.parseInt(contents.get("Content-Length").trim());
+        if (contents.containsKey(HttpHeaders.CONTENT_TYPE)) {
+            return Integer.parseInt(contents.get(HttpHeaders.CONTENT_LENGTH).trim());
         }
         return 0;
     }
