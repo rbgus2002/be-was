@@ -8,7 +8,11 @@ public enum ContentType {
     ICO("image/x-icon"),
     PNG("image/png"),
     JPG("image/jpeg"),
-    JPEG("image/jpeg");
+    JPEG("image/jpeg"),
+    TTF("application/x-font-ttf"),
+    WOFF("application/font-woff"),
+    WOFF2("application/font-woff2");
+
 
     private final String description;
 
