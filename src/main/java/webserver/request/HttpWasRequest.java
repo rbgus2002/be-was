@@ -50,7 +50,7 @@ public class HttpWasRequest {
 		final String sessionValue = Arrays.stream(token)
 			.filter(attribute -> {
 				final String[] split = attribute.split("=");
-				return Objects.equals(split[0], "SID");
+				return Objects.equals(split[0].trim(), "SID");
 			}).findFirst()
 			.orElse("");
 
