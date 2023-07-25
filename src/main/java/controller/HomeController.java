@@ -6,7 +6,7 @@ import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
-@RequestMapping(path = "/")
+@RequestMapping(path = "/index.html")
 public class HomeController implements HttpController {
 
     @Override

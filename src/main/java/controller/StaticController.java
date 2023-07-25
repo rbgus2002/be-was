@@ -7,6 +7,16 @@ public class StaticController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
-        return request.getUrl();
+        String url = request.getUrl();
+        switch (url) {
+            case "/":
+                return "redirect:/index.html";
+            case "/user/login.html":
+                return "redirect:/user/login";
+            case "/user/list.html":
+                return "redirect:/user/list";
+            default:
+                return url;
+        }
     }
 }

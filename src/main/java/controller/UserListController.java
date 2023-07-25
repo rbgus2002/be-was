@@ -4,7 +4,7 @@ import annotation.RequestMapping;
 import http.HttpRequest;
 import http.HttpResponse;
 
-@RequestMapping(path = "/user/list")
+@RequestMapping(path = "/user/list.html")
 public class UserListController implements HttpController {
 
     @Override
