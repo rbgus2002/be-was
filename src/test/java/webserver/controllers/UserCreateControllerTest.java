@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import webserver.container.ControllerContainer;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
@@ -14,7 +13,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import static webserver.http.enums.ContentType.HTML;
-import static webserver.http.enums.HttpResponseStatus.*;
+import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
+import static webserver.http.enums.HttpResponseStatus.FOUND;
 
 class UserCreateControllerTest {
 
@@ -92,7 +92,7 @@ class UserCreateControllerTest {
     void handleUserCreateRequest2(String wrongUri) throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         String[] wrongBody = wrongUri.split("&");
-        for(String wrongParam: wrongBody) {
+        for (String wrongParam : wrongBody) {
             builder.setBody(wrongParam);
         }
         HttpRequest testRequest = builder

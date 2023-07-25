@@ -1,5 +1,7 @@
 package webserver.container;
 
+import java.util.Objects;
+
 public class EndPoint {
     String path;
     String method;
@@ -17,20 +19,16 @@ public class EndPoint {
         return method;
     }
 
-    // todo: hashCode/equals Overriding -> cmd+N
-    
     @Override
-    public int hashCode() {
-        int h = 0;
-        for (char character : path.concat(method).toCharArray()) {
-            h += character;
-        }
-        return h;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EndPoint endPoint = (EndPoint) o;
+        return Objects.equals(path, endPoint.path) && Objects.equals(method, endPoint.method);
     }
-    
 
     @Override
-    public boolean equals(Object obj) {
-        return obj.hashCode() == this.hashCode();
+    public int hashCode() {
+        return Objects.hash(path, method);
     }
 }
