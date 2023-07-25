@@ -1,8 +1,9 @@
 package webserver;
 
 import application.controller.WebController;
-import exception.InvalidPathException;
+import exception.path.InvalidPathException;
 import exception.InvalidQueryParameterException;
+import exception.path.InvalidResourcePathException;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
 import webserver.request.HttpRequest;
@@ -11,6 +12,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 public class DispatcherServlet {
 
@@ -23,9 +25,9 @@ public class DispatcherServlet {
     public void dispatch(final DataOutputStream dos) throws IOException, InvalidPathException, InvalidQueryParameterException, InvocationTargetException, IllegalAccessException {
         StaticViewResolver staticViewResolver = new StaticViewResolver();
 
-        View view = staticViewResolver.resolve(request.getFullPath());
-        if(view != null) {
-            view.render(request.getVersion(), request.getContentType(), null, dos);
+        Optional<View> viewOpt = staticViewResolver.resolve(request.getFullPath());
+        if(viewOpt.isPresent()) {
+            viewOpt.get().render(request.getVersion(), request.getContentType(), null, dos);
             return;
         }
 
@@ -34,7 +36,8 @@ public class DispatcherServlet {
 
         Method method = controllerMapper.getMethod(controller, request);
         ModelAndView modelAndView = (ModelAndView) method.invoke(controller, request);
-        view = staticViewResolver.resolve(modelAndView.getViewName());
+        viewOpt = staticViewResolver.resolve(modelAndView.getViewName());
+        View view = viewOpt.orElseThrow(() -> new InvalidResourcePathException(request.getFullPath()));
         view.render(request.getVersion(), request.getContentType(), modelAndView.getModel(), dos);
     }
 }

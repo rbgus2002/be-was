@@ -6,6 +6,7 @@ import webserver.view.view.View;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 public class StaticViewResolver implements ViewResolver {
 
@@ -13,7 +14,7 @@ public class StaticViewResolver implements ViewResolver {
     private static final String RESOURCES_STATIC = "src/main/resources/templates/";
 
     @Override
-    public View resolve(final String viewName) {
+    public Optional<View> resolve(final String viewName) {
         Path templatesFilePath = Paths.get(RESOURCES_TEMPLATES, viewName);
 
         if (!Files.exists(templatesFilePath)) {
@@ -21,9 +22,9 @@ public class StaticViewResolver implements ViewResolver {
         }
 
         if (!Files.exists(templatesFilePath)) {
-            return null;
+            return Optional.empty();
         }
 
-        return new StaticView(templatesFilePath.toString());
+        return Optional.of(new StaticView(templatesFilePath.toString()));
     }
 }
