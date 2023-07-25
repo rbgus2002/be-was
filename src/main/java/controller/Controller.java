@@ -11,6 +11,7 @@ import view.ListPage;
 import view.Page;
 import view.ProfilePage;
 
+import static exception.ExceptionList.INVALID_URI;
 import static http.Extension.HTML;
 import static http.FilePath.*;
 import static http.HttpMethod.POST;
@@ -35,7 +36,7 @@ public abstract class Controller {
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
             if (getExtension().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
-                return loadTemplatesFromPath(HttpStatus.NOT_FOUND, WRONG_ACCESS);
+                throw new BadRequestException(INVALID_URI);
             }
             if (extension.equals(HTML)) {
                 if (uri.endsWith(INDEX))
