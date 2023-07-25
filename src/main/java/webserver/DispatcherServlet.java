@@ -24,7 +24,7 @@ public class DispatcherServlet {
     }
 
     protected void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
-        Method handler = HandlerMapping.getHandler(request);
+        Method handler = HandlerMapper.getHandler(request);
         HttpResponse httpResponse;
 
         if (handler == null) {
@@ -35,7 +35,8 @@ public class DispatcherServlet {
 
         HttpMethod httpMethod = request.getHttpMethod();
         boolean isGet = (httpMethod == HttpMethod.GET);
-        if (isGet) {
+        boolean isPost = (httpMethod == HttpMethod.POST);
+        if (isGet || isPost) {
             MethodType methodType = getMethodType(handler);
             MethodHandle methodHandle = getMethodHandle(handler, methodType);
             httpResponse = getHttpResponse(request, methodHandle);
@@ -60,13 +61,14 @@ public class DispatcherServlet {
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
-        if (methodHandle.type().parameterCount() > 1) {
-            throw new IllegalAccessException("1개의 인자만 받을 수 있습니다.");
-        }
-        if (methodHandle.type().parameterCount() == 0){
-            return (HttpResponse) methodHandle.invoke();
+        if (request.getParams().size() > 0) {
+            return (HttpResponse) methodHandle.invoke(request.getParams());
         }
 
-        return (HttpResponse) methodHandle.invoke(request.getParams());
+        if (request.getBody().size() > 0) {
+            return (HttpResponse) methodHandle.invoke(request.getBody());
+        }
+
+        return (HttpResponse) methodHandle.invoke();
     }
 }

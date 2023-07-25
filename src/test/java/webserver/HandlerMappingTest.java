@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("HandlerMapping Test")
 class HandlerMappingTest {
 
-    HandlerMapping handlerMapping = new HandlerMapping();
+    HandlerMapper handlerMapping = new HandlerMapper();
 
     @Test
     @DisplayName("일치하는 path의 메소드를 반환한다.")

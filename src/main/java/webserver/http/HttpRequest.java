@@ -18,23 +18,25 @@ public class HttpRequest {
     private static final String EMPTY_SPACE_SEPARATOR = " ";
     private static final String EXTENSION_SEPARATOR = "\\.";
     private static final String QUERY_STRING_PARAM_SEPARATOR = "=";
-    private static final String HEADER_PARAM_SEPARATOR = ":";
+    private static final String PARAM_SEPARATOR = ":";
     private final HttpMethod httpMethod;
     private final String requestPath;
     private final String version;
     private final HttpMime mime;
-    private Map<String, String> headers;
+    private final Map<String, String> headers;
 
-    private Map<String, String> params;
+    private final Map<String, String> params;
+    private final Map<String, String> body;
 
     public HttpRequest(HttpMethod httpMethod, String requestPath, String version, HttpMime mime,
-                       Map<String, String> headers, Map<String, String> params) {
+                       Map<String, String> headers, Map<String, String> params, Map<String, String> body) {
         this.httpMethod = httpMethod;
         this.requestPath = requestPath;
         this.version = version;
         this.mime = mime;
         this.headers = headers;
         this.params = params;
+        this.body = body;
     }
 
     public HttpRequest(InputStream in) throws IOException {
@@ -44,8 +46,13 @@ public class HttpRequest {
         this.requestPath = requestPath(firstLine);
         this.version = version(firstLine);
         this.params = parseQueryString(firstLine);
-        this.headers = headers(bufferedReader);
         this.mime = mime(requestPath);
+        this.headers = headers(readHeaders(bufferedReader));
+        if (headers.get("Content-Length") != null) {
+            this.body = body(readBody(bufferedReader, Integer.parseInt(headers.get("Content-Length"))));
+        } else {
+            this.body = new HashMap<>();
+        };
     }
 
     public HttpMethod getHttpMethod() {
@@ -62,6 +69,33 @@ public class HttpRequest {
 
     public HttpMime getMime() {
         return mime;
+    }
+
+    public Map<String, String> getBody() {
+        return body;
+    }
+
+    private String readHeaders(BufferedReader bufferedReader) throws IOException {
+        StringBuilder headers = new StringBuilder();
+        String line;
+        while(true) {
+            line = bufferedReader.readLine();
+            if (line.equals("")) {
+                break;
+            }
+            headers.append(line).append("\r\n");
+        }
+
+        return headers.toString();
+    }
+
+    private String readBody(BufferedReader bufferedReader, int contentLength) throws IOException {
+        StringBuilder body = new StringBuilder();
+        for (int length = 0; length < contentLength; length++) {
+            body.append((char) bufferedReader.read());
+        }
+        logger.debug("body: {}", body);
+        return body.toString();
     }
 
     public HttpMime mime(String requestPath) {
@@ -105,21 +139,35 @@ public class HttpRequest {
         return version;
     }
 
-    private Map<String, String> headers(BufferedReader bufferedReader) throws IOException {
-        Map<String, String> headers = new HashMap<>();
+    private Map<String, String> headers(String headers) throws IOException {
+        Map<String, String> headerMap = new HashMap<>();
 
-        String line;
-        while (true) {
-            line = bufferedReader.readLine();
-            if (line.equals("")) {
-                break;
-            }
-            String key = line.split(HEADER_PARAM_SEPARATOR)[0].trim();
-            String value = line.split(HEADER_PARAM_SEPARATOR)[1].trim();
-            headers.put(key, value);
+        String[] tokens = headers.split("\r\n");
+        for (String token : tokens) {
+            String[] params = token.split(PARAM_SEPARATOR);
+            String key = params[0].trim();
+            String value = params[1].trim();
+            headerMap.put(key, value);
         }
 
-        return headers;
+        return headerMap;
+    }
+
+    private static Map<String, String> body(String body) {
+        if (body.equals("")) {
+            return new HashMap<>();
+        }
+
+        Map<String, String> bodyMap = new HashMap<>();
+        String[] params = body.split("&");
+        for (String param : params) {
+            String[] splitParam = param.split(QUERY_STRING_PARAM_SEPARATOR);
+            String key = splitParam[0].trim();
+            String value = splitParam[1].trim();
+            bodyMap.put(key, value);
+        }
+
+        return bodyMap;
     }
 
     public static Map<String, String> parseQueryString(String firstLine) {

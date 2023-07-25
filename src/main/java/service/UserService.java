@@ -11,12 +11,12 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public static void registerUser(Map<String, String> queryString) {
+    public void registerUser(Map<String, String> body) {
         User user = new User(
-                queryString.get("userId"),
-                queryString.get("password"),
-                queryString.get("name"),
-                queryString.get("email")
+                body.get("userId"),
+                body.get("password"),
+                body.get("name"),
+                body.get("email")
         );
         Database.addUser(user);
         logger.debug("User: {}", user);
