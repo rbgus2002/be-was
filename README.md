@@ -32,12 +32,12 @@ Java Web Application Server 2023
 
 ### Step - 4
 
-- [ ] 회원 가입 방식을 POST 방식으로 변경한다.
+- [X] 회원 가입 방식을 POST 방식으로 변경한다.
     - [X] UserController POST 매핑으로 변경.
-    - [ ] POST 방식으로 변경하기 위한 HTML 수정.
-    - [ ] 데이터 파싱 로직 변경.
-- [ ] 리다이렉션 기능을 구현한다.
-    - [ ] 회원 가입을 완료하면 메인 페이지로 리다이렉션 한다.
+    - [X] POST 방식으로 변경하기 위한 HTML 수정.
+    - [X] 데이터 파싱 로직 변경.
+- [X] 리다이렉션 기능을 구현한다.
+    - [X] 회원 가입을 완료하면 메인 페이지로 리다이렉션 한다.
 
 ## 학습 내용
 
@@ -48,3 +48,5 @@ Java Web Application Server 2023
 - 자바의 스레드 - https://github.com/ddingmin/be-was/wiki/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%8A%A4%EB%A0%88%EB%93%9C
 - 자바의 concurrent 패키지 -
 - 불변 객체 - https://github.com/ddingmin/be-was/wiki/%EB%B6%88%EB%B3%80-%EA%B0%9D%EC%B2%B4-(Immutable-Object)
+- static 블록과 싱글톤
+  패턴 - https://github.com/ddingmin/be-was/wiki/static-%EB%B8%94%EB%A1%9D-vs-%EC%8B%B1%EA%B8%80%ED%86%A4-(Singleton)
