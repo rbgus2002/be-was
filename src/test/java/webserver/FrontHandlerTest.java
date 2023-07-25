@@ -11,15 +11,15 @@ import webserver.utils.FileUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HttpRequestHandlerTest {
-    static final HttpRequestHandler httpRequestHandler = new HttpRequestHandler();
+class FrontHandlerTest {
+    static final FrontHandler FRONT_HANDLER = new FrontHandler();
 
     @DisplayName("/index.html로 들어온 요청 정상 처리")
     @Test
     void indexTest() {
         HttpRequest indexRequest = HttpRequestFixture.getRequestIndex();
 
-        HttpResponse response = httpRequestHandler.handle(indexRequest);
+        HttpResponse response = FRONT_HANDLER.handle(indexRequest);
 
         assertEquals(HttpStatus.OK, response.getHttpStatus());
         assertThat(response.getBody())
@@ -31,7 +31,7 @@ class HttpRequestHandlerTest {
     void notFoundTest() {
         HttpRequest strangeRequest = HttpRequestFixture.getStrangeRequest();
 
-        HttpResponse response = httpRequestHandler.handle(strangeRequest);
+        HttpResponse response = FRONT_HANDLER.handle(strangeRequest);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getHttpStatus());
     }

@@ -1,8 +1,8 @@
 package service;
 
 import db.UserRepository;
+import exception.UserServiceException;
 import model.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +41,6 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.join(user2))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage(UserService.DUPLICATED_ID);
+                .hasMessage(UserServiceException.DUPLICATED_ID);
     }
 }

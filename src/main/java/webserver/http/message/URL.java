@@ -56,4 +56,12 @@ public class URL {
         values.addAll(decodedValues);
         queryParams.put(key, values);
     }
+
+    @Override
+    public String toString() {
+        return "URL{" +
+                "path='" + path + '\'' +
+                ", queryParameters=" + queryParameters +
+                '}';
+    }
 }
