@@ -11,7 +11,11 @@ import support.annotation.RequestParam;
 import support.exception.FoundException;
 import support.web.HttpMethod;
 import webserver.Cookie;
+import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
+
+import java.util.Arrays;
+import java.util.Optional;
 
 @Controller(value = "/user")
 public class UserController {
@@ -60,10 +64,22 @@ public class UserController {
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/list")
-    public String userList() {
+    public String userList(HttpRequest request) throws FoundException {
         logger.debug("리스트 요청");
 
-        return "/user/list";
-    }
+        String cookieHeader = request.getHeaderValue("Cookie");
+        if (cookieHeader != null) {
+            String[] headerValue = cookieHeader.split(" ");
+            Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
+            if (sid.isPresent()) {
+                String rsid = sid.get();
+                Session session = Database.findSessionById(rsid.substring(4));
+                if (session != null) {
+                    return "/user/list";
+                }
+            }
+        }
 
+        throw new FoundException("/user/login.html");
+    }
 }
