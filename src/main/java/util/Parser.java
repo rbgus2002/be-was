@@ -4,6 +4,8 @@ import http.MIME;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -21,12 +23,12 @@ public class Parser {
     }
 
     public static String parsePathFromUrl(String url) {
-        if(url.equals("/")) {
+        if (url.equals("/")) {
             return "/index.html";
         }
 
         int queryIndex = url.indexOf("?");
-        if(queryIndex == -1) {
+        if (queryIndex == -1) {
             return url;
         }
         return url.substring(0, queryIndex);
@@ -36,7 +38,7 @@ public class Parser {
         Map<String, String> params = new HashMap<>();
 
         int queryIndex = url.indexOf("?");
-        if(queryIndex == -1) {
+        if (queryIndex == -1) {
             return params;
         }
         String queryString = url.substring(queryIndex + 1);
@@ -45,9 +47,14 @@ public class Parser {
             String query = tokenizer.nextToken();
             int equalIndex = query.indexOf("=");
 
-            String key = query.substring(0,equalIndex);
-            String value = query.substring(equalIndex + 1);
-            params.put(key, value);
+            try {
+                String key = URLDecoder.decode(query.substring(0, equalIndex), "UTF-8");
+                String value = URLDecoder.decode(query.substring(equalIndex + 1), "UTF-8");
+                params.put(key, value);
+            } catch (UnsupportedEncodingException e) {
+                // UTF-8이 지원되지 않을 때의 예외 처리
+                e.printStackTrace();
+            }
         }
         return params;
     }
@@ -60,16 +67,21 @@ public class Parser {
             String query = tokenizer.nextToken();
             int equalIndex = query.indexOf("=");
 
-            String key = query.substring(0,equalIndex);
-            String value = query.substring(equalIndex + 1);
-            params.put(key, value);
+            try {
+                String key = URLDecoder.decode(query.substring(0, equalIndex), "UTF-8");
+                String value = URLDecoder.decode(query.substring(equalIndex + 1), "UTF-8");
+                params.put(key, value);
+            } catch (UnsupportedEncodingException e) {
+                // UTF-8이 지원되지 않을 때의 예외 처리
+                e.printStackTrace();
+            }
         }
         return params;
     }
 
     public static MIME convertExtensionToMime(String extension) {
-        for(MIME mime : MIME.values()) {
-            if(mime.getExtension().equals(extension)) {
+        for (MIME mime : MIME.values()) {
+            if (mime.getExtension().equals(extension)) {
                 return mime;
             }
         }
@@ -86,8 +98,8 @@ public class Parser {
         String[] tokens;
         String requestLine = br.readLine();
 
-        while(!"".equals(requestLine) && requestLine != null){
-            tokens = requestLine.split(": " );
+        while (!"".equals(requestLine) && requestLine != null) {
+            tokens = requestLine.split(": ");
             String key = tokens[0];
             String value = tokens[1];
             headers.put(key, value);
@@ -106,7 +118,7 @@ public class Parser {
         return sb.toString();
     }
 
-    public static String getExtension(String path){
+    public static String getExtension(String path) {
         String[] tokens = path.split("\\.");
         return tokens[tokens.length - 1];
     }
