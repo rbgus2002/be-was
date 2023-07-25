@@ -64,7 +64,7 @@ public class HttpUtil {
     }
 
     public byte[] getResponse() throws IOException {
-        final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.requestBody);
+        final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.headers, this.requestBody);
         try {
             return mappingHandler.response();
         } catch (BadRequestException e) {

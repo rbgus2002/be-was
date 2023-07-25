@@ -4,6 +4,7 @@ import exception.NotFoundExtensionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static global.constant.ContentType.existContentType;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContentTypeTest {
@@ -39,5 +40,15 @@ public class ContentTypeTest {
 
         //when&then
         assertEquals(ContentType.HTML.getContentType(), contentType.getContentType());
+    }
+
+    @Test
+    @DisplayName("ContentType이 존재할 경우, true를 반환한다.")
+    public void testExistContentType() {
+        //given
+        String extension = "html";
+
+        //when&then
+        assertTrue(existContentType(extension));
     }
 }

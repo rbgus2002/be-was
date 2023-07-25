@@ -14,6 +14,7 @@ Java Web Application Server 2023
 - [step3 기능 목록](readme/step3.md)
 - [step4 기능 목록](readme/step4.md)
 - [step5 기능 목록](readme/step5.md)
+- [step6 기능 목록](readme/step6.md)
 
 
 ## Github Wiki

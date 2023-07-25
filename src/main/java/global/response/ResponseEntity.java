@@ -5,7 +5,6 @@ import global.constant.ContentType;
 import global.constant.Headers;
 import global.constant.StatusCode;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -48,6 +47,11 @@ public class ResponseEntity {
 
         public Builder addHeaders(Headers header, String value) {
             headers.put(header.getKey(), value);
+            return this;
+        }
+
+        public Builder setCookie(String session, String path) {
+            headers.put(Headers.SET_COOKIE.getKey(), Headers.SESSION_ID.getKey() + "=" + session + "; Path=" + path);
             return this;
         }
 
