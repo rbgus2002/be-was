@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static db.Database.clear;
-import static db.SessionDatabase.clearSessionIds;
+import static db.SessionDatabase.*;
 import static exception.ExceptionList.ALREADY_EXIST_USER;
 import static exception.ExceptionList.NOT_EXIST_USER;
 import static org.junit.jupiter.api.Assertions.*;
@@ -138,11 +138,15 @@ class UserServiceTest {
         loginInformation.put("userId", "honggildong");
         loginInformation.put("password", "1234");
         userService.loginUser(loginInformation);
+        String sessionId = findAllSessionIds().stream().findFirst().orElseGet(null);
 
         // Then
         softAssertions.assertThat(SessionDatabase.findAllSessionIds().size())
                 .as("Database의 크기가 1이 아닙니다.\n현재 값: %d", SessionDatabase.findAllSessionIds().size())
                 .isEqualTo(1);
+        softAssertions.assertThat(findUserIdBySessionId(sessionId))
+                .as("userId가 'honggildong'이 아닙니다.\n현재 값: %s", findUserIdBySessionId(sessionId))
+                .isEqualTo("honggildong");
     }
 
 }

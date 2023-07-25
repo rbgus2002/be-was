@@ -31,7 +31,7 @@ public class UserService {
     public String loginUser(Map<String, String> userInfo) {
         checkUserExist(userInfo);
         String sessionId = createSessionId();
-        addSessionId(userInfo.get(USERID), sessionId);
+        addSessionId(sessionId, userInfo.get(USERID));
         return sessionId;
     }
 

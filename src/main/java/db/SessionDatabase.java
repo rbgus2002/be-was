@@ -10,8 +10,8 @@ public class SessionDatabase {
 
     private static Map<String, String> sessionIds = Maps.newConcurrentMap();
 
-    public static void addSessionId(String userId, String sessionId) {
-        sessionIds.put(userId, sessionId);
+    public static void addSessionId(String sessionId, String userId) {
+        sessionIds.put(sessionId, userId);
     }
 
     public static void deleteSessionId(String userId) {
@@ -23,7 +23,11 @@ public class SessionDatabase {
     }
 
     public static Collection<String> findAllSessionIds() {
-        return sessionIds.values();
+        return sessionIds.keySet();
+    }
+
+    public static String findUserIdBySessionId(String sessionId) {
+        return sessionIds.get(sessionId);
     }
 
     public static void clearSessionIds() {
