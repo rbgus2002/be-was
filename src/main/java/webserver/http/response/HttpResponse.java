@@ -1,7 +1,9 @@
 package webserver.http.response;
 
 import java.io.Serializable;
+import java.util.Map;
 import webserver.http.Headers;
+import webserver.http.Http;
 import webserver.http.Http.MIME;
 import webserver.http.Http.StatusCode;
 import webserver.http.request.HttpRequest;
@@ -18,6 +20,14 @@ public class HttpResponse implements Serializable {
         this.responseLine = responseLine;
         this.headers = headers;
         this.body = body;
+    }
+
+    public static HttpResponse found(final String url) {
+        return new HttpResponse(
+                new ResponseLine(StatusCode.SEE_OTHER),
+                new Headers(Map.of(Http.Headers.LOCATION.getName(), url)),
+                null
+        );
     }
 
     public static HttpResponse notFound(final MIME mime) {

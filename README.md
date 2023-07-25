@@ -16,3 +16,5 @@ Java Web Application Server 2023
 - “회원가입” 메뉴를 클릭하면 http://localhost:8080/user/form.html 으로 이동, 회원가입 폼을 표시한다.
 
 - “회원가입” 메뉴 폼을 통해서 회원가입을 할 수 있다.
+
+- 다양한 컨텐츠 타입을 지원하도록 개선 
