@@ -1,13 +1,10 @@
 package utils;
 
-import db.Database;
+import db.UserDatabase;
 import http.HttpRequest;
 import model.User;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.StringUtil;
 
 import java.io.*;
 import java.util.Map;
@@ -74,7 +71,7 @@ class HttpRequestTest {
                 .contains(entry("Accept", "*/*"));
 
         User user = new User(params.get("userId"),params.get("password"),params.get("name"),params.get("email"));
-        Database.addUser(user);
+        UserDatabase.addUser(user);
 
         assertThat(user.getUserId()).isEqualTo("javajigi");
         assertThat(user.getPassword()).isEqualTo("password");
