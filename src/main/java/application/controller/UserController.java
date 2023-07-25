@@ -18,7 +18,7 @@ public class UserController implements WebController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private static final UserRepository userRepository = UserRepository.USER_REPOSITORY;
 
-    @RequestMapping(method = HttpMethod.GET, value = "/user/create")
+    @RequestMapping(method = HttpMethod.POST, value = "/user/create")
     public ModelAndView createUser(final HttpRequest request) throws MissingParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
