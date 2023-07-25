@@ -48,13 +48,11 @@ public abstract class Controller {
                 if (uri.endsWith(LIST))
                     return loadFileFromString(HttpStatus.OK, listPage.getListPage(httpRequest), LIST)
                             .setContentType(MIME.getMIME().get(HTML));
-                return loadTemplatesFromPath(HttpStatus.OK, uri)
-                        .setContentType(MIME.getMIME().get(HTML));
             }
-            return loadStaticFromPath(HttpStatus.OK, uri)
+            return loadFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (CustomException e) {
-            return loadTemplatesFromPath(e.getHttpStatus(), e.getFilePath())
+            return loadFromPath(e.getHttpStatus(), e.getFilePath())
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (BadRequestException e) {
             String errorPage = page.getErrorPage(e.getMessage());

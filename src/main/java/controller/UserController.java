@@ -9,7 +9,7 @@ import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
 import static http.FilePath.INDEX;
-import static utils.FileIOUtils.*;
+import static utils.FileIOUtils.loadFromPath;
 import static utils.StringUtils.decodeBody;
 
 public class UserController extends Controller {
@@ -60,18 +60,18 @@ public class UserController extends Controller {
 
     private HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX);
+        return loadFromPath(HttpStatus.FOUND, INDEX);
     }
 
     private HttpResponse.ResponseBuilder loginUser(Map<String, String> parameters) {
         String sessionId = userService.loginUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX)
+        return loadFromPath(HttpStatus.FOUND, INDEX)
                 .setSessionId(sessionId);
     }
 
     private HttpResponse.ResponseBuilder logoutUser(String sessionId) {
         userService.logoutUser(sessionId);
-        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX)
+        return loadFromPath(HttpStatus.FOUND, INDEX)
                 .setSessionId("");
     }
 
