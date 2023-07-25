@@ -30,7 +30,7 @@ class RequestHandlerTest {
     }
 
     @Test
-    @DisplayName("GET /user/create 요청 시 201을 리턴해야한다.")
+    @DisplayName("POST /user/create 요청 시 302을 리턴해야한다.")
     void getUserCreate() {
         given()
                 .log().all()
@@ -39,8 +39,8 @@ class RequestHandlerTest {
                 .param("userId", "id")
                 .param("password", "passwd")
                 .when()
-                .get("/user/create")
+                .post("/user/create")
                 .then()
-                .statusCode(HttpStatusCode.CREATED.getCode());
+                .statusCode(HttpStatusCode.FOUND.getCode());
     }
 }
