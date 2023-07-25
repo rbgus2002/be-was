@@ -5,6 +5,7 @@ import annotation.RequestMapping;
 import db.Database;
 import model.User;
 import utils.Parser;
+import utils.StringUtils;
 import webserver.ModelAndView;
 import webserver.http.request.HttpRequest;
 
@@ -23,8 +24,9 @@ public class UserController {
         String email = queryParams.get("email");
 
         //TODO: 확장성을 고려했을 때 코드가 지저분해질 수 있다.
-        if (userId == null || password == null || name == null || email == null) {
-            throw new IllegalArgumentException("입력을 제대로 해주세요!");
+        if (StringUtils.isEmpty(userId) | StringUtils.isEmpty(password)
+                | StringUtils.isEmpty(name) | StringUtils.isEmpty(email) ) {
+            return new ModelAndView("/user/form.html", null);
         }
 
         User user = new User(userId, password, name, email);
