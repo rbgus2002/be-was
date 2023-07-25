@@ -26,10 +26,10 @@ Java Web Application Server 2023
 - [x] 가입을 완료하면 /index.html 페이지로 이동한다
 
 ### [Step-5] 쿠키를 이용한 로그인
-- [ ] 가입한 회원 정보로 로그인을 할 수 있다
-- [ ] [로그인] 메뉴를 클릭하면 http://localhost:8080/user/login.html 으로 이동해 로그인할 수 있다
-- [ ] 로그인이 성공하면 index.html로 이동한다
-- [ ] 로그인이 실패하면 /user/login_failed.html로 이동한다
+- [x] 가입한 회원 정보로 로그인을 할 수 있다
+- [x] [로그인] 메뉴를 클릭하면 http://localhost:8080/user/login.html 으로 이동해 로그인할 수 있다
+- [x] 로그인이 성공하면 index.html로 이동한다
+- [x] 로그인이 실패하면 /user/login_failed.html로 이동한다
 
 ---
 
