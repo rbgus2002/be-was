@@ -21,16 +21,16 @@ public class GetHandler implements Handler {
         return this.httpMethod == httpMethod;
     }
 
-    public String startController(RequestLine requestLine, Controller controller) throws Exception {
+    public byte[] startController(RequestLine requestLine, Controller controller) throws Exception {
         for (Method method : Controller.class.getDeclaredMethods()) {
             if (isGetMapping(method, requestLine.getUri())) {
-                return (String) method.invoke(controller, requestLine.getQueryParams());
+                return (byte[]) method.invoke(controller, requestLine.getQueryParams());
             }
         }
 
         Set<String> GetMappingsSet = getDeclaredGetMappings();
         if (GetMappingsSet.contains(requestLine.getUri())) {
-            return requestLine.getUri();
+            return requestLine.getUri().getBytes();
         }
         throw new BadRequestException();
     }

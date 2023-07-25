@@ -8,5 +8,5 @@ public interface Handler {
 
     boolean matchHttpMethod(HttpMethod httpMethod);
 
-    String startController(RequestLine requestLine, Controller controller) throws Exception;
+    byte[] startController(RequestLine requestLine, Controller controller) throws Exception;
 }

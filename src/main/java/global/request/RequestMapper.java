@@ -7,6 +7,7 @@ import global.constant.HttpMethod;
 import global.constant.StatusCode;
 import global.handler.GetHandler;
 import global.handler.Handler;
+import global.handler.PostHandler;
 import global.response.ResponseEntity;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class RequestMapper {
         this.controller = new Controller();
     }
 
-    public String response() throws Exception {
+    public byte[] response() throws Exception {
         final HttpMethod httpMethod = requestLine.getHttpMethod();
         final Handler handler = findHandler(httpMethod);
         if (isFileType(requestLine)) {
@@ -53,6 +54,7 @@ public class RequestMapper {
     private Handler findHandler(HttpMethod httpMethod) {
         final List<Handler> handlers = new ArrayList<>();
         handlers.add(new GetHandler());
+        handlers.add(new PostHandler(requestBody));
 
         return handlers.stream()
                 .filter(handler -> handler.matchHttpMethod(httpMethod))

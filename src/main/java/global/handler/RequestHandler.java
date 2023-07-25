@@ -24,11 +24,9 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             final HttpUtil httpUtil = new HttpUtil(in);
-            String response = httpUtil.getResponse();
-            logger.debug("request = {}", response);
-            byte[] body = response.getBytes();
+            byte[] response = httpUtil.getResponse();
             DataOutputStream dos = new DataOutputStream(out);
-            dos.write(body);
+            dos.write(response);
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());

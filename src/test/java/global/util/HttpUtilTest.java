@@ -23,9 +23,13 @@ class HttpUtilTest {
         HttpUtil httpUtil = new HttpUtil(inputStream);
 
         String expectedResponse = "HTTP/1.1 200 OK ";
-        String actualResponse = httpUtil.getResponse();
+        byte[] actualResponse = httpUtil.getResponse();
 
-        assertTrue(actualResponse.contains(expectedResponse));
+        assertAll(
+                () -> assertEquals(actualResponse[0], expectedResponse.getBytes()[0]),
+                () -> assertEquals(actualResponse[1], expectedResponse.getBytes()[1]),
+                () -> assertEquals(actualResponse[2], expectedResponse.getBytes()[2])
+        );
     }
 
     @Test
@@ -38,6 +42,10 @@ class HttpUtilTest {
         InputStream inputStream = new ByteArrayInputStream(request.getBytes());
         HttpUtil httpUtil = new HttpUtil(inputStream);
 
-        assertEquals(httpUtil.getResponse(), "Error!");
+        assertAll(
+                () -> assertEquals(httpUtil.getResponse()[0], "Error!".getBytes()[0]),
+                () -> assertEquals(httpUtil.getResponse()[1], "Error!".getBytes()[1]),
+                () -> assertEquals(httpUtil.getResponse()[2], "Error!".getBytes()[2])
+        );
     }
 }

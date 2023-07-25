@@ -1,4 +1,4 @@
-package db;
+package model.db;
 
 import com.google.common.collect.Maps;
 
@@ -20,5 +20,9 @@ public class Database {
 
     public static Collection<User> findAll() {
         return users.values();
+    }
+
+    public static void deleteAll() {
+        users.clear();
     }
 }

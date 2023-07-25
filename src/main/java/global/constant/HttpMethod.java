@@ -5,7 +5,7 @@ import exception.BadRequestException;
 import java.util.Arrays;
 
 public enum HttpMethod {
-    GET("GET");
+    GET("GET"), POST("POST");
 
     private final String method;
 

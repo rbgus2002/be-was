@@ -1,6 +1,6 @@
 package service;
 
-import db.Database;
+import model.db.Database;
 import model.User;
 import model.UserParam;
 
