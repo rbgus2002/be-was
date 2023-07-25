@@ -2,7 +2,7 @@ package application.controller;
 
 import application.dto.UserDto;
 import application.repositiory.UserRepository;
-import exception.InvalidQueryParameterException;
+import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
@@ -19,7 +19,7 @@ public class UserController implements WebController {
     private static final UserRepository userRepository = UserRepository.USER_REPOSITORY;
 
     @RequestMapping(method = HttpMethod.GET, value = "/user/create")
-    public ModelAndView createUser(final HttpRequest request) throws InvalidQueryParameterException {
+    public ModelAndView createUser(final HttpRequest request) throws MissingParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
         String userId = requestQuery.getValue("userId");
@@ -42,7 +42,7 @@ public class UserController implements WebController {
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/user/search")
-    public ModelAndView getUser(HttpRequest request) throws InvalidQueryParameterException {
+    public ModelAndView getUser(HttpRequest request) throws MissingParameterException {
         RequestQuery requestQuery = request.getRequestQuery();
 
         String userId = requestQuery.getValue("userId");

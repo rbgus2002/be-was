@@ -1,6 +1,6 @@
 package webserver.request;
 
-import exception.InvalidContentTypeException;
+import exception.unsupportedMediaType.InvalidContentTypeException;
 import webserver.Constants.ContentType;
 
 public class RequestPath {

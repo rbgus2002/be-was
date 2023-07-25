@@ -1,7 +1,7 @@
 package application.repositiory;
 
 import application.dto.UserDto;
-import exception.InvalidQueryParameterException;
+import exception.badRequest.MissingParameterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class UserRepositoryTest {
 
         userRepository.addUser(userDto);
         assertEquals(userDto, userRepository.findUserById("1"));
-        assertThrows(InvalidQueryParameterException.class, () -> userRepository.findUserById("2"));
+        assertThrows(MissingParameterException.class, () -> userRepository.findUserById("2"));
     }
 
     @Test

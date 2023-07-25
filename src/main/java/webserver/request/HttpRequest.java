@@ -1,6 +1,6 @@
 package webserver.request;
 
-import exception.InvalidQueryParameterException;
+import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.utils.StringUtils;
@@ -84,7 +84,7 @@ public class HttpRequest {
     }
 
     public RequestQuery getRequestQuery() {
-        if(requestQuery == null) throw new InvalidQueryParameterException();
+        if(requestQuery == null) throw new MissingParameterException();
 
         return requestQuery;
     }

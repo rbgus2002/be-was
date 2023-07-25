@@ -1,9 +1,8 @@
 package webserver.request;
 
-import exception.InvalidQueryParameterException;
+import exception.badRequest.MissingParameterException;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +29,7 @@ public class RequestQuery {
 
     public String getValue(final String key) {
         String value = queries.get(key);
-        if (value == null) throw new InvalidQueryParameterException();
+        if (value == null) throw new MissingParameterException();
 
         return queries.get(key);
     }
