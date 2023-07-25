@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class Session {
 
-    private String sessionId;
+    private final String sessionId;
     private User user;
 
     public Session() {
@@ -22,4 +22,5 @@ public class Session {
     public User getUser() {
         return user;
     }
+
 }

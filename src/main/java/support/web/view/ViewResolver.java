@@ -71,7 +71,7 @@ public abstract class ViewResolver {
         }
         return syntax;
     }
-    
+
     /**
      * 사전에 정의된 명령어를 기준으로 새로운 결과값으로 변화한다.
      */
