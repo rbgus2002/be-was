@@ -76,6 +76,7 @@ class SessionServiceTest {
         assertions.assertThat(sessions.size()).isEqualTo(2);
         assertions.assertThat(sessions.contains(sessionOne)).isTrue();
         assertions.assertThat(sessions.contains(sessionTwo)).isTrue();
+        assertions.assertAll();
     }
 
     @Test
