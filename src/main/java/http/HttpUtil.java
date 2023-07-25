@@ -75,9 +75,4 @@ public class HttpUtil {
     public static final String HEADER_SESSION_ID = "sid=";
     public static final String HEADER_COOKIE_PATH = "; Path=/";
     public static final String INDEX_URL = "/index.html";
-    public static final String LOGIN_FAILED_URL = "/user/login_failed.html";
-    public static final String USER_LIST_URL = "/user/list.html";
-    public static final String USER_LOGIN_URL = "/user/login.html";
-    public static final String QNA_FORM_URL = "/qna/form.html";
-
 }

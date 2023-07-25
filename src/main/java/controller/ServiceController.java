@@ -39,7 +39,7 @@ public class ServiceController {
         // ID/PW 검증
         if(!UserService.validateUser(userId, password)) {
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, LOGIN_FAILED_URL);
+            headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login_failed.html");
             return new Response(STATUS.SEE_OTHER, headerMap, null);
         }
 

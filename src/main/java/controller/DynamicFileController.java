@@ -52,7 +52,7 @@ public class DynamicFileController {
             "                  </div>\n" +
             "              </li>";
 
-    @RequestMapping(value=USER_LIST_URL, method=Method.GET)
+    @RequestMapping(value="/user/list.html", method=Method.GET)
     public Response showUserList(Request request) {
         String httpDocument = generateHttpDocument(request);
         MIME mime = parseMime(request.getTargetUri());
@@ -91,7 +91,7 @@ public class DynamicFileController {
 
         if(sid == null) {
             Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, USER_LOGIN_URL);
+            headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login.html");
             return new Response(STATUS.SEE_OTHER, headerMap, null);
         }
 
@@ -114,7 +114,7 @@ public class DynamicFileController {
         return new Response(STATUS.SEE_OTHER, headerMap, null);
     }
 
-    @RequestMapping(value="/index.html", method=Method.GET)
+    @RequestMapping(value=INDEX_URL, method=Method.GET)
     public Response listQna(Request request) {
         String httpDocument = generateHttpDocument(request);
         MIME mime = parseMime(request.getTargetUri());
