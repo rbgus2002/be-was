@@ -6,6 +6,7 @@ import webserver.exception.BadRequestException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
 import webserver.request.HttpRequest;
+import webserver.session.UserSession;
 
 import static utils.StringUtils.getDecodedString;
 
@@ -38,7 +39,9 @@ public class LoginController implements Controller{
             response.setHeader("Location", "/user/login_failed.html");
         }
 
-        //유저가 있을경우 세션에 넣기
+        UserSession.getInstance().putSession(existedUser, response);
+        response.setStatus(HttpResponseStatus.STATUS_302);
+        response.setHeader("Location", "/index.html");
     }
 
     private void verifyRequest(HttpRequest request, User user) {

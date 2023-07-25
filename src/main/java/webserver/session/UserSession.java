@@ -1,9 +1,12 @@
 package webserver.session;
 
 import model.User;
+import webserver.reponse.HttpResponse;
+import webserver.request.HttpRequest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserSession {
@@ -23,7 +26,11 @@ public class UserSession {
         return userSession;
     }
 
-    public void putSession() {
-
+    public void putSession(User user, HttpResponse response) {
+        String uuid = UUID.randomUUID().toString();
+        userSessionMap.put(uuid, user);
+        response.setHeader("Set-Cookie", "sid=" + uuid +"; Path=/");
     }
+
+
 }
