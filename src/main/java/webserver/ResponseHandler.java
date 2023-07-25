@@ -123,9 +123,9 @@ public class ResponseHandler {
     }
 
     private void writeBody(DataOutputStream dos, byte[] body) throws IOException {
-        if (body.length == 0)
-            return;
-        dos.write(body, 0, body.length);
+        if (body.length != 0) {
+            dos.write(body, 0, body.length);
+        }
         dos.flush();
     }
 
