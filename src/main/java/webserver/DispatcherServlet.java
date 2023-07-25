@@ -3,15 +3,16 @@ package webserver;
 import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.HttpMethod;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
+import webserver.http.HttpStatus;
 
 import java.io.OutputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 public class DispatcherServlet {
 
@@ -27,13 +28,13 @@ public class DispatcherServlet {
         HttpResponse httpResponse;
 
         if (handler == null) {
-            httpResponse = new HttpResponse("200 OK", request.getRequestPath());
+            httpResponse = new HttpResponse(HttpStatus.OK, request.getRequestPath(), request.getMime());
             httpResponse.response(out);
             return;
         }
 
-        String httpMethod = request.getMethod();
-        boolean isGet = httpMethod.equals("GET");
+        HttpMethod httpMethod = request.getHttpMethod();
+        boolean isGet = (httpMethod == HttpMethod.GET);
         if (isGet) {
             MethodType methodType = getMethodType(handler);
             MethodHandle methodHandle = getMethodHandle(handler, methodType);
@@ -59,12 +60,13 @@ public class DispatcherServlet {
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
-        HttpResponse httpResponse;
-        if (methodHandle.type().parameterCount() > 0) {
-            httpResponse = (HttpResponse) methodHandle.invoke(request.getParams());
-        } else {
-            httpResponse = (HttpResponse) methodHandle.invoke();
+        if (methodHandle.type().parameterCount() > 1) {
+            throw new IllegalAccessException("1개의 인자만 받을 수 있습니다.");
         }
-        return httpResponse;
+        if (methodHandle.type().parameterCount() == 0){
+            return (HttpResponse) methodHandle.invoke();
+        }
+
+        return (HttpResponse) methodHandle.invoke(request.getParams());
     }
 }

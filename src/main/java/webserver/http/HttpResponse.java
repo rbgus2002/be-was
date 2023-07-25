@@ -12,35 +12,74 @@ import java.nio.file.Files;
 public class HttpResponse {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-    private final String status;
+    private static final String HTML_PATH = "src/main/resources/templates";
+    private static final String STATIC_PATH = "src/main/resources/static";
+    private final HttpStatus status;
     private final String path;
+    private final HttpMime mime;
     private final byte[] body;
 
-    public HttpResponse(String status, String path) throws IOException {
+    public HttpResponse(HttpStatus status, String path, HttpMime mime) throws IOException {
         this.status = status;
         this.path = path;
-        this.body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
+        this.mime = mime;
+        body = getBody(path, mime);
+    }
+
+    private byte[] getBody(String path, HttpMime mime) throws IOException {
+        byte[] body;
+
+        if (mime.getExtension().equals("html")) {
+            body = Files.readAllBytes(new File(HTML_PATH + path).toPath());
+        } else {
+            body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
+        }
+        return body;
     }
 
     public String getPath() {
         return path;
     }
 
+    private String getContentType() {
+        String contentType = mime.getContentType();
+        logger.debug("content type: {}", contentType);
+        return contentType;
+    }
+
     public void response(OutputStream out) {
         DataOutputStream dos = new DataOutputStream(out);
-        response200Header(dos, body.length);
+        if (this.status == HttpStatus.OK) {
+            response200Header(dos, body.length);
+        } else if (this.status == HttpStatus.FOUND) {
+            response302Header(dos);
+        }
         responseBody(dos, body);
     }
 
     public static HttpResponse redirect(String path) throws IOException {
-        return new HttpResponse("302 FOUND", path);
+        return new HttpResponse(HttpStatus.FOUND, path, HttpMime.HTML);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + getContentType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos) {
+        try {
+            logger.debug("this.path: {}", this.path);
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: " + this.path + "\r\n");
+            dos.writeBytes("Cache-Control: no-cache, no-store, must-revalidate\r\n");
+            dos.writeBytes("Pragma: no-cache\r\n");
+            dos.writeBytes("Expires: 0\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
