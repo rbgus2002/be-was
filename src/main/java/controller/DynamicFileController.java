@@ -114,6 +114,15 @@ public class DynamicFileController {
         return new Response(STATUS.SEE_OTHER, headerMap, null);
     }
 
+    @RequestMapping(value="/qna/show.html?", method=Method.GET)
+    public Response showQna(Request request) {
+        Map<String, String> queryParameterMap = request.getQueryParameterMap();
+        int postId = Integer.parseInt(queryParameterMap.get(Post.POSTID));
+
+
+        return null;
+    }
+
     @RequestMapping(value=INDEX_URL, method=Method.GET)
     public Response listQna(Request request) {
         String httpDocument = generateHttpDocument(request);
