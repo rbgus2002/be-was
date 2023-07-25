@@ -1,11 +1,12 @@
 package controller;
 
 import annotation.RequestMapping;
-import db.Database;
+import db.SessionDatabase;
+import db.UserDatabase;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.MIME;
+import http.HttpSession;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,27 +14,69 @@ import util.Parser;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final UserController instance = new UserController();
+
+    private UserController() {
+    }
+
+    public static UserController getInstance() {
+        return instance;
+    }
 
     @RequestMapping(path = "/user/create", method = HttpMethod.GET)
-    public HttpResponse createUserByGET(HttpRequest request) throws IOException {
+    public String createUserByGET(HttpRequest request, HttpResponse response) throws IOException {
         Map<String, String> params = request.getParams();
 
-        User user = new User(params.get("userId"),params.get("password"),params.get("name"),params.get("email"));
-        Database.addUser(user);
+        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+        UserDatabase.addUser(user);
 
-        return HttpResponse.redirect("/index.html", MIME.html);
+        return "/index.html";
     }
 
     @RequestMapping(path = "/user/create", method = HttpMethod.POST)
-    public HttpResponse createUserByPOST(HttpRequest request) throws IOException {
+    public String createUserByPOST(HttpRequest request, HttpResponse response) throws IOException {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
-        User user = new User(params.get("userId"),params.get("password"),params.get("name"),params.get("email"));
-        Database.addUser(user);
+        // TODO: 예외처리 및 에러페이지로 이동
+        if (UserDatabase.findUserById(params.get("userId")) != null) {
+            return "redirect:/index.html";
+        }
 
-        return HttpResponse.redirect("/index.html", MIME.html);
+        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+        UserDatabase.addUser(user);
+
+        return "redirect:/index.html";
+    }
+
+    @RequestMapping(path = "/user/login", method = HttpMethod.POST)
+    public String login(HttpRequest request, HttpResponse response) throws IOException {
+        Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
+        String userId = params.get("userId");
+        String password = params.get("password");
+
+        User user = UserDatabase.findUserById(userId);
+
+        // login 성공시 /index.html 로 이동
+        if (validateUser(user, password)) {
+            // Set-Cookie
+            String sessionId = UUID.randomUUID().toString();
+            response.setCookie(sessionId);
+
+            HttpSession session = new HttpSession(sessionId);
+            SessionDatabase.addSession(sessionId, session);
+            session.setAttributes("user", user);
+            return "redirect:/index.html";
+        }
+
+        // login 실패시 /user/index_failed.html 로 이동
+        return "redirect:/user/login_failed.html";
+    }
+
+    private boolean validateUser(User user, String password) {
+        return !(user == null || !user.getPassword().equals(password));
     }
 }
