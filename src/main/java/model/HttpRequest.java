@@ -1,5 +1,6 @@
 package model;
 
+import com.google.common.net.HttpHeaders;
 import model.enums.Method;
 
 import java.util.HashMap;
@@ -8,6 +9,9 @@ import java.util.Map;
 import static util.StringUtils.*;
 
 public class HttpRequest {
+    public static final int UUID_LENGTH = 36;
+    public static final int OFFSET = 4;
+    public static final String SID = "sid";
     private final RequestUri requestUri;
     private final String protocol;
     private final Method method;
@@ -17,14 +21,25 @@ public class HttpRequest {
     public Map<String, String> getBodyMap() {
         Map<String, String> map = new HashMap<>();
         String[] splitByAmpersand = splitBy(body, AMPERSAND_MARK);
-        for(var values: splitByAmpersand) {
+        for (var values : splitByAmpersand) {
             String[] splitParam = splitBy(values, EQUAL_MARK);
-            if(splitParam.length < 2) continue;
+            if (splitParam.length < 2) continue;
 
             map.put(splitParam[0], splitParam[1]);
         }
 
         return map;
+    }
+
+    public String getSessionIdInCookie() {
+        String cookie = httpHeader.get(HttpHeaders.COOKIE);
+        if (cookie == null) return NO_CONTENT;
+
+
+        int indexOfSid = cookie.indexOf(SID);
+        if (indexOfSid == -1) return NO_CONTENT;
+
+        return cookie.substring(indexOfSid + OFFSET, indexOfSid + OFFSET + UUID_LENGTH);
     }
 
     public static class Builder {

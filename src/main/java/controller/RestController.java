@@ -10,6 +10,7 @@ import model.enums.MIME;
 import model.enums.Method;
 import service.FileService;
 import service.UserService;
+import util.Authorization;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 import static constant.Uri.*;
 import static mapper.ResponseMapper.*;
-import static util.Authorization.needAuthorization;
+import static util.Authorization.NEEDED_AUTHORIZATION;
 import static util.Authorization.setSessionInCookie;
 import static util.StringUtils.COMMA_MARK;
 import static util.StringUtils.splitBy;
@@ -45,9 +46,6 @@ public class RestController {
             }
 
             if (isNotRestfulRequest(httpRequest)) {
-                if (needAuthorization(httpRequest)) {
-
-                }
                 response = sendNotRestfulResponse(httpRequest);
             }
             return response;
@@ -57,11 +55,7 @@ public class RestController {
     }
 
     private boolean needAuthorization(HttpRequest httpRequest) {
-        return needAuthorization.contains(httpRequest.getUri());
-    }
-
-    private HttpResponse getUserList(HttpRequest httpRequest) {
-        return null;
+        return NEEDED_AUTHORIZATION.contains(httpRequest.getUri());
     }
 
     private HttpResponse loginUser(HttpRequest httpRequest) {
@@ -84,6 +78,12 @@ public class RestController {
     }
 
     private HttpResponse sendNotRestfulResponse(HttpRequest httpRequest) throws IOException {
+        if (needAuthorization(httpRequest)) {
+            Optional<User> result = Authorization.getSession(httpRequest);
+            if(result.isEmpty()){
+                return getHttpResponse(httpRequest, USER_LOGIN_URI, MIME.HTML);
+            }
+        }
         String uri = httpRequest.getUri();
         String[] extension = splitBy(uri, COMMA_MARK);
 

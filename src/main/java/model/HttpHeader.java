@@ -46,4 +46,8 @@ public class HttpHeader {
     public void put(String key, String value) {
         contents.put(key, value);
     }
+
+    public String get(String key) {
+        return contents.get(key);
+    }
 }
