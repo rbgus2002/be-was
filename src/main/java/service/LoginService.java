@@ -9,7 +9,7 @@ public class LoginService {
 	}
 
 	public static String checkSession(String sessionId) throws IllegalArgumentException {
-		Session session = Session.newInstance();
+		Session session = Session.getInstance();
 		String userId = session.getUserId(sessionId);
 		return userId;
 	}

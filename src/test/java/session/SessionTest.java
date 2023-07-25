@@ -16,7 +16,7 @@ class SessionTest {
 
 	@BeforeEach
 	void setUp() {
-		session = Session.newInstance();
+		session = Session.getInstance();
 	}
 
 	@Test

@@ -42,7 +42,7 @@ public class Controller {
 			return "redirect:/user/form.html";
 		}
 		httpResponse.addCookie(SessionConst.sessionId,
-			Session.newInstance().createSession(httpRequest.getParameter().getParameter("userId")));
+			Session.getInstance().createSession(httpRequest.getParameter().getParameter("userId")));
 
 		return "redirect:/";
 	}
@@ -54,7 +54,7 @@ public class Controller {
 			String password = httpRequest.getParameter().getParameter("password");
 			LoginService.login(userId, password);
 			logger.debug("{} LOGIN 성공", userId);
-			httpResponse.addCookie(SessionConst.sessionId, Session.newInstance().createSession(userId));
+			httpResponse.addCookie(SessionConst.sessionId, Session.getInstance().createSession(userId));
 			return "redirect:/";
 		} catch (IllegalArgumentException e) {
 			logger.debug(e.getMessage());

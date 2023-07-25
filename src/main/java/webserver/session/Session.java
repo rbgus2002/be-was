@@ -13,7 +13,7 @@ public class Session {
 	private Session() {
 	}
 
-	public static Session newInstance() {
+	public static Session getInstance() {
 		return SESSION;
 	}
 
