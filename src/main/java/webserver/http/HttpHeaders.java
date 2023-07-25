@@ -10,12 +10,17 @@ import java.util.Map;
 import static utils.StringUtils.NEW_LINE;
 
 public class HttpHeaders {
+    private static final String CONTENT_LENGTH = "Content-Length";
+    private static final String CONTENT_TYPE = "Content-Type";
     private final Map<String, String> headers;
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
     public String getContentType() {
-        return headers.get("Content-Type");
+        return headers.get(CONTENT_TYPE);
+    }
+    public String getContentLength() {
+        return headers.get(CONTENT_LENGTH);
     }
 
     public void show(StringBuilder sb) {
@@ -34,15 +39,15 @@ public class HttpHeaders {
     public static HttpHeaders createStaticStatusHeaders(int bodyLength, String requestUri) {
         Map<String, String> responseHeaders = new HashMap<>();
         MIME mime = MIME.findMIME(requestUri);
-        responseHeaders.put("Content-Type", createStaticContentType(mime));
-        responseHeaders.put("Content-Length", String.valueOf(bodyLength));
+        responseHeaders.put(CONTENT_TYPE, createStaticContentType(mime));
+        responseHeaders.put(CONTENT_LENGTH, String.valueOf(bodyLength));
         return new HttpHeaders(responseHeaders);
     }
 
     public static HttpHeaders createRedirectStatusHeaders() {
         Map<String, String> responseHeaders = new HashMap<>();
-        responseHeaders.put("Content-Type", "text/html;charset=utf-8");
-        responseHeaders.put("Content-Length", "0");
+        responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
+        responseHeaders.put(CONTENT_LENGTH, "0");
         responseHeaders.put("Location", "http://localhost:8080/index.html");
         return new HttpHeaders(responseHeaders);
     }

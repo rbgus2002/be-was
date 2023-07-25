@@ -5,6 +5,8 @@ import webserver.http.response.HttpResponse;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class FrontController {
     private final HttpRequest httpRequest;
@@ -15,17 +17,16 @@ public class FrontController {
         this.dos = dos;
     }
 
-    public void doDispatch() throws IOException {
-        Controller controller = HandlerMapper.findHandler(httpRequest.getRequestUri());
-        if (controller == null) {
+    public void doDispatch() throws IOException, InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
+        if (!HandlerMapper.hasHandler(httpRequest)) {
             HttpResponse httpResponse = HttpResponse.createStatic(httpRequest.getRequestUri());
             httpResponse.responseStatic(dos);
             return;
         }
 
+        Method method = HandlerMapper.getHandlerMethod(httpRequest);
+        HandlerAdapter.runHandlerMethod(method, httpRequest);
         HttpResponse httpResponse = HttpResponse.createRedirect();
-        controller.doGet(httpRequest, httpResponse);
         httpResponse.responseDynamic(dos);
     }
-
 }

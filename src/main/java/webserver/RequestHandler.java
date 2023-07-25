@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 public class RequestHandler implements Runnable {
@@ -30,8 +31,10 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = HttpRequest.create(in);
             FrontController frontController = new FrontController(httpRequest, dos);
             frontController.doDispatch();
-        } catch (IOException e) {
+        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
             logger.error(e.getMessage());
+        } catch (InstantiationException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 }
