@@ -5,7 +5,7 @@ import db.UserDatabase;
 import model.Article;
 import model.User;
 import webserver.controller.Controller;
-import webserver.exceptions.BadRequestException;
+import webserver.exceptions.UnauthorizedException;
 import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
@@ -29,14 +29,14 @@ public class ArticleSaveController implements Controller {
             addNewArticle(articleParameters, getUser(sessionId));
 
             redirectToIndexPage(httpResponse);
-        } catch (BadRequestException e) {
-            httpResponse.setStatus(HttpStatus.BAD_REQUEST);
+        } catch (UnauthorizedException e) {
+            httpResponse.setStatus(HttpStatus.UNAUTHORIZED);
         }
     }
 
-    private void checkLoginStatus(String sessionId) throws BadRequestException {
+    private void checkLoginStatus(String sessionId) throws UnauthorizedException {
         if (!SessionManager.verifySessionId(sessionId)) {
-            throw new BadRequestException();
+            throw new UnauthorizedException();
         }
     }
 
