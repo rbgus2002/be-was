@@ -1,11 +1,10 @@
 package controller;
 
 import annotation.RequestMapping;
-import db.Database;
+import db.UserDatabase;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.MIME;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ public class UserController {
         Map<String, String> params = request.getParams();
 
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        Database.addUser(user);
+        UserDatabase.addUser(user);
 
         return "/index.html";
     }
@@ -31,8 +30,9 @@ public class UserController {
     public String createUserByPOST(HttpRequest request, HttpResponse response) throws IOException {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
+        // TODO: 중복 검증 로직 추가
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        Database.addUser(user);
+        UserDatabase.addUser(user);
 
         return "redirect:/index.html";
     }
@@ -43,16 +43,23 @@ public class UserController {
         String userId = params.get("userId");
         String password = params.get("password");
 
-        // login 실패시 /user/index_failed.html 로 이동
-        // TODO: 회원 인증 로직 메서드로 추출
-        User user = Database.findUserById(userId);
-        if (user == null || !user.getPassword().equals(password)) {
+        User user = UserDatabase.findUserById(userId);
+
+        if (validateUser(user, password)) {
+            // login 실패시 /user/index_failed.html 로 이동
             return "redirect:/user/login_failed.html";
         }
 
-        // login 성공시 /index.html 로 이동
         // 로그인이 성공할 경우 HTTP 헤더의 쿠키 값을 SID=세션 ID 로 응답한다.
 
+        // login 성공시 /index.html 로 이동
         return "redirect:/index.html";
+    }
+
+    private boolean validateUser(User user, String password) {
+        if(user == null || !user.getPassword().equals(password)) {
+            return false;
+        }
+        return true;
     }
 }
