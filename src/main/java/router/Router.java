@@ -9,15 +9,20 @@ import webserver.RequestHandler;
 import webserver.model.Request;
 import webserver.model.Response;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Request 객체를 받아 컨트롤러에 정의된 메서드에게 처리를 맡기는 클래스
  */
 public class Router {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final DynamicFileController dynamicFileController = new DynamicFileController();
+    private static final ServiceController serviceController = new ServiceController();
 
     public static Response generateResponse(Request request) {
         Response response;
@@ -25,7 +30,7 @@ public class Router {
         try {
 
             // 동적(렌더링) 파일
-            response = findMethodAndGenerateResponse(DynamicFileController.class, request);
+            response = findMethodAndGenerateResponse(dynamicFileController, request);
             if(response != null) {
                 return response;
             }
@@ -37,7 +42,7 @@ public class Router {
             }
 
             // 서비스 로직
-            response = findMethodAndGenerateResponse(ServiceController.class, request);
+            response = findMethodAndGenerateResponse(serviceController, request);
             if(response != null) {
                 return response;
             }
@@ -49,14 +54,19 @@ public class Router {
         return null;
     }
 
-    private static Response findMethodAndGenerateResponse(Class<?> clazz, Request request) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InstantiationException {
+    private static Response findMethodAndGenerateResponse(Object obj, Request request) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InstantiationException, NoSuchFieldException {
+        Class<?> clazz = obj.getClass();
         Method[] fileMethods =  clazz.getDeclaredMethods();
         for(Method method: fileMethods) {
             if(method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                if(request.getMethod() == requestMapping.method() &&
-                        Objects.equals(request.getTargetUri(), requestMapping.value())) {
-                    return (Response) method.invoke(Class.forName(clazz.getName()).getConstructor().newInstance(), request);
+                if(request.getMethod() == requestMapping.method()) {
+                    if(Objects.equals(request.getTargetUri(), requestMapping.value())) {
+                        return (Response) method.invoke(obj, request);
+                    }
+                    if(request.getTargetUri().startsWith(requestMapping.value())) {
+                        return (Response) method.invoke(obj, request);
+                    }
                 }
             }
         }
