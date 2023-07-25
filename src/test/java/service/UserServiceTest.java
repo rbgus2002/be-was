@@ -27,7 +27,7 @@ class UserServiceTest {
         parameters.put("email", "test@gmail.com");
 
         // when
-        UserService.registerUser(parameters);
+        userService.registerUser(parameters);
 
         // then
         User user = Database.findUserById("test123");
