@@ -42,7 +42,7 @@ public abstract class ControllerResolver {
                         .filter(method -> method.isAnnotationPresent(RequestMapping.class))
                         .collect(Collectors.toUnmodifiableMap(
                                 method -> method.getAnnotation(RequestMapping.class).value(),
-                                method -> new ControllerMethodStruct(HttpMethod.POST, method)
+                                method -> new ControllerMethodStruct(method.getAnnotation(RequestMapping.class).method(), method)
                         ));
 
 
@@ -82,8 +82,11 @@ public abstract class ControllerResolver {
         Method method = methodAtomicReference.get();
         verifyControllerTrigger(hasMethod.get(), controllerClass, method);
 
+        logger.debug(method.getName() +  " : go");
+
         // 헤더 처리
         Object[] args = transformQuery(request, response, method);
+        logger.debug(method.getName() +  " : go1");
 
         // 메소드 실행
         Object instance = getInstanceMagager().getInstance(controllerClass);
@@ -123,6 +126,7 @@ public abstract class ControllerResolver {
         logger.debug("요청 인자 크기 : {}", args.length);
 
         if (Arrays.asList(args).contains(null)) {
+            logger.debug("BadRequest 발생");
             throw new BadRequestException(ExceptionName.WRONG_ARGUMENT);
         }
 

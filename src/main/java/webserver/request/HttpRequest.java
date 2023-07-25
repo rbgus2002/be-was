@@ -74,7 +74,10 @@ public class HttpRequest {
     }
 
     public Optional<KeyValue> getPathQueryOrParameter() {
-        return body != null ? Optional.of(body) : Optional.ofNullable(query);
+        if (body == null && query == null) {
+            return Optional.of(new Parameter());
+        }
+        return body != null ? Optional.of(body) : Optional.of(query);
     }
 
     public void setBody(String body) {

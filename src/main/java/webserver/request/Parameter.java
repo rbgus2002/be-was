@@ -4,6 +4,10 @@ import utils.StringUtils;
 
 public class Parameter extends KeyValue {
 
+    protected Parameter() {
+        super(false);
+    }
+
     protected Parameter(String parameterString) {
         super(parameterString, false);
     }
