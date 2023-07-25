@@ -23,9 +23,9 @@ public class HttpRequestHeaders {
 
         String[] parameters = headerString.split(NEW_LINE);
         for (String parameter : parameters) {
-            String[] tokens = parameter.split(PARAM_SEPARATOR);
-            String key = tokens[0].trim();
-            String value = tokens[1].trim();
+            int colonIndex = parameter.indexOf(PARAM_SEPARATOR);
+            String key = parameter.substring(0, colonIndex).trim();
+            String value = parameter.substring(colonIndex + 1).trim();
             headers.put(key, value);
         }
 

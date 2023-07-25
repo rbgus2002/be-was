@@ -12,10 +12,10 @@ class HttpRequestHeadersTest {
     @DisplayName("headers 문자열을 Map으로 파싱해야 한다.")
     void parseRequestBody() {
         String headersString = "Host: localhost:8080\r\n" +
-                "Connection: keep-alive\n\n" +
-                "Content-Length: 59\n\n" +
-                "Content-Type: application/x-www-form-urlencoded\n\n" +
-                "Accept: */*\n\n";
+                "Connection: keep-alive\r\n" +
+                "Content-Length: 59\r\n" +
+                "Content-Type: application/x-www-form-urlencoded\r\n" +
+                "Accept: */*\r\n";
 
         HttpRequestHeaders httpRequestHeaders = new HttpRequestHeaders(headersString);
 
