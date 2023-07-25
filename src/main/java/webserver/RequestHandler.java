@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.container.ControllerContainer;
 import webserver.controllers.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpRequestParser;
@@ -13,6 +14,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 public class RequestHandler implements Runnable {
@@ -33,11 +35,19 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest request = HttpRequestParser.parseHttpRequest(in);
 
-            HttpResponse response = FrontController.getInstance().resolveRequest(request);
+            HttpResponse response = ControllerContainer.getInstance().getController(request);
+
+//            HttpResponse response = FrontController.getInstance().resolveRequest(request);
 
             HttpResponseRenderer.getInstance().responseRender(dos, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } catch (InvocationTargetException e) {
+            logger.debug("InvocationTargetException");
+        } catch (IllegalAccessException e) {
+            logger.debug("IllegalAccessException");
+        } catch (IllegalArgumentException e) {
+            logger.debug("IllegalArgumentException");
         }
     }
 

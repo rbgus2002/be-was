@@ -5,7 +5,6 @@ import webserver.http.HttpResponse;
 import webserver.http.enums.HttpResponseStatus;
 
 public interface Controller {
-    HttpResponse handle(HttpRequest request);
 
     // TODO: Exception으로 빼서 handle?
     default HttpResponse createErrorResponse(HttpRequest request, HttpResponseStatus status) {

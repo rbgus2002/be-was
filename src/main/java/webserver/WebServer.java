@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.container.ControllerContainer;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -19,6 +20,8 @@ public class WebServer {
         } else {
             port = Integer.parseInt(args[0]);
         }
+
+        ControllerContainer.getInstance().initialize();
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 

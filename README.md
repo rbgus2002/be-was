@@ -33,6 +33,8 @@ Java Web Application Server 2023
 3. 새롭게 생성한 HttpRequest 클래스를 이용하여 코드를 구현하였다.
 4. Concurrent Package의 ExecutorService와 Executors 등을 이용해 코드를 수정하였다.
 
+<br/>
+
 ## Mission 2. 웹 서버 2단계 - GET으로 회원가입
 
 ### 기능요구사항
@@ -52,6 +54,7 @@ Java Web Application Server 2023
 - 동시에 같은 아이디를 가진 요청이 올 경우 lock을 통해 concurrency를 관리한다.
 - Contorller 클래스가 너무 커지지 않도록 분리하였다.
 
+<br/>
 
 ## Mission 3. 웹 서버 3단계 - 다양한 컨텐츠 타입 지원
 
@@ -65,4 +68,6 @@ Java Web Application Server 2023
 1. 처음에는 요청의 Accept 헤더를 참고하여 response의 content-type을 결정하였다.
 2. MIME 타입에 대해 공부한 뒤 Enum을 추가하여 파일의 확장자에 따라 response의 Content-type 헤더를 넣어주었다.
 3. 구조에 대한 피드백을 통해 더 좋은 구조를 만들기 위하여 수정하였다.
+
+<br/>
 
