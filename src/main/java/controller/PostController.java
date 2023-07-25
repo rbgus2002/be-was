@@ -34,7 +34,7 @@ public class PostController {
         Database.addPost(post.getId(), post);
 
         logger.debug("게시글... 생성 됨... title: {} writer: {} contents: {} ", title, writer, contents);
-        return "/index";
+        throw new FoundException("/index");
     }
 
 }
