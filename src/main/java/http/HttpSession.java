@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HttpSession {
-    private static final Map<String, Object> attributes = new ConcurrentHashMap<>();
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>();
     private final String sid;
 
     public HttpSession(String sid) {
@@ -17,24 +17,16 @@ public class HttpSession {
         return new HttpSession(sid);
     }
 
-    public static boolean isValid(String sid) {
-        return attributes.containsKey(sid);
-    }
-
-
     public String getSid() {
         return sid;
     }
 
-    public void addAttribute(Object object) {
-        attributes.put(sid, object);
+    public void setAttribute(String key, Object value) {
+        attributes.put(key, value);
     }
 
-    public Object getAttribute() {
-        return attributes.get(sid);
+    public Object getAttribute(String key) {
+        return attributes.get(key);
     }
 
-    public boolean isValid() {
-        return attributes.containsKey(sid);
-    }
 }

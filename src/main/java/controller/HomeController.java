@@ -84,7 +84,7 @@ public class HomeController implements HttpController {
             return null;
         }
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute();
+        User user = (User) session.getAttribute("user");
         htmlBuilder.append("<!DOCTYPE html><html lang=\"kr\"><head>")
                 .append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">")
                 .append("<meta charset=\"utf-8\">")

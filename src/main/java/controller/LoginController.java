@@ -29,7 +29,7 @@ public class LoginController implements HttpController {
         User user = Database.findUserById(userId);
         if (user != null && user.getPassword().equals(password)) {
             HttpSession session = HttpSession.create();
-            session.addAttribute(user);
+            session.setAttribute("user", user);
             response.setSession(session);
             return "redirect:/index.html";
         }

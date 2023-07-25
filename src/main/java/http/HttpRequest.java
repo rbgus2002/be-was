@@ -63,7 +63,10 @@ public class HttpRequest {
         if (sid == null) {
             return null;
         }
-        return new HttpSession(sid);
+        if (HttpSessionManager.containsSid(sid)) {
+            return HttpSessionManager.getSession(sid);
+        }
+        return null;
     }
 
     public boolean hasValidSession() {
@@ -71,6 +74,6 @@ public class HttpRequest {
         if (sid == null) {
             return false;
         }
-        return HttpSession.isValid(sid);
+        return HttpSessionManager.containsSid(sid);
     }
 }
