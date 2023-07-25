@@ -1,18 +1,8 @@
 package controller;
 
-import common.enums.ContentType;
-import common.http.HttpRequest;
-import common.http.RequestLine;
-import db.Database;
-import model.User;
+import domain.user.Controller;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static common.enums.RequestMethod.GET;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CreateControllerTest {

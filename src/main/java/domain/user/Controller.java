@@ -1,15 +1,14 @@
-package controller;
+package domain.user;
 
 import annotation.RequestMapping;
+import annotation.TemplateMapping;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.wrapper.Queries;
-import model.User;
-import modelview.ModelView;
-import service.UserService;
-import session.UserSessionManager;
+import template.*;
+import webserver.ModelView;
+import webserver.UserSessionManager;
 
-import java.util.List;
 import java.util.Optional;
 
 import static common.enums.RequestMethod.GET;
@@ -22,25 +21,32 @@ public class Controller {
         return new ModelView("Hello world");
     }
 
+    @TemplateMapping(name = DynamicTemplate.class)
     @RequestMapping(method = GET, path = "/index.html")
     public ModelView index(HttpRequest request, HttpResponse response) {
         ModelView mv = new ModelView("/index.html");
-        User user = UserSessionManager.getSession(request);
-
-        if (user != null) {
-            mv.addModelAttribute("user", user);
-        }
-
+        addUserToModelIfExists(mv, request);
         return mv;
     }
 
+    @TemplateMapping(name = DynamicTemplate.class)
     @RequestMapping(method = GET, path = "/user/form.html")
-    public ModelView signUpForm(HttpRequest request, HttpResponse response) {
-        return new ModelView("/user/form.html");
+    public ModelView userForm(HttpRequest request, HttpResponse response) {
+        ModelView mv = new ModelView("/user/form.html");
+        addUserToModelIfExists(mv, request);
+        return mv;
+    }
+
+    @TemplateMapping(name = DynamicTemplate.class)
+    @RequestMapping(method = GET, path = "/user/login.html")
+    public ModelView userLoginGet(HttpRequest request, HttpResponse response) {
+        ModelView mv = new ModelView("/user/login.html");
+        addUserToModelIfExists(mv, request);
+        return mv;
     }
 
     @RequestMapping(method = POST, path = "/user/create")
-    public ModelView createUser(HttpRequest request, HttpResponse response) {
+    public ModelView userCreate(HttpRequest request, HttpResponse response) {
         Queries queries = request.getQueries();
 
         User user = UserService.createUser(
@@ -55,18 +61,8 @@ public class Controller {
         return mv;
     }
 
-    @RequestMapping(method = GET, path = "/user/login.html")
-    public ModelView loginPage(HttpRequest request, HttpResponse response) {
-        return new ModelView("/user/login.html");
-    }
-
-    @RequestMapping(method = GET, path = "/user/login_failed.html")
-    public ModelView loginFailedPage(HttpRequest request, HttpResponse response) {
-        return new ModelView("/user/login_failed.html");
-    }
-
     @RequestMapping(method = POST, path = "/user/login")
-    public ModelView login(HttpRequest request, HttpResponse response) {
+    public ModelView userLoginPost(HttpRequest request, HttpResponse response) {
         Queries queries = request.getQueries();
 
         Optional<User> user = UserService.login(
@@ -83,6 +79,15 @@ public class Controller {
         return new ModelView("redirect:/index.html");
     }
 
+    @TemplateMapping(name = DynamicTemplate.class)
+    @RequestMapping(method = GET, path = "/user/login_failed.html")
+    public ModelView userLoginFailed(HttpRequest request, HttpResponse response) {
+        ModelView mv = new ModelView("/user/login_failed.html");
+        addUserToModelIfExists(mv, request);
+        return mv;
+    }
+
+    @TemplateMapping(name = UserListTemplate.class)
     @RequestMapping(method = GET, path = "/user/list.html")
     public ModelView listUser(HttpRequest request, HttpResponse response) {
         User user = UserSessionManager.getSession(request);
@@ -96,5 +101,12 @@ public class Controller {
         }
 
         return new ModelView("redirect:/index.html");
+    }
+
+    private void addUserToModelIfExists(ModelView mv, HttpRequest request) {
+        User user = UserSessionManager.getSession(request);
+        if (user != null) {
+            mv.addModelAttribute("user", user);
+        }
     }
 }

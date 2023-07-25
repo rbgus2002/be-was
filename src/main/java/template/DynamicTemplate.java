@@ -1,19 +1,19 @@
-package dynamic;
+package template;
 
-import model.User;
+import domain.user.User;
 
 import java.util.Map;
 
-public abstract class DynamicHtml {
+public class DynamicTemplate {
 
-    private String dynamicTagFormat = "<dynamic id=\"%s\"></dynamic>";
-    private String userNameTag = "<li><a>%s 로그인 됨</a></li>\n";
+    private final String dynamicTagFormat = "<dynamic id=\"%s\"></dynamic>";
+    private final String userNameTag = "<li><a>%s 로그인 됨</a></li>\n";
     private final String loginTag = "<li><a href=\"/user/login.html\" role=\"button\">로그인</a></li>\n";
     private final String signUpTag = "<li><a href=\"/user/form.html\" role=\"button\">회원가입</a></li>\n";
     private final String logoutTag = "<li><a href=\"#\" role=\"button\">로그아웃</a></li>\n";
     private final String editPrivacyTag = "<li><a href=\"#\" role=\"button\">개인정보수정</a></li>";
 
-    public String decorateHeader(String html, Map<String, Object> model) {
+    public String decorateHeaderBar(String html, Map<String, Object> model) {
         User user = (User) model.get("user");
         boolean login = user != null;
 

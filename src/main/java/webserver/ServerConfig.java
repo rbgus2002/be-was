@@ -1,6 +1,6 @@
 package webserver;
 
-import controller.Controller;
+import domain.user.Controller;
 
 public class ServerConfig {
     public static final String STATIC_PATH = "./src/main/resources/static";

@@ -1,7 +1,7 @@
 package webserver;
 
-import db.Database;
-import model.User;
+import domain.user.Database;
+import domain.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +25,9 @@ public class WebServer {
 
         // 컨트롤러에 등록된 매핑을 찾아서 ControllerMapper에 등록한다.
         ControllerMapper.getInstance().initialize();
+        TemplateMapper.getInstance().initialize();
 
-        // ======테스트=======
+        // ======테스트용 더미 유자=======
         Database.addUser(new User("user1", "a", "userOne", "user1@a.com"));
         Database.addUser(new User("user2", "a", "userTwo", "user2@a.com"));
         Database.addUser(new User("user3", "a", "userThr", "user3@a.com"));

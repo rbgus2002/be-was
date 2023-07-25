@@ -1,16 +1,16 @@
-package dynamic;
+package template;
 
-import model.User;
+import domain.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UserListHtml extends DynamicHtml {
+public class UserListTemplate extends DynamicTemplate {
 
-    private String userInfoFormat = "<th scope=\"row\">%s</th> " +
-            "<td>%s</td> <td>%s</td> " +
-            "<td>%s</td>" +
+    private String userInfoFormat =
+            "<th scope=\"row\">%s</th>" +
+                "<td>%s</td> <td>%s</td> <td>%s</td>" +
             "<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>";
 
     @Override

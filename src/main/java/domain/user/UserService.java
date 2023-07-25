@@ -1,9 +1,5 @@
-package service;
+package domain.user;
 
-import db.Database;
-import model.User;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
