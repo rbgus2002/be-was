@@ -10,10 +10,10 @@ import webserver.session.SessionManager;
 import webserver.model.Model;
 import webserver.utils.FileNameScanner;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static webserver.http.message.HttpHeaders.SEMI_COLON;
 
 public class FrontHandler {
     private static final Logger logger = LoggerFactory.getLogger(FrontHandler.class);
@@ -44,9 +44,7 @@ public class FrontHandler {
         Handler handler = findHandler(httpRequest);
         try {
             HttpResponse response = handler.handle(httpRequest, session, model);
-            if (session.isValid()) {
-                response.setCookie(session.getId(), "/");
-            }
+            response.setCookie(session.getId(), "/");
             return response;
         } catch (RuntimeException e) {
             logger.error(e.getMessage());
@@ -65,7 +63,9 @@ public class FrontHandler {
     private Cookie getCookie(HttpRequest httpRequest) {
         HttpHeaders headers = httpRequest.getHttpHeaders();
         if (headers.contains(COOKIE)) {
-            return Cookie.from(headers.get(COOKIE));
+            String cookieString = headers.getSingleValue(COOKIE);
+            List<String> cookies = Arrays.stream(cookieString.split(SEMI_COLON)).collect(Collectors.toList());
+            return Cookie.from(cookies);
         }
         return Cookie.from(List.of());
     }
