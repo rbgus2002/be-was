@@ -9,14 +9,15 @@ import org.slf4j.LoggerFactory;
 
 import servlet.Servlet;
 import container.annotation.MyMapping;
-import db.Database;
+import db.UserDatabase;
 import lock.NamedLock;
 import model.user.User;
-import model.user.factory.UserFactory;
+import model.user.UserFactory;
 import servlet.domain.user.exception.AlreadyExistUserException;
 import webserver.http.HttpRequest;
+import webserver.http.Method;
 
-@MyMapping("/user/create")
+@MyMapping(url = "/user/create", method = Method.POST)
 public class UserCreateServlet implements Servlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserCreateServlet.class);
@@ -30,11 +31,11 @@ public class UserCreateServlet implements Servlet {
 
 		lock.lock();
 		try {
-			Optional<User> findUser = Database.findUserById(user.getUserId());
+			Optional<User> findUser = UserDatabase.findUserById(user.getUserId());
 			verifyCreateUser(findUser);
-			Database.addUser(user);
+			UserDatabase.addUser(user);
 
-			logger.info("Registered UserId: {}", Database.findUserById(user.getUserId()));
+			logger.info("Registered UserId: {}", UserDatabase.findUserById(user.getUserId()));
 		} finally {
 			lock.unlock();
 		}
