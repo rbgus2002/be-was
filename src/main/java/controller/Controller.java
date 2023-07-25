@@ -8,6 +8,7 @@ import http.HttpResponse;
 import http.HttpStatus;
 import http.MIME;
 import view.IndexPage;
+import view.ListPage;
 import view.Page;
 import view.ProfilePage;
 
@@ -20,6 +21,7 @@ public abstract class Controller {
     private final Page page = new Page();
     private final ProfilePage profilePage = new ProfilePage();
     private final IndexPage indexPage = new IndexPage();
+    private final ListPage listPage = new ListPage();
 
     public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) {
         try {
@@ -41,6 +43,9 @@ public abstract class Controller {
                             .setContentType(MIME.getMIME().get(HTML));
                 if (uri.endsWith(PROFILE))
                     return loadFileFromString(HttpStatus.OK, profilePage.getProfilePage(httpRequest), PROFILE)
+                            .setContentType(MIME.getMIME().get(HTML));
+                if (uri.endsWith(LIST))
+                    return loadFileFromString(HttpStatus.OK, listPage.getListPage(httpRequest), LIST)
                             .setContentType(MIME.getMIME().get(HTML));
                 return loadTemplatesFromPath(HttpStatus.OK, uri)
                         .setContentType(MIME.getMIME().get(HTML));
