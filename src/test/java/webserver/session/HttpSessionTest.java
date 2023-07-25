@@ -16,7 +16,7 @@ class HttpSessionTest {
 		final String sessionId = httpSession.createSession("haechan");
 
 		// then
-		Assertions.assertThat(httpSession.verifySession("haechan", sessionId)).isTrue();
+		Assertions.assertThat(httpSession.verifySession(sessionId)).isTrue();
 	}
 
 }
