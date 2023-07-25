@@ -37,7 +37,7 @@ public class DynamicFileController {
             "                  <div class=\"wrap\">\n" +
             "                      <div class=\"main\">\n" +
             "                          <strong class=\"subject\">\n" +
-            "                              <a href=\"./qna/show.html\">%s</a>\n" +
+            "                              <a href=\"./qna/show.html?postId=%d\">%s</a>\n" +
             "                          </strong>\n" +
             "                          <div class=\"auth-info\">\n" +
             "                              <i class=\"icon-add-comment\"></i>\n" +
@@ -46,7 +46,7 @@ public class DynamicFileController {
             "                          </div>\n" +
             "                          <div class=\"reply\" title=\"댓글\">\n" +
             "                              <i class=\"icon-reply\"></i>\n" +
-            "                              <span class=\"point\">%s</span>\n" +
+            "                              <span class=\"postId\">%d</span>\n" +
             "                          </div>\n" +
             "                      </div>\n" +
             "                  </div>\n" +
@@ -122,7 +122,7 @@ public class DynamicFileController {
         Collection<Post> postList = PostService.getAllPost();
         StringBuilder sb = new StringBuilder();
         for(Post post: postList) {
-            sb.append(String.format(POST_LIST_LI, post.getTitle(), post.getUserId(), post.getPostId()));
+            sb.append(String.format(POST_LIST_LI, post.getPostId(), post.getTitle(), post.getUserId(), post.getPostId()));
         }
         httpDocument = appendElement(httpDocument, POST_LIST_UL, sb.toString());
 
