@@ -1,14 +1,12 @@
 package application.repositiory;
 
 import application.dto.UserDto;
-import exception.InvalidPathException;
 import exception.InvalidQueryParameterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
