@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static utils.StringUtils.HOST_DOMAIN;
 import static webserver.WebServer.logger;
 import static webserver.controller.ApplicationControllerHandler.executeMethod;
 
@@ -63,7 +62,7 @@ public class HttpHandler {
                     String redirectPath = resultStringValue.substring(resultStringValue.indexOf(":") + 1);
                     logger.debug(redirectPath);
                     httpResponseMessage.setStatusLine(HttpStatus.FOUND);
-                    httpResponseMessage.setHeader("Location", HOST_DOMAIN + redirectPath);
+                    httpResponseMessage.setHeader("Location", redirectPath);
                     logger.debug(httpResponseMessage.toString());
                     return;
                 }
