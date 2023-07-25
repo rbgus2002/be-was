@@ -17,11 +17,6 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @RequestMapping(method = HttpMethod.GET, value = "/list.html")
-    public String redirectUserList() {
-        return "/user/list";
-    }
-
     @RequestMapping(method = HttpMethod.POST, value = "/login")
     public String login(@RequestParam("userId") String userId,
                         @RequestParam("password") String password,
