@@ -1,5 +1,6 @@
 package webserver.view.view;
 
+import exception.internalServerError.FileRenderException;
 import webserver.Constants.ContentType;
 import webserver.Constants.HttpVersion;
 import webserver.request.RequestPath;
@@ -21,12 +22,16 @@ public class StaticView implements View {
     }
 
     @Override
-    public void render(final HttpVersion version, final ContentType contentType, final Map<String, Object> model, final DataOutputStream dos) throws IOException {
+    public void render(final HttpVersion version, final ContentType contentType, final Map<String, Object> model, final DataOutputStream dos) throws FileRenderException {
 
-        byte[] body = Files.readAllBytes(Paths.get(filePath));
+        try {
+            byte[] body = Files.readAllBytes(Paths.get(filePath));
 
-        HttpResponse httpResponse = HttpResponse.ofWithBodyData(version, HttpStatus.OK, contentType, body);
-        httpResponse.sendResponse(dos);
+            HttpResponse httpResponse = HttpResponse.ofWithBodyData(version, HttpStatus.OK, contentType, body);
+            httpResponse.sendResponse(dos);
+        } catch (IOException e) {
+            throw new FileRenderException(filePath);
+        }
     }
 }
 
