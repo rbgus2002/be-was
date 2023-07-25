@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import annotations.AnnotationMap;
+import annotations.DeclaredControllers;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.statusline.StatusCode;
@@ -43,6 +43,9 @@ public class RequestHandler implements Runnable {
 			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
 
 			HttpResponse httpResponse = handleRequest(httpRequest);
+
+			resolveView(httpResponse);
+
 			httpResponse.response(out);
 
 		} catch (IOException | ReflectiveOperationException | IllegalArgumentException e) {
@@ -50,10 +53,15 @@ public class RequestHandler implements Runnable {
 		}
 	}
 
+	private HttpResponse resolveView(HttpResponse httpResponse) {
+
+	}
+
 	private HttpResponse handleRequest(final HttpRequest httpRequest) throws
 		ReflectiveOperationException,
 		IOException,
 		IllegalArgumentException {
+
 		HttpResponse httpResponse = new HttpResponse();
 		String path = runController(httpRequest, httpResponse);
 
@@ -75,8 +83,8 @@ public class RequestHandler implements Runnable {
 		InvocationTargetException,
 		IllegalAccessException {
 		String path = httpRequest.getPath();
-		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest, httpResponse);
+		if (DeclaredControllers.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
+			path = DeclaredControllers.runController(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest, httpResponse);
 		}
 		return path;
 	}
