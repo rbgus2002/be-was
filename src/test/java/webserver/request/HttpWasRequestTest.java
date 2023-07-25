@@ -72,4 +72,20 @@ class HttpWasRequestTest {
 		softAssertions.assertThat(httpWasRequest.getAttribute("Host")).as("host 테스트").isEqualTo("localhost:8080");
 		softAssertions.assertThat(httpWasRequest.getAttribute("Accept")).as("Accept 테스트").isEqualTo("*/*");
 	}
+
+	@Test
+	@DisplayName("name과 value만 있어도 SID를 제대로 가져와야한다")
+	void getSessionIdOnlyNameAndValue() throws IOException {
+		// given
+		String request = "POST /user/login HTTP/1.1 \r\n"
+			+ "Host: localhost:8080\r\n"
+			+ "Set-Cookie: SID=12345";
+		final ByteArrayInputStream inputStream = new ByteArrayInputStream(request.getBytes());
+
+		// when
+		final HttpWasRequest httpWasRequest = new HttpWasRequest(inputStream);
+
+		// then
+		assertThat(httpWasRequest.getSessionId()).isEqualTo("12345");
+	}
 }
