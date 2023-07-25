@@ -76,4 +76,9 @@ public class HttpResponse {
     public Map<String, String> getHeaders() {
         return headers;
     }
+
+    public void setSession(HttpSession session) {
+        String sid = session.getSid();
+        headers.put("Set-Cookie", "sid=" + sid + "; Path=/");
+    }
 }

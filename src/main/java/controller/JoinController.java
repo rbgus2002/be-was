@@ -1,11 +1,11 @@
 package controller;
 
 import db.Database;
+import http.HttpRequest;
+import http.HttpResponse;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
 
 public enum JoinController implements HttpController {
     JOIN_CONTROLLER;
@@ -13,8 +13,8 @@ public enum JoinController implements HttpController {
     private static final Logger logger = LoggerFactory.getLogger(JoinController.class);
 
     @Override
-    public String process(Map<String, String> requestParams) {
-        Database.addUser(new User(requestParams));
+    public String process(HttpRequest request, HttpResponse response) {
+        Database.addUser(new User(request.getParams()));
         for (User user : Database.findAll()) {
             logger.debug("{}", user);
         }
