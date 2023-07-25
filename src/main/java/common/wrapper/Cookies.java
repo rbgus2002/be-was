@@ -1,13 +1,13 @@
-package common.http;
+package common.wrapper;
 
-public class Headers extends KeyValuePair {
+public class Cookies extends KeyValuePair {
 
-    public Headers() {
+    public Cookies() {
         super();
     }
 
-    public Headers(String headerString) {
-        super(headerString, "\r\n", ":");
+    public Cookies(String cookieString) {
+        super(cookieString, ";\\s?", "=");
     }
 
     @Override
@@ -15,7 +15,7 @@ public class Headers extends KeyValuePair {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Headers that = (Headers) o;
+        Cookies that = (Cookies) o;
 
         return this.map.equals(that.map);
     }

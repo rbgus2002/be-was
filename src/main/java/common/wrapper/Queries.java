@@ -1,4 +1,4 @@
-package common.http;
+package common.wrapper;
 
 public class Queries extends KeyValuePair {
     public Queries() {

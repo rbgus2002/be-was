@@ -1,4 +1,4 @@
-package common.http;
+package common.wrapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +31,8 @@ public abstract class KeyValuePair {
         return map.get(key);
     }
 
-    public boolean isEmpty() {
-        return map.isEmpty();
+    public boolean containsKey(String key) {
+        return map.containsKey(key);
     }
 
     private String[] extractKeyValue(String pair, String keyValueDelimiter) {

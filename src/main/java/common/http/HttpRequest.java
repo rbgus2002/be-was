@@ -2,6 +2,9 @@ package common.http;
 
 import common.enums.ContentType;
 import common.enums.RequestMethod;
+import common.wrapper.Cookies;
+import common.wrapper.Headers;
+import common.wrapper.Queries;
 
 import static utils.StringUtils.NEW_LINE;
 
@@ -45,6 +48,10 @@ public class HttpRequest {
 
     public Headers getHeaders() {
         return headers;
+    }
+
+    public Cookies getCookies() {
+        return headers.getCookies();
     }
 
     public String getBody() {

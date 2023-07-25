@@ -16,4 +16,5 @@ public enum ResponseCode {
     public String getDescription() {
         return description;
     }
+
 }

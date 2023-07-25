@@ -28,14 +28,14 @@ public class Dispatcher {
         ModelView mv = null;
         try {
             Method controllerMethod = mapper.getControllerMethod(request.getRequestMethod(), request.getRequestPath());
-            mv = (ModelView) controllerMethod.invoke(controller, request);
+            mv = (ModelView) controllerMethod.invoke(controller, request, response);
 
         } catch (NoSuchControllerMethodException e) {
             mv = new ModelView(ERROR_PAGE);
 
         } finally {
             if (mv != null) {
-                View view = ViewResolver.resolve(mv.getViewName());
+                View view = ViewResolver.resolveViewName(mv.getViewName());
                 view.render(mv.getModel(), request, response);
             }
         }
