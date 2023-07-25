@@ -1,6 +1,29 @@
 # java-was-2023
 Java Web Application Server 2023
 
+# Step5
+## 미션 수행 목표
+- [X] : 가입한 회원 정보로 로그인할 수 있다.
+- [X] : [로그인] 메뉴를 클릭하면 user/login.html로 이동
+- [X] : 로그인 성공 시 index.html로 이동
+- [X] : 로그인 실패 시 /user/login_failed.html로 이동
+- [X] : 로그인 시 클라이언트에게 세션 id가 담긴 쿠키 반환
+- [X] : 서버에서는 User 정보가 담긴 세션을 관리한다.
+-  
+
+## 미션 수행 기록
+- 가입된 회원 정보로 로그인을 할 수 있어야 된다.
+- 회원 가입 정보로 로그인 하면 세션에 데이터 저장하고 쿠키 발급
+  - 로그인 성공 시 index.html로 이동 (쿠키 발급O)
+  - 로그인 실패 시 실패 페이지로 이동 (쿠키 발급X)
+- response = Set-Cookie: yummy_cookie=choco
+- 요청 -> 핸들러 찾아서 실행 -> 실행한 결과를 토대로 응답 데이터 생성(쿠키 및 세션 생성) -> 응답
+- 로그인 성공 -> index.html로 리다이렉트 및 쿠키 반환
+- UserController에서 viewpath와 model 객체를 가지는 ModelAndView를 반환하도록 기능 추가
+- 응답 헤더의 쿠키에 쿠키가 만들어진 시간으로부터 10분 뒤를 Expires로 설정
+  - 이때, LocalDateTime 형식을 GMT 형식으로 바꿔주기 위한 GMTStringConverter 추가
+- 현재 다양한 상황에 대한 예외 처리가 많이 부족한 상태인 것 같다.
+
 # Step4
 ## 미션 수행 목표
 - [X] : HTTP POST의 동작 방식 이해
