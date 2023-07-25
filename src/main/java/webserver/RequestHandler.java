@@ -13,8 +13,6 @@ public class RequestHandler implements Runnable {
 
     private final Socket connection;
 
-
-
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
@@ -27,7 +25,7 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
-            
+
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
             HTTPServletResponse response = new HTTPServletResponse(dos);

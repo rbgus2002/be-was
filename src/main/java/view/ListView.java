@@ -14,9 +14,8 @@ public class ListView {
         for (User user : all) {
             addString +=
                     "                <tr>\n" +
-                            "                    <th scope=\"row\">" + index + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n" +
+                            "                    <th scope=\"row\">" + (index++) + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n" +
                             "                </tr>\n";
-            index++;
         }
 
         sb.append("<!DOCTYPE html>\n" +
