@@ -22,12 +22,15 @@ public class HttpHandler {
     }
 
     public void handling() {
-        if (httpRequestMessage.getExtension() != null) {
-            // 자원을 요청하는 경우
+        if (isResourceRequest()) {
             handlingResource();
             return;
         }
         handlingController();
+    }
+
+    private boolean isResourceRequest() {
+        return httpRequestMessage.getExtension() != null;
     }
 
     private void handlingResource() {
@@ -37,7 +40,7 @@ public class HttpHandler {
             httpResponseMessage.setStatusLine(HttpStatus.OK);
             httpResponseMessage.setBody(body);
             httpResponseMessage.setHeader("Content-Type", HttpMIME.findBy(httpRequestMessage.getExtension()).getType() + "; charset=UTF-8");
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (IOException e) {
             httpResponseMessage.setStatusLine(HttpStatus.NOT_FOUND);
             httpResponseMessage.setBody("");
             logger.error("요청 파일 경로에 파일이 존재하지 않습니다. {}", e.getLocalizedMessage());
