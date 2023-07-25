@@ -17,9 +17,17 @@ import java.util.Map;
 
 public class FrontController {
     private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
-    Map<String, HttpController> controllerMap = new HashMap<>();
+    private final Map<String, HttpController> controllerMap = new HashMap<>();
 
-    public FrontController() {
+    public static FrontController getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final FrontController INSTANCE = new FrontController();
+    }
+
+    private FrontController() {
         controllerMap.put("/", new HomeController());
         controllerMap.put("/index.html", new HomeController());
         controllerMap.put("/user/create", new JoinController());

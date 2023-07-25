@@ -30,7 +30,7 @@ public class RequestHandler implements Runnable {
         ) {
             HttpRequest request = HttpRequestParser.parseRequest(br);
             HttpResponse response = new HttpResponse();
-            FrontController controller = new FrontController();
+            FrontController controller = FrontController.getInstance();
             controller.service(dos, request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
