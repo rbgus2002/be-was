@@ -41,7 +41,7 @@ public class HttpResponse {
         this.statusCode = statusCode;
         this.mime = convertExtensionToMime(getExtension(path));
 
-        if (mime.equals(MIME.html)) {
+        if (mime == MIME.HTML) {
             this.body = Files.readAllBytes(new File(TEMPLATE_PATH + path).toPath());
         } else {
             this.body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
@@ -62,9 +62,16 @@ public class HttpResponse {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + mime.getContentType() + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            writeHeaders(dos);
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private void writeHeaders(DataOutputStream dos) throws IOException {
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            dos.writeBytes(entry.getKey() + ": " + entry.getValue() + "\r\n");
         }
     }
 
@@ -72,6 +79,7 @@ public class HttpResponse {
         try {
             dos.writeBytes("HTTP/1.1 302 FOUND\r\n");
             dos.writeBytes("Location: " + location + "\r\n");
+            writeHeaders(dos);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -84,5 +92,9 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public void setCookie(String sessionId) {
+        this.headers.put("Set-Cookie", "sid=" + sessionId + "; Path=/");
     }
 }
