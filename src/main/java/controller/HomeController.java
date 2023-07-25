@@ -5,8 +5,7 @@ import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
-public enum HomeController implements HttpController {
-    HOME_CONTROLLER;
+public class HomeController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {

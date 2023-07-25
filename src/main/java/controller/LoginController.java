@@ -6,8 +6,7 @@ import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
-public enum LoginController implements HttpController {
-    LOGIN_CONTROLLER;
+public class LoginController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {

@@ -7,8 +7,7 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public enum JoinController implements HttpController {
-    JOIN_CONTROLLER;
+public class JoinController implements HttpController {
 
     private static final Logger logger = LoggerFactory.getLogger(JoinController.class);
 

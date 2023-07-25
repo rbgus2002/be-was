@@ -1,6 +1,6 @@
 package webserver;
 
-import controller.HttpController;
+import controller.*;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.Utils;
@@ -15,29 +15,23 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static controller.HomeController.HOME_CONTROLLER;
-import static controller.JoinController.JOIN_CONTROLLER;
-import static controller.LoginController.LOGIN_CONTROLLER;
-import static controller.StaticController.STATIC_CONTROLLER;
-import static controller.UserListController.USER_LIST_CONTROLLER;
-
 public class FrontController {
     private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
     Map<String, HttpController> controllerMap = new HashMap<>();
 
     public FrontController() {
-        controllerMap.put("/", HOME_CONTROLLER);
-        controllerMap.put("/index.html", HOME_CONTROLLER);
-        controllerMap.put("/user/create", JOIN_CONTROLLER);
-        controllerMap.put("/user/login", LOGIN_CONTROLLER);
-        controllerMap.put("/user/login.html", LOGIN_CONTROLLER);
-        controllerMap.put("/user/list", USER_LIST_CONTROLLER);
-        controllerMap.put("/user/list.html", USER_LIST_CONTROLLER);
+        controllerMap.put("/", new HomeController());
+        controllerMap.put("/index.html", new HomeController());
+        controllerMap.put("/user/create", new JoinController());
+        controllerMap.put("/user/login", new LoginController());
+        controllerMap.put("/user/login.html", new LoginController());
+        controllerMap.put("/user/list", new UserListController());
+        controllerMap.put("/user/list.html", new UserListController());
     }
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
         String url = request.getUrl();
-        HttpController controller = controllerMap.getOrDefault(url, STATIC_CONTROLLER);
+        HttpController controller = controllerMap.getOrDefault(url, new StaticController());
         String viewName = controller.process(request, response);
         viewResolve(viewName, response);
         render(dos, response);
