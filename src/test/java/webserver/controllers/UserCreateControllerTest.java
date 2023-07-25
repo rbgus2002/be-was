@@ -6,10 +6,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import webserver.container.ControllerContainer;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.HttpResponseStatus.*;
@@ -20,7 +22,7 @@ class UserCreateControllerTest {
 
     @Test
     @DisplayName("handleUserCreateRequest의 기능 확인 테스트")
-    void handleUserCreateRequest() throws IOException {
+    void handleUserCreateRequest() throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .setHeader("Host: localhost:8080")
@@ -28,7 +30,7 @@ class UserCreateControllerTest {
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = FrontController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
 
         User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
 
@@ -48,7 +50,7 @@ class UserCreateControllerTest {
 
     @Test
     @DisplayName("중복된 userId로 create 요청이 들어올 경우 두번째 요청은 form.html을 반환")
-    void handleUserCreateRequestWithSameUserId() throws IOException {
+    void handleUserCreateRequestWithSameUserId() throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .setHeader("Host: localhost:8080")
@@ -56,7 +58,7 @@ class UserCreateControllerTest {
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = FrontController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
 
         User actualUser = new User("javajigi", "password", "박재성", "javajigi@slipp.net");
 
@@ -80,14 +82,14 @@ class UserCreateControllerTest {
             , "/user/create?userId=&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net"
             , "/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email="})
     @DisplayName("handleUserCreateRequest의 기능 확인 테스트2")
-    void handleUserCreateRequest2(String wrongUri) throws IOException {
+    void handleUserCreateRequest2(String wrongUri) throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
                 .uri(wrongUri)
                 .version("HTTP/1.1")
                 .build();
 
-        HttpResponse response = FrontController.getInstance().resolveRequest(testRequest);
+        HttpResponse response = ControllerContainer.getInstance().getController(testRequest);
 
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(BAD_REQUEST)

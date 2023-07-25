@@ -3,11 +3,9 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.container.ControllerContainer;
-import webserver.controllers.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpRequestParser;
 import webserver.http.HttpResponse;
-import webserver.controllers.FrontController;
 import webserver.http.HttpResponseRenderer;
 
 import java.io.DataOutputStream;
@@ -37,9 +35,8 @@ public class RequestHandler implements Runnable {
 
             HttpResponse response = ControllerContainer.getInstance().getController(request);
 
-//            HttpResponse response = FrontController.getInstance().resolveRequest(request);
-
             HttpResponseRenderer.getInstance().responseRender(dos, response);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         } catch (InvocationTargetException e) {

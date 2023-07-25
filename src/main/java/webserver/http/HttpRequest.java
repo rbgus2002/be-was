@@ -51,6 +51,20 @@ public class HttpRequest {
             return this;
         }
 
+        public int getContentLength() {
+            if(this.headers.getHeader("Content-Length") == null){
+                return 0;
+            }
+            return Integer.parseInt(this.headers.getHeader("Content-Length"));
+        }
+
+        public HttpRequest.Builder setBody(String bodyString) {
+            int splitIndex = bodyString.indexOf("=");
+            this.body.put(bodyString.substring(0, splitIndex).trim(),
+                    bodyString.substring(splitIndex + 1).trim());
+            return this;
+        }
+
         public HttpRequest.Builder method(String method) {
             this.method = method;
             return this;

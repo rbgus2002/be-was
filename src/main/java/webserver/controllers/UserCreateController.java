@@ -9,15 +9,13 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 
 import static service.UserService.addUser;
 import static webserver.http.enums.ContentType.HTML;
-import static webserver.http.enums.HttpResponseStatus.*;
+import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
+import static webserver.http.enums.HttpResponseStatus.FOUND;
 
 @RequestPath(path = "/user/create")
 public class UserCreateController implements Controller {
@@ -26,7 +24,17 @@ public class UserCreateController implements Controller {
     @RequestMethod(method = "GET")
     public HttpResponse handleGet(HttpRequest request) {
         Map<String, String> parameters = request.uri().getParameters();
+        return handleRequest(request, parameters);
+    }
 
+    @RequestMethod(method = "POST")
+    public HttpResponse handlePost(HttpRequest request) throws IOException {
+        logger.debug("HERE");
+        Map<String, String> parameters = request.body();
+        return handleRequest(request, parameters);
+    }
+
+    private HttpResponse handleRequest(HttpRequest request, Map<String, String> parameters) {
         if (!verifyParameter(parameters)) {
             return createErrorResponse(request, BAD_REQUEST);
         }
@@ -45,31 +53,6 @@ public class UserCreateController implements Controller {
                 .status(FOUND)
                 .contentType(HTML)
                 .setHeader("Location: ".concat(path))
-                .build();
-    }
-
-    @RequestMethod(method = "POST")
-    public HttpResponse handlePost(HttpRequest request) throws IOException {
-//        Map<String, String> parameters = request.uri().getParameters();
-//
-//        if (!verifyParameter(parameters)) {
-//            return createErrorResponse(request, BAD_REQUEST);
-//        }
-
-        HttpResponse.Builder builder = HttpResponse.newBuilder();
-
-//        User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
-//        logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
-//
-//        String path = "http://".concat(request.getHeader("Host").concat("/index.html"));
-//        if (!addUser(user)) {
-//            path = "http://".concat(request.getHeader("Host").concat("/user/form.html"));
-//        }
-
-        return builder.version(request.version())
-                .status(OK)
-                .contentType(HTML)
-                .body(Files.readAllBytes(Path.of(System.getProperty("user.dir").concat("/src/main/resources/templates/index.html"))))
                 .build();
     }
 

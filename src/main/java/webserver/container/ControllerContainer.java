@@ -91,7 +91,7 @@ public class ControllerContainer {
         if (method == null) {
             method = methodMap.get(defaultPoint);
             controller = controllerMap.get(defaultPoint.path);
-            logger.debug(method.toString());
+            logger.debug(controller.toString());
             return (HttpResponse) method.invoke(controller, request);
         }
         return (HttpResponse) method.invoke(controller, request);
