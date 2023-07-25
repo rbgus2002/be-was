@@ -2,13 +2,16 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Parser;
+
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
+
+import static util.Parser.*;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
@@ -17,28 +20,32 @@ public class HttpResponse {
 
     private String path;
     private MIME mime;
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
     private byte[] body;
     private HttpStatusCode statusCode;
 
-    public HttpResponse(String path, HttpStatusCode statusCode, MIME mime) throws IOException {
+    public HttpResponse() {
+    }
+
+    public void ok(String path) throws IOException {
+        setResponse(path, HttpStatusCode.OK);
+    }
+
+    public void redirect(String path) throws IOException {
+        setResponse(path, HttpStatusCode.FOUND);
+    }
+
+    // TODO: 적절한 이름으로 바꾸기
+    private void setResponse(String path, HttpStatusCode statusCode) throws IOException {
         this.path = path;
         this.statusCode = statusCode;
-        this.mime = mime;
+        this.mime = convertExtensionToMime(getExtension(path));
 
-        if (mime.equals(MIME.html) || mime == null) {
+        if (mime.equals(MIME.html)) {
             this.body = Files.readAllBytes(new File(TEMPLATE_PATH + path).toPath());
         } else {
             this.body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
         }
-    }
-
-    public static HttpResponse ok(String path, MIME mime) throws IOException {
-        return new HttpResponse(path, HttpStatusCode.OK, mime);
-    }
-
-    public static HttpResponse redirect(String path, MIME mime) throws IOException {
-        return new HttpResponse(path, HttpStatusCode.FOUND, mime);
     }
 
     public void response(DataOutputStream dos) {
