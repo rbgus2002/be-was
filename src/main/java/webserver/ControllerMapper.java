@@ -2,8 +2,9 @@ package webserver;
 
 import application.controller.UserController;
 import application.controller.WebController;
+import exception.path.InvalidControllerPathException;
+import exception.path.InvalidMethodPathException;
 import support.annotation.RequestMapping;
-import exception.InvalidPathException;
 import webserver.request.HttpRequest;
 
 import java.lang.reflect.Method;
@@ -19,7 +20,9 @@ public class ControllerMapper {
     }
 
     public WebController getController(HttpRequest request) {
-        return controllers.get(request.getRootPath());
+        WebController controller = controllers.get(request.getRootPath());
+        if(controller == null) throw new InvalidControllerPathException(request.getRootPath());
+        return controller;
     }
 
     public Method getMethod(WebController controller, HttpRequest request) {
@@ -31,6 +34,6 @@ public class ControllerMapper {
                 }
             }
         }
-        throw new InvalidPathException();
+        throw new InvalidMethodPathException(request.getRootPath(), request.getFullPath());
     }
 }
