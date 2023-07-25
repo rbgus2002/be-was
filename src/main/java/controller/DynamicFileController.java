@@ -117,7 +117,7 @@ public class DynamicFileController {
     @RequestMapping(value="/qna/show.html?", method=Method.GET)
     public Response showQna(Request request) {
         Map<String, String> queryParameterMap = request.getQueryParameterMap();
-        int postId = Integer.parseInt(queryParameterMap.get(Post.POSTID));
+        int postId = Integer.parseInt(queryParameterMap.get(Post.POST_ID));
 
 
         return null;
