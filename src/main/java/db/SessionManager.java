@@ -30,7 +30,7 @@ public class SessionManager {
         if (cookie == null) {
             throw new IllegalArgumentException("Cookie 정보가 없습니다.");
         }
-        String[] tokens = cookie.split("sessionId=");
+        String[] tokens = cookie.split("SID=");
 
         for (String token : tokens) {
             String id = token.substring(0, token.indexOf(';') == token.length() ? token.length() - 1 : token.length());
