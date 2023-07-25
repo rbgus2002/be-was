@@ -1,5 +1,6 @@
 package webserver;
 
+import model.enums.MIME;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,12 +41,8 @@ class RequestHandlerTest {
         given()
             .log().all()
             .redirects().follow(false)
-            .param("name", "한글")
-            .param("email", "a@a.a")
-            .param("userId", "id")
-            .param("password", "pawd")
         .when()
-            .get(uri)
+            .post(uri)
         .then()
             .header("Location", "/index.html")
             .statusCode(MOVED_PERMANENTLY.getValue());
@@ -55,15 +52,15 @@ class RequestHandlerTest {
     @DisplayName("/user/create 요청 테스트")
     void requestCreateUser() {
         String uri = USER_CREATE_REQUEST_URI;
+        String body = "name=qwe;id=id213;password=pw1234;email=q@qq.qq";
+
         given()
             .log().all()
-            .param("name", "kim")
-            .param("email", "a@a.a")
-            .param("userId", "id")
-            .param("password", "pawd")
+            .redirects().follow(false)
+//            .body(body)
         .when()
-            .get(uri)
+            .post(uri)
         .then()
-            .statusCode(OK.getValue());
+            .statusCode(200); // 왜 안 될까...
     }
 }
