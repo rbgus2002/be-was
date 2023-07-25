@@ -2,14 +2,14 @@ package service;
 
 import exception.BadRequestException;
 import exception.NotExistUserException;
+import exception.SessionIdException;
 import model.User;
 
 import java.util.Map;
 
 import static db.Database.*;
 import static db.SessionDatabase.*;
-import static exception.ExceptionList.ALREADY_EXIST_USER;
-import static exception.ExceptionList.NOT_EXIST_USER;
+import static exception.ExceptionList.*;
 
 public class UserService {
     private final String USERID = "userId";
@@ -41,7 +41,13 @@ public class UserService {
             throw new NotExistUserException(NOT_EXIST_USER);
     }
 
-    private boolean checkSessionIdExist(String sessionId) {
-        return findAllSessionIds().stream().anyMatch(id -> id.equals(sessionId));
+    public void logoutUser(String sessionId) {
+        checkSessionIdExist(sessionId);
+        deleteSessionId(sessionId);
+    }
+
+    private void checkSessionIdExist(String sessionId) {
+        if (findAllSessionIds().stream().anyMatch(id -> id.equals(sessionId)))
+            throw new SessionIdException(NOT_EXIST_SESSION_ID);
     }
 }

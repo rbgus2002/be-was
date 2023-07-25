@@ -39,8 +39,12 @@ public class UserController extends Controller {
         String uri = httpRequest.getUri();
         if (uri.equals("/user/create")) {
             return createUser(parseParams(httpRequest.getBody()));
-        } else if (uri.equals("/user/login")) {
+        }
+        if (uri.equals("/user/login")) {
             return loginUser(parseParams(httpRequest.getBody()));
+        }
+        if (uri.equals("/user/logout")) {
+            return logoutUser(httpRequest.getSessionId());
         }
         throw new BadRequestException(INVALID_URI);
     }
@@ -66,6 +70,12 @@ public class UserController extends Controller {
         String sessionId = userService.loginUser(parameters);
         return loadTemplatesFromPath(HttpStatus.FOUND, INDEX)
                 .setSessionId(sessionId);
+    }
+
+    private HttpResponse.ResponseBuilder logoutUser(String sessionId) {
+        userService.logoutUser(sessionId);
+        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX)
+                .setSessionId("");
     }
 
 }

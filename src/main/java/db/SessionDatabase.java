@@ -14,8 +14,8 @@ public class SessionDatabase {
         sessionIds.put(sessionId, userId);
     }
 
-    public static void deleteSessionId(String userId) {
-        sessionIds.remove(userId);
+    public static void deleteSessionId(String sessionId) {
+        sessionIds.remove(sessionId);
     }
 
     public static String createSessionId() {
