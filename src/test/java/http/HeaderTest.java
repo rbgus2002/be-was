@@ -1,4 +1,4 @@
-package webserver.http;
+package http;
 
 import http.Header;
 import org.junit.jupiter.api.BeforeEach;

@@ -28,7 +28,6 @@ class ControllerTest {
         return body;
     }
 
-
     @Nested
     class loginUser{
         @Test
@@ -56,6 +55,5 @@ class ControllerTest {
             // then
             assertEquals("/user/login_failed.html", result);
         }
-
     }
 }

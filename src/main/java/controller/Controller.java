@@ -2,6 +2,7 @@ package controller;
 
 import annotation.PostMapping;
 import db.Database;
+import db.SessionManager;
 import model.User;
 import model.factory.UserFactory;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class Controller {
             logger.error("아이디 혹은 비밀번호가 일치하지 않습니다.");
             return "/user/login_failed.html";
         }
+        SessionManager.createSession(user.get());
         return "redirect:";
     }
 }

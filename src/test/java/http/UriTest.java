@@ -1,4 +1,4 @@
-package webserver.http;
+package http;
 
 import http.Uri;
 import org.junit.jupiter.api.DisplayName;
