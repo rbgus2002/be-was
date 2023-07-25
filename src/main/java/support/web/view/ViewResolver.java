@@ -82,47 +82,44 @@ public abstract class ViewResolver {
     private static String parseCommand(String command, String argument, HttpRequest request) {
         if ("SESSION.GET_USERNAME".equals(command)) {
             String cookieHeader = request.getHeaderValue("Cookie");
-            if (cookieHeader == null) {
+            if (cookieHeader != null) {
+                String[] headerValue = cookieHeader.split(" ");
+                Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
+                if(sid.isPresent()) {
+                    String rsid = sid.get();
+                    Session session = Database.findSessionById(rsid.substring(4));
+                    if (session != null) {
+                        return session.getUser().getName();
+                    }
+                }
                 return "";
             }
-            String[] headerValue = cookieHeader.split(" ");
-            Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
-            if (sid.isEmpty()) {
-                return "";
-            }
-            String rsid = sid.get();
-            Session session = Database.findSessionById(rsid.substring(4));
-            if (session == null) {
-                return "";
-            }
-            return session.getUser().getName();
         } else if ("SESSION.IS_PRESENT".equals(command)) {
             String cookieHeader = request.getHeaderValue("Cookie");
-            if (cookieHeader == null) {
-                return "";
-            }
-            String[] headerValue = cookieHeader.split(" ");
-            Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
-            if (sid.isPresent()) {
-                String rsid = sid.get();
-                Session session = Database.findSessionById(rsid.substring(4));
-                if (session != null) {
-                    return argument;
+            if (cookieHeader != null) {
+                String[] headerValue = cookieHeader.split(" ");
+                Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
+                if (sid.isPresent()) {
+                    String rsid = sid.get();
+                    Session session = Database.findSessionById(rsid.substring(4));
+                    if (session != null) {
+                        return argument;
+                    }
                 }
             }
+
             return "";
         } else if ("SESSION.IS_EMPTY".equals(command)) {
             String cookieHeader = request.getHeaderValue("Cookie");
-            if (cookieHeader == null) {
-                return argument;
-            }
-            String[] headerValue = cookieHeader.split(" ");
-            Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
-            if (sid.isPresent()) {
-                String rsid = sid.get();
-                Session session = Database.findSessionById(rsid.substring(4));
-                if (session != null) {
-                    return "";
+            if (cookieHeader != null) {
+                String[] headerValue = cookieHeader.split(" ");
+                Optional<String> sid = Arrays.stream(headerValue).filter(s -> s.startsWith("sid")).findAny();
+                if (sid.isPresent()) {
+                    String rsid = sid.get();
+                    Session session = Database.findSessionById(rsid.substring(4));
+                    if (session != null) {
+                        return "";
+                    }
                 }
             }
             return argument;
@@ -143,8 +140,8 @@ public abstract class ViewResolver {
         response.buildHeader(new OK(MIME.getContentType(extension), bodyBytes.length));
     }
 
-    public static void buildView(HttpResponse response, View view) {
-        byte[] bodyBytes = view.view().getBytes();
+    public static void buildView(HttpRequest request, HttpResponse response, View view) {
+        byte[] bodyBytes = view.view(request, response).getBytes();
         response.setBody(bodyBytes);
         response.buildHeader(new OK(MIME.getContentType(".html"), bodyBytes.length));
     }

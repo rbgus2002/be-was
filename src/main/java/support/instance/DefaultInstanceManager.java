@@ -39,6 +39,9 @@ public class DefaultInstanceManager implements InstanceManager {
 
     @Override
     public <T> T getInstance(Class<T> clazz) {
+        if (clazz == null) {
+            return null;
+        }
         return clazz.cast(instances.get(clazz));
     }
 

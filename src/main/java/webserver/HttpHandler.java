@@ -7,9 +7,9 @@ import support.exception.HttpException;
 import support.exception.NotSupportedException;
 import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
-import support.web.view.ViewResolver;
 import support.web.view.View;
 import support.web.view.ViewFactory;
+import support.web.view.ViewResolver;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -32,10 +32,10 @@ public class HttpHandler {
 
         try {
             ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
-            try {
-                View view = viewFactory.getViewByName(path);
-                ViewResolver.buildView(response, view);
-            } catch (RuntimeException e) {
+            View view = viewFactory.getViewByName(path);
+            if (view != null) {
+                ViewResolver.buildView(request, response, view);
+            } else {
                 ViewResolver.buildView(request, response, path);
             }
             response.setStatus(HttpStatus.OK);
