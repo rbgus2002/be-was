@@ -9,6 +9,7 @@ public enum HttpStatus {
     BAD_REQUEST(400, "BAD REQUEST"),
     NOT_FOUND(404, "NOT FOUND"),
     UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
     HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported")
     ;
 
