@@ -1,10 +1,9 @@
-package webserver;
+package handler;
 
 import annotation.RequestMapping;
 import controller.UserController;
 import http.HttpMethod;
 import http.HttpRequest;
-import http.HttpResponse;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
