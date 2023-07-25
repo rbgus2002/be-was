@@ -1,10 +1,12 @@
 package controller;
 
 import annotation.RequestMapping;
+import db.SessionDatabase;
 import db.UserDatabase;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.HttpSession;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import util.Parser;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -31,7 +34,7 @@ public class UserController {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
         // TODO: 예외처리 및 에러페이지로 이동
-        if(UserDatabase.findUserById(params.get("userId")) != null) {
+        if (UserDatabase.findUserById(params.get("userId")) != null) {
             return "redirect:/index.html";
         }
 
@@ -49,21 +52,23 @@ public class UserController {
 
         User user = UserDatabase.findUserById(userId);
 
+        // login 성공시 /index.html 로 이동
         if (validateUser(user, password)) {
-            // login 실패시 /user/index_failed.html 로 이동
-            return "redirect:/user/login_failed.html";
+            // Set-Cookie
+            String sessionId = UUID.randomUUID().toString();
+            response.setCookie(sessionId);
+
+            HttpSession session = new HttpSession(sessionId);
+            SessionDatabase.addSession(sessionId, session);
+            session.setAttributes("user", user);
+            return "redirect:/index.html";
         }
 
-        // 로그인이 성공할 경우 HTTP 헤더의 쿠키 값을 SID=세션 ID 로 응답한다.
-
-        // login 성공시 /index.html 로 이동
-        return "redirect:/index.html";
+        // login 실패시 /user/index_failed.html 로 이동
+        return "redirect:/user/login_failed.html";
     }
 
     private boolean validateUser(User user, String password) {
-        if(user == null || !user.getPassword().equals(password)) {
-            return false;
-        }
-        return true;
+        return !(user == null || !user.getPassword().equals(password));
     }
 }
