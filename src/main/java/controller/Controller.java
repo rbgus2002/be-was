@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpUtils;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -58,6 +61,29 @@ public class Controller {
             return HttpResponse.redirect("/user/login_failed.html");
         }
     }
+
+    @RequestMapping(path = "/user/list.html", method = HttpUtils.Method.GET)
+    public HttpResponse list(Session session) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId == null) {
+            logger.debug("로그인되지 않은 사용자입니다.");
+            return HttpResponse.redirect("/index.html");
+        }
+        Optional<User> user = Database.findUserById(userId);
+        if (user.isEmpty()) {
+            logger.debug("로그인되지 않은 사용자입니다.");
+            return HttpResponse.redirect("/index.html");
+        }
+
+        List<UserResponse> userResponses = Database.findAll().stream().map(ModelConverter::toResponse).collect(Collectors.toList());
+
+        HttpResponse httpResponse = HttpResponse.ok("/user/list.html", Mime.HTML);
+        httpResponse.setViewParameters("view", "list");
+        httpResponse.setViewParameters("users", userResponses);
+        logger.debug("로그인된 사용자입니다.");
+        return httpResponse;
+    }
+
 
     private void validateUser(String userId, String password) {
         User user = Database.findUserById(userId)
