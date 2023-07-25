@@ -36,20 +36,21 @@ public class IndexPageController implements Controller {
     }
 
     private String createUserIndexPageHtml(String templateHtml, String username) {
+        String userIndexPageHtml = substituteLoginTextWithUserName(templateHtml, username);
+        return appendArticleListHtmlInto(userIndexPageHtml);
+    }
+
+    private String substituteLoginTextWithUserName(String templateHtml, String username) {
         String loginButton = "<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>";
         String userNameDisplayButton = "<li><a href=\"#\" role=\"button\">" + username + "</a></li>";
-
-        String userIndexPageHtml = templateHtml
-                .replace(loginButton, userNameDisplayButton);
-
-        return fillArticleListIntoHtml(userIndexPageHtml);
+        return templateHtml.replace(loginButton, userNameDisplayButton);
     }
 
     private String createGuestIndexPageHtml(String templateHtml) {
-        return fillArticleListIntoHtml(templateHtml);
+        return appendArticleListHtmlInto(templateHtml);
     }
 
-    private String fillArticleListIntoHtml(String html) {
+    private String appendArticleListHtmlInto(String html) {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (Article article : ArticleDatabase.findAll()) {
