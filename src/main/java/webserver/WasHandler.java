@@ -28,7 +28,9 @@ public class WasHandler {
 
 	public void service() {
 		try {
-			responseDynamicFile();
+			if (responseDynamicFile()) {
+				return;
+			}
 			final String resourcePath = httpWasRequest.getResourcePath();
 			if (httpWasResponse.isExistResource(resourcePath)) {
 				httpWasResponse.responseResource(resourcePath);
