@@ -28,23 +28,24 @@ public class WasHandler {
 	}
 
 	public void service() {
-		final String resourcePath = httpWasRequest.getResourcePath();
-		if (httpWasResponse.isExistResource(resourcePath)) {
-			httpWasResponse.responseResource(resourcePath);
-			return;
-		}
-
 		try {
-			apiService();
+			responseDynamicFile();
+			final String resourcePath = httpWasRequest.getResourcePath();
+			if (httpWasResponse.isExistResource(resourcePath)) {
+				httpWasResponse.responseResource(resourcePath);
+				return;
+			}
+			apiService(resourcePath);
 		} catch (InvocationTargetException | IllegalAccessException e) {
 			httpWasResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
 			httpWasResponse.setBody(e.getCause().getMessage() , HttpMimeType.NOTING);
 			httpWasResponse.doResponse();
 		}
+		
 	}
 
-	private void apiService() throws InvocationTargetException, IllegalAccessException {
-		final List<Method> methods = getResourcePathMethod();
+	private void apiService(String resourcePath) throws InvocationTargetException, IllegalAccessException {
+		final List<Method> methods = getResourcePathMethod(resourcePath);
 
 		if (methods.isEmpty()) {
 			httpWasResponse.setHttpStatus(HttpStatus.NOT_FOUND);
@@ -63,15 +64,31 @@ public class WasHandler {
 		httpWasResponse.setBody(HttpStatus.METHOD_NOT_ALLOWED.getName(), HttpMimeType.PLAIN);
 	}
 
+	private boolean responseDynamicFile() throws InvocationTargetException, IllegalAccessException {
+		final String resourcePath = httpWasRequest.getResourcePath();
+		final String[] token = resourcePath.split("\\.");
+
+		final List<Method> methods = getResourcePathMethod(token[0]);
+
+		if (methods.isEmpty())
+			return false;
+
+		final Optional<Method> matchHttpMethod = getMatchHttpMethod(methods, HttpMethod.GET.name());
+		if (matchHttpMethod.isPresent()) {
+			runApiMethod(matchHttpMethod.get());
+			return true;
+		}
+
+		return false;
+	}
+
 	private void runApiMethod(final Method method) throws InvocationTargetException, IllegalAccessException {
 		final Class<?> methodClass = method.getDeclaringClass();
 		frontController.getInstance(methodClass.getName());
 		method.invoke(frontController.getInstance(methodClass.getName()), httpWasRequest, httpWasResponse);
 	}
 
-	private List<Method> getResourcePathMethod() {
-		final String resourcePath = httpWasRequest.getResourcePath();
-
+	private List<Method> getResourcePathMethod(String resourcePath) {
 		final Method[] declaredMethods = Controller.class.getDeclaredMethods();
 		return Arrays.stream(declaredMethods)
 			.filter(method -> method.isAnnotationPresent(RequestMapping.class))
