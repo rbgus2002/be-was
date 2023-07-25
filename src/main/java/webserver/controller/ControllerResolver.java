@@ -4,6 +4,7 @@ import webserver.controller.article.ArticleSaveController;
 import webserver.controller.article.ArticleViewController;
 import webserver.controller.article.ArticleWriteController;
 import webserver.controller.file.FileController;
+import webserver.controller.index.IndexPageController;
 import webserver.controller.user.UserListController;
 import webserver.controller.user.UserLoginController;
 import webserver.controller.user.UserSaveController;
