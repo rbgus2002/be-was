@@ -1,6 +1,6 @@
 package webserver.controller.user;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import webserver.controller.Controller;
 import webserver.exceptions.BadRequestException;
@@ -49,11 +49,11 @@ public class UserSaveController implements Controller {
 
     private void addNewUser(String userId, String password, String name, String email) throws ConflictException {
         checkUserIdNotExists(userId);
-        Database.addUser(new User(userId, password, name, email));
+        UserDatabase.addUser(new User(userId, password, name, email));
     }
 
     private void checkUserIdNotExists(String userId) throws ConflictException {
-        if (Database.findUserById(userId) != null) {
+        if (UserDatabase.findUserById(userId) != null) {
             throw new ConflictException();
         }
     }

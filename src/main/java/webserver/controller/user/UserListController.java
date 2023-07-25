@@ -1,6 +1,6 @@
 package webserver.controller.user;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import webserver.controller.Controller;
 import webserver.http.HttpRequest;
@@ -67,7 +67,7 @@ public class UserListController implements Controller {
     }
 
     private void appendUserList(StringBuilder stringBuilder) {
-        User[] users = Database.findAll().toArray(new User[0]);
+        User[] users = UserDatabase.findAll().toArray(new User[0]);
 
         for (int index = 0; index < users.length; index++) {
             stringBuilder.append("                <tr>\r\n")

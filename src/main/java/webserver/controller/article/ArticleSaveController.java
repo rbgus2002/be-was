@@ -1,7 +1,7 @@
 package webserver.controller.article;
 
 import db.ArticleDatabase;
-import db.Database;
+import db.UserDatabase;
 import model.Article;
 import model.User;
 import webserver.controller.Controller;
@@ -42,7 +42,7 @@ public class ArticleSaveController implements Controller {
 
     private User getUser(String sessionId) {
         String userID = SessionManager.findUserIdBySessionId(sessionId);
-        return Database.findUserById(userID);
+        return UserDatabase.findUserById(userID);
     }
 
     private void redirectToIndexPage(HttpResponse httpResponse) {

@@ -1,6 +1,6 @@
 package webserver;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,7 +18,7 @@ class IndexPageControllerTest {
 
     @BeforeAll
     static void init() {
-        Database.addUser(new User("userId", "password", "userA", "email@naver.com"));
+        UserDatabase.addUser(new User("userId", "password", "userA", "email@naver.com"));
     }
 
     @Test

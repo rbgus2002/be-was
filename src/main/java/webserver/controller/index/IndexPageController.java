@@ -1,7 +1,7 @@
 package webserver.controller.index;
 
 import db.ArticleDatabase;
-import db.Database;
+import db.UserDatabase;
 import model.Article;
 import webserver.controller.Controller;
 import webserver.http.HttpRequest;
@@ -84,7 +84,7 @@ public class IndexPageController implements Controller {
     private String getUsername(HttpRequest httpRequest) {
         String sessionId = httpRequest.getCookie().get("sid");
         String userId = SessionManager.findUserIdBySessionId(sessionId);
-        return Database.findUserById(userId).getName();
+        return UserDatabase.findUserById(userId).getName();
     }
 
     private void setHttpResponseWithHtml(HttpResponse httpResponse, String html) {
