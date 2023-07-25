@@ -78,7 +78,7 @@ public class IndexView implements View {
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession != null) {
-            stringBuilder.append("                <%li><a>")
+            stringBuilder.append("                <li><a>")
                     .append(loginSession.getUser().getName())
                     .append("</a></li>");
         }
