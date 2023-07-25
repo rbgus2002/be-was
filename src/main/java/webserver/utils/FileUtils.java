@@ -12,19 +12,16 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    public static byte[] readFile(String path) throws IOException {
+    public static byte[] readFileBytes(String path) throws IOException {
         if (FileUtils.isStaticFile(path)) {
             return Files.readAllBytes(Paths.get(STATIC_DIRECTORY + path));
         }
         return Files.readAllBytes(Paths.get(TEMPLATES_DIRECTORY + path));
     }
 
-    public static String preprocessFilePath(String path) {
+    public static String checkFilePath(String path) {
         if (isFileExist(path)) {
             return path;
-        }
-        if (path.equals("/")) {
-            return "/index.html";
         }
         return "/404.html";
     }

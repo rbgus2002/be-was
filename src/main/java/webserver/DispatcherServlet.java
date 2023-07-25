@@ -27,7 +27,8 @@ public class DispatcherServlet implements Runnable {
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
 
-        try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream()); OutputStream out = connection.getOutputStream()) {
+        try (BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
+             BufferedOutputStream out = new BufferedOutputStream(connection.getOutputStream())) {
             HttpRequest httpRequest = new HttpRequest(in);
             HttpResponse httpResponse = new HttpResponse();
 
@@ -44,21 +45,29 @@ public class DispatcherServlet implements Runnable {
     }
 
     private Controller resolveController(HttpRequest httpRequest) {
-        String path = httpRequest.get(HttpField.PATH);
-        String method = httpRequest.get(HttpField.METHOD);
-
+        String path = httpRequest.getField(HttpField.PATH);
+        String method = httpRequest.getField(HttpField.METHOD);
         return controllerResolver.resolve(path, method);
     }
 
     private void sendResponse(HttpResponse httpResponse, OutputStream out) throws IOException {
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(out);
+        writeResponseHeaders(httpResponse, out);
+        writeBlankLine(out);
+        writeResponseBody(httpResponse, out);
+        out.flush();
+    }
 
-        bufferedOutputStream.write(httpResponse.getHeaderBytes());
-        bufferedOutputStream.write(HttpConstants.CRLF.getBytes());
+    private void writeResponseHeaders(HttpResponse httpResponse, OutputStream out) throws IOException {
+        out.write(httpResponse.getHeaderBytes());
+    }
+
+    private void writeBlankLine(OutputStream out) throws IOException {
+        out.write(HttpConstants.CRLF.getBytes());
+    }
+
+    private void writeResponseBody(HttpResponse httpResponse, OutputStream out) throws IOException {
         if (!httpResponse.isBodyEmpty()) {
-            bufferedOutputStream.write(httpResponse.getBodyBytes());
+            out.write(httpResponse.getBodyBytes());
         }
-
-        bufferedOutputStream.flush();
     }
 }

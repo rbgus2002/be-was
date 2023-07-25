@@ -25,4 +25,8 @@ public class HttpHeaders {
     public Set<String> getFieldNames() {
         return headers.keySet();
     }
+
+    public boolean contains(String name) {
+        return headers.containsKey(name);
+    }
 }

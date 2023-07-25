@@ -4,7 +4,6 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.controller.file.FileController;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
@@ -21,52 +20,11 @@ class FileControllerTest {
     HttpRequest httpRequest;
     HttpResponse httpResponse;
 
-
     @BeforeEach
     void init() {
         softAssertions = new SoftAssertions();
     }
 
-    @Test
-    @DisplayName("Request-URI가 '/'인 경우, /index.html 페이지를 응답한다")
-    void getWithoutPath() throws Exception {
-        //given
-        String requestMessage = "GET / HTTP/1.1\r\n"
-                + "\r\n";
-
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(requestMessage.getBytes());
-
-        initHttpRequestAndResponse(inputStream);
-
-        //when
-        fileController.process(httpRequest, httpResponse);
-
-        //then
-        softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK);
-        softAssertions.assertThat(httpResponse.get(HttpField.CONTENT_TYPE)).isEqualTo("text/html;charset=utf-8");
-        softAssertions.assertThat(Integer.parseInt(httpResponse.get(HttpField.CONTENT_LENGTH))).isGreaterThan(6000);
-    }
-
-    @Test
-    @DisplayName("/index.html 페이지 요청에 대한 응답을 검증한다")
-    void getIndexTest() throws Exception {
-        //given
-        String requestMessage = "GET /index.html HTTP/1.1\r\n"
-                + "\r\n";
-
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(requestMessage.getBytes());
-
-        initHttpRequestAndResponse(inputStream);
-
-        //when
-        fileController.process(httpRequest, httpResponse);
-
-        //then
-        softAssertions.assertThat(httpResponse.getStatus()).isEqualTo(HttpStatus.OK);
-        softAssertions.assertThat(httpResponse.get(HttpField.CONTENT_TYPE)).isEqualTo("text/html;charset=utf-8");
-        softAssertions.assertThat(Integer.parseInt(httpResponse.get(HttpField.CONTENT_LENGTH))).isGreaterThan(6000);
-    }
-    
     @Test
     @DisplayName("유효하지 않은 리소스 요청에 대한 응답은 '404 NOT FOUND'이어야 한다")
     void notFoundTest() throws Exception {

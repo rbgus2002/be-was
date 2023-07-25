@@ -9,7 +9,7 @@ public final class HttpParametersParser {
     public static HttpParameters parse(String parameters) {
         HttpParameters httpParameters = new HttpParameters();
 
-        if (parameters == null || parameters.isEmpty()) {
+        if (parameters == null || parameters.isBlank()) {
             return httpParameters;
         }
 
@@ -19,12 +19,10 @@ public final class HttpParametersParser {
             }
 
             String[] tokens = parameter.split("=");
-
             if (tokens.length == 2) {
                 httpParameters.put(tokens[0], tokens[1]);
             }
         }
-
         return httpParameters;
     }
 }

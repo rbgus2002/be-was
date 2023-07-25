@@ -12,9 +12,6 @@ public class Session {
     }
 
     public boolean verifySessionId(String sessionId) {
-        if (sessionId == null) {
-            return false;
-        }
         return sessionId.equals(this.sessionId);
     }
 

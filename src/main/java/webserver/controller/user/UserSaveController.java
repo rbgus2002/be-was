@@ -25,8 +25,8 @@ public class UserSaveController implements Controller {
             String email = httpParameters.get("email");
 
             verifyParameters(userId, password, name, email);
-            addUser(userId, password, name, email);
-            processResponse(httpResponse);
+            addNewUser(userId, password, name, email);
+            redirectToIndexPage(httpResponse);
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (ConflictException e) {
@@ -35,27 +35,30 @@ public class UserSaveController implements Controller {
     }
 
     private void verifyParameters(String userId, String password, String name, String email) throws BadRequestException {
-        if (userId == null || password == null || name == null || email == null) {
-            throw new BadRequestException();
-        }
-        if (userId.isEmpty() || password.isEmpty() || name.isEmpty() || email.isEmpty()) {
+        checkNullOrBlank(userId);
+        checkNullOrBlank(password);
+        checkNullOrBlank(name);
+        checkNullOrBlank(email);
+    }
+
+    private void checkNullOrBlank(String parameter) throws BadRequestException {
+        if(parameter == null || parameter.isBlank()) {
             throw new BadRequestException();
         }
     }
 
-    private void addUser(String userId, String password, String name, String email) throws ConflictException {
-        verifyUserId(userId);
+    private void addNewUser(String userId, String password, String name, String email) throws ConflictException {
+        checkUserIdNotExists(userId);
         Database.addUser(new User(userId, password, name, email));
     }
 
-    private void verifyUserId(String userId) throws ConflictException {
-        if (Database.findUserById(userId) == null) {
-            return;
+    private void checkUserIdNotExists(String userId) throws ConflictException {
+        if (Database.findUserById(userId) != null) {
+            throw new ConflictException();
         }
-        throw new ConflictException();
     }
 
-    private void processResponse(HttpResponse httpResponse) {
+    private void redirectToIndexPage(HttpResponse httpResponse) {
         httpResponse.setStatus(HttpStatus.FOUND);
         httpResponse.set(HttpField.LOCATION, "/index.html");
     }

@@ -13,11 +13,13 @@ import java.io.IOException;
 public class FileController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String filePath = httpRequest.get(HttpField.PATH);
+        String filePath = httpRequest.getField(HttpField.PATH);
+        String responsePage = FileUtils.checkFilePath(filePath);
+        processFileResponse(httpResponse, responsePage);
+    }
 
-        filePath = FileUtils.preprocessFilePath(filePath);
-
-        byte[] body = FileUtils.readFile(filePath);
+    private void processFileResponse(HttpResponse httpResponse, String filePath) throws IOException {
+        byte[] body = FileUtils.readFileBytes(filePath);
         HttpStatus status = resolveHttpStatus(filePath);
         String contentType = ContentTypeResolver.getContentType(filePath);
 
