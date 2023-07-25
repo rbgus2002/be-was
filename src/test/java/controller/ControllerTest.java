@@ -2,8 +2,7 @@ package controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.response.HttpResponse;
 
 import java.io.IOException;
 import java.util.HashMap;

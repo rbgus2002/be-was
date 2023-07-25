@@ -3,7 +3,7 @@ package webserver;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

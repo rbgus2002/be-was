@@ -2,7 +2,7 @@ package controller;
 
 import controller.annotaion.PostMapping;
 import service.UserService;
-import webserver.http.HttpResponse;
+import webserver.http.response.HttpResponse;
 
 import java.io.IOException;
 import java.util.Map;
