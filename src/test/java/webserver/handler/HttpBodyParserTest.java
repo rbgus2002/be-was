@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static webserver.handler.HttpBodyParser.parseUrlEncoded;
+import static webserver.handler.HttpBodyParser.parseBodyByContentType;
 
 @DisplayName("Body 파서 클래스 테스트")
 class HttpBodyParserTest {
@@ -17,7 +17,7 @@ class HttpBodyParserTest {
         String xWwwFormUrlEncoded = "userId=javajigi&password=password&name=박재성&email=javajigi@slipp.net";
 
         // when
-        Map<String, String> parsed = parseUrlEncoded(xWwwFormUrlEncoded);
+        Map<String, String> parsed = parseBodyByContentType("application/x-www-form-urlencoded", xWwwFormUrlEncoded);
 
         // then
         Assertions.assertAll(
