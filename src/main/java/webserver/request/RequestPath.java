@@ -1,5 +1,8 @@
 package webserver.request;
 
+import exception.InvalidPathException;
+import webserver.Constants.ContentType;
+
 public class RequestPath {
 
     private final int ROOT_PATH_INDEX = 1;
@@ -22,5 +25,11 @@ public class RequestPath {
 
     public String getFullPath() {
         return this.fullPath;
+    }
+
+    public ContentType getContentType() {
+        int idx = fullPath.lastIndexOf(".");
+        if(idx == -1) throw new InvalidPathException();
+        return ContentType.valueOf(fullPath.substring(idx + 1).toUpperCase());
     }
 }

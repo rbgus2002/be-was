@@ -4,6 +4,7 @@ import exception.InvalidQueryParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.utils.StringUtils;
+import webserver.Constants.ContentType;
 import webserver.Constants.HttpMethod;
 import webserver.Constants.HttpVersion;
 import webserver.RequestHandler;
@@ -76,6 +77,10 @@ public class HttpRequest {
 
     public String getFullPath() {
         return path.getFullPath();
+    }
+
+    public ContentType getContentType() {
+        return path.getContentType();
     }
 
     public RequestQuery getRequestQuery() {
