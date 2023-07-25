@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 @Container
 public @interface Controller {
 
-    String value();
+    String value() default "";
 
 }

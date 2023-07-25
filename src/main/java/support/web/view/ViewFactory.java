@@ -15,8 +15,10 @@ public class ViewFactory {
 
     // TODO: 이름 mapper 추가
     public Class<? extends View> nameConverter(String name) {
-        if (name.equals("/user/list")) {
+        if ("/user/list".equals(name)) {
             return UserListView.class;
+        } else if("/index".equals(name)) {
+            return IndexView.class;
         }
         return null;
     }

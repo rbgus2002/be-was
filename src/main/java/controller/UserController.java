@@ -45,7 +45,7 @@ public class UserController {
         Cookie cookie = cookieBuilder.build();
         response.appendHeader("Set-Cookie", cookie.buildCookie());
 
-        throw new FoundException("/index.html");
+        throw new FoundException("/index");
     }
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
@@ -58,7 +58,7 @@ public class UserController {
         User user = new User(userId, password, name, email);
         Database.addUser(user);
 
-        throw new FoundException("/index.html");
+        throw new FoundException("/index");
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/list")
