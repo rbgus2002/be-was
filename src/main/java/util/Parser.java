@@ -110,4 +110,18 @@ public class Parser {
         String[] tokens = path.split("\\.");
         return tokens[tokens.length - 1];
     }
+
+    public static Map<String, String> parseCookies(String cookie) {
+        Map<String, String> cookies = new HashMap<>();
+        StringTokenizer tokenizer = new StringTokenizer(cookie, "; ");
+        while (tokenizer.hasMoreTokens()) {
+            String query = tokenizer.nextToken();
+            int equalIndex = query.indexOf("=");
+
+            String key = query.substring(0, equalIndex);
+            String value = query.substring(equalIndex + 1);
+            cookies.put(key, value);
+        }
+        return cookies;
+    }
 }
