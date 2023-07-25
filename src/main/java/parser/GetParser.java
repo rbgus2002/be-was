@@ -6,9 +6,7 @@ import webserver.HTTPServletRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class GetParser implements Parser {
         return startLine.split(" ")[2];
     }
 
-    private String parseUrl(String startLine) throws UnsupportedEncodingException {
+    private String parseUrl(String startLine) {
         String[] tokens = startLine.split(" ");
         if (tokens[1].contains("?")) {
             String[] divideUrlAndQuery = tokens[1].split("\\?");
@@ -51,12 +49,12 @@ public class GetParser implements Parser {
         return tokens[0];
     }
 
-    private void parseQuery(String parameter) throws UnsupportedEncodingException {
+    private void parseQuery(String parameter) {
         String[] tokens = parameter.split("&");
         for (String token : tokens) {
             String key = token.substring(0, token.indexOf("="));
             String value = token.substring(token.indexOf("=") + 1);
-            value = URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+            value = URLDecoder.decode(value, StandardCharsets.UTF_8);
             query.put(key, value);
         }
     }

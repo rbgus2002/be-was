@@ -4,7 +4,7 @@ import model.User;
 
 public class MainView {
 
-    public static String changeForDynamic(User user) {
+    public static String changeToDynamic(User user) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("<!DOCTYPE html>\n" +

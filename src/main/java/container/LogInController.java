@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static util.PathList.HOME_PATH;

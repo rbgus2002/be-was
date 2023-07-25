@@ -43,19 +43,11 @@ public class ViewResolver {
             body = Files.readAllBytes(file.toPath());
         } else if ((file = new File(TEMPLATE_PATH.getPath() + viewPath)).exists()) {
             User findUser = SessionManager.getSession(request);
+            body = Files.readAllBytes(file.toPath());
             if (viewPath.equals("/index.html") && findUser != null) {
-                body = MainView.changeForDynamic(findUser).getBytes();
+                body = MainView.changeToDynamic(findUser).getBytes();
             } else if (viewPath.equals("/user/list.html")) {
-                if (findUser != null) {
-                    body = ListView.changeToDynamic().getBytes();
-                } else {
-                    response.setHeader("Location", HOME_PATH.getPath());
-                    response.setStatusMessage("Found");
-                    response.setStatusCode("302");
-                    return;
-                }
-            } else {
-                body = Files.readAllBytes(file.toPath());
+                body = ListView.changeToDynamic().getBytes();
             }
         } else {
             throw new IllegalArgumentException("잘못된 경로입니다.");

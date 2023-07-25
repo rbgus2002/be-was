@@ -7,7 +7,6 @@ import webserver.HTTPServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -64,7 +63,7 @@ public class PostParser implements Parser {
         for (String token : tokens) {
             String key = token.substring(0, token.indexOf("="));
             String value = token.substring(token.indexOf("=") + 1);
-            value = URLDecoder.decode(value, StandardCharsets.UTF_8.toString());
+            value = URLDecoder.decode(value, StandardCharsets.UTF_8);
             logger.debug("key = {}, value = {}", key, value);
             query.put(key, value);
         }

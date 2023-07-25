@@ -1,16 +1,13 @@
 package container;
 
-import util.PathList;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
-import java.io.IOException;
+import static util.PathList.HOME_PATH;
 
-import static util.PathList.*;
-
-public class ListController implements Controller{
+public class ListController implements Controller {
     @Override
-    public String process(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
+    public String process(HTTPServletRequest request, HTTPServletResponse response) {
         if (request.getHeader("Cookie") == null) {
             return HOME_PATH.getPath();
         }
