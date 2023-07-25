@@ -1,10 +1,9 @@
 package webserver.controller;
 
 import service.FileService;
-import webserver.annotaion.Handler;
+import webserver.annotaion.RequestMapping;
 import webserver.http.HttpMethod;
 import webserver.http.HttpStatusCode;
-import webserver.http.MIME;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.Body;
 import webserver.http.response.HttpResponse;
@@ -23,11 +22,10 @@ public class Controller {
         return controller;
     }
 
-    @Handler(method = HttpMethod.GET, path = "/user/create")
+    @RequestMapping(method = HttpMethod.POST, path = "/user/create")
     public HttpResponse createUser(HttpRequest request) {
-        UserService.addUser(request.createUserFromQuery());
-        Body body = Body.from("회원가입 성공".getBytes(), MIME.TXT);
-        return HttpResponse.of(request.getVersion(), HttpStatusCode.CREATED, body);
+        UserService.addUser(request.createUserFromBody());
+        return HttpResponse.redirectResponse(request.getVersion(), "/index.html");
     }
 
     public HttpResponse getStaticResource(HttpRequest request) {

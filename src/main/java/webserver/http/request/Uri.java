@@ -1,6 +1,5 @@
 package webserver.http.request;
 
-import model.User;
 import webserver.http.MIME;
 
 
@@ -23,10 +22,6 @@ public class Uri {
 
     public String getPath() {
         return this.path;
-    }
-
-    public User createUserFromQuery() {
-        return this.query.createUser();
     }
 
     @Override

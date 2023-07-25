@@ -3,6 +3,7 @@ package webserver.http;
 public enum HttpStatusCode {
     OK(200),
     CREATED(201),
+    FOUND(302),
     NOT_FOUND(404),
     INTERNAL_SERVER_ERROR(500);
 

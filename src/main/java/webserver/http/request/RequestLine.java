@@ -1,7 +1,5 @@
 package webserver.http.request;
 
-
-import model.User;
 import webserver.http.HttpMethod;
 import webserver.http.MIME;
 
@@ -30,10 +28,6 @@ public class RequestLine {
 
     public String toString() {
         return method.name() + " " + uri.toString() + " " + version;
-    }
-
-    public User createUserFromQuery() {
-        return uri.createUserFromQuery();
     }
 
     public String getVersion() {
