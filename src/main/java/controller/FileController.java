@@ -11,7 +11,9 @@ import webserver.model.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +35,25 @@ public class FileController {
     private static final String BUTTON_MODIFY_USERDATA = "<li>.*?개인정보수정.*?</li>";
     private static final String USER_LIST_TBODY = "<tbody>";
     private static final String USER_LIST_ROW_FORM = "<tr>\n<th scope=\"row\">%d</th> <td>%s</td> <td>%s</td> <td>%s</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>";
+    private static final String POST_LIST_UL = "<ul class=\"list\">";
+    private static final String POST_LIST_LI = "<li>\n" +
+            "                  <div class=\"wrap\">\n" +
+            "                      <div class=\"main\">\n" +
+            "                          <strong class=\"subject\">\n" +
+            "                              <a href=\"./qna/show.html\">%s</a>\n" +
+            "                          </strong>\n" +
+            "                          <div class=\"auth-info\">\n" +
+            "                              <i class=\"icon-add-comment\"></i>\n" +
+            "                              <span class=\"time\">2016-01-15 18:47</span>\n" +
+            "                              <a href=\"./user/profile.html\" class=\"author\">%s</a>\n" +
+            "                          </div>\n" +
+            "                          <div class=\"reply\" title=\"댓글\">\n" +
+            "                              <i class=\"icon-reply\"></i>\n" +
+            "                              <span class=\"point\">%s</span>\n" +
+            "                          </div>\n" +
+            "                      </div>\n" +
+            "                  </div>\n" +
+            "              </li>";
 
     public static Response genereateResponse(Request request) throws IOException {
         String targetUri = request.getTargetUri();
@@ -103,6 +124,16 @@ public class FileController {
                 Map<String, String> headerMap = new HashMap<>();
                 headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
                 return new Response(STATUS.SEE_OTHER, headerMap, null);
+            }
+
+            // 글 목록(index.html)
+            if(targetUri.equals(INDEX_URL) && request.getMethod() == Method.GET) {
+                Collection<Post> postList = PostService.getAllPost();
+                StringBuilder sb = new StringBuilder();
+                for(Post post: postList) {
+                    sb.append(String.format(POST_LIST_LI, post.getTitle(), post.getUserId(), post.getPostId()));
+                }
+                httpDocument = appendElement(httpDocument, POST_LIST_UL, sb.toString());
             }
 
             body = httpDocument.getBytes();
