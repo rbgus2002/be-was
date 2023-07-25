@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.controller.ApplicationMethod;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,6 +24,9 @@ public class WebServer {
 
         // 고정된 개수를 가진 스레드 풀을 생성한다.
         ExecutorService executorService = Executors.newFixedThreadPool(MAX_THREAD_POOL);
+
+        // 자바 reflection 세팅한다.
+        ApplicationMethod.initialize();
 
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {
