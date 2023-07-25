@@ -5,7 +5,6 @@ import webserver.http.HttpMethod;
 import webserver.myframework.session.Session;
 import webserver.myframework.session.SessionManager;
 
-import java.util.Optional;
 import java.util.Set;
 
 public abstract class HttpRequest {
@@ -19,7 +18,7 @@ public abstract class HttpRequest {
 
     public abstract String getHeader(String headerName);
 
-    public abstract Optional<String> getParameter(String parameterName);
+    public abstract String getParameter(String parameterName);
 
     public abstract byte[] getBody();
 

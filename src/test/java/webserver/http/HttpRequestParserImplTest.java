@@ -141,13 +141,12 @@ class HttpRequestParserImplTest {
         verifyParameter(httpRequest, "parameter1", "hello1");
         verifyParameter(httpRequest, "parameter2", "hello2");
 
-        Optional<String> notExist = httpRequest.getParameter("notExist");
-        assertThat(notExist.isEmpty()).isTrue();
+        String notExist = httpRequest.getParameter("notExist");
+        assertThat(notExist).isNull();
     }
 
     private static void verifyParameter(HttpRequest httpRequest, String parameterName, String hello2) {
-        String parameter = httpRequest.getParameter(parameterName)
-                .orElseThrow(RuntimeException::new);
+        String parameter = httpRequest.getParameter(parameterName);
         assertThat(parameter).isNotNull();
         assertThat(parameter).isEqualTo(hello2);
     }

@@ -10,19 +10,22 @@ import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.Cookie;
 import webserver.http.response.HttpResponse;
-import webserver.myframework.requesthandler.RequestHandlerImpl;
-import webserver.myframework.requesthandler.RequestHandlerResolver;
-import webserver.myframework.requesthandler.RequestHandlerResolverImpl;
-import webserver.myframework.requesthandler.RequestInfo;
-import webserver.myframework.requesthandler.annotation.Controller;
-import webserver.myframework.requesthandler.annotation.RequestMapping;
-import webserver.myframework.requesthandler.exception.DuplicateRequestHandlerException;
+import webserver.myframework.handler.argument.ArgumentResolver;
+import webserver.myframework.handler.argument.ArgumentResolverImpl;
+import webserver.myframework.handler.request.RequestHandlerImpl;
+import webserver.myframework.handler.request.RequestHandlerResolver;
+import webserver.myframework.handler.request.RequestHandlerResolverImpl;
+import webserver.myframework.handler.request.RequestInfo;
+import webserver.myframework.handler.request.annotation.Controller;
+import webserver.myframework.handler.request.annotation.RequestMapping;
+import webserver.myframework.handler.request.exception.DuplicateRequestHandlerException;
 import webserver.myframework.session.Session;
 import webserver.myframework.session.SessionManager;
 import webserver.myframework.session.SessionManagerImpl;
-import webserver.myframework.view.StaticViewResolverImpl;
+import webserver.myframework.view.ViewResolverImpl;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -33,6 +36,7 @@ import static org.assertj.core.api.Assertions.*;
 class DispatcherServletTest {
     String RESOURCE_URI = "src/main/resources";
     DispatcherServlet dispatcherServlet;
+    static ArgumentResolver argumentResolver = new ArgumentResolverImpl();
 
     @BeforeEach
     void setUp() throws ReflectiveOperationException, DuplicateRequestHandlerException {
@@ -43,7 +47,7 @@ class DispatcherServletTest {
                 getTestRequestInfo("/notExist"), getTestHandler("notExistHandler"));
         handlerResolver.registerHandler(
                 getTestRequestInfo("/createSession"), getTestHandler("createSessionHandler"));
-        dispatcherServlet = new DispatcherServlet(handlerResolver, new StaticViewResolverImpl());
+        dispatcherServlet = new DispatcherServlet(handlerResolver, new ViewResolverImpl());
     }
 
     private static RequestInfo getTestRequestInfo(String uri) {
@@ -56,7 +60,8 @@ class DispatcherServletTest {
     private static RequestHandlerImpl getTestHandler(String methodName) throws NoSuchMethodException {
         return new RequestHandlerImpl(
                 new TestController(),
-                TestController.class.getMethod(methodName, HttpRequest.class, HttpResponse.class));
+                TestController.class.getMethod(methodName, HttpRequest.class, HttpResponse.class),
+                argumentResolver);
     }
 
     @Nested
@@ -93,15 +98,16 @@ class DispatcherServletTest {
                 void renderFileMatchedURI() throws IOException {
                     //given
                     HttpRequest httpRequest = HttpRequest.builder(new SessionManagerImpl())
-                            .uri("/index.html").build();
+                            .uri("/user/login.html").build();
                     HttpResponse httpResponse = HttpResponse.getInstance();
 
                     //when
                     dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
                     //then
+                    System.out.println(new String(httpResponse.getBody(), StandardCharsets.UTF_8));
                     assertThat(httpResponse.getBody())
-                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/index.html")));
+                            .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/login.html")));
                 }
             }
         }

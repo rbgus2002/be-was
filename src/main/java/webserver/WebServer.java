@@ -13,9 +13,9 @@ import webserver.myframework.bean.BeanInitializer;
 import webserver.myframework.bean.BeanInitializerImpl;
 import webserver.myframework.bean.DefaultBeanContainer;
 import webserver.myframework.bean.exception.BeanException;
-import webserver.myframework.requesthandler.RequestHandlerInitializerImpl;
-import webserver.myframework.requesthandler.RequestHandlerResolver;
-import webserver.myframework.requesthandler.exception.RequestHandlerException;
+import webserver.myframework.handler.request.RequestHandlerInitializerImpl;
+import webserver.myframework.handler.request.RequestHandlerResolver;
+import webserver.myframework.handler.request.exception.RequestHandlerException;
 
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);

@@ -1,0 +1,12 @@
+{DYNAMIC_RENDER}
+Hello,
+{
+    user :: My Name Is [name],
+    default :: I don't know my name
+}
+Nice to Meet you
+
+Users
+{
+    list-users :: User Name: [name]
+}

@@ -70,8 +70,8 @@ public class HttpRequestImpl extends HttpRequest {
     }
 
     @Override
-    public Optional<String> getParameter(String parameterName) {
-        return Optional.ofNullable(requestParameters.get(parameterName));
+    public String getParameter(String parameterName) {
+        return requestParameters.get(parameterName);
     }
 
     @Override
