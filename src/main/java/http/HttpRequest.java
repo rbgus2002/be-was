@@ -65,4 +65,12 @@ public class HttpRequest {
         }
         return new HttpSession(sid);
     }
+
+    public boolean hasValidSession() {
+        String sid = getCookie("sid");
+        if (sid == null) {
+            return false;
+        }
+        return HttpSession.isValid(sid);
+    }
 }

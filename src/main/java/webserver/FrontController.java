@@ -27,6 +27,7 @@ public class FrontController {
 
     public FrontController() {
         controllerMap.put("/", HOME_CONTROLLER);
+        controllerMap.put("/index.html", HOME_CONTROLLER);
         controllerMap.put("/user/create", JOIN_CONTROLLER);
         controllerMap.put("/user/login", LOGIN_CONTROLLER);
         controllerMap.put("/user/list", USER_LIST_CONTROLLER);

@@ -17,6 +17,11 @@ public class HttpSession {
         return new HttpSession(sid);
     }
 
+    public static boolean isValid(String sid) {
+        return attributes.containsKey(sid);
+    }
+
+
     public String getSid() {
         return sid;
     }
