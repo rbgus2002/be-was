@@ -1,10 +1,5 @@
 package controllers;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.NoSuchElementException;
-
-import javax.xml.crypto.Data;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +41,8 @@ public class Controller {
 			logger.debug(e.getMessage());
 			return "redirect:/user/form.html";
 		}
-		httpResponse.addCookie(SessionConst.sessionId, Session.newInstance().createSession(httpRequest.getParameter().getParameter("userId")));
+		httpResponse.addCookie(SessionConst.sessionId,
+			Session.newInstance().createSession(httpRequest.getParameter().getParameter("userId")));
 
 		return "redirect:/";
 	}
