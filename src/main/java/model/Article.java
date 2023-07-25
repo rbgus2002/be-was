@@ -5,12 +5,12 @@ import java.time.LocalDate;
 public class Article {
     private static int articleIndex = 1;
 
-    private int articleId;
-    private String userId;
-    private String username;
+    private final int articleId;
+    private final String userId;
+    private final String username;
+    private final LocalDate createDate;
     private String title;
     private String contents;
-    private LocalDate createDate;
 
     public Article(String userId, String username, String title, String contents, LocalDate createDate) {
         this.articleId = articleIndex++;
