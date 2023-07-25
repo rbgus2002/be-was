@@ -51,10 +51,8 @@ public class HttpResponse {
 
     public String getHeaderMessage() {
         StringBuilder stringBuilder = new StringBuilder();
-
         addStatusLineMessage(stringBuilder);
         addHeaderFields(stringBuilder);
-
         return stringBuilder.toString();
     }
 
@@ -69,18 +67,15 @@ public class HttpResponse {
                     .append(headers.get(fieldName))
                     .append(HttpConstants.CRLF);
         }
-
         addCookieField(stringBuilder);
     }
 
     private void addCookieField(StringBuilder stringBuilder) {
-        if(cookie.isEmpty()) {
-            return;
+        if(!cookie.isEmpty()) {
+            stringBuilder.append("Set-Cookie: ");
+            stringBuilder.append(cookie.getMessage());
+            stringBuilder.append(HttpConstants.CRLF);
         }
-
-        stringBuilder.append("Set-Cookie: ");
-        stringBuilder.append(cookie.getMessage());
-        stringBuilder.append(HttpConstants.CRLF);
     }
 
     public byte[] getHeaderBytes() {

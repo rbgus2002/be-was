@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.controller.IndexPageController;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.session.Session;

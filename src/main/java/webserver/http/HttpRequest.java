@@ -52,9 +52,15 @@ public class HttpRequest {
 
     private void parsePathAndParameters(String URI) {
         String[] uriTokens = URI.split("\\?");
+        parsePath(uriTokens);
+        parseParameters(uriTokens);
+    }
 
+    private void parsePath(String[] uriTokens) {
         httpHeaders.put(HttpField.PATH, uriTokens[0]);
+    }
 
+    private void parseParameters(String[] uriTokens) {
         if (uriTokens.length == 2) {
             httpParameters = HttpParametersParser.parse(uriTokens[1]);
         }
@@ -71,20 +77,16 @@ public class HttpRequest {
     }
 
     private void parseCookie() {
-        if (httpHeaders.get("Cookie") == null) {
-            return;
-        }
-
-        for (String directive : httpHeaders.get("Cookie").split(";")) {
-            cookie.add(directive.trim());
+        if (httpHeaders.contains("Cookie")) {
+            for (String directive : httpHeaders.get("Cookie").split(";")) {
+                cookie.add(directive.trim());
+            }
         }
     }
 
     private void parseBody() throws IOException {
-        String contentLength = httpHeaders.get(HttpField.CONTENT_LENGTH);
-        int bodyLength;
-
-        if (contentLength != null && (bodyLength = Integer.parseInt(contentLength)) > 0) {
+        if(httpHeaders.contains(HttpField.CONTENT_LENGTH)) {
+            int bodyLength = Integer.parseInt(httpHeaders.get(HttpField.CONTENT_LENGTH));
             char[] requestBody = new char[bodyLength];
 
             bufferedReader.read(requestBody, 0, bodyLength);
@@ -92,7 +94,7 @@ public class HttpRequest {
         }
     }
 
-    public String get(String name) {
+    public String getField(String name) {
         return httpHeaders.get(name);
     }
 

@@ -13,9 +13,9 @@ import java.io.IOException;
 public class FileController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String filePath = httpRequest.get(HttpField.PATH);
-        filePath = FileUtils.preprocessFilePath(filePath);
-        processFileResponse(httpResponse, filePath);
+        String filePath = httpRequest.getField(HttpField.PATH);
+        String responsePage = FileUtils.checkFilePath(filePath);
+        processFileResponse(httpResponse, responsePage);
     }
 
     private void processFileResponse(HttpResponse httpResponse, String filePath) throws IOException {

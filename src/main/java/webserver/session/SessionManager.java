@@ -17,7 +17,7 @@ public final class SessionManager {
         return sessions.stream().anyMatch(session -> session.verifySessionId(sessionId));
     }
 
-    public static String verifySessionIdAndGetUserId(String sessionId) {
+    public static String findUserIdBySessionId(String sessionId) {
         return sessions.stream()
                 .filter(session -> session.verifySessionId(sessionId))
                 .findFirst()

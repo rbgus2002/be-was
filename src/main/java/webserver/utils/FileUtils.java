@@ -19,7 +19,7 @@ public final class FileUtils {
         return Files.readAllBytes(Paths.get(TEMPLATES_DIRECTORY + path));
     }
 
-    public static String preprocessFilePath(String path) {
+    public static String checkFilePath(String path) {
         if (isFileExist(path)) {
             return path;
         }

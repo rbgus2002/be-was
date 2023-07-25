@@ -36,17 +36,17 @@ class HttpRequestTest {
             Cookie cookie = httpRequest.getCookie();
 
             //then
-            softAssertions.assertThat(httpRequest.get("Method")).isEqualTo("GET");
-            softAssertions.assertThat(httpRequest.get("URI")).isEqualTo("/hello-world");
-            softAssertions.assertThat(httpRequest.get("Version")).isEqualTo("HTTP/1.1");
-            softAssertions.assertThat(httpRequest.get("Host")).isEqualTo("localhost:8080");
-            softAssertions.assertThat(httpRequest.get("User-Agent")).isEqualTo("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0");
-            softAssertions.assertThat(httpRequest.get("Accept")).isEqualTo("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-            softAssertions.assertThat(httpRequest.get("Accept-Language")).isEqualTo("en-US,en;q=0.5");
-            softAssertions.assertThat(httpRequest.get("Accept-Encoding")).isEqualTo("gzip, deflate");
-            softAssertions.assertThat(httpRequest.get("Connection")).isEqualTo("keep-alive");
-            softAssertions.assertThat(httpRequest.get("Upgrade-Insecure-Requests")).isEqualTo("1");
-            softAssertions.assertThat(httpRequest.get("Cache-Control")).isEqualTo("max-age=0");
+            softAssertions.assertThat(httpRequest.getField("Method")).isEqualTo("GET");
+            softAssertions.assertThat(httpRequest.getField("URI")).isEqualTo("/hello-world");
+            softAssertions.assertThat(httpRequest.getField("Version")).isEqualTo("HTTP/1.1");
+            softAssertions.assertThat(httpRequest.getField("Host")).isEqualTo("localhost:8080");
+            softAssertions.assertThat(httpRequest.getField("User-Agent")).isEqualTo("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0");
+            softAssertions.assertThat(httpRequest.getField("Accept")).isEqualTo("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+            softAssertions.assertThat(httpRequest.getField("Accept-Language")).isEqualTo("en-US,en;q=0.5");
+            softAssertions.assertThat(httpRequest.getField("Accept-Encoding")).isEqualTo("gzip, deflate");
+            softAssertions.assertThat(httpRequest.getField("Connection")).isEqualTo("keep-alive");
+            softAssertions.assertThat(httpRequest.getField("Upgrade-Insecure-Requests")).isEqualTo("1");
+            softAssertions.assertThat(httpRequest.getField("Cache-Control")).isEqualTo("max-age=0");
             softAssertions.assertThat("1234").isEqualTo(cookie.get("sid"));
             softAssertions.assertThat("U3213e!K").isEqualTo(cookie.get("authorization"));
             softAssertions.assertAll();

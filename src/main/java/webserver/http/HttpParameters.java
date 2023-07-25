@@ -11,10 +11,10 @@ public class HttpParameters {
     }
 
     public String get(String name) {
-        if(parameters.get(name) == null) {
-            return null;
+        if(parameters.containsKey(name)) {
+            return new String(parameters.get(name));
         }
-        return new String(parameters.get(name));
+        return null;
     }
 
     public void put(String name, String value) {

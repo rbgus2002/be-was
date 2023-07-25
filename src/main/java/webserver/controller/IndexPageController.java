@@ -1,12 +1,12 @@
-package webserver;
+package webserver.controller;
 
 import db.Database;
-import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.SessionManager;
 import webserver.utils.FileUtils;
+import webserver.utils.HttpConstants;
 import webserver.utils.HttpField;
 
 import java.io.BufferedReader;
@@ -31,13 +31,13 @@ public class IndexPageController implements Controller {
     }
 
     private String createIndexHtml(HttpRequest httpRequest) throws IOException {
-        BufferedReader templateFileReader = getIndexFileReader();
+        BufferedReader indexFileReader = getIndexFileReader();
 
         if (isLoginStatus(httpRequest)) {
             String username = getUsername(httpRequest);
-            return createUserIndexPageHtml(templateFileReader, username);
+            return createUserIndexPageHtml(indexFileReader, username);
         }
-        return createGuestIndexPageHtml(templateFileReader);
+        return createGuestIndexPageHtml(indexFileReader);
     }
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
@@ -46,29 +46,31 @@ public class IndexPageController implements Controller {
     }
 
     private String getUsername(HttpRequest httpRequest) {
-        String userId = SessionManager.verifySessionIdAndGetUserId(httpRequest.getCookie().get("sid"));
+        String userId = SessionManager.findUserIdBySessionId(httpRequest.getCookie().get("sid"));
         return Database.findUserById(userId).getName();
     }
 
     private String createUserIndexPageHtml(BufferedReader indexFileReader, String username) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
+        String line;
 
         while (indexFileReader.ready()) {
-            String line = indexFileReader.readLine();
-
-            if (line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>")) {
+            if (isLoginButton(line = indexFileReader.readLine())) {
                 stringBuilder.append("<li><a href=\"#\" role=\"button\">" + username + "</a></li>\r\n");
                 continue;
             }
-
-            stringBuilder.append(line).append("\r\n");
+            stringBuilder.append(line).append(HttpConstants.CRLF);
         }
 
         return stringBuilder.toString();
     }
 
+    private boolean isLoginButton(String line) {
+        return line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>");
+    }
+
     private String createGuestIndexPageHtml(BufferedReader indexFileReader) {
-        return indexFileReader.lines().collect(Collectors.joining("\r\n"));
+        return indexFileReader.lines().collect(Collectors.joining(HttpConstants.CRLF));
     }
 
     private BufferedReader getIndexFileReader() throws IOException {
