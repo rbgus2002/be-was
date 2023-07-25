@@ -1,5 +1,6 @@
 package webserver.response;
 
+import exception.internalServerError.HttpResponseSendException;
 import webserver.Constants.ContentType;
 import webserver.Constants.HttpStatus;
 import webserver.Constants.HttpVersion;
@@ -44,10 +45,14 @@ public class HttpResponse {
                 NEWLINE;
     }
 
-    public void sendResponse(final DataOutputStream dos) throws IOException {
-        dos.writeBytes(getStatusLine() + getHeader());
-        dos.write(body, 0, body.length);
-        dos.flush();
+    public void sendResponse(final DataOutputStream dos) throws HttpResponseSendException {
+        try {
+            dos.writeBytes(getStatusLine() + getHeader());
+            dos.write(body, 0, body.length);
+            dos.flush();
+        } catch (IOException e) {
+            throw new HttpResponseSendException();
+        }
     }
 
     @Override
