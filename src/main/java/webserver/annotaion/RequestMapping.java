@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Handler {
+public @interface RequestMapping {
     String path();
 
     HttpMethod method();

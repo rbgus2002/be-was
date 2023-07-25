@@ -1,6 +1,6 @@
 package webserver.controller;
 
-import webserver.annotaion.Handler;
+import webserver.annotaion.RequestMapping;
 import webserver.http.request.HttpRequest;
 
 import java.lang.reflect.Method;
@@ -31,8 +31,8 @@ public class HandlerMapper {
     }
 
     private static boolean isMatch(Method method, HttpRequest request) {
-        if (method.isAnnotationPresent(Handler.class)) {
-            Handler annotation = method.getAnnotation(Handler.class);
+        if (method.isAnnotationPresent(RequestMapping.class)) {
+            RequestMapping annotation = method.getAnnotation(RequestMapping.class);
             return request.isMatchHandler(annotation.method(), annotation.path());
         }
         return false;
