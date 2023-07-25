@@ -22,21 +22,14 @@ public class DispatcherServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    private final HttpRequest request;
-
-    public DispatcherServlet(HttpRequest request) {
-        this.request = request;
-    }
-
-    public void dispatch(final DataOutputStream dos) {
-
+    public void dispatch(final HttpRequest request, final HttpResponse response, final DataOutputStream dos) {
         try {
             StaticViewResolver staticViewResolver = new StaticViewResolver();
             Map<String, Object> model = null;
 
             Optional<View> viewOpt = staticViewResolver.resolve(request.getFullPath());
             if(viewOpt.isEmpty()) {
-                ModelAndView modelAndView = invokeControllerMethod();
+                ModelAndView modelAndView = invokeControllerMethod(request);
                 model = modelAndView.getModel();
                 viewOpt = staticViewResolver.resolve(modelAndView.getViewName());
             }
@@ -51,7 +44,7 @@ public class DispatcherServlet {
         }
     }
 
-    private ModelAndView invokeControllerMethod() {
+    private ModelAndView invokeControllerMethod(HttpRequest request) {
         ControllerMapper controllerMapper = new ControllerMapper();
         WebController controller = controllerMapper.getController(request);
 

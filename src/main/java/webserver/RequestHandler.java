@@ -7,6 +7,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.request.HttpRequest;
+import webserver.response.HttpResponse;
 
 
 public class RequestHandler implements Runnable {
@@ -22,12 +23,13 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            HttpRequest httpRequest = HttpRequest.of(in);
+            HttpRequest request = HttpRequest.of(in);
+            HttpResponse response = HttpResponse.createEmpty();
             DataOutputStream dos = new DataOutputStream(out);
-            DispatcherServlet dispatcherServlet = new DispatcherServlet(httpRequest);
-            dispatcherServlet.dispatch(dos);
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
+            dispatcherServlet.dispatch(request, response, dos);
 
-        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
