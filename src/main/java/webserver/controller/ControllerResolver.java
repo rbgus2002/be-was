@@ -1,6 +1,5 @@
 package webserver.controller;
 
-import webserver.IndexPageController;
 import webserver.controller.file.FileController;
 import webserver.controller.user.UserListController;
 import webserver.controller.user.UserLoginController;
