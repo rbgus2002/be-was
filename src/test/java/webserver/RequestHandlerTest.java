@@ -1,6 +1,7 @@
 package webserver;
 
 import db.Database;
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import model.User;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RequestHandlerTest {
@@ -95,6 +97,47 @@ class RequestHandlerTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_CONFLICT);
+    }
+
+    @Test
+    @DisplayName("로그인을 성공할 경우 Cookie에 sessionId를 전달하고 메인화면으로 redirect해야한다.")
+    void loginSuccess() {
+        RestAssured
+                .given()
+                    .body("userId=abc&password=abc&name=abc&email=abc")
+                .when()
+                    .post("/user/create");
+
+        RestAssured
+                .given()
+                    .body("userId=abc&password=abc")
+                .when()
+                    .post("/user/login")
+                .then()
+                    .assertThat()
+                    .statusCode(HttpStatus.SC_MOVED_TEMPORARILY)
+                    .header("Location", equalTo("/index.html"))
+                    .cookie("sid", notNullValue());
+    }
+
+    @Test
+    @DisplayName("로그인을 실패 할 경우 로그인 실패 화면으로 redirect 해야한다.")
+    void loginFailed() {
+        RestAssured
+                .given()
+                .body("userId=abc&password=abc&name=abc&email=abc")
+                .when()
+                .post("/user/create");
+
+        RestAssured
+                .given()
+                .body("userId=abc&password=abcdd")
+                .when()
+                .post("/user/login")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY)
+                .header("Location", equalTo("/user/login_failed.html"));
     }
 
 
