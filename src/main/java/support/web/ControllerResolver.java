@@ -6,7 +6,10 @@ import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
-import support.exception.*;
+import support.exception.BadRequestException;
+import support.exception.HttpException;
+import support.exception.NotSupportedException;
+import support.exception.ServerErrorException;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.KeyValue;
@@ -19,34 +22,35 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static support.instance.DefaultInstanceManager.getInstanceMagager;
 
 public abstract class ControllerResolver {
 
-    private static final Map<String, ControllerMethod> controllers = new HashMap<>();
+    private static final Map<HttpMethod, Map<String, ControllerMethod>> methodController = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
     static {
+        Arrays.stream(HttpMethod.values())
+                .forEach(httpMethod -> methodController.put(httpMethod, new HashMap<>()));
+
         List<Class<?>> controllerClasses = ClassListener.scanClass("controller");
 
-        controllerClasses.forEach(clazz -> {
-            Controller annotation = clazz.getAnnotation(Controller.class);
-            if (annotation != null) {
-                String path = annotation.value();
+        controllerClasses.forEach(controllerClass -> {
+            Controller controller = controllerClass.getAnnotation(Controller.class);
+            if (controller != null) {
+                String path = controller.value();
 
-                Map<String, ControllerMethodStruct> controllerMethod = Arrays.stream(clazz.getDeclaredMethods())
+                Arrays.stream(controllerClass.getDeclaredMethods())
                         .filter(method -> method.isAnnotationPresent(RequestMapping.class))
-                        .collect(Collectors.toUnmodifiableMap(
-                                method -> method.getAnnotation(RequestMapping.class).value(),
-                                method -> new ControllerMethodStruct(method.getAnnotation(RequestMapping.class).method(), method)
-                        ));
-
-
-                controllers.put(path, new ControllerMethod(clazz, controllerMethod));
+                        .forEach(
+                                method -> {
+                                    RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+                                    Map<String, ControllerMethod> controllers = methodController.get(requestMapping.method());
+                                    controllers.put(path + requestMapping.value(),
+                                            new ControllerMethod(controllerClass, method));
+                                }
+                        );
             }
         });
     }
@@ -60,33 +64,12 @@ public abstract class ControllerResolver {
      */
     public static String invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
         // 요청 url에 해당하는 controller method를 찾는다.
-        AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
-        AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
-        AtomicBoolean hasMethod = new AtomicBoolean(false);
-
-        controllers.forEach((s, controllerMethods) -> {
-            if (url.startsWith(s)) {
-                ControllerMethodStruct methodStruct = controllerMethods.find(url.substring(s.length()));
-                if (methodStruct != null) {
-                    hasMethod.set(true);
-                    if (methodStruct.getHttpMethod() == request.getRequestMethod()) {
-                        hasMethod.set(true);
-                        clazz.set(controllerMethods.getControllerClass());
-                        methodAtomicReference.set(methodStruct.getMethod());
-                    }
-                }
-            }
-        });
-
-        Class<?> controllerClass = clazz.get();
-        Method method = methodAtomicReference.get();
-        verifyControllerTrigger(hasMethod.get(), controllerClass, method);
-
-        logger.debug(method.getName() +  " : go");
+        ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
+        Class<?> controllerClass = controllerMethodStruct.getControllerClass();
+        Method method = controllerMethodStruct.getMethod();
 
         // 헤더 처리
         Object[] args = transformQuery(request, response, method);
-        logger.debug(method.getName() +  " : go1");
 
         // 메소드 실행
         Object instance = getInstanceMagager().getInstance(controllerClass);
@@ -98,6 +81,15 @@ public abstract class ControllerResolver {
         } catch (IllegalAccessException e) {
             throw new ServerErrorException();
         }
+    }
+
+    private static ControllerMethod findControllerMethodStruct(String url, HttpRequest request) throws NotSupportedException {
+        Map<String, ControllerMethod> controllers = methodController.get(request.getRequestMethod());
+        ControllerMethod controllerMethodStruct = controllers.get(url);
+        if (controllerMethodStruct == null) {
+            throw new NotSupportedException();
+        }
+        return controllerMethodStruct;
     }
 
     /**
@@ -131,22 +123,6 @@ public abstract class ControllerResolver {
         }
 
         return args;
-    }
-
-    /**
-     * 컨트롤러 처리 대상인지 검증한다. <br />
-     * Note: 만약 처리 컨트롤러 메소드가 없을 경우 예외가 발생한다.
-     *
-     * @throws MethodNotAllowedException 같은 URL을 공유하는 다른 컨트롤러 메소드가 있을 경우 발생한다.
-     * @throws NotSupportedException     다른 조건 없이 단순히 처리 메소드가 없을 경우 발생한다.
-     */
-    private static void verifyControllerTrigger(boolean hasMethod, Class<?> controllerClass, Method method) throws MethodNotAllowedException, NotSupportedException {
-        if (controllerClass == null || method == null) {
-            if (hasMethod) {
-                throw new MethodNotAllowedException();
-            }
-            throw new NotSupportedException();
-        }
     }
 
 }

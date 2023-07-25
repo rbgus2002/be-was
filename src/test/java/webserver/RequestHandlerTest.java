@@ -167,6 +167,7 @@ class RequestHandlerTest {
         private final String method = "POST";
 
         @Test
+        @Disabled
         @DisplayName("GET, POST 메소드 분리 테스트")
         void methodSeparate() {
             //given

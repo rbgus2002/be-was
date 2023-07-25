@@ -26,16 +26,15 @@ public class PostController {
         logger.debug("쓰기 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
-        if (loginSession != null) {
-            return "/post/form.html";
+        if (loginSession == null) {
+            throw new FoundException("/user/login.html");
         }
 
         Post post = new Post(title, writer, contents);
         Database.addPost(post.getId(), post);
 
         logger.debug("게시글... 생성 됨... title: {} writer: {} contents: {} ", title, writer, contents);
-
-        throw new FoundException("/user/login.html");
+        return "/index";
     }
 
 }
