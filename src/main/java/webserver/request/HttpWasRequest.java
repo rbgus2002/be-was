@@ -8,11 +8,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
+import webserver.session.Cookie;
 import webserver.utils.HttpHeader;
 
 public class HttpWasRequest {
@@ -122,4 +125,23 @@ public class HttpWasRequest {
 		return URLDecoder.decode(value, StandardCharsets.UTF_8);
 	}
 
+	public String getSessionId() {
+		final String value = map.get(Cookie.COOKIE_NAME);
+		if (value == null || value.isBlank())
+			return "";
+
+		final String[] token = value.split(";");
+		final String sessionValue = Arrays.stream(token)
+			.filter(attribute -> {
+				final String[] split = attribute.split("=");
+				return Objects.equals(split[0], "SID");
+			}).findFirst()
+			.orElse("");
+
+		if (sessionValue.isBlank())
+			return sessionValue;
+
+		final String[] split = sessionValue.split("=");
+		return split[1];
+	}
 }
