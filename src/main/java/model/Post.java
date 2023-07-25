@@ -3,6 +3,11 @@ package model;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Post {
+    public static final String POSTID = "postId";
+    public static final String USERID = "userId";
+    public static final String TITLE = "title";
+    public static final String CONTENT = "content";
+
     private static final AtomicInteger postCount = new AtomicInteger(1);
 
     private final int postId;
