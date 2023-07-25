@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import webserver.fixture.HttpRequestFixture;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.session.Session;
 import webserver.utils.FileUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,6 +15,7 @@ class UserFormHandlerTest {
     @Test
     void handleTest() {
         HttpRequest requestUserForm = HttpRequestFixture.getRequestUserForm();
+        Session session = new Session("1");
 
         Handler handler = new UserFormHandler();
         HttpResponse response = handler.handle(requestUserForm, session);
