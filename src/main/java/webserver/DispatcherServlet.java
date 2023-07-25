@@ -4,8 +4,8 @@ import controller.Controller;
 import exception.NotSupportedContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import http.HttpRequest;
+import http.HttpResponse;
 
 import java.io.*;
 import java.lang.invoke.MethodHandle;
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import static java.lang.invoke.MethodType.methodType;
-import static webserver.http.HttpStatus.*;
+import static http.HttpStatus.*;
 
 public class DispatcherServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);

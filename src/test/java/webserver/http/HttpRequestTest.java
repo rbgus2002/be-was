@@ -1,6 +1,8 @@
 package webserver.http;
 
 import exception.NotSupportedContentTypeException;
+import http.HttpRequest;
+import http.Uri;
 import org.junit.jupiter.api.*;
 import webserver.ContentType;
 

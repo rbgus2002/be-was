@@ -3,7 +3,7 @@ package webserver;
 import annotation.GetMapping;
 import annotation.PostMapping;
 import controller.Controller;
-import webserver.http.HttpRequest;
+import http.HttpRequest;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

@@ -1,10 +1,9 @@
-package webserver.http;
+package http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import static utils.StringUtils.appendNewLine;
