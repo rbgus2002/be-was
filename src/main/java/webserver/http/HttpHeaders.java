@@ -4,6 +4,7 @@ import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,12 +53,17 @@ public class HttpHeaders {
         return new HttpHeaders(responseHeaders);
     }
 
-    public static HttpHeaders createRedirectStatusHeaders(String viewPath) {
+    public static HttpHeaders createRedirectStatusHeaders(String viewPath, Cookie cookie) {
         Map<String, String> responseHeaders = new HashMap<>();
         responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
         responseHeaders.put(CONTENT_LENGTH, "0");
-        responseHeaders.put(LOCATION, "http://localhost:8080/" + viewPath);
-        responseHeaders.put(SET_COOKIE, "123123");
+        responseHeaders.put(LOCATION, viewPath);
+        if (cookie != null) {
+            responseHeaders.put(SET_COOKIE, cookie.getName() + "=" + cookie.getValue() + ";"
+                    + " Path=/;"
+                    + "expires=" + cookie.getExpires().atZone(ZoneId.of("GMT")) + ";"
+                    + " HttpOnly");
+        }
         return new HttpHeaders(responseHeaders);
     }
 

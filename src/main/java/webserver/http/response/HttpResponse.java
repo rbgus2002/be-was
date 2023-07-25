@@ -3,6 +3,7 @@ package webserver.http.response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Parser;
+import webserver.http.Cookie;
 import webserver.http.HttpHeaders;
 
 import java.io.DataOutputStream;
@@ -73,11 +74,11 @@ public class HttpResponse {
         );
     }
 
-    public static HttpResponse createRedirect(String viewPath) {
+    public static HttpResponse createRedirect(String viewPath, Cookie cookie) {
         byte[] emptyBody = new byte[0];
         return new HttpResponse(
                 HttpStatusLine.createRedirectStatusLine(),
-                HttpHeaders.createRedirectStatusHeaders(viewPath),
+                HttpHeaders.createRedirectStatusHeaders(viewPath, cookie),
                 emptyBody
         );
     }
