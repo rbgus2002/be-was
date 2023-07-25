@@ -25,7 +25,7 @@ public class DispatcherServlet {
 
         View view = staticViewResolver.resolve(request.getFullPath());
         if(view != null) {
-            view.render(request.getVersion(), null, dos);
+            view.render(request.getVersion(), request.getContentType(), null, dos);
             return;
         }
 
@@ -35,6 +35,6 @@ public class DispatcherServlet {
         Method method = controllerMapper.getMethod(controller, request);
         ModelAndView modelAndView = (ModelAndView) method.invoke(controller, request);
         view = staticViewResolver.resolve(modelAndView.getViewName());
-        view.render(request.getVersion(), modelAndView.getModel(), dos);
+        view.render(request.getVersion(), request.getContentType(), modelAndView.getModel(), dos);
     }
 }
