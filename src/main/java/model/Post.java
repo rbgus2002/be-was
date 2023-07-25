@@ -10,7 +10,7 @@ public class Post {
 
     private static final AtomicInteger postCount = new AtomicInteger(1);
 
-    private final int postId;
+    private int postId;
     private final String userId;
     private final String title;
     private final String content;
@@ -20,6 +20,11 @@ public class Post {
         this.userId = userId;
         this.title = title;
         this.content = content;
+    }
+
+    public int setPostId(int postId) {
+        this.postId = postId;
+        return this.postId;
     }
 
     public int getPostId() {

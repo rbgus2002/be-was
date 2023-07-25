@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PostService {
-    private static final String POST_WRITER = "writer";
-    private static final String POST_TITLE = "title";
-    private static final String POST_CONTENT = "contents";
+    public static final String POST_WRITER = "writer";
+    public static final String POST_TITLE = "title";
+    public static final String POST_CONTENT = "contents";
 
     public static Post addPost(Map<String, String> parameterMap) {
         Post post = new Post(parameterMap.get(POST_WRITER), parameterMap.get(POST_TITLE), parameterMap.get(POST_CONTENT));

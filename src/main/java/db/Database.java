@@ -58,6 +58,7 @@ public class Database {
         return posts.values();
     }
     public static void updatePost(Integer postId, Post post) {
+        post.setPostId(postId);
         posts.put(postId, post);
     }
     public static void deleteAllPost() {
