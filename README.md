@@ -29,3 +29,9 @@ Java Web Application Server 2023
 - [X] 회원가입 및 로그인 기능 POST로 변경하기
 - [X] 405에러가 제대로 나오는지 확인하기
 - [X] Body값 제대로 파싱이 되는지 확인하기 
+### Step-5
+- [X] session 구현하기 
+- [X] 쿠키를 편하게 쓸 수 있도록 하는 클래스 구현
+  - [X] HttpWasResponse 클래스 커졌으면 분리하기
+- [X] 로그인 기능 구현
+- [X] 단위 테스트 작성

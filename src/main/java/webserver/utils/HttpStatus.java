@@ -2,8 +2,9 @@ package webserver.utils;
 
 public enum HttpStatus {
 	OK(200, "OK"),
-	NOT_FOUND(404, "NOT FOUND"),
-	FOUND(302, "FOUND"),
+	NOT_FOUND(404, "Not Found"),
+	BAD_REQUEST(400, "Bad Request"),
+	FOUND(302, "Found"),
 	METHOD_NOT_ALLOWED(405, "Method Not Allowed");
 
 	private final int statusCode;

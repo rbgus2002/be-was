@@ -10,6 +10,11 @@ public enum HttpMimeType {
 	JPEG("image/jpeg", "jpg"),
 	ICON("image/x-icon", "ico"),
 	PLAIN("text/plain", "txt"),
+	EOT("application/vnd.ms-fontobject", "eot"),
+	SVG("image/svg+xml", "svg"),
+	TTF("font/ttf", "ttf"),
+	WOFF("font/woff", "woff"),
+	WOFF2("font/woff2", "woff2"),
 	NOTING("*/*", "nothing");
 
 	public static final String CHARSET_UTF8 = ";charset=utf-8";

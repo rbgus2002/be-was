@@ -1,17 +1,15 @@
 package webserver.request;
 
+import static webserver.utils.HttpContentType.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
@@ -19,14 +17,12 @@ import webserver.utils.HttpHeader;
 
 public class HttpWasRequest {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpWasRequest.class);
-	private static final String BASE64_PATTERN = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
 	private static final String RESOURCE_PATH = "ResourcePath";
 	private static final String PROTOCOL_VERSION = "ProtocolVersion";
 	private static final String HTTP_METHOD = "HttpMethod";
 
-	private final Map<String, String> map = new ConcurrentHashMap<>();
-	private final Map<String, String> requestParam = new ConcurrentHashMap<>();
+	private final Map<String, String> map = new HashMap<>();
+	private final Map<String, String> requestParam = new HashMap<>();
 
 	public HttpWasRequest(InputStream inputStream) throws IOException {
 		parseHttpRequestToMap(inputStream);
@@ -46,7 +42,7 @@ public class HttpWasRequest {
 		}
 		final String bodyData = getBodyData(bufferedReader);
 		final String contentType = map.get(HttpHeader.CONTENT_TYPE.getType());
-		if (StringUtils.contains(contentType, "x-www-form-urlencoded")) {
+		if (StringUtils.contains(contentType, X_WWW_FORM_URLENCODED)) {
 			saveRequestParam(bodyData);
 		}
 		map.put("body", bodyData);
@@ -55,8 +51,8 @@ public class HttpWasRequest {
 	private String getBodyData(BufferedReader bufferedReader) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int data;
-		while(bufferedReader.ready() && (data = bufferedReader.read()) != -1) {
-			sb.append((char) data);
+		while (bufferedReader.ready() && (data = bufferedReader.read()) != -1) {
+			sb.append((char)data);
 		}
 		return sb.toString();
 	}
@@ -106,9 +102,11 @@ public class HttpWasRequest {
 		final String[] params = data.split("&");
 		for (String param : params) {
 			final String[] keyValue = param.split("=");
-			final String key = keyValue[0];
-			final String value = base64Decoder(keyValue[1]);
-			requestParam.put(key, value);
+			if (keyValue.length == 2) {
+				final String key = keyValue[0];
+				final String value = base64Decoder(keyValue[1]);
+				requestParam.put(key, value);
+			}
 		}
 	}
 
@@ -121,9 +119,7 @@ public class HttpWasRequest {
 	}
 
 	private String base64Decoder(String value) {
-		if (!Pattern.matches(BASE64_PATTERN, value)) {
-			return URLDecoder.decode(value, StandardCharsets.UTF_8);
-		}
-		return value;
+		return URLDecoder.decode(value, StandardCharsets.UTF_8);
 	}
+
 }

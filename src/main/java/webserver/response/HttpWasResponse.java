@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import webserver.session.Cookie;
 import webserver.utils.HttpHeader;
 import webserver.utils.HttpMimeType;
 import webserver.utils.HttpStatus;
@@ -21,14 +24,17 @@ public class HttpWasResponse {
 	private HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 	private final HttpResponseHeader header = new HttpResponseHeader();
 	private byte[] body = new byte[0];
-
+	private final List<Cookie> cookies = new ArrayList<>();
+	private final HttpFileHandler httpFileHandler;
 
 	public HttpWasResponse(OutputStream outputStream) {
 		this.dos = new DataOutputStream(outputStream);
+		httpFileHandler = new HttpFileHandler();
 	}
 
-	public void responseResource(Path path, String resourcePath) {
+	public void responseResource(String resourcePath) {
 		try {
+			Path path = httpFileHandler.getFilePath(resourcePath);
 			final byte[] files = Files.readAllBytes(path);
 			header.clearHeader();
 			httpStatus = HttpStatus.OK;
@@ -44,6 +50,7 @@ public class HttpWasResponse {
 		try {
 			dos.writeBytes(getRequestLine(httpStatus));
 			dos.writeBytes(header.getAllHeader());
+			printCookie();
 			if (body != null && body.length != 0) {
 				dos.writeBytes("\r\n");
 				dos.write(body, 0, body.length);
@@ -51,6 +58,12 @@ public class HttpWasResponse {
 			dos.flush();
 		} catch (IOException e) {
 			logger.error(e.getMessage());
+		}
+	}
+
+	private void printCookie() throws IOException {
+		for (Cookie cookie : cookies) {
+			dos.writeBytes(cookie.convertToHeader());
 		}
 	}
 
@@ -86,7 +99,23 @@ public class HttpWasResponse {
 		this.httpStatus = httpStatus;
 	}
 
-	public void setBody(String body) {
-		this.body = body.getBytes();
+	public void setBody(String body, HttpMimeType type) {
+		if (body != null) {
+			this.body = body.getBytes();
+			addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(this.body.length));
+			addHeader(HttpHeader.CONTENT_TYPE, type.getCharsetUtf8());
+		}
+	}
+
+	public void addHeader(HttpHeader headerType, String value) {
+		header.addHeader(headerType, value);
+	}
+
+	public void addCookie(Cookie cookie) {
+		cookies.add(cookie);
+	}
+
+	public boolean isExistResource(String resourcePath) {
+		return httpFileHandler.isExistResource(resourcePath);
 	}
 }
