@@ -32,6 +32,21 @@ public class ViewPolicy {
 		return "";
 	}
 
+	@annotations.ViewPolicy(regex = "\\[\\[\\$\\{.*?\\}\\]\\]")
+	public String replaceWithVariable(String line, ModelView modelView) {
+		Pattern pattern = Pattern.compile("\\[\\[\\$\\{(.*?)\\}\\]\\]");
+		Matcher matcher = pattern.matcher(line);
+		String variableName = "";
+		while (matcher.find()) {
+			variableName = matcher.group(1);
+		}
+
+		if (modelView.getAttribute(variableName) == null) {
+			return "";
+		}
+		return (String)modelView.getAttribute(variableName);
+	}
+
 	@annotations.ViewPolicy(regex = "<tr repeat=\".*\">(.|\\s)*?<\\/tr>")
 	public String repeatForAttributes(String line, ModelView modelView) {
 		Pattern pattern = Pattern.compile("repeat=\"(.*?)\"");

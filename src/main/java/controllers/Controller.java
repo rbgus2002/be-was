@@ -133,8 +133,8 @@ public class Controller {
 		try {
 			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
 				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
-				Database.findUserById(userId).getName();
 				// 인증 성공
+				modelView.addAttribute("name", Database.findUserById(userId).getName());
 				modelView.addAttribute("login", "true");
 			}
 		} catch (Exception e) {
