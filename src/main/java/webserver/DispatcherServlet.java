@@ -3,6 +3,7 @@ package webserver;
 import controller.Controller;
 import exception.NotSupportedContentTypeException;
 import http.HttpStatus;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import http.HttpRequest;
@@ -32,8 +33,15 @@ public class DispatcherServlet {
 
     public void doService(HttpRequest request, OutputStream out) throws Throwable {
         logger.debug("REQUEST START :: \n{}", request);
-
+        checkUserSession(request);
         doDispatch(request, out);
+    }
+
+    private void checkUserSession(HttpRequest request) {
+        User user = request.getUserInSession();
+        if(user != null){
+            logger.debug("세션 인증 성공! good >> {}", user);
+        }
     }
 
     public void doDispatch(HttpRequest request, OutputStream out) throws Throwable {

@@ -74,6 +74,7 @@ class HttpRequestTest {
                 appendNewLine("Cache-Control: max-age=0") +
                 appendNewLine("Con: max-age=0") +
                 appendNewLine("Content-Length: 93") +
+                appendNewLine("Cookie: Idea-b49a3250=4870f825-f607-4ca3-8fdf-aa4b2949cb71; sid=6d64096c-6f8a-4136-b283-719888edd6d8") +
                 appendNewLine("") +
                 "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi@40slipp.net";
 
@@ -114,6 +115,18 @@ class HttpRequestTest {
 
             // then
             assertTrue(post);
+        }
+        @Test
+        @DisplayName("쿠키에 sid가 Session에 존재하면 사용자를 가져온다")
+        void getUserInSession() throws IOException {
+            // given
+            HttpRequest request = HttpRequest.from(in);
+
+            // when
+            request.getUserInSession();
+
+            // then
+            assertNull(request.getUserInSession());
         }
     }
 }
