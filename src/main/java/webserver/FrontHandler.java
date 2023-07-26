@@ -12,12 +12,12 @@ import webserver.session.SessionManager;
 public class FrontHandler {
     public static final Logger logger = LoggerFactory.getLogger(FrontHandler.class);
     private static final SessionManager sessionManager = new SessionManager();
-    private static final HandlerMapper findHandler = new HandlerMapper();
+    private static final HandlerMapper handlerMapper = new HandlerMapper();
 
 
     public HttpResponse handle(HttpRequest httpRequest) {
         Session session = getSession(httpRequest);
-        Handler handler = findHandler.findHandler(httpRequest);
+        Handler handler = handlerMapper.findHandler(httpRequest);
         try {
             return handler.handle(httpRequest, session);
         } catch (RuntimeException e) {
