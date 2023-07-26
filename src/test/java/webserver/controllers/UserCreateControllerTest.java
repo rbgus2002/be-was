@@ -26,7 +26,7 @@ class UserCreateControllerTest {
     void handleUserCreateRequest() throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
-                .setHeader("Host: localhost:8080")
+                .setHeader("Host","localhost:8080")
                 .uri("/user/create")
                 .setBody("userId=javajigi")
                 .setBody("password=password")
@@ -43,7 +43,7 @@ class UserCreateControllerTest {
                 .status(FOUND)
                 .version("HTTP/1.1")
                 .contentType(HTML)
-                .setHeader("Location: http://localhost:8080/index.html")
+                .setHeader("Location", "http://localhost:8080/index.html")
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
@@ -58,7 +58,7 @@ class UserCreateControllerTest {
     void handleUserCreateRequestWithSameUserId() throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
-                .setHeader("Host: localhost:8080")
+                .setHeader("Host", "localhost:8080")
                 .uri("/user/create")
                 .setBody("userId=javajigi")
                 .setBody("password=password")
@@ -73,7 +73,7 @@ class UserCreateControllerTest {
                 .status(FOUND)
                 .version("HTTP/1.1")
                 .contentType(HTML)
-                .setHeader("Location: http://localhost:8080/user/form.html")
+                .setHeader("Location", "http://localhost:8080/user/form.html")
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
