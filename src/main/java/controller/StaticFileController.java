@@ -11,7 +11,7 @@ import static webserver.http.HttpUtil.*;
 import static service.FileService.readStaticFile;
 
 public class StaticFileController extends FileController {
-    public static Response genereateResponse(Request request) throws IOException {
+    public static Response genereateResponse(Request request) {
         String targetUri = request.getTargetUri();
 
         MIME mime = parseMime(targetUri);

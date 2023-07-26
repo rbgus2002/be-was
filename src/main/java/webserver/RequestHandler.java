@@ -87,7 +87,7 @@ public class RequestHandler implements Runnable {
         return new Request(method, version, targetUri, queryParameterMap, headerMap, sid, body);
     }
 
-    private Response generateResponse(Request request) throws Exception {
+    private Response generateResponse(Request request) {
         Response response;
 
         response = Router.generateResponse(request);

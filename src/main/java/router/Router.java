@@ -51,7 +51,7 @@ public class Router {
         return null;
     }
 
-    private static Response findMethodAndGenerateResponse(Object obj, Request request) throws InvocationTargetException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InstantiationException, NoSuchFieldException {
+    private static Response findMethodAndGenerateResponse(Object obj, Request request) throws InvocationTargetException, IllegalAccessException {
         Class<?> clazz = obj.getClass();
         Method[] fileMethods =  clazz.getDeclaredMethods();
         for(Method method: fileMethods) {
