@@ -31,7 +31,14 @@ public class FrontController {
         Method method = HandlerMapper.getHandlerMethod(httpRequest);
         ModelAndView modelAndView = HandlerAdapter.runHandlerMethod(method, httpRequest);
         Cookie cookie = createSession(modelAndView);
-        HttpResponse httpResponse = HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
+
+        if (isRedirect(modelAndView.getViewPath())) {
+            HttpResponse httpResponse = HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
+            httpResponse.responseRedirect(dos);
+            return;
+        }
+
+        HttpResponse httpResponse = HttpResponse.createDynamic(modelAndView.getViewPath(), cookie);
         httpResponse.responseDynamic(dos);
     }
 
@@ -40,6 +47,10 @@ public class FrontController {
             return null;
         }
         return UserSessionManager.addUser((User) modelAndView.getModel());
+    }
+
+    private boolean isRedirect(String viewPath) {
+        return viewPath.startsWith("redirect:");
     }
 
 }
