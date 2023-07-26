@@ -15,13 +15,12 @@ public class Cookie {
     }
 
     public String get(String name) {
-        for (String directive : directives) {
-            String[] tokens = directive.split("=");
-            if (tokens.length == 2 && tokens[0].equals(name)) {
-                return tokens[1];
-            }
-        }
-        return "";
+        return directives.stream()
+                .map(directive -> directive.split("="))
+                .filter(tokens -> tokens.length == 2 && tokens[0].equals(name))
+                .findFirst()
+                .map(tokens -> tokens[1])
+                .orElse("");
     }
 
     public String getMessage() {

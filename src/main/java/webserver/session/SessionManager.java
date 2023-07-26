@@ -14,7 +14,8 @@ public final class SessionManager {
     }
 
     public static boolean verifySessionId(String sessionId) {
-        return sessions.stream().anyMatch(session -> session.verifySessionId(sessionId));
+        return sessions.stream()
+                .anyMatch(session -> session.verifySessionId(sessionId));
     }
 
     public static String findUserIdBySessionId(String sessionId) {
