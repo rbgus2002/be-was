@@ -1,21 +1,39 @@
 package webserver.http.controller;
 
-import java.io.IOException;
-
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.http.message.HttpStatus;
 
 public class FrontController {
 
-	StaticFileResolver staticFileResolver = new StaticFileResolver();
-	// ControllerResolver controllerResolver = new ControllerResolver();
+	StaticFileResolver staticFileResolver;
+	ControllerResolver controllerResolver;
 
-	public HttpResponse service(HttpRequest request) throws IOException {
-		if (request.forStaticResource()) {
-			return staticFileResolver.resolve(request.getUrlPath());
+	private FrontController() {
+		staticFileResolver = new StaticFileResolver();
+		controllerResolver = new ControllerResolver();
+	}
+
+	public static FrontController getInstance() {
+		return LazyHolder.instance;
+	}
+
+	public HttpResponse service(HttpRequest request) {
+		try {
+			if (request.forStaticResource()) {
+				return staticFileResolver.resolve(request.getUrlPath());
+			}
+			HttpResponse resolve = controllerResolver.resolve(request);
+			return resolve;
+		} catch (Throwable e) {
+			return HttpResponse.builder()
+				.status(HttpStatus.SERVER_ERROR)
+				.build();
 		}
-		// controllerResolver.resolve(request, response);
-		return null;
+	}
+
+	private static class LazyHolder {
+		private static final FrontController instance = new FrontController();
 	}
 
 }
