@@ -13,9 +13,9 @@ public class Cookie {
         this.key = key;
         this.value = value;
         if (path != null) {
-            this.options.put("PATH", path);
+            this.options.put("path", path);
         }
-        if(expires!=null){
+        if (expires != null) {
             this.options.put("expires", expires);
         }
     }
