@@ -1,82 +1,103 @@
 package webserver.http.message;
 
-import static webserver.http.utils.HttpConstant.*;
-
-import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import webserver.http.utils.StringUtils;
+import webserver.http.utils.FileMapper;
 
 public class HttpResponse {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
+	private final HttpStatus status;
+	private final HttpHeaderFields headerFields;
+	private final byte[] body;
 
-	private DataOutputStream outputStream;
-	private String httpVersion;
-	private HttpStatus status;
-	private HttpHeaderFields headerFields;
-	private byte[] body;
-
-	private HttpResponse() {
-		headerFields = new HttpHeaderFields();
+	private HttpResponse(HttpResponseBuilder builder) {
+		this.status = builder.status;
+		this.headerFields = builder.headerFields;
+		this.body = builder.body;
 	}
 
-	public static HttpResponse from(HttpRequest request, DataOutputStream outputStream) {
-		HttpResponse httpResponse = new HttpResponse();
-		httpResponse.httpVersion = request.getHttpVersion();
-		httpResponse.outputStream = outputStream;
-		// TODO : 요청의 general header는 응답에도 바로 저장하기
-		return httpResponse;
+	public static HttpResponseBuilder builder() {
+		return new HttpResponseBuilder();
 	}
 
-	public void setStatus(HttpStatus status) {
-		this.status = status;
+	public String getStatusMessage() {
+		return status.getMessage();
 	}
 
-	public void setHeader(String key, String value) {
-		headerFields.addHeaderField(key, value);
+	public Set<Map.Entry<String, String>> getHeaderFields() {
+		return headerFields.getAllFields();
 	}
 
-	public void setBody(byte[] body, String contentType) {
-		this.body = body;
-		setHeader("Content-Type", contentType);
-		setHeader("Content-Length", String.valueOf(body.length));
+	public byte[] getBody() {
+		return body;
 	}
 
-	public void sendResponse(DataOutputStream outputStream) {
-		writeResponseHeader(outputStream);
-		writeResponseBody(outputStream);
-	}
+	public static class HttpResponseBuilder {
 
-	private void writeResponseHeader(DataOutputStream outputStream) {
-		try {
-			List<String> tokens = new ArrayList<>();
-			tokens.add(httpVersion);
-			tokens.add(status.getCode());
-			tokens.add(status.getMessage());
-			outputStream.writeBytes(StringUtils.joinStatusLine(tokens));
-			for (Map.Entry<String, String> headerField : headerFields.getEntrySet()) {
-				outputStream.writeBytes(StringUtils.joinHeaderFields(headerField.getKey(), headerField.getValue()));
+		private final HttpHeaderFields headerFields;
+		private HttpStatus status;
+		private byte[] body;
+
+		private HttpResponseBuilder() {
+			status = HttpStatus.OK;
+			headerFields = new HttpHeaderFields();
+			body = null;
+			// TODO : 요청의 general header는 응답에도 바로 저장하기
+		}
+
+		public HttpResponseBuilder status(HttpStatus status) {
+			if (this.status == HttpStatus.OK) {
+				this.status = status;
 			}
-			outputStream.writeBytes(CRLF);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+			return this;
 		}
-	}
 
-	private void writeResponseBody(DataOutputStream outputStream) {
-		try {
-			outputStream.write(body, 0, body.length);
-			outputStream.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+		public HttpResponseBuilder headerField(String key, String value) {
+			if (headerFields.getValue(value) == null) {
+				this.headerFields.add(key, value);
+			}
+			return this;
 		}
+
+		public HttpResponseBuilder body(Path resourcePath) {
+			if (body != null) {
+				return this;
+			}
+			try {
+				this.body = Files.readAllBytes(resourcePath);
+				String contentType = Files.probeContentType(resourcePath);
+				if (contentType.startsWith("text")) {
+					contentType = contentType.concat(";charset=UTF-8");
+				}
+				this.headerFields.add("Content-Type", contentType);
+				this.headerFields.add("Content-Length", String.valueOf(body.length));
+				return this;
+			} catch (IOException e) {
+				this.status = HttpStatus.SERVER_ERROR;
+				return this;
+			}
+		}
+
+		public HttpResponseBuilder view(String viewName) {
+			try {
+				File view = FileMapper.findFile(viewName + ".html");
+				return body(view.toPath());
+			} catch (FileNotFoundException e) {
+				this.status = HttpStatus.SERVER_ERROR;
+				return this;
+			}
+		}
+
+		public HttpResponse build() {
+			return new HttpResponse(this);
+		}
+
 	}
 
 }

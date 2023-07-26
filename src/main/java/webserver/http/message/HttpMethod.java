@@ -1,22 +1,26 @@
 package webserver.http.message;
 
+import java.util.Arrays;
+
 public enum HttpMethod {
 	GET("GET"),
 	POST("POST");
 
-	private final String method;
+	private final String name;
 
-	HttpMethod(String method) {
-		this.method = method;
+	HttpMethod(String name) {
+		this.name = name;
 	}
 
 	public static HttpMethod from(String methodString) {
-		for (HttpMethod value : HttpMethod.values()) {
-			if (value.method.equals(methodString)) {
-				return value;
-			}
-		}
-		throw new IllegalArgumentException();
+		return Arrays.stream(HttpMethod.values())
+			.filter(value -> value.name.equals(methodString))
+			.findAny()
+			.orElseThrow(() -> new RuntimeException(HttpStatus.METHOD_NOT_ALLOWED.getMessage()));
+	}
+
+	public String getName() {
+		return name;
 	}
 }
 

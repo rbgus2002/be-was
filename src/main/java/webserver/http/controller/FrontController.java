@@ -1,27 +1,38 @@
 package webserver.http.controller;
 
-import java.io.File;
-
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
-import webserver.http.utils.FileMapper;
-import webserver.mapping.ControllerScanner;
+import webserver.http.message.HttpStatus;
 
 public class FrontController {
 
-	FileMapper fileMapper = new FileMapper();
-	StaticFileResolver staticFileResolver = new StaticFileResolver();
-	ControllerResolver controllerResolver = new ControllerResolver();
+	StaticFileResolver staticFileResolver;
+	ControllerResolver controllerResolver;
 
-	public void service(HttpRequest request, HttpResponse response) {
-		String path = request.getUrlPath();
-		ControllerScanner.initialize();
-		File file = fileMapper.findFile(path);
-		if (file != null) {
-			staticFileResolver.resolve(response, file);
-			return;
+	private FrontController() {
+		staticFileResolver = new StaticFileResolver();
+		controllerResolver = new ControllerResolver();
+	}
+
+	public static FrontController getInstance() {
+		return LazyHolder.instance;
+	}
+
+	public HttpResponse service(HttpRequest request) {
+		try {
+			if (request.forStaticResource()) {
+				return staticFileResolver.resolve(request.getUrlPath());
+			}
+			return controllerResolver.resolve(request);
+		} catch (Exception e) {
+			return HttpResponse.builder()
+				.status(HttpStatus.SERVER_ERROR)
+				.build();
 		}
-		controllerResolver.resolve(request, response);
+	}
+
+	private static class LazyHolder {
+		private static final FrontController instance = new FrontController();
 	}
 
 }

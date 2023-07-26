@@ -1,5 +1,6 @@
 package webserver.mapping;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,15 +12,15 @@ public class ControllerMapping {
 	}
 
 	public static ControllerMapping getInstance() {
-		return LazyHolder.instance;
+		return ControllerMapping.LazyHolder.instance;
 	}
 
-	public void add(Class<?> clazz, Object controller) {
-		mapping.put(clazz, controller);
+	public void add(Class<?> clazz, Object obj) {
+		mapping.put(clazz, obj);
 	}
 
-	public Object find(Class<?> clazz) {
-		return mapping.get(clazz);
+	public Object getControllerByMethod(Method method) {
+		return mapping.get(method.getDeclaringClass());
 	}
 
 	private static class LazyHolder {
