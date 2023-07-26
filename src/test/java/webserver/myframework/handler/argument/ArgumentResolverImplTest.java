@@ -65,6 +65,7 @@ class ArgumentResolverImplTest {
 
     @SuppressWarnings("unused")
     static class TestClass {
+        @SuppressWarnings("EmptyMethod")
         public void testMethod(
                 @RequestParam("requestParam1") String requestParam1,
                 HttpResponse httpResponse,

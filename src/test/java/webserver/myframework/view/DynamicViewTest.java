@@ -1,6 +1,6 @@
 package webserver.myframework.view;
 
-import db.Database;
+import db.UserTable;
 import model.User;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -32,13 +32,13 @@ public class DynamicViewTest {
                                   " User Name: dddd\n";
     @BeforeAll
     static void setUp() throws NoSuchFieldException, IllegalAccessException {
-        Field usersField = Database.class.getDeclaredField("users");
+        Field usersField = UserTable.class.getDeclaredField("users");
         usersField.setAccessible(true);
         ((Map<?, ?>) usersField.get(null)).clear();
-        Database.addUser(new User("aaaa", "aaaa", "aaaa", "aaaa"));
-        Database.addUser(new User("bbbb", "bbbb", "bbbb", "bbbb"));
-        Database.addUser(new User("cccc", "cccc", "cccc", "cccc"));
-        Database.addUser(new User("dddd", "dddd", "dddd", "dddd"));
+        UserTable.addUser(new User("aaaa", "aaaa", "aaaa", "aaaa"));
+        UserTable.addUser(new User("bbbb", "bbbb", "bbbb", "bbbb"));
+        UserTable.addUser(new User("cccc", "cccc", "cccc", "cccc"));
+        UserTable.addUser(new User("dddd", "dddd", "dddd", "dddd"));
     }
 
     @Nested
@@ -49,10 +49,10 @@ public class DynamicViewTest {
        void generateResultDynamically() throws IOException {
            //given
            User user = new User("syua", "syua", "syua", "syua");
-           Database.addUser(user);
+           UserTable.addUser(user);
            Model model = new ModelImpl();
            model.addParameter("user", user);
-           model.addParameter("users", new ArrayList<>(Database.findAll()));
+           model.addParameter("users", new ArrayList<>(UserTable.findAll()));
            DynamicView dynamicView = new DynamicView(new File("src/test/resources/DynamicViewTestFile"), model);
 
            //when

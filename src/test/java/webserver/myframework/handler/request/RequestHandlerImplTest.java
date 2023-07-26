@@ -44,7 +44,7 @@ class RequestHandlerImplTest {
         class hasExceptionWhenInvokeHandler0 {
             @Test
             @DisplayName("상태 코드가 500이다")
-            void StatusCodeIs50() throws NoSuchMethodException {
+            void StatusCodeIs500() throws NoSuchMethodException {
                 //given
                 RequestHandlerImpl requestHandler = new RequestHandlerImpl(new TestClass(),
                         TestClass.class.getDeclaredMethod("testMethod", HttpRequest.class, HttpResponse.class),

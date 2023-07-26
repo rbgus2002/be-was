@@ -13,10 +13,10 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-class DatabaseTest {
+class UserTableTest {
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        Field usersField = Database.class.getDeclaredField("users");
+        Field usersField = UserTable.class.getDeclaredField("users");
         usersField.setAccessible(true);
         Map<String, User> users = (Map<String, User>) usersField.get(null);
         users.clear();
@@ -30,12 +30,12 @@ class DatabaseTest {
         void addUserToMapInDatabase() throws ReflectiveOperationException {
             //given
             User user = new User("userId", "password", "name", "email");
-            Field usersField = Database.class.getDeclaredField("users");
+            Field usersField = UserTable.class.getDeclaredField("users");
             usersField.setAccessible(true);
             Map<String, User> users = (Map<String, User>) usersField.get(null);
 
             //when
-            Database.addUser(user);
+            UserTable.addUser(user);
 
             //then
             assertThat(users.values().size()).isEqualTo(1);
@@ -54,10 +54,10 @@ class DatabaseTest {
             void returnUser() {
                 //given
                 User user = new User("userId", "password", "name", "email");
-                Database.addUser(user);
+                UserTable.addUser(user);
 
                 //when
-                User resultUser = Database.findUserById("userId");
+                User resultUser = UserTable.findUserById("userId");
 
                 //then
                 assertThat(resultUser).isEqualTo(user);
@@ -72,7 +72,7 @@ class DatabaseTest {
             void returnEmptyOptional() {
                 //given
                 //when
-                User notExist = Database.findUserById("notExist");
+                User notExist = UserTable.findUserById("notExist");
 
                 //then
                 assertThat(notExist).isNull();
@@ -89,11 +89,11 @@ class DatabaseTest {
             //given
             User user1 = new User("userId1", "password", "name1", "email");
             User user2 = new User("userId2", "password", "name2", "email");
-            Database.addUser(user1);
-            Database.addUser(user2);
+            UserTable.addUser(user1);
+            UserTable.addUser(user2);
 
             //when
-            Collection<User> users = Database.findAll();
+            Collection<User> users = UserTable.findAll();
 
             //then
             assertThat(users).contains(user1, user2);

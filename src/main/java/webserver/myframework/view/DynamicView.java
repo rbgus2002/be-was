@@ -30,12 +30,13 @@ public class DynamicView implements View {
     @Override
     public byte[] render() throws IOException {
         String fileAllContent = Files.readString(viewFile.toPath()).replace("{DYNAMIC_RENDER}", "").trim();
-        List<String> fileContents = StringUtils.splitStringByRegex(fileAllContent, "(\\{[^\\}]+\\})");
+        List<String> fileContents = StringUtils.splitStringByRegex(fileAllContent, "(\\{\\{[^\\}]+\\}\\})");
         StringBuilder stringBuilder = new StringBuilder();
 
         try {
             writeDynamicFile(stringBuilder, fileContents);
         } catch (Exception exception) {
+            exception.printStackTrace();
             return Files.readAllBytes(Path.of(INTERNAL_SERVER_ERROR_PAGE));
         }
 
@@ -44,8 +45,8 @@ public class DynamicView implements View {
 
     private void writeDynamicFile(StringBuilder stringBuilder, List<String> fileContents) throws NoSuchFieldException, IllegalAccessException {
         for (String fileContent : fileContents) {
-            if (fileContent.startsWith("{") && fileContent.endsWith("}")) {
-                    stringBuilder.append(writeDynamicContent(fileContent));
+            if (fileContent.startsWith("{{") && fileContent.endsWith("}}")) {
+                stringBuilder.append(writeDynamicContent(fileContent));
                 continue;
             }
             stringBuilder.append(fileContent);
@@ -59,7 +60,7 @@ public class DynamicView implements View {
             String[] objectAndContent = objectContent.split("::");
             String objectName = objectAndContent[0].trim();
             DynamicContent dynamicContent = DynamicContent.getDynamicContent(model, objectName, objectAndContent[1]);
-            if(dynamicContent == null) {
+            if (dynamicContent == null) {
                 continue;
             }
             return dynamicContent.render();
