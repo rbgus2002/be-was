@@ -35,6 +35,10 @@ Java Web Application Server 2023
 2. 로그인 성공 시 index.html로 이동
 3. 로그인 실패 시 login_failed.html 페이지로 이동
 
+## step 6
+### 기능 요구사항
+1. 동적인 HTML 구현
+
 ## 기능 구현 커밋
 - [X] HTTP Request Message 출력
 - [X] /index.html 요청 시 응답
@@ -46,6 +50,9 @@ Java Web Application Server 2023
   - [X] 세션 구현
   - [X] 쿠키 구현
 - [X] 로그인 성공 및 실패 시 페이지 이동
+- [X] 동적 페이지 로딩 구현
+- [X] @Template 어노테이션 추가
+- [X] 동적 렌더링을 위한 클래스 구현
 
 ## Wiki page
 https://github.com/plusjob70/be-was/wiki

@@ -1,12 +1,10 @@
-package db;
+package domain.user;
 
 import com.google.common.collect.Maps;
 
-import model.User;
+import domain.user.User;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Database {
     private static Map<String, User> users = Maps.newHashMap();
@@ -19,7 +17,8 @@ public class Database {
         return Optional.ofNullable(users.get(userId));
     }
 
-    public static Collection<User> findAll() {
-        return users.values();
+    public static List<User> findAll() {
+        return new ArrayList<>(users.values());
     }
+
 }

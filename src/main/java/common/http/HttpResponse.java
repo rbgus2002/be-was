@@ -3,10 +3,7 @@ package common.http;
 import common.enums.ContentType;
 import common.enums.ResponseCode;
 import common.wrapper.Headers;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import utils.FileUtils;
 
 import static webserver.ServerConfig.STATIC_PATH;
 
@@ -61,25 +58,34 @@ public class HttpResponse {
         this.body = body;
     }
 
-    public void setStaticContentResponse(ContentType type, String path) {
-        ResponseCode responseLine = ResponseCode.OK;
-        Headers headers = new Headers();
-        byte[] body = new byte[0];
+    public void setUpStaticContentResponse(ContentType type, String path) {
+        byte[] body = FileUtils.readFileToBytes(STATIC_PATH + path);
 
-        try {
-            body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
-
-            headers.addAttribute("Content-Type", type.getDescription());
-            headers.addAttribute("Content-Length", String.valueOf(body.length));
-
-        } catch (IOException e) {
-            responseLine = ResponseCode.NOT_FOUND;
-
-        } finally {
-            this.responseLine = responseLine;
-            this.headers = headers;
-            this.body = body;
+        if (body != null) {
+            setResponseLine(ResponseCode.OK);
+            addHeader("Content-Type", type.getDescription());
+            addHeader("Content-Length", String.valueOf(body.length));
+            setBody(body);
+        } else {
+            setResponseLine(ResponseCode.NOT_FOUND);
         }
+    }
+
+    public void setUpDefaultResponse(ResponseCode responseCode, ContentType contentType, byte[] body) {
+        if (body != null) {
+            setResponseLine(responseCode);
+            addHeader("Content-Type", contentType.getDescription());
+            addHeader("Content-Length", String.valueOf(body.length));
+            setBody(body);
+        } else {
+            setResponseLine(ResponseCode.BAD_REQUEST);
+        }
+    }
+
+    public void setUpRedirectResponse(String redirectionPath) {
+        setResponseLine(ResponseCode.FOUND);
+        addHeader("Location", redirectionPath);
+        setBody(new byte[0]);
     }
 
 }

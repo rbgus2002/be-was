@@ -1,6 +1,6 @@
 package annotation;
 
-import common.enums.RequestMethod;
+import template.DynamicTemplate;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RequestMapping {
-    RequestMethod method() default RequestMethod.GET;
-    String path();
+public @interface TemplateMapping {
+    Class<? extends DynamicTemplate> name();
 }

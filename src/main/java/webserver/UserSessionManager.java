@@ -1,10 +1,10 @@
-package session;
+package webserver;
 
 import common.http.Cookie;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.wrapper.Cookies;
-import model.User;
+import domain.user.User;
 
 import java.util.Map;
 import java.util.UUID;

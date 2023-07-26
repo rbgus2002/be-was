@@ -1,4 +1,4 @@
-package modelview;
+package webserver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class ModelView {
         return model;
     }
 
-    public void addAttribute(String key, Object value) {
+    public void addModelAttribute(String key, Object value) {
         model.put(key, value);
     }
 
