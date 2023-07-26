@@ -3,6 +3,8 @@ package webserver.template;
 import webserver.model.Model;
 import webserver.utils.FileUtils;
 
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +24,7 @@ public class TemplateRenderer {
     public String render(String html, Model model) {
         html = renderChange(html);
         html = renderLoad(html, model);
+        html = renderFor(html, model);
         return renderIf(html, model);
     }
 
@@ -58,7 +61,7 @@ public class TemplateRenderer {
             int end = html.indexOf("/]", start) + 2;
 
             String key = html.substring(start, end).replace("[load: ", "").replace("/]", "");
-            String attribute = model.getAttribute(key);
+            String attribute = (String) model.getAttribute(key);
 
             htmlBuilder.append(html, beforeIdx, start).append(attribute);
             beforeIdx = end;
@@ -92,9 +95,51 @@ public class TemplateRenderer {
     }
 
     private boolean isOk(String ifTag, Model model) {
-        String condition = ifTag.replace("[if: ", "").replace("\"", "").replace("]", "");
+        String condition = getIfCondition(ifTag);
         String[] tokens = condition.split("=");
 
         return model.getAttribute(tokens[0]).equals(tokens[1]);
+    }
+
+    private static String getIfCondition(String ifTag) {
+        return ifTag.replace("[if: ", "").replace("\"", "").replace("]", "");
+    }
+
+    public String renderFor(String html, Model model) {
+        String openIfRegex = "\\[for: (.*?)\\]";
+        String closeIfRegex = "\\[/for\\]";
+
+        Pattern openIfPattern = Pattern.compile(openIfRegex);
+        Pattern closeIfPattern = Pattern.compile(closeIfRegex);
+
+        Matcher openIfMatcher = openIfPattern.matcher(html);
+        Matcher closeIfMatcher = closeIfPattern.matcher(html);
+
+        StringBuilder htmlBuilder = new StringBuilder();
+        int beforeIdx = 0;
+        while (openIfMatcher.find() && closeIfMatcher.find()) {
+            String forTag = openIfMatcher.group();
+            String modelName = getForName(forTag);
+            htmlBuilder.append(html, beforeIdx, openIfMatcher.start());
+
+            String snippet = html.substring(openIfMatcher.end(), closeIfMatcher.start());
+
+            List<Map<String, String>> dataMap = (List<Map<String, String>>) model.getAttribute(modelName);
+            for (int index = 1; index <= dataMap.size(); index++) {
+                Map<String, String> data = dataMap.get(index - 1);
+                String renderedHtml = snippet.replace("[index]", String.valueOf(index));
+                for (String key : data.keySet()) {
+                    renderedHtml = renderedHtml.replace(("[" + key + "]"), data.get(key));
+                }
+                htmlBuilder.append(renderedHtml);
+            }
+            beforeIdx = closeIfMatcher.end();
+        }
+        htmlBuilder.append(html, beforeIdx, html.length());
+        return htmlBuilder.toString();
+    }
+
+    private String getForName(String forTag) {
+        return forTag.replace("[for: ", "").replace("]", "");
     }
 }
