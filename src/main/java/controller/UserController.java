@@ -53,6 +53,8 @@ public class UserController extends Controller {
         Map<String, String> information = new HashMap<>();
         for (String param : params) {
             String[] info = param.split("=");
+            if (info.length != 2)
+                throw new BadRequestException(INVALID_URI);
             information.put(info[0], decodeBody(info[1]));
         }
         return information;
