@@ -15,12 +15,24 @@ import java.lang.reflect.Method;
 
 public class FrontController {
     private static final String REDIRECT = "redirect:";
+    private static FrontController frontController;
     private final HttpRequest httpRequest;
     private final DataOutputStream dos;
 
     public FrontController(HttpRequest httpRequest, DataOutputStream dos) {
         this.httpRequest = httpRequest;
         this.dos = dos;
+    }
+
+    public static FrontController getInstance(HttpRequest httpRequest, DataOutputStream dos) {
+        if (frontController == null) {
+            synchronized(FrontController.class)
+            {
+                frontController = new FrontController(httpRequest, dos);
+            }
+        }
+
+        return frontController;
     }
 
     public void doDispatch() throws IOException, InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
