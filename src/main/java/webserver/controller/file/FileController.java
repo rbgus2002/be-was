@@ -13,7 +13,7 @@ import java.io.IOException;
 public class FileController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String filePath = httpRequest.getField(HttpField.PATH);
+        String filePath = httpRequest.getHeader(HttpField.PATH);
         String responsePage = FileUtils.checkFilePath(filePath);
         setResponseWithFileData(httpResponse, responsePage);
     }

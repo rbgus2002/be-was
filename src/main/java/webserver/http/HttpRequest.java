@@ -94,8 +94,8 @@ public class HttpRequest {
         }
     }
 
-    public String getField(String name) {
-        return httpHeaders.get(name);
+    public String getHeader(String field) {
+        return httpHeaders.get(field);
     }
 
     public HttpParameters getParameters() {
