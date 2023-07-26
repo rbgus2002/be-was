@@ -13,4 +13,8 @@ public class Model {
     public void addAttribute(String key, Object value) {
         model.put(key, value);
     }
+
+    public Object getValue(String key) {
+        return model.get(key);
+    }
 }

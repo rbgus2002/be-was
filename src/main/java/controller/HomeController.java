@@ -4,7 +4,7 @@ import annotation.Controller;
 import annotation.RequestMapping;
 import model.Model;
 import model.User;
-import session.UserSessionManager;
+import session.SessionManager;
 import http.request.HttpRequest;
 
 import static http.request.RequestMethod.GET;
@@ -13,7 +13,7 @@ import static http.request.RequestMethod.GET;
 public class HomeController {
     @RequestMapping(method = GET, value = "/index.html")
     public ModelAndView showHome(HttpRequest httpRequest) {
-        User user = UserSessionManager.getUser(httpRequest.getSessionId());
+        User user = SessionManager.getUser(httpRequest.getSessionId());
         if (user == null) {
             return new ModelAndView("/index.html");
         }
