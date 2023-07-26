@@ -37,9 +37,9 @@ public class Header {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (String s : headers.keySet()) {
-            sb.append(s).append(COLON).append(SPACE).append(headers.get(s)).append(NEWLINE);
-        }
+        headers.entrySet().stream()
+                .map(entry -> entry.getKey() + COLON + SPACE + entry.getValue() + NEWLINE)
+                .forEach(sb::append);
         return sb.toString();
     }
 }

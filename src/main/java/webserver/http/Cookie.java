@@ -40,9 +40,9 @@ public class Cookie {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Set-Cookie:");
-        for (String s : options.keySet()) {
-            sb.append(SPACE).append(s).append(EQUAL).append(options.get(s)).append(SEMICOLON);
-        }
+        options.entrySet().stream()
+                .map(entry -> SPACE + entry.getKey() + EQUAL + entry.getValue() + SEMICOLON)
+                .forEach(sb::append);
         sb.deleteCharAt(sb.length() - INDEX_ADJUSTMENT);
         sb.append(NEWLINE);
         return sb.toString();
