@@ -6,6 +6,7 @@ import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
 import global.request.RequestBody;
+import global.request.RequestHeader;
 import global.request.RequestLine;
 
 import java.lang.reflect.Method;
@@ -15,9 +16,11 @@ import java.util.stream.Collectors;
 
 public class PostHandler implements Handler {
     private final HttpMethod httpMethod = HttpMethod.POST;
+    private final RequestHeader requestHeader;
     private final RequestBody requestBody;
 
-    public PostHandler(RequestBody requestBody) {
+    public PostHandler(RequestHeader requestHeader, RequestBody requestBody) {
+        this.requestHeader = requestHeader;
         this.requestBody = requestBody;
     }
 
@@ -28,7 +31,7 @@ public class PostHandler implements Handler {
     public byte[] startController(RequestLine requestLine, Controller controller) throws Exception {
         for (Method method : Controller.class.getDeclaredMethods()) {
             if (isPostMapping(method, requestLine.getUri())) {
-                return (byte[]) method.invoke(controller, requestBody);
+                return (byte[]) method.invoke(controller, requestHeader, requestBody);
             }
         }
 

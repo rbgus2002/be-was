@@ -5,6 +5,7 @@ import annotations.PostMapping;
 import global.constant.Headers;
 import global.constant.StatusCode;
 import global.request.RequestBody;
+import global.request.RequestHeader;
 import global.response.ResponseEntity;
 import service.UserService;
 
@@ -24,7 +25,7 @@ public class Controller {
     }
 
     @PostMapping(path = "/user/create")
-    public byte[] createUser(RequestBody body) throws IOException {
+    public byte[] createUser(RequestHeader header, RequestBody body) throws IOException {
         Map<String, String> params = body.getParams();
         userService.register(params);
         return ResponseEntity
@@ -32,5 +33,28 @@ public class Controller {
                 .addHeaders(Headers.LOCATION, "/index.html")
                 .responseResource("/index.html")
                 .build();
+    }
+
+    @PostMapping(path = "/user/login")
+    public byte[] userLogin(RequestHeader header, RequestBody body) throws IOException {
+        Map<String, String> headerParams = header.getHeaders();
+        Map<String, String> bodyParams = body.getParams();
+
+        if (!userService.existUser(bodyParams)) {
+            return ResponseEntity
+                    .statusCode(StatusCode.FOUND)
+                    .addHeaders(Headers.LOCATION, "/user/login_failed.html")
+                    .responseResource("/user/login_failed.html")
+                    .build();
+        }
+
+        userService.login(headerParams, bodyParams);
+        return ResponseEntity
+                .statusCode(StatusCode.FOUND)
+                .setCookie(userService.getUserSession(bodyParams), "/")
+                .addHeaders(Headers.LOCATION, "/index.html")
+                .responseResource("/index.html")
+                .build();
+
     }
 }

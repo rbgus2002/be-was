@@ -17,12 +17,14 @@ import static global.constant.ContentType.existContentType;
 
 public class RequestMapper {
     private final RequestLine requestLine;
+    private final RequestHeader requestHeader;
     private final RequestBody requestBody;
     private final Controller controller;
 
-    public RequestMapper(RequestLine requestLine, RequestBody requestBody) {
+    public RequestMapper(RequestLine requestLine, RequestHeader requestHeader, RequestBody requestBody) {
         this.requestLine = requestLine;
         this.requestBody = requestBody;
+        this.requestHeader = requestHeader;
         this.controller = new Controller();
     }
 
@@ -54,7 +56,7 @@ public class RequestMapper {
     private Handler findHandler(HttpMethod httpMethod) {
         final List<Handler> handlers = new ArrayList<>();
         handlers.add(new GetHandler());
-        handlers.add(new PostHandler(requestBody));
+        handlers.add(new PostHandler(requestHeader, requestBody));
 
         return handlers.stream()
                 .filter(handler -> handler.matchHttpMethod(httpMethod))
