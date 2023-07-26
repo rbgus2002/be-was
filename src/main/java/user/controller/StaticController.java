@@ -1,6 +1,6 @@
 package user.controller;
 
-import db.Database;
+import db.UserTable;
 import model.User;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
@@ -16,7 +16,7 @@ public class StaticController {
     public void index(HttpRequest httpRequest, HttpResponse httpResponse, Model model) {
         Session session = httpRequest.getSession(false);
         if(session != null) {
-            User user = Database.findUserById((String) session.getAttribute("userId"));
+            User user = UserTable.findUserById((String) session.getAttribute("userId"));
             model.addParameter("user", user);
         }
         httpResponse.setUri("/index.html");

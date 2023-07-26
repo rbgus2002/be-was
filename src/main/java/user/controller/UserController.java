@@ -1,6 +1,6 @@
 package user.controller;
 
-import db.Database;
+import db.UserTable;
 import model.User;
 import user.service.UserService;
 import webserver.http.HttpMethod;
@@ -64,9 +64,9 @@ public class UserController {
             httpResponse.sendRedirection("/user/login.html");
             return;
         }
-        User user = Database.findUserById((String) session.getAttribute("userId"));
+        User user = UserTable.findUserById((String) session.getAttribute("userId"));
         model.addParameter("user", user);
-        model.addParameter("users", new ArrayList<>(Database.findAll()));
+        model.addParameter("users", new ArrayList<>(UserTable.findAll()));
         httpResponse.setUri("/user/list.html");
     }
 

@@ -1,6 +1,6 @@
 package user.controller;
 
-import db.Database;
+import db.UserTable;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,7 @@ class UserControllerTest {
                 userController.signUp(new String(body, StandardCharsets.UTF_8), httpResponse);
 
                 //then
-                User user = Database.findUserById("syuaID");
+                User user = UserTable.findUserById("syuaID");
                 assertThat(user)
                         .isEqualTo(new User("syuaID", "syuaPW", "syuaNAME", "syuaEMAIL"));
             }
@@ -81,11 +81,11 @@ class UserControllerTest {
         @SuppressWarnings("unchecked")
         @BeforeEach
         void setUp() throws ReflectiveOperationException {
-            Field usersField = Database.class.getDeclaredField("users");
+            Field usersField = UserTable.class.getDeclaredField("users");
             usersField.setAccessible(true);
             ((Map<String, User>) usersField.get(null)).clear();
 
-            Database.addUser(new User("exist", "exist", "exist", "exist@exist"));
+            UserTable.addUser(new User("exist", "exist", "exist", "exist@exist"));
             sessionManager = new SessionManagerImpl();
         }
 
