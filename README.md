@@ -82,6 +82,6 @@ Java Web Application Server 2023
         - 따라서 `URL`의 파라미터와 동일한 방식으로 파싱한 후 `HttpRequestBody` 객체에 저장하였다.
     2. POST method 매핑
         - `@RequestMapping`에 `method`와 `path`를 추가해 GET과 POST 요청을 구분하여 처리할 수 있도록 구현하였다.
-- [ ] 회원가입 후 리다이렉트 (POST-Redirect-GET 패턴)
+- [x] 회원가입 후 리다이렉트 (POST-Redirect-GET 패턴)
     1. 응답 메세지 헤더에 `Location` 필드 추가
-    2. 응답 메세지 상태 코드 `201 Created`로 설정
+    2. 응답 메세지 상태 코드 `302 Found`로 설정
