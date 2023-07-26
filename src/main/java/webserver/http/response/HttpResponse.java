@@ -52,4 +52,8 @@ public class HttpResponse {
         stringBuilder.append(body.toString());
         return stringBuilder.toString();
     }
+
+    public void setCookie(String sid, String path) {
+        headers.setCookie(sid, path);
+    }
 }
