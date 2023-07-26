@@ -103,9 +103,9 @@ Java Web Application Server 2023
 - 서버는 세션 아이디에 해당하는 User 정보에 접근할 수 있어야 한다.
 
 ### TODO
-[ ] HTTP Cookie & Session 공부
-[ ] 공부한 내용 Wiki 작성
-[ ] 로그인 구현
+[X] HTTP Cookie & Session 공부
+[X] 공부한 내용 Wiki 작성
+[X] 로그인 구현
 [ ] Cookie 구현
 [ ] Session 구현
-[ ] 리다이렉션 구현
+[X] 리다이렉션 구현

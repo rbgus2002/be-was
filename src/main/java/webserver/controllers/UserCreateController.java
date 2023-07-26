@@ -45,7 +45,7 @@ public class UserCreateController implements Controller {
 
         String path = "http://".concat(request.getHeader("Host").concat("/index.html"));
         if (!addUser(user)) {
-            path = "http://".concat(request.getHeader("Host").concat("/user/form.html"));
+            path = "http://".concat(request.getHeader("Host").concat("/user/create_failed.html"));
         }
 
         return builder.version(request.version())

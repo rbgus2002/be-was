@@ -103,7 +103,7 @@ public class HttpRequest {
         return headers.getHeader(field);
     }
 
-    public Map body() {
+    public Map<String, String> body() {
         return body;
     }
 }
