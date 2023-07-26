@@ -14,6 +14,7 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         userController = new UserController();
+        Database.clear();
     }
 
     @Test
@@ -51,5 +52,37 @@ class UserControllerTest {
         // then
         assertThrows(IllegalArgumentException.class,
                 () -> userController.createUser(userId, password, name, email));
+    }
+
+    @Test
+    @DisplayName("유저가 회원 가입을 하고, 로그인을 성공한다.")
+    void loginSuccess() {
+        // given
+        String userId = "abcd";
+        String password = "password12345";
+        String name = "honggildong";
+        String email = "abc123@gmail.com";
+        userController.createUser(userId, password, name, email);
+
+        // then
+        assertEquals("redirect:/index.html", userController.loginUser(userId, password));
+    }
+
+    @Test
+    @DisplayName("유저가 회원 가입을 하고, 로그인을 실패한다.")
+    void loginFail() {
+        // given
+        String userId = "abcd";
+        String password = "password12345";
+        String name = "honggildong";
+        String email = "abc123@gmail.com";
+
+        userController.createUser(userId, password, name, email);
+
+        String wrongPassword = "notpassword";
+
+
+        // then
+        assertEquals("redirect:/user/login_failed.html", userController.loginUser(userId, wrongPassword));
     }
 }
