@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
 
-import webserver.http.utils.FileMapper;
+import webserver.resolver.utils.FileMapper;
 
 public class HttpResponse {
 

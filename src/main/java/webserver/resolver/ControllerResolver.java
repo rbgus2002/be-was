@@ -1,4 +1,4 @@
-package webserver.http.controller;
+package webserver.resolver;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

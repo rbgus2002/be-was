@@ -1,11 +1,11 @@
-package webserver.http.controller;
+package webserver.resolver;
 
 import java.io.File;
 import java.io.IOException;
 
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
-import webserver.http.utils.FileMapper;
+import webserver.resolver.utils.FileMapper;
 
 public class StaticFileResolver {
 
