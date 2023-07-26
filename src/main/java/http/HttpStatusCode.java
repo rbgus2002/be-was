@@ -81,8 +81,8 @@ public enum HttpStatusCode {
         this.description = description;
     }
 
-    public int getValue() {
-        return value;
+    public String getValue() {
+        return Integer.toString(value);
     }
 
     public String getDescription() {
