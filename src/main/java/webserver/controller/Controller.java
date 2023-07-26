@@ -5,7 +5,7 @@ import webserver.annotaion.RequestMapping;
 import webserver.http.HttpMethod;
 import webserver.http.HttpStatusCode;
 import webserver.http.request.HttpRequest;
-import webserver.http.response.Body;
+import webserver.http.response.ResponseBody;
 import webserver.http.response.HttpResponse;
 import service.UserService;
 
@@ -30,7 +30,7 @@ public class Controller {
 
     public HttpResponse getStaticResource(HttpRequest request) {
         try {
-            Body body = Body.from(FileService.getStaticResource(request.getPath()), request.getMime());
+            ResponseBody body = ResponseBody.from(FileService.getStaticResource(request.getPath()), request.getMime());
             return HttpResponse.of(request.getVersion(), HttpStatusCode.OK, body);
         } catch (NoSuchFileException exception) {
             return HttpResponse.of(request.getVersion(), HttpStatusCode.NOT_FOUND);

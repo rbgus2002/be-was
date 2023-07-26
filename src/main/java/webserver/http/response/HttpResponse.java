@@ -14,25 +14,25 @@ public class HttpResponse {
     private String version;
     private HttpStatusCode statusCode;
     private Headers headers;
-    private Body body;
+    private ResponseBody body;
 
-    private HttpResponse(String version, HttpStatusCode statusCode, Body body, Headers headers) {
+    private HttpResponse(String version, HttpStatusCode statusCode, ResponseBody body, Headers headers) {
         this.version = version;
         this.statusCode = statusCode;
         this.body = body;
         this.headers = headers;
     }
 
-    public static HttpResponse of(String version, HttpStatusCode statusCode, Body body) {
+    public static HttpResponse of(String version, HttpStatusCode statusCode, ResponseBody body) {
         return new HttpResponse(version, statusCode, body, Headers.from(body));
     }
 
     public static HttpResponse of(String version, HttpStatusCode statusCode) {
-        return new HttpResponse(version, statusCode, Body.emptyBody(), Headers.from(Body.emptyBody()));
+        return new HttpResponse(version, statusCode, ResponseBody.emptyBody(), Headers.from(ResponseBody.emptyBody()));
     }
 
     public static HttpResponse redirectResponse(String version, String path) {
-        return new HttpResponse(version, HttpStatusCode.FOUND, Body.emptyBody(), Headers.redirectHeaders(path));
+        return new HttpResponse(version, HttpStatusCode.FOUND, ResponseBody.emptyBody(), Headers.redirectHeaders(path));
     }
 
     public void response(OutputStream out) throws IOException {

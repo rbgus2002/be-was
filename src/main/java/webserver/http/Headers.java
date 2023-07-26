@@ -1,6 +1,6 @@
 package webserver.http;
 
-import webserver.http.response.Body;
+import webserver.http.response.ResponseBody;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -33,7 +33,7 @@ public class Headers {
         }
         return headers;
     }
-    public static Headers from(Body body) {
+    public static Headers from(ResponseBody body) {
         Headers headers = new Headers();
         headers.put(CONTENT_TYPE, body.getContentType());
         headers.put(CONTENT_LENGTH, String.valueOf(body.getLength()));
@@ -45,7 +45,7 @@ public class Headers {
     }
 
     public static Headers redirectHeaders(String path) {
-        Headers headers = Headers.from(Body.emptyBody());
+        Headers headers = Headers.from(ResponseBody.emptyBody());
         headers.put(LOCATION, path);
         return headers;
     }

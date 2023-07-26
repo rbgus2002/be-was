@@ -2,7 +2,7 @@ package webserver.http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.response.Body;
+import webserver.http.response.ResponseBody;
 
 import java.io.*;
 
@@ -67,7 +67,7 @@ class HeaderTest {
     void buildHeaderFromBody() {
         // given
         byte[] content = "바디입니다.".getBytes();
-        Body body = Body.from(content, MIME.TXT);
+        ResponseBody body = ResponseBody.from(content, MIME.TXT);
 
         // when
         Headers headers = Headers.from(body);
