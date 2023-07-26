@@ -5,6 +5,7 @@ import model.Post;
 import model.User;
 import router.RequestMapping;
 import service.PostService;
+import service.SessionService;
 import service.UserService;
 import webserver.model.Request;
 import webserver.model.Response;
@@ -54,6 +55,8 @@ public class DynamicFileController {
     private static final String QNA_TITLE = "<h2 class=\"qna-title\">";
     private static final String QNA_BODY = "<div class=\"article-doc\">";
     private static final String QNA_AUTHOR = "<a class=\"article-author-name\">";
+    private static final String QNA_AUTHOR_LABEL = "<label for=\"writer\">글쓴이</label>";
+    private static final String QNA_AUTHOR_FORM = "<input class=\"form-control\" id=\"writer\" name=\"writer\" value=\"%s\" readonly placeholder=\"글쓴이\"/>";
 
     @RequestMapping(value="/user/list.html", method=Method.GET)
     public Response showUserList(Request request) {
@@ -91,12 +94,15 @@ public class DynamicFileController {
         String httpDocument = generateHttpDocument(request);
         MIME mime = parseMime(request.getTargetUri());
         String sid = request.getSid();
+        String userId = SessionService.getUserIdBySid(sid);
 
         if(sid == null) {
             Map<String, String> headerMap = new HashMap<>();
             headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login.html");
             return new Response(STATUS.SEE_OTHER, headerMap, null);
         }
+
+        httpDocument = appendElement(httpDocument, QNA_AUTHOR_LABEL, String.format(QNA_AUTHOR_FORM, userId));
 
         byte[] body = httpDocument.getBytes();
 
