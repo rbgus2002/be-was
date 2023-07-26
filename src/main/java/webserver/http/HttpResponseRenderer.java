@@ -18,7 +18,6 @@ public class HttpResponseRenderer {
     }
 
     public void responseRender(DataOutputStream dos, HttpResponse response) {
-        logger.debug("Render response");
         responseHeader(dos, response);
         responseBody(dos, response);
     }
@@ -26,11 +25,11 @@ public class HttpResponseRenderer {
     private void responseHeader(DataOutputStream dos, HttpResponse response) {
         try {
             dos.writeBytes(String.format("%s %d %s %s", response.version(), response.statusCode(), response.statusText(), NEW_LINE));
-            logger.debug("{} {} {}", response.version(), response.statusCode(), response.statusText());
+//            logger.debug("{} {} {}", response.version(), response.statusCode(), response.statusText());
 
             for(String header: response.headers()) {
                 dos.writeBytes(String.format("%s: %s%s", header, response.getHeader(header), NEW_LINE));
-                logger.debug("{}: {}", header, response.getHeader(header));
+//                logger.debug("{}: {}", header, response.getHeader(header));
             }
 
             String contentType = String.format("Content-Type: %s", response.contentType().getTypeString());

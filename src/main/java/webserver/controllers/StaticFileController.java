@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static db.Sessions.getSession;
+import static service.SessionService.getSession;
 import static webserver.http.Cookie.isValidCookie;
 import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.ContentType.getContentTypeByExtension;
@@ -27,12 +27,6 @@ public class StaticFileController implements Controller {
 
     @RequestMethod(method = "GET")
     public HttpResponse handleGet(HttpRequest request) {
-        if (isValidCookie(request.cookie())) {
-            Session session = getSession(request.cookie().getSessionId());
-            logger.debug("session Id: {}", session.getSessionId());
-            User user = session.getUser();
-            logger.debug("session User: userId = {}, email = {}", user.getUserId(), user.getEmail());
-        }
         String extension = request.uri().getExtension();
         ContentType contentType = getContentTypeByExtension(extension);
         String path = getPathString(request, contentType);
@@ -40,11 +34,16 @@ public class StaticFileController implements Controller {
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
         byte[] body;
+        String fileContent;
         try {
+            fileContent = Files.readString(Paths.get(path));
             body = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             return createErrorResponse(request, NOT_FOUND);
         }
+
+        if(isValidCookie(request.cookie()))
+            body = reviseContentWithUserInfo(request, fileContent);
 
         builder.version(request.version())
                 .status(OK)
@@ -52,6 +51,18 @@ public class StaticFileController implements Controller {
                 .body(body);
 
         return builder.build();
+    }
+
+    private byte[] reviseContentWithUserInfo(HttpRequest request, String fileContent) {
+        Session session = getSession(request.cookie().getSessionId());
+        return fileContent
+                .replace("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>",
+                        "<li style=\"pointer-events: none;\" ><a>" + session.getUser().getName() + " 님</a></li>")
+                .replace("<li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>",
+                        "<li style=\"pointer-events: none;\" ><a>" + session.getUser().getName() + " 님</a></li>")
+                .replace("<li><a href=\"user/logout\" style=\"display: none;\" role=\"button\">로그아웃</a></li>",
+                        "<li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>")
+                .getBytes();
     }
 
     private String getPathString(HttpRequest request, ContentType contentType) {
