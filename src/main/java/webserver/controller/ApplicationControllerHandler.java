@@ -5,11 +5,13 @@ import webserver.annotation.RequestParameter;
 import webserver.annotation.SetCookie;
 import webserver.request.HttpRequestMessage;
 import webserver.response.HttpResponseMessage;
+import webserver.session.SessionStorage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
+import java.util.UUID;
 
 import static webserver.WebServer.logger;
 import static webserver.controller.ApplicationMethod.apiRouteToClassMap;
@@ -29,24 +31,24 @@ public class ApplicationControllerHandler {
         Method targetMethod = apiRouteToMethodMap.get(requestApiRoute);
 
         if (requestApiRoute.getMethod().equals(HttpMethod.GET)) {
-            return executeGet(httpRequestMessage, targetClass, targetMethod);
+            return executeGet(httpRequestMessage, targetClass, targetMethod, httpResponseMessage);
         }
         if (requestApiRoute.getMethod().equals(HttpMethod.POST)) {
-            return executePost(httpRequestMessage, targetClass, targetMethod);
+            return executePost(httpRequestMessage, targetClass, targetMethod, httpResponseMessage);
         }
         throw new IllegalArgumentException("수행할 HTTP 메서드가 존재하지 않습니다.");
     }
 
-    private static Object executeGet(HttpRequestMessage httpRequestMessage, Class<?> targetClass, Method targetMethod) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, httpRequestMessage.getParameters()));
+    private static Object executeGet(HttpRequestMessage httpRequestMessage, Class<?> targetClass, Method targetMethod, HttpResponseMessage httpResponseMessage) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, httpRequestMessage.getParameters(), httpResponseMessage));
     }
 
-    private static Object executePost(HttpRequestMessage httpRequestMessage, Class<?> targetClass, Method targetMethod) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    private static Object executePost(HttpRequestMessage httpRequestMessage, Class<?> targetClass, Method targetMethod, HttpResponseMessage httpResponseMessage) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         Map<String, String> data = parseBodyByContentType(httpRequestMessage.getHeader("Content-Type"), httpRequestMessage.getBody());
-        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, data));
+        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, data, httpResponseMessage));
     }
 
-    private static Object[] getArguments(Method targetMethod, Map<String, String> requestParameters) {
+    private static Object[] getArguments(Method targetMethod, Map<String, String> requestParameters, HttpResponseMessage httpResponseMessage) {
         if (requestParameters.size() != targetMethod.getParameterCount()) {
             throw new IllegalArgumentException("요청된 파라미터의 갯수가 다릅니다.");
         }
@@ -61,6 +63,12 @@ public class ApplicationControllerHandler {
                 // todo @SetCookie 어노테이션이 달려있다면 쿠키 지정.
                 if (hasCookieAnnotation(targetParameters[i])) {
                     logger.debug("[SetCookie Annotation key = {}, value = {} ]", targetParameter.value(), requestParameters.get(targetParameter.value()));
+
+                    String clientId = requestParameters.get(targetParameter.value());
+                    String sessionId = UUID.randomUUID().toString();
+                    SessionStorage.setSession(sessionId, clientId);
+
+                    httpResponseMessage.setHeader("Set-Cookie", "sid=" + sessionId + "; " + "path=/");
                 }
             }
         }
