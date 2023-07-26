@@ -59,3 +59,4 @@ Java Web Application Server 2023
 - 불변 객체 - https://github.com/ddingmin/be-was/wiki/%EB%B6%88%EB%B3%80-%EA%B0%9D%EC%B2%B4-(Immutable-Object)
 - static 블록과 싱글톤
   패턴 - https://github.com/ddingmin/be-was/wiki/static-%EB%B8%94%EB%A1%9D-vs-%EC%8B%B1%EA%B8%80%ED%86%A4-(Singleton)
+- 쿠키 - https://github.com/ddingmin/be-was/wiki/%EC%BF%A0%ED%82%A4
