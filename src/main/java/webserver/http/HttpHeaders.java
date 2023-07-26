@@ -18,21 +18,27 @@ public class HttpHeaders {
     public static final String SET_COOKIE = "Set-Cookie";
     public static final String COOKIE = "Cookie";
     private final Map<String, String> headers;
+
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
+
     public String getContentType() {
         return headers.get(CONTENT_TYPE);
     }
+
     public String getContentLength() {
         return headers.get(CONTENT_LENGTH);
     }
+
     public String getResponseCookie() {
         return headers.get(SET_COOKIE);
     }
+
     public String getRequestCookie() {
         return headers.get(COOKIE);
     }
+
     public String getLocation() {
         return headers.get(LOCATION);
     }
@@ -62,9 +68,8 @@ public class HttpHeaders {
         Map<String, String> responseHeaders = new HashMap<>();
         responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
         responseHeaders.put(CONTENT_LENGTH, "0");
-        responseHeaders.put(LOCATION, viewPath);
+        responseHeaders.put(LOCATION, Parser.parseRedirectViewPath(viewPath));
         if (cookie != null) {
-            System.out.println(cookie.getExpires().atZone(ZoneId.of("GMT")));
             responseHeaders.put(SET_COOKIE, cookie.getName() + "=" + cookie.getValue() + ";"
                     + " Path=/;"
                     + "Expires=" + GMTStringConverter.convertToGMTString(cookie.getExpires()) + ";"
