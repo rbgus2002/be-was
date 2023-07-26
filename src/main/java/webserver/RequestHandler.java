@@ -3,14 +3,11 @@ package webserver;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.Socket;
-import java.util.UUID;
 
-import db.SessionDatabase;
 import handler.HandlerMapping;
 import controller.UserController;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Parser;
