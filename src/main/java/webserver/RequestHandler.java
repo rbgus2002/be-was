@@ -2,8 +2,8 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.controller.Controller;
-import webserver.controller.ControllerResolver;
+import application.controller.Controller;
+import application.controller.ControllerResolver;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.HttpConstants;
@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-public class DispatcherServlet implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
+public class RequestHandler implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final ControllerResolver controllerResolver = ControllerResolver.getInstance();
     private final Socket connection;
 
-    public DispatcherServlet(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 

@@ -1,9 +1,9 @@
-package webserver.controller.user;
+package application.controller.user;
 
 import db.SessionDatabase;
 import db.UserDatabase;
 import model.User;
-import webserver.controller.Controller;
+import application.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;

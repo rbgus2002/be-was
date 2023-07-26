@@ -1,7 +1,7 @@
-package webserver.controller.article;
+package application.controller.article;
 
+import application.controller.Controller;
 import db.SessionDatabase;
-import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.CookieConstants;

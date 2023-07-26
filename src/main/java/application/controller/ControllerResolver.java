@@ -1,13 +1,13 @@
-package webserver.controller;
+package application.controller;
 
-import webserver.controller.article.ArticleSaveController;
-import webserver.controller.article.ArticleViewController;
-import webserver.controller.article.ArticleWriteController;
-import webserver.controller.file.FileController;
-import webserver.controller.index.IndexPageController;
-import webserver.controller.user.UserListController;
-import webserver.controller.user.UserLoginController;
-import webserver.controller.user.UserSaveController;
+import application.controller.article.ArticleSaveController;
+import application.controller.article.ArticleViewController;
+import application.controller.article.ArticleWriteController;
+import application.controller.file.FileController;
+import application.controller.user.UserListController;
+import application.controller.user.UserLoginController;
+import application.controller.user.UserSaveController;
+import application.controller.index.IndexPageController;
 import webserver.utils.HttpMethod;
 
 import java.util.HashMap;

@@ -1,11 +1,11 @@
-package webserver.controller.article;
+package application.controller.article;
 
 import db.ArticleDatabase;
 import db.SessionDatabase;
 import db.UserDatabase;
 import model.Article;
 import model.User;
-import webserver.controller.Controller;
+import application.controller.Controller;
 import webserver.exceptions.UnauthorizedException;
 import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;

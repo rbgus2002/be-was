@@ -22,7 +22,7 @@ public class WebServer {
             logger.info("Web Application Server started {} port.", port);
 
             while ((connection = listenSocket.accept()) != null) {
-                executorService.execute(new DispatcherServlet(connection));
+                executorService.execute(new RequestHandler(connection));
             }
         } catch (Exception e) {
             logger.debug(e.getMessage());

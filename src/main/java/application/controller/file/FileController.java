@@ -1,6 +1,6 @@
-package webserver.controller.file;
+package application.controller.file;
 
-import webserver.controller.Controller;
+import application.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;

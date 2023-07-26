@@ -1,9 +1,9 @@
-package webserver.controller.index;
+package application.controller.index;
 
+import application.controller.Controller;
 import db.ArticleDatabase;
 import db.UserDatabase;
 import model.Article;
-import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;

@@ -1,8 +1,8 @@
-package webserver.controller.user;
+package application.controller.user;
 
 import db.UserDatabase;
 import model.User;
-import webserver.controller.Controller;
+import application.controller.Controller;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.ConflictException;
 import webserver.http.HttpParameters;

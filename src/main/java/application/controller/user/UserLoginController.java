@@ -1,8 +1,8 @@
-package webserver.controller.user;
+package application.controller.user;
 
 import db.SessionDatabase;
 import db.UserDatabase;
-import webserver.controller.Controller;
+import application.controller.Controller;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.LoginFailException;
 import webserver.http.HttpParameters;
