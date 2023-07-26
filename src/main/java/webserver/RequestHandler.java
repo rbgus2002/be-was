@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
+import webserver.http.request.HttpRequest;
 
 public class RequestHandler implements Runnable {
 

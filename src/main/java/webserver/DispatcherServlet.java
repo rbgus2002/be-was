@@ -4,8 +4,9 @@ import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.HttpMethod;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import webserver.http.HttpMime;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
 import webserver.http.HttpStatus;
 
 import java.io.OutputStream;
@@ -24,18 +25,21 @@ public class DispatcherServlet {
     }
 
     protected void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
-        Method handler = HandlerMapping.getHandler(request);
+        Method handler = HandlerMapper.getHandler(request);
         HttpResponse httpResponse;
 
         if (handler == null) {
-            httpResponse = new HttpResponse(HttpStatus.OK, request.getRequestPath(), request.getMime());
+            String path = request.getRequestPath();
+            HttpMime mime = request.getMime();
+            httpResponse = new HttpResponse(HttpStatus.OK, path, mime);
             httpResponse.response(out);
             return;
         }
 
         HttpMethod httpMethod = request.getHttpMethod();
         boolean isGet = (httpMethod == HttpMethod.GET);
-        if (isGet) {
+        boolean isPost = (httpMethod == HttpMethod.POST);
+        if (isGet || isPost) {
             MethodType methodType = getMethodType(handler);
             MethodHandle methodHandle = getMethodHandle(handler, methodType);
             httpResponse = getHttpResponse(request, methodHandle);
@@ -60,13 +64,16 @@ public class DispatcherServlet {
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
-        if (methodHandle.type().parameterCount() > 1) {
-            throw new IllegalAccessException("1개의 인자만 받을 수 있습니다.");
-        }
-        if (methodHandle.type().parameterCount() == 0){
-            return (HttpResponse) methodHandle.invoke();
+        if (request.getParamMap().size() > 0) {
+            logger.debug("param");
+            return (HttpResponse) methodHandle.invoke(request.getParamMap());
         }
 
-        return (HttpResponse) methodHandle.invoke(request.getParams());
+        if (request.getBodyMap().size() > 0) {
+            logger.debug("body");
+            return (HttpResponse) methodHandle.invoke(request.getBodyMap());
+        }
+
+        return (HttpResponse) methodHandle.invoke();
     }
 }
