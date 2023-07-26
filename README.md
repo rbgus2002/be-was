@@ -40,11 +40,10 @@ Java Web Application Server 2023
 - 로그인
   - [x] 로그인 메뉴 클릭 시 /user/login.html 이동
   - 성공
-    - [ ] redirect
-    - [ ] 응답 header의 Set-Cookie 값 설정
-    - [ ] user 정보에 접근할 수 있는 세션 ID 적용
-  - [ ] 로그인 실패 시 /user/login_failed.html 이동
-  - 
+    - [x] redirect
+    - [x] 응답 header의 Set-Cookie 값 설정
+    - [x] user 정보에 접근할 수 있는 세션 ID 적용
+  - [x] 로그인 실패 시 /user/login_failed.html 이동
 
 ## To Study List
 #### Web Server step-1
