@@ -2,6 +2,7 @@ package webserver.http.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.Parser;
 import webserver.http.HttpHeaders;
 
 import java.io.BufferedReader;
@@ -31,6 +32,10 @@ public class HttpRequest {
     }
     public String getHttpRequestBody() {
         return httpRequestBody;
+    }
+    public String getSessionId() {
+        String requestCookie = httpHeaders.getRequestCookie();
+        return Parser.parseCookie(requestCookie);
     }
 
     public String show() {
