@@ -64,14 +64,20 @@ public class DispatcherServlet {
     }
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
-        if (request.getParamMap().size() > 0) {
-            return (HttpResponse) methodHandle.invoke(request.getParamMap());
-        }
+//        if (request.getParamMap().size() > 0) {
+//            return (HttpResponse) methodHandle.invoke(request.getParamMap());
+//        }
+//
+//        if (request.getBodyMap().size() > 0) {
+//            return (HttpResponse) methodHandle.invoke(request.getBodyMap());
+//        }
 
-        if (request.getBodyMap().size() > 0) {
-            return (HttpResponse) methodHandle.invoke(request.getBodyMap());
+        HttpResponse httpResponse;
+        if (methodHandle.type().parameterCount() == 0) {
+            httpResponse = (HttpResponse) methodHandle.invoke();
+        } else {
+            httpResponse = (HttpResponse) methodHandle.invoke(request);
         }
-
-        return (HttpResponse) methodHandle.invoke();
+        return httpResponse;
     }
 }

@@ -3,6 +3,7 @@ package controller;
 import controller.annotaion.GetMapping;
 import controller.annotaion.PostMapping;
 import service.UserService;
+import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
 import java.io.IOException;
@@ -18,14 +19,18 @@ public class Controller {
     }
 
     @PostMapping(path = "/user/create")
-    public HttpResponse createUser(Map<String, String> body) throws IOException {
+    public HttpResponse createUser(HttpRequest request) throws IOException {
+        Map<String, String> body = request.getBodyMap();
         userService.registerUser(body);
 
         return HttpResponse.redirect("/index.html");
     }
 
     @PostMapping(path = "/user/login")
-    public HttpResponse signInUser(Map<String, String> body) throws IOException {
+    public HttpResponse signInUser(HttpRequest request) throws IOException {
+        Map<String, String> headers = request.getHeadersMap();
+        Map<String, String> body = request.getBodyMap();
+
         String userId = body.get("userId");
         String password = body.get("password");
 
@@ -33,6 +38,7 @@ public class Controller {
             return HttpResponse.redirect("/user/login_failed.html");
         }
 
-        // TODO: 세션 설정
+        userService.signIn(headers, body);
+        return null;
     }
 }

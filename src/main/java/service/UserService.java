@@ -25,10 +25,10 @@ public class UserService {
     public boolean existUser(String userId, String password) {
         User user = Database.findUserById(userId);
 
-        if (user != null && user.getPassword().equals(password)) {
-            return true;
-        }
+        return user != null && user.getPassword().equals(password);
+    }
 
-        return false;
+    public void signIn(Map<String, String> headers, Map<String, String> body) {
+        return;
     }
 }

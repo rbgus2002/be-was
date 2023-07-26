@@ -81,6 +81,10 @@ public class HttpRequest {
         return startLine.getParams();
     }
 
+    public Map<String, String> getHeadersMap() {
+        return headers.getHeader();
+    }
+
     public Map<String, String> getBodyMap() {
         return body.getBody();
     }
