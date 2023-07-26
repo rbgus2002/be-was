@@ -16,14 +16,18 @@ public class ArticleWriteController implements Controller {
         String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
 
         httpResponse.setStatus(HttpStatus.FOUND);
-        checkLoginStatusAndSetLocation(httpResponse, sessionId);
+        setRedirectLocation(httpResponse, sessionId);
     }
 
-    private void checkLoginStatusAndSetLocation(HttpResponse httpResponse, String sessionId) {
-        if (SessionDatabase.verifySessionId(sessionId)) {
+    private void setRedirectLocation(HttpResponse httpResponse, String sessionId) {
+        if (isLoginStatus(sessionId)) {
             httpResponse.set(HttpField.LOCATION, "/article/write.html");
             return;
         }
         httpResponse.set(HttpField.LOCATION, "/user/login.html");
+    }
+
+    private boolean isLoginStatus(String sessionId) {
+        return SessionDatabase.verifySessionId(sessionId);
     }
 }
