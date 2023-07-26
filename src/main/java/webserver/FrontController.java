@@ -4,8 +4,6 @@ import controller.*;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,8 +13,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 public class FrontController {
-    private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
     private final Map<String, HttpController> controllerMap;
+    private final HttpController staticController;
 
     public static FrontController getInstance() {
         return LazyHolder.INSTANCE;
@@ -28,11 +26,12 @@ public class FrontController {
 
     private FrontController() {
         controllerMap = ControllerScanner.scan();
+        staticController = new StaticController();
     }
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
         String url = request.getUrl();
-        HttpController controller = controllerMap.getOrDefault(url, new StaticController());
+        HttpController controller = controllerMap.getOrDefault(url, staticController);
         String viewName = controller.process(request, response);
         viewResolve(viewName, response);
         render(dos, response);
