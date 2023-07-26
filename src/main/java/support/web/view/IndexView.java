@@ -4,6 +4,7 @@ import db.Database;
 import model.Post;
 import model.Session;
 import support.annotation.Container;
+import support.web.Model;
 import utils.LoginUtils;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -14,7 +15,7 @@ import java.util.List;
 public class IndexView implements View {
 
     @Override
-    public String view(HttpRequest request, HttpResponse response) {
+    public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("<!DOCTYPE html>")

@@ -7,7 +7,6 @@ import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
 import support.web.ModelAndView;
 import support.web.ViewResolver;
-import support.web.view.View;
 import support.web.view.ViewFactory;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -26,9 +25,11 @@ public class HttpHandler {
         try {
             try {
                 ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
-                callViewResolver(request, response, modelAndView.getViewName());
+                callViewResolver(request, response, modelAndView);
             } catch (NotSupportedException e) {
-                callViewResolver(request, response, path);
+                ModelAndView modelAndView = new ModelAndView();
+                modelAndView.setViewName(path);
+                callViewResolver(request, response, modelAndView);
             }
         } catch (FoundException e) {
             response.setStatus(e.getHttpStatus());
@@ -44,7 +45,7 @@ public class HttpHandler {
 
         try {
             ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
-            callViewResolver(request, response, modelAndView.getViewName());
+            callViewResolver(request, response, modelAndView);
         } catch (NotSupportedException e) {
             buildErrorResponse(request, response);
         } catch (FoundException e) {
@@ -55,15 +56,9 @@ public class HttpHandler {
         }
     }
 
-    private static void callViewResolver(HttpRequest request, HttpResponse response, String path) throws ServerErrorException {
-        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
+    private static void callViewResolver(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws ServerErrorException {
         try {
-            View view = viewFactory.getViewByName(path);
-            if (view != null) {
-                ViewResolver.buildView(request, response, view);
-            } else {
-                ViewResolver.buildView(request, response, path);
-            }
+            ViewResolver.buildView(request, response, modelAndView);
             response.setStatus(HttpStatus.OK);
         } catch (NotFoundException e) {
             buildErrorResponse(request, response);
@@ -74,7 +69,7 @@ public class HttpHandler {
         ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         response.setStatus(HttpStatus.NOT_FOUND);
         response.buildHeader(new NotFound());
-        ViewResolver.buildView(request, response, viewFactory.getErrorView());
+        ViewResolver.buildView(request, response, viewFactory.getErrorView(), null);
     }
 
 }

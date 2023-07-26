@@ -1,6 +1,7 @@
 package support.web.view;
 
 import support.annotation.Container;
+import support.web.Model;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
@@ -8,7 +9,7 @@ import webserver.response.HttpResponse;
 public class ErrorView implements View {
 
     @Override
-    public String view(HttpRequest request, HttpResponse response) {
+    public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder

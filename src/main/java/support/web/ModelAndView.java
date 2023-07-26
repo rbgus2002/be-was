@@ -1,27 +1,32 @@
 package support.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ModelAndView {
 
     private String viewName;
-    private final Map<String, Object> model = new HashMap<>();
+    private Model model;
 
     public String getViewName() {
         return viewName;
-    }
-
-    public Object getAttribute(String key) {
-        return model.get(key);
     }
 
     public void setViewName(String viewName) {
         this.viewName = viewName;
     }
 
-    public void addObject(String key, Object attribute) {
-        model.put(key, attribute);
+    public Model getModel() {
+        if (model == null) {
+            model = new Model();
+        }
+        return model;
+    }
+
+    public Object getAttribute(String key) {
+        return getModel().getAttribute(key);
+    }
+
+    public ModelAndView addAttribute(String key, Object attribute) {
+        getModel().addAttribute(key, attribute);
+        return this;
     }
 
 }

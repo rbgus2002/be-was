@@ -3,6 +3,7 @@ package support.web.view;
 import db.Database;
 import model.Session;
 import support.annotation.Container;
+import support.web.Model;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Container
 public class UserListView implements View {
 
-    public String view(HttpRequest request, HttpResponse response) {
+    public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("<!DOCTYPE html>")

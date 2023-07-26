@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.exception.NotFoundException;
 import support.exception.ServerErrorException;
+import support.instance.DefaultInstanceManager;
 import support.web.view.View;
+import support.web.view.ViewFactory;
 import utils.LoginUtils;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -89,7 +91,19 @@ public abstract class ViewResolver {
         return START_TAG + " " + command + " " + argument + " " + END_TAG;
     }
 
-    public static void buildView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, ServerErrorException {
+    public static void buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, ServerErrorException {
+        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
+        String path = modelAndView.getViewName();
+        View view = viewFactory.getViewByName(path);
+
+        if (view != null) {
+            ViewResolver.buildView(request, response, view, modelAndView.getModel());
+        } else {
+            ViewResolver.buildStaticView(request, response, path);
+        }
+    }
+
+    private static void buildStaticView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, ServerErrorException {
         List<String> body = readStringLineByPath(path);
         String extension = path.substring(path.lastIndexOf("."));
         if (".html".equals(extension)) {
@@ -102,9 +116,10 @@ public abstract class ViewResolver {
         response.buildHeader(new OK(MIME.getContentType(extension), bodyBytes.length));
     }
 
-    public static void buildView(HttpRequest request, HttpResponse response, View view) {
-        byte[] bodyBytes = view.view(request, response).getBytes();
+    public static void buildView(HttpRequest request, HttpResponse response, View view, Model model) {
+        byte[] bodyBytes = view.render(request, response, model).getBytes();
         response.setBody(bodyBytes);
         response.buildHeader(new OK(MIME.getContentType(".html"), bodyBytes.length));
     }
+
 }
