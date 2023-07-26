@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static util.PathList.FAILED_PATH;
 import static util.PathList.HOME_PATH;
-
+@RequestMapping(path = "/user/login")
 public class LogInTestController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(LogInTestController.class);

@@ -1,7 +1,5 @@
 package webserver;
 
-import container.Controller;
-import container.ControllerGroup;
 import container.DispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
-import static container.DispatcherServlet.*;
+import static container.DispatcherServlet.getInstance;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);

@@ -10,7 +10,7 @@ import webserver.HTTPServletResponse;
 import java.util.Map;
 
 import static util.PathList.HOME_PATH;
-
+@RequestMapping(path = "/user/create")
 public class LogInController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
