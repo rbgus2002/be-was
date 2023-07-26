@@ -2,7 +2,9 @@ package webserver;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Cookie;
 import org.apache.http.HttpStatus;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,13 +72,7 @@ class WebServerTest {
     @Test
     void loginSuccess() {
         // given
-        RestAssured.given().log().all()
-                .when()
-                .body("userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
-                .post("/user/create")
-                .then().log().all()
-                .assertThat()
-                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
+        회원가입("javajigi", "password", "박재성", "javajigi@slip.net");
 
         // when
         RestAssured.given().log().all()
@@ -100,6 +96,100 @@ class WebServerTest {
                 .then().log().all()
                 .assertThat()
                 .header(Headers.LOCATION.getName(), "/user/login_failed.html")
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
+    }
+
+    @DisplayName("사용자가 로그인 상태일 경우 /index.html에서 사용자 이름을 표시해 준다.")
+    @Test
+    void displayLoginUserName() {
+        // given
+        회원가입("javajigi", "password", "박재성", "javajigi@slip.net");
+
+        Cookie cookie = RestAssured.given().log().all()
+                .when()
+                .body("userId=javajigi&password=password")
+                .post("/user/login")
+                .then().log().all()
+                .assertThat()
+                .header(Headers.LOCATION.getName(), "/index.html")
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY)
+                .extract()
+                .response()
+                .getDetailedCookie("sid");
+
+        // when
+        var response = RestAssured.given().log().all()
+                .when()
+                .cookie(cookie)
+                .get("/index.html")
+                .then().log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract();
+
+        // then
+        Assertions.assertThat(response.body().asString()).contains("javajigi");
+    }
+
+    @DisplayName("사용자가 로그인 상태가 아닐 경우 /index.html에서 [로그인] 버튼을 표시해 준다.")
+    @Test
+    void displayLoginButton() {
+        // when
+        var response = RestAssured.given().log().all()
+                .when()
+                .get("/index.html")
+                .then().log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract();
+
+        // then
+        Assertions.assertThat(response.body().asString())
+                .contains("<a href=\"user/login.html\" role=\"button\">로그인</a>");
+    }
+
+    @DisplayName("사용자가 로그인 상태일 경우 http://localhost:8080/user/list 에서 사용자 목록을 출력한다.")
+    @Test
+    void displayUserList() {
+        회원가입("user1", "password1", "최윤식", "user1@slip.net");
+        회원가입("user2", "password2", "서시언", "user2@slip.net");
+        회원가입("user3", "password3", "이요한", "user3@slip.net");
+
+        Cookie cookie = RestAssured.given().log().all()
+                .when()
+                .body("userId=user1&password=password")
+                .post("/user/login")
+                .then().log().all()
+                .assertThat()
+                .header(Headers.LOCATION.getName(), "/index.html")
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY)
+                .extract()
+                .response()
+                .getDetailedCookie("sid");
+
+        // when
+        var response = RestAssured.given().log().all()
+                .when()
+                .cookie(cookie)
+                .get("/index.html")
+                .then().log().all()
+                .statusCode(HttpStatus.SC_OK)
+                .extract();
+
+        // then
+        Assertions.assertThat(response.body().asString())
+                .contains(
+                        "user1", "user2", "user3",
+                        "최윤식", "서시언", "이요한",
+                        "user1@slip.net", "user2@slip.net", "user3@slip.net"
+                );
+    }
+
+    private static void 회원가입(final String userId, final String password, final String name, final String email) {
+        RestAssured.given().log().all()
+                .when()
+                .body("userId=" + userId + "&password=" + password + "&name=" + name + "&email=" + email)
+                .post("/user/create")
+                .then().log().all()
+                .assertThat()
                 .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
     }
 }
