@@ -27,4 +27,16 @@ public class PostViewController {
         throw new FoundException("/user/login.html");
     }
 
+    @RequestMapping(method = HttpMethod.GET, value = "/show")
+    public String show(HttpRequest request) throws FoundException {
+        logger.debug("게시글 세부 글 뷰 요청");
+
+        Session loginSession = LoginUtils.getLoginSession(request);
+        if (loginSession != null) {
+            return "/post/show";
+        }
+
+        throw new FoundException("/user/login.html");
+    }
+
 }

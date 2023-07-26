@@ -17,8 +17,10 @@ public class ViewFactory {
     public Class<? extends View> nameConverter(String name) {
         if ("/user/list".equals(name)) {
             return UserListView.class;
-        } else if("/index".equals(name)) {
+        } else if ("/index".equals(name)) {
             return IndexView.class;
+        } else if ("/post/show".equals(name)) {
+            return PostShowView.class;
         }
         return null;
     }
