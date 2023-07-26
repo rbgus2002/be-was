@@ -1,13 +1,13 @@
 package db;
 
+import com.google.common.collect.Maps;
 import model.User;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Database {
-    private static Map<String, User> users = new ConcurrentHashMap<>();
+    private static Map<String, User> users = Maps.newConcurrentMap();
 
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
@@ -20,4 +20,10 @@ public class Database {
     public static Collection<User> findAll() {
         return users.values();
     }
+
+    public static boolean validateUser(String userId, String password) {
+        User user = users.get(userId);
+        return user.getPassword().equals(password);
+    }
+
 }

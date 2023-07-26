@@ -1,17 +1,21 @@
 package webserver.http;
 
+import utils.GMTStringConverter;
 import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
 import static utils.StringUtils.NEW_LINE;
 
 public class HttpHeaders {
-    private static final String CONTENT_LENGTH = "Content-Length";
-    private static final String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_LENGTH = "Content-Length";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String LOCATION = "Location";
+    public static final String SET_COOKIE = "Set-Cookie";
     private final Map<String, String> headers;
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
@@ -21,6 +25,12 @@ public class HttpHeaders {
     }
     public String getContentLength() {
         return headers.get(CONTENT_LENGTH);
+    }
+    public String getCookie() {
+        return headers.get(SET_COOKIE);
+    }
+    public String getLocation() {
+        return headers.get(LOCATION);
     }
 
     public void show(StringBuilder sb) {
@@ -44,11 +54,18 @@ public class HttpHeaders {
         return new HttpHeaders(responseHeaders);
     }
 
-    public static HttpHeaders createRedirectStatusHeaders() {
+    public static HttpHeaders createRedirectStatusHeaders(String viewPath, Cookie cookie) {
         Map<String, String> responseHeaders = new HashMap<>();
         responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
         responseHeaders.put(CONTENT_LENGTH, "0");
-        responseHeaders.put("Location", "http://localhost:8080/index.html");
+        responseHeaders.put(LOCATION, viewPath);
+        if (cookie != null) {
+            System.out.println(cookie.getExpires().atZone(ZoneId.of("GMT")));
+            responseHeaders.put(SET_COOKIE, cookie.getName() + "=" + cookie.getValue() + ";"
+                    + " Path=/;"
+                    + "Expires=" + GMTStringConverter.convertToGMTString(cookie.getExpires()) + ";"
+                    + " HttpOnly");
+        }
         return new HttpHeaders(responseHeaders);
     }
 

@@ -1,5 +1,9 @@
 package webserver.controller;
 
+import model.User;
+import session.UserSessionManager;
+import webserver.ModelAndView;
+import webserver.http.Cookie;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
@@ -25,8 +29,17 @@ public class FrontController {
         }
 
         Method method = HandlerMapper.getHandlerMethod(httpRequest);
-        HandlerAdapter.runHandlerMethod(method, httpRequest);
-        HttpResponse httpResponse = HttpResponse.createRedirect();
+        ModelAndView modelAndView = HandlerAdapter.runHandlerMethod(method, httpRequest);
+        Cookie cookie = createSession(modelAndView);
+        HttpResponse httpResponse = HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
         httpResponse.responseDynamic(dos);
     }
+
+    private Cookie createSession(ModelAndView modelAndView) {
+        if (!(modelAndView.getModel() instanceof User)) {
+            return null;
+        }
+        return UserSessionManager.addUser((User) modelAndView.getModel());
+    }
+
 }
