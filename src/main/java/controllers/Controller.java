@@ -88,10 +88,19 @@ public class Controller {
 		return modelView.setPath("user/login.html");
 	}
 
+	@GetMapping(path = "/user/logout")
+	public ModelView logout(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		logoutSession(httpRequest);
+		return modelView.setPath("redirect:/");
+	}
+
 	@GetMapping(path = "/user/list.html")
 	public ModelView listPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		modelView = reflectLogin(httpRequest, modelView);
-		return modelView.setPath("user/list.html");
+		if (isLoggedIn(modelView)) {
+			return modelView.setPath("user/list.html");
+		}
+		return modelView.setPath("redirect:/user/login.html");
 	}
 
 	@GetMapping(path = "/user/profile.html")
@@ -116,6 +125,15 @@ public class Controller {
 		} catch (Exception e) {
 		}
 		return modelView;
+	}
+
+	private void logoutSession(HttpRequest httpRequest) {
+		try {
+			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
+				Session.getInstance().removeSession(httpRequest.getCookieValue(SessionConst.sessionId));
+			}
+		} catch (Exception e) {
+		}
 	}
 
 	private boolean isLoggedIn(ModelView modelView) {
