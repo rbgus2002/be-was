@@ -25,7 +25,7 @@ public abstract class Controller {
             }
             String uri = httpRequest.getUri();
             if (uri.contains("?")) {
-                return doGet(uri);
+                return doGet(httpRequest);
             }
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
@@ -48,7 +48,7 @@ public abstract class Controller {
         }
     }
 
-    public abstract HttpResponse.ResponseBuilder doGet(String uri);
+    public abstract HttpResponse.ResponseBuilder doGet(HttpRequest httpRequest);
 
     public abstract HttpResponse.ResponseBuilder doPost(HttpRequest httpRequest);
 }
