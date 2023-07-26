@@ -8,8 +8,8 @@ public class Cookie {
     private final String value;
     private final LocalDateTime expires;
 
-    private Cookie(String name, String value) {
-        this.name = name;
+    private Cookie(String value) {
+        this.name = SESSIONID;
         this.value = value;
         this.expires = LocalDateTime.now().plusMinutes(10);
     }
@@ -25,6 +25,6 @@ public class Cookie {
     }
 
     public static Cookie create(String value) {
-        return new Cookie(SESSIONID, value);
+        return new Cookie(value);
     }
 }
