@@ -24,7 +24,7 @@ public class HttpResponse implements Serializable {
 
     public static HttpResponse found(final String url) {
         return new HttpResponse(
-                new ResponseLine(StatusCode.SEE_OTHER),
+                new ResponseLine(StatusCode.FOUND),
                 new Headers(Map.of(Http.Headers.LOCATION.getName(), url)),
                 null
         );

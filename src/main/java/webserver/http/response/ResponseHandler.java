@@ -19,7 +19,14 @@ public class ResponseHandler {
         dataOutputStream.writeBytes(httpResponse.getResponseLine().toString() + LINE_DELIMITER);
         dataOutputStream.writeBytes(httpResponse.getHeaders().toString() + LINE_DELIMITER);
         dataOutputStream.writeBytes(CRLF);
-        dataOutputStream.write(httpResponse.getBody(), 0, httpResponse.getBody().length);
+        writeBody(httpResponse, dataOutputStream);
         dataOutputStream.flush();
+    }
+
+    private static void writeBody(final HttpResponse httpResponse, final DataOutputStream dataOutputStream)
+            throws IOException {
+        if (httpResponse.getBody() != null && httpResponse.getBody().length > 0) {
+            dataOutputStream.write(httpResponse.getBody(), 0, httpResponse.getBody().length);
+        }
     }
 }

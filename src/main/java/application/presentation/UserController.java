@@ -1,10 +1,13 @@
 package application.presentation;
 
+import application.common.StringUtils;
 import application.service.UserService;
 import application.service.dto.UserRequest;
-import common.annotation.RequestMapping;
-import common.annotation.RequestParam;
 import common.annotation.Controller;
+import common.annotation.RequestBody;
+import common.annotation.RequestMapping;
+import java.util.Map;
+import webserver.http.Http.Method;
 
 @Controller
 public class UserController {
@@ -14,14 +17,19 @@ public class UserController {
         this.userService = new UserService();
     }
 
-    @RequestMapping(value = "/user/create")
-    public String create(
-            @RequestParam(value = "userId") final String id,
-            @RequestParam(value = "name") final String name,
-            @RequestParam(value = "password") final String password,
-            @RequestParam(value = "email") final String email
-    ) {
-        userService.create(new UserRequest(id, name, password, email));
+    @RequestMapping(value = "/user/create", method = Method.POST)
+    public String create(@RequestBody final String body) {
+        Map<String, String> map = StringUtils.extractText(body);
+
+        UserRequest userRequest = new UserRequest(
+                map.get("userId"),
+                map.get("name"),
+                map.get("password"),
+                map.get("email")
+        );
+
+        userService.create(userRequest);
+
         return "redirect:/index.html";
     }
 }

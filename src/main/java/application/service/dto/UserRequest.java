@@ -1,7 +1,7 @@
 package application.service.dto;
 
 public class UserRequest {
-    private final String id;
+    private final String userId;
 
     private final String name;
 
@@ -9,15 +9,15 @@ public class UserRequest {
 
     private final String email;
 
-    public UserRequest(final String id, final String name, final String password, final String email) {
-        this.id = id;
+    public UserRequest(final String userId, final String name, final String password, final String email) {
+        this.userId = userId;
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
     public String getName() {

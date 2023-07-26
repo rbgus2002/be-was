@@ -58,9 +58,10 @@ class WebServerTest {
     void createUser() {
         RestAssured.given().log().all()
                 .when()
-                .get("/user/create?userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .body("userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .post("/user/create")
                 .then().log().all()
                 .assertThat()
-                .statusCode(HttpStatus.SC_OK);
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
     }
 }
