@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static utils.StringUtils.NEW_LINE;
+import static utils.StringUtils.CRLF;
 import static utils.StringUtils.appendNewLine;
 
 @DisplayName("RequestHandler 테스트")
@@ -96,7 +96,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertNotNull(response);
@@ -114,7 +114,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertNotNull(response);
@@ -132,7 +132,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertNotNull(response);
@@ -150,7 +150,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             String response = outputStream.toString();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertNotNull(response);
@@ -177,7 +177,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             softAssertions.assertThat(user).isNull();
@@ -195,7 +195,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
@@ -217,7 +217,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertNull(user);
@@ -234,7 +234,7 @@ class RequestHandlerTest {
             //when
             requestHandler.run();
             User user = Database.findUserById("javajigi");
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             softAssertions.assertThat(result[0]).isEqualTo(Found);
@@ -265,7 +265,7 @@ class RequestHandlerTest {
 
             //when
             requestHandler.run();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             softAssertions.assertThat(result[0]).isEqualTo(Found);
@@ -284,7 +284,7 @@ class RequestHandlerTest {
 
             //when
             requestHandler.run();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertThat(result[0]).isEqualTo(Found);
@@ -300,7 +300,7 @@ class RequestHandlerTest {
 
             //when
             requestHandler.run();
-            String[] result = outputStream.toString().split(NEW_LINE);
+            String[] result = outputStream.toString().split(CRLF);
 
             //then
             assertThat(result[0]).isEqualTo(Found);

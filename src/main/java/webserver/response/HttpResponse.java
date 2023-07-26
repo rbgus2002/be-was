@@ -18,12 +18,11 @@ public class HttpResponse {
         stringBuilder.append(HTTP_VERSION)
                 .append(" ")
                 .append(status.getMessage())
-                .append(StringUtils.NEW_LINE);
+                .append(StringUtils.CRLF);
 
         // Build Response-Header
         stringBuilder.append(header.buildHeader())
-                .append(StringUtils.NEW_LINE)
-                .append(StringUtils.NEW_LINE);
+                .append(StringUtils.CRLF);
 
         return stringBuilder.toString();
     }

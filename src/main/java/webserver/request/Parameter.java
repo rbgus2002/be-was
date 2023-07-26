@@ -14,7 +14,7 @@ public class Parameter extends KeyValue {
 
     @Override
     public String toString() {
-        return (this.size() != 0 ? StringUtils.NEW_LINE + "Body : " : "") + super.toString();
+        return (this.size() != 0 ? StringUtils.CRLF + "Body : " : "") + super.toString();
     }
 
 }

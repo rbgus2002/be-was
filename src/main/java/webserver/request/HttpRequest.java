@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static utils.StringUtils.NEW_LINE;
+import static utils.StringUtils.CRLF;
 
 public class HttpRequest {
 
@@ -93,7 +93,7 @@ public class HttpRequest {
                 .append(query != null ? query : "")
                 .append(" ")
                 .append(version)
-                .append(NEW_LINE)
+                .append(CRLF)
                 .append(header.buildHeader())
                 .append(body != null ? body : "")
                 .toString();

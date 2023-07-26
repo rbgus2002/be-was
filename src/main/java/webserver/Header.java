@@ -28,7 +28,7 @@ public class Header {
                     stringBuilder.append(key)
                             .append(": ")
                             .append(value)
-                            .append(StringUtils.NEW_LINE);
+                            .append(StringUtils.CRLF);
                 }
         );
 
