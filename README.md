@@ -89,3 +89,23 @@ Java Web Application Server 2023
 ### 고민 
 - Container 클래스도 테스트를 해야할 것 같은데 어떻게 해야할지 고민이다..
 - 리팩토링에 대한 고민..
+
+<br/>
+
+## Mission 5. 쿠키를 이용한 로그인
+ 
+### 기능요구사항
+- 가입한 회원 정보로 로그인 할 수 있다.
+- 로그인 성공 시 index.html로 이동, 실패 시 login_failed.html로 이동
+
+### 프로그래밍 요구사항
+- 로그인 성공 시 HTTP 헤더의 쿠키 값에 세션 아이디 반환
+- 서버는 세션 아이디에 해당하는 User 정보에 접근할 수 있어야 한다.
+
+### TODO
+[ ] HTTP Cookie & Session 공부
+[ ] 공부한 내용 Wiki 작성
+[ ] 로그인 구현
+[ ] Cookie 구현
+[ ] Session 구현
+[ ] 리다이렉션 구현
