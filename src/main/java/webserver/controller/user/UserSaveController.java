@@ -9,7 +9,6 @@ import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import webserver.utils.HttpField;
 import webserver.utils.Location;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class UserSaveController implements Controller {
 
             verifyParameters(userId, password, name, email);
             addNewUser(userId, password, name, email);
-            redirectToIndexPage(httpResponse);
+            httpResponse.sendRedirect(Location.INDEX_PAGE);
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (ConflictException e) {
@@ -56,10 +55,5 @@ public class UserSaveController implements Controller {
         if (UserDatabase.findUserById(userId) != null) {
             throw new ConflictException();
         }
-    }
-
-    private void redirectToIndexPage(HttpResponse httpResponse) {
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, Location.INDEX_PAGE);
     }
 }

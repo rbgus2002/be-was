@@ -12,7 +12,6 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.utils.CookieConstants;
-import webserver.utils.HttpField;
 import webserver.utils.Location;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class ArticleSaveController implements Controller {
 
             addNewArticle(articleParameters, getUser(sessionId));
 
-            redirectToIndexPage(httpResponse);
+            httpResponse.sendRedirect(Location.INDEX_PAGE);
         } catch (UnauthorizedException e) {
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED);
         }
@@ -56,10 +55,5 @@ public class ArticleSaveController implements Controller {
     private User getUser(String sessionId) {
         String userID = SessionDatabase.findUserIdBySessionId(sessionId);
         return UserDatabase.findUserById(userID);
-    }
-
-    private void redirectToIndexPage(HttpResponse httpResponse) {
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, Location.INDEX_PAGE);
     }
 }

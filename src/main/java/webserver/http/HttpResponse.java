@@ -1,6 +1,7 @@
 package webserver.http;
 
 import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
 
 public class HttpResponse {
     private HttpStatus status;
@@ -96,5 +97,10 @@ public class HttpResponse {
 
     public byte[] getBodyBytes() {
         return body;
+    }
+
+    public void sendRedirect(String location) {
+        status = HttpStatus.FOUND;
+        headers.put(HttpField.LOCATION, location);
     }
 }

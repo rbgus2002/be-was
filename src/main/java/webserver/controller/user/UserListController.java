@@ -1,12 +1,12 @@
 package webserver.controller.user;
 
+import db.SessionDatabase;
 import db.UserDatabase;
 import model.User;
 import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
@@ -24,7 +24,7 @@ public class UserListController implements Controller {
             respondWithUserList(httpResponse);
             return;
         }
-        redirectToLoginPage(httpResponse);
+        httpResponse.sendRedirect(Location.LOGIN_PAGE);
     }
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
@@ -39,11 +39,6 @@ public class UserListController implements Controller {
         httpResponse.set(HttpField.CONTENT_TYPE, "text/html;charset=utf-8");
         httpResponse.set(HttpField.CONTENT_LENGTH, html.length());
         httpResponse.setBody(html.getBytes());
-    }
-
-    private void redirectToLoginPage(HttpResponse httpResponse) {
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, Location.LOGIN_PAGE);
     }
 
     private String createUserListHtml() throws IOException {

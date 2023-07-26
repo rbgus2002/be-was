@@ -24,7 +24,7 @@ public class ArticleViewController implements Controller {
             setHttpResponseWithArticleViewHtml(httpRequest, httpResponse);
             return;
         }
-        redirectToLoginPage(httpResponse);
+        httpResponse.sendRedirect(Location.LOGIN_PAGE);
     }
 
     private boolean isLoginStatus(String sessionId) {
@@ -63,10 +63,5 @@ public class ArticleViewController implements Controller {
     private String getTemplateHtml() throws IOException {
         byte[] bytes = FileUtils.readFileBytes("/article/show.html");
         return new String(bytes);
-    }
-
-    private void redirectToLoginPage(HttpResponse httpResponse) {
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, Location.LOGIN_PAGE);
     }
 }

@@ -11,7 +11,6 @@ import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.Session;
 import webserver.utils.CookieConstants;
-import webserver.utils.HttpField;
 import webserver.utils.Location;
 
 public class UserLoginController implements Controller {
@@ -29,22 +28,16 @@ public class UserLoginController implements Controller {
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
         } catch (LoginFailException e) {
-            processLoginFailure(httpResponse);
+            httpResponse.sendRedirect(Location.LOGIN_FAIL_PAGE);
         }
     }
 
     private void processLoginResponse(HttpResponse httpResponse, String userId) throws LoginFailException {
         String sessionId = createSession(userId);
 
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, Location.INDEX_PAGE);
         httpResponse.setCookie(CookieConstants.SESSION_ID, sessionId);
         httpResponse.setCookie(CookieConstants.PATH, "/");
-    }
-
-    private void processLoginFailure(HttpResponse httpResponse) {
-        httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, Location.LOGIN_FAIL_PAGE);
+        httpResponse.sendRedirect(Location.INDEX_PAGE);
     }
 
     private void verifyParameters(String userId, String password) throws BadRequestException {
