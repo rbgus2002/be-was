@@ -17,6 +17,8 @@ public class StaticController implements HttpController {
                 return "redirect:/user/list";
             case "/user/form.html":
                 return "redirect:/user/form";
+            case "/user/profile.html":
+                return "redirect:/user/profile";
             default:
                 return url;
         }
