@@ -1,13 +1,13 @@
-package domain.post;
-
-import domain.user.User;
+package domain;
 
 import java.time.LocalDateTime;
 
 public class Post {
+
+    private String postId;
     private final User user;
-    private final String title;
-    private final String contents;
+    private String title;
+    private String contents;
     private final LocalDateTime dateTime;
 
     public Post(User user, String title, String contents, LocalDateTime dateTime) {
@@ -15,6 +15,10 @@ public class Post {
         this.title = title;
         this.contents = contents;
         this.dateTime = dateTime;
+    }
+
+    public String getPostId() {
+        return postId;
     }
 
     public User getUser() {
@@ -31,6 +35,18 @@ public class Post {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
     }
 
     @Override

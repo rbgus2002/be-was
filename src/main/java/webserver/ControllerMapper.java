@@ -16,6 +16,7 @@ public class ControllerMapper {
 
     private ControllerMapper() {
         map = new HashMap<>();
+
         map.put(RequestMethod.GET, new HashMap<>());
         map.put(RequestMethod.POST, new HashMap<>());
         map.put(RequestMethod.PUT, new HashMap<>());
@@ -27,7 +28,18 @@ public class ControllerMapper {
     }
 
     public void initialize() {
-        Method[] methods = CONTROLLER_CLASS.getMethods();
+        registerControllerMethod(CONTROLLER_CLASS);
+    }
+
+    public Method getControllerMethod(RequestMethod requestMethod, String path) {
+        if (map.containsKey(requestMethod) && map.get(requestMethod).containsKey(path)) {
+            return map.get(requestMethod).get(path);
+        }
+        throw new NoSuchControllerMethodException("처리할 컨트롤러 없음");
+    }
+
+    private void registerControllerMethod(Class<?> clazz) {
+        Method[] methods = clazz.getMethods();
 
         for (Method method : methods) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
@@ -39,12 +51,5 @@ public class ControllerMapper {
                 map.get(requestMethod).put(path, method);
             }
         }
-    }
-
-    public Method getControllerMethod(RequestMethod requestMethod, String path) {
-        if (map.containsKey(requestMethod) && map.get(requestMethod).containsKey(path)) {
-            return map.get(requestMethod).get(path);
-        }
-        throw new NoSuchControllerMethodException("처리할 컨트롤러 없음");
     }
 }

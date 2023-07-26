@@ -1,6 +1,6 @@
-package template;
+package view.template;
 
-import domain.user.User;
+import domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class UserListTemplate extends DynamicTemplate {
 
-    private String userInfoFormat =
+    private final String USER_INFO_FORMAT =
             "<th scope=\"row\">%s</th>" +
                 "<td>%s</td> <td>%s</td> <td>%s</td>" +
             "<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>";
@@ -24,15 +24,13 @@ public class UserListTemplate extends DynamicTemplate {
         for (User user : users) {
             tableBuilder.append("<tr>");
             tableBuilder.append(
-                    String.format(userInfoFormat, index++, user.getUserId(), user.getName(), user.getEmail())
+                    String.format(USER_INFO_FORMAT, index++, user.getUserId(), user.getName(), user.getEmail())
             );
             tableBuilder.append("</tr>");
         }
         tableBuilder.append("</tbody>");
 
-        html = replaceTag(html, "userInfo", tableBuilder.toString());
-
-        return html;
+        return replaceTag(html, "userInfo", tableBuilder.toString());
     }
 
     private List<User> getUserList(Map<String, Object> model) {

@@ -1,11 +1,11 @@
 package controller;
 
-import domain.user.Controller;
+import webserver.Controller;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class CreateControllerTest {
+class CreateUserControllerTest {
 
     private Controller controller;
 
@@ -26,7 +26,7 @@ class CreateControllerTest {
 //
 //        controller.process(request);
 //
-//        User user = Database.findUserById("uuu");
+//        User user = UserRepository.findUserById("uuu");
 //        assertEquals("uuu", user.getUserId());
 //        assertEquals("ppp", user.getPassword());
 //        assertEquals("nnn", user.getName());

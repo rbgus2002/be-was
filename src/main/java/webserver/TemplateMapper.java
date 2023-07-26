@@ -2,7 +2,7 @@ package webserver;
 
 import annotation.RequestMapping;
 import annotation.TemplateMapping;
-import template.DynamicTemplate;
+import view.template.DynamicTemplate;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

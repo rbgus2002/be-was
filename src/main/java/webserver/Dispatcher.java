@@ -2,8 +2,9 @@ package webserver;
 
 import common.http.HttpRequest;
 import common.http.HttpResponse;
-import domain.user.Controller;
 import exception.NoSuchControllerMethodException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import view.View;
 
 import java.lang.reflect.Method;
@@ -18,7 +19,7 @@ import static webserver.ServerConfig.ERROR_PAGE;
  * <li>뷰를 렌더링 한다.</li>
  */
 public class Dispatcher {
-
+    private static final Logger logger = LoggerFactory.getLogger(Dispatcher.class);
     private static final Controller controller = new Controller();
 
     public void dispatch(HttpRequest request, HttpResponse response) throws Exception {
@@ -29,9 +30,9 @@ public class Dispatcher {
             Method controllerMethod = mapper.getControllerMethod(request.getRequestMethod(), request.getRequestPath());
             mv = (ModelView) controllerMethod.invoke(controller, request, response);
 
-        } catch (NoSuchControllerMethodException e) {
+        } catch (NoSuchControllerMethodException | IllegalArgumentException e) {
             mv = new ModelView(ERROR_PAGE);
-
+            logger.error(e.getMessage());
         } finally {
             if (mv != null) {
                 View view = ViewResolver.resolveViewName(mv.getViewName());

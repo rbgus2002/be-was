@@ -1,7 +1,8 @@
 package webserver;
 
-import domain.user.Database;
-import domain.user.User;
+import service.PostService;
+import domain.User;
+import service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,11 +29,14 @@ public class WebServer {
         TemplateMapper.getInstance().initialize();
 
         // ======테스트용 더미 유자=======
-        Database.addUser(new User("user1", "a", "userOne", "user1@a.com"));
-        Database.addUser(new User("user2", "a", "userTwo", "user2@a.com"));
-        Database.addUser(new User("user3", "a", "userThr", "user3@a.com"));
-        Database.addUser(new User("user4", "a", "userFou", "user4@a.com"));
+        User user1 = UserService.createUser("user1", "a", "홍길동", "user1@a.com");
+        User user2 = UserService.createUser("user2", "a", "이준호", "user2@a.com");
         //
+
+        // ======테스트용 더미 게시글=======
+        PostService.createPost(user1, "가나다라마바사", "가나다라마바사아자차카타파하");
+        PostService.createPost(user1, "인텔리제이 사용법", "그만 알아보자.");
+        PostService.createPost(user2, "맥 초기 세팅 방법", "그만 알아보자.");
 
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {

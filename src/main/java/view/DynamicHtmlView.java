@@ -4,7 +4,7 @@ import common.enums.ContentType;
 import common.enums.ResponseCode;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
-import template.DynamicTemplate;
+import view.template.DynamicTemplate;
 import utils.FileUtils;
 
 import java.util.Map;

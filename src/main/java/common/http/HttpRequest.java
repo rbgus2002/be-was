@@ -40,6 +40,8 @@ public class HttpRequest {
         }
 
         if (requestMethod.equals(RequestMethod.POST)) {
+
+
             return requestBody.getQueries().orElseGet(Queries::new);
         }
 

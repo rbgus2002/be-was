@@ -4,7 +4,7 @@ import common.http.Cookie;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.wrapper.Cookies;
-import domain.user.User;
+import domain.User;
 
 import java.util.Map;
 import java.util.UUID;
