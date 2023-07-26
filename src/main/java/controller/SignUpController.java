@@ -47,13 +47,13 @@ public class SignUpController implements Controller {
     }
 
     private void verifyRequest(HttpRequest request, User user){
-        String[] bodys = request.getBody().split("[&]");
+        String[] bodies = request.getBody().split("[&]");
 
-        if(bodys.length != SIGN_UP_PARAMS_LENGTH) {
+        if(bodies.length != SIGN_UP_PARAMS_LENGTH) {
             throw new BadRequestException("파라미터의 개수가 잘못되었습니다!");
         }
 
-        parseBody(bodys, user);
+        parseBody(bodies, user);
     }
 
     private void parseBody(String[] bodys, User user) {

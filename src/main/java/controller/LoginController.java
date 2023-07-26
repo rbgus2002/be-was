@@ -51,17 +51,17 @@ public class LoginController implements Controller{
     }
 
     private void verifyRequest(HttpRequest request, User user) {
-        String[] bodys = request.getBody().split("[&]");
+        String[] bodies = request.getBody().split("[&]");
 
-        if(bodys.length != LOGIN_PARAMS_LENGTH) {
+        if(bodies.length != LOGIN_PARAMS_LENGTH) {
             throw new BadRequestException("파라미터의 개수가 잘못되었습니다!");
         }
 
-        parseBody(bodys, user);
+        parseBody(bodies, user);
     }
 
-    private void parseBody(String[] bodys, User user) {
-        for (String body : bodys) {
+    private void parseBody(String[] bodies, User user) {
+        for (String body : bodies) {
             String[] param = body.split("[=]");
 
             if(param.length != KEY_VALUE_PAIR_LENGTH) {
