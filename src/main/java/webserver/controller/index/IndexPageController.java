@@ -75,7 +75,7 @@ public class IndexPageController implements Controller {
     }
 
     private String getTemplateHtml() throws IOException {
-        byte[] bytes = FileUtils.readFileBytes(Location.LOGIN_FAIL_PAGE);
+        byte[] bytes = FileUtils.readFileBytes(Location.INDEX_PAGE);
         return new String(bytes);
     }
 
