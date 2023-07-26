@@ -18,6 +18,7 @@ public class HttpResponseRenderer {
     }
 
     public void responseRender(DataOutputStream dos, HttpResponse response) {
+        logger.debug("Render response");
         responseHeader(dos, response);
         responseBody(dos, response);
     }

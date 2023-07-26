@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 public class HttpRequestParser {
@@ -19,9 +20,26 @@ public class HttpRequestParser {
         String firstLine = bufferedReader.readLine();
         parseFirstLine(builder, firstLine);
         parseHeaders(builder, bufferedReader);
-        // TODO: Body도 parse 해야 함
+
+        int contentLength = builder.getContentLength();
+        parseBody(builder, bufferedReader, contentLength);
 
         return builder.build();
+    }
+
+    private static void parseBody(HttpRequest.Builder builder, BufferedReader bufferedReader, int contentLength) throws IOException {
+        if (contentLength == 0) {
+            return;
+        }
+
+        char[] bodyCArray = new char[contentLength];
+        bufferedReader.read(bodyCArray, 0, contentLength);
+
+        String bodyString = new String(bodyCArray);
+        String[] params = bodyString.split("&");
+        for (String param : params) {
+            builder.setBody(URLDecoder.decode(param, StandardCharsets.UTF_8));
+        }
     }
 
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
