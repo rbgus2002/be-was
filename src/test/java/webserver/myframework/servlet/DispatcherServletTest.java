@@ -105,7 +105,6 @@ class DispatcherServletTest {
                     dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
                     //then
-                    System.out.println(new String(httpResponse.getBody(), StandardCharsets.UTF_8));
                     assertThat(httpResponse.getBody())
                             .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/login.html")));
                 }

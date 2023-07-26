@@ -26,8 +26,10 @@ public class RequestHandlerImpl implements RequestHandler {
             method.invoke(controller, parameters);
         } catch (IllegalArgumentException argumentException) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
+            argumentException.printStackTrace();
         } catch (Exception e) {
             httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
         }
     }
 }

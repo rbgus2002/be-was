@@ -1,12 +1,13 @@
 package user.controller;
 
+import controller.UserController;
 import db.UserTable;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import user.service.UserService;
+import service.UserService;
 import webserver.http.HttpHeaders;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
