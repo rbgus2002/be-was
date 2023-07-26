@@ -13,7 +13,6 @@ import webserver.http.HttpResponse;
 import model.User;
 import webserver.session.Session;
 import webserver.session.SessionConst;
-import webserver.view.Model;
 import webserver.view.ModelView;
 
 public class Controller {
