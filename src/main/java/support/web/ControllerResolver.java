@@ -12,7 +12,7 @@ import support.web.exception.NotSupportedException;
 import support.web.exception.ServerErrorException;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
-import webserver.request.KeyValue;
+import webserver.request.QueryParameter;
 import webserver.response.HttpResponse;
 
 import java.lang.reflect.InvocationTargetException;
@@ -92,8 +92,8 @@ public abstract class ControllerResolver {
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
     private static Object[] transformQuery(HttpRequest request, HttpResponse response, Method method) throws BadRequestException {
-        KeyValue body = request.getBody();
-        KeyValue query = request.getQuery();
+        QueryParameter body = request.getBody();
+        QueryParameter query = request.getQuery();
         String id = query.getValue("id");
         Parameter[] parameters = method.getParameters();
 

@@ -4,49 +4,45 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class KeyValue {
+public class QueryParameter {
 
-    private final Map<String, String> query = new HashMap<>();
-    private final boolean isQuery;
+    private final Map<String, String> keyValues = new HashMap<>();
 
-    protected KeyValue(boolean isQuery) {
-        this.isQuery = isQuery;
+    public QueryParameter() {
+
     }
 
-    protected KeyValue(String queryString, boolean isQuery) {
-        String[] queries = queryString.split("&");
+    public QueryParameter(String parameterString) {
+        String[] queries = parameterString.split("&");
         Arrays.stream(queries)
-                .forEach(queryComponent -> {
-                    String[] keyAndValue = queryComponent.split("=");
+                .forEach(keyValue -> {
+                    String[] keyAndValue = keyValue.split("=", 2);
                     append(keyAndValue[0], keyAndValue[1]);
                 });
-        this.isQuery = isQuery;
     }
 
     private void append(String key, String value) {
-        this.query.put(key, value);
+        keyValues.put(key, value);
     }
 
     public String getValue(String key) {
-        return this.query.get(key);
+        return keyValues.get(key);
     }
 
     public int size() {
-        return this.query.size();
+        return keyValues.size();
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (isQuery) {
-            stringBuilder.append('?');
-        }
-        query.forEach(
+        keyValues.forEach(
                 (key, value) -> stringBuilder.append(key)
                         .append("=")
                         .append(value)
                         .append("&")
         );
+
         return stringBuilder.toString().replaceAll(".$", "");
     }
 

@@ -1,6 +1,7 @@
 package webserver.request;
 
 import support.web.HttpMethod;
+import utils.StringUtils;
 import webserver.Header;
 
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ public class HttpRequest {
 
     private final HttpMethod method;
     private final String path;
-    private Query query;
-    private final Header header = new Header();
+    private QueryParameter query;
     private final String version;
-    private Parameter body;
+    private final Header header = new Header();
+    private QueryParameter body;
 
     public static class RequestHeaderBuilder {
         private String requestLine;
@@ -46,7 +47,7 @@ public class HttpRequest {
         String[] pathAndQuery = tokens[1].split("\\?");
         this.path = pathAndQuery[0];
         if (pathAndQuery.length > 1) {
-            query = new Query(pathAndQuery[1]);
+            query = new QueryParameter(pathAndQuery[1]);
         }
 
 
@@ -74,22 +75,22 @@ public class HttpRequest {
         return path;
     }
 
-    public KeyValue getQuery() {
+    public QueryParameter getQuery() {
         if (query == null) {
-            query = new Query();
+            query = new QueryParameter();
         }
         return query;
     }
 
-    public KeyValue getBody() {
+    public QueryParameter getBody() {
         if (body == null) {
-            body = new Parameter();
+            body = new QueryParameter();
         }
         return body;
     }
 
     public void setBody(String body) {
-        this.body = new Parameter(body);
+        this.body = new QueryParameter(body);
     }
 
     @Override
@@ -98,12 +99,12 @@ public class HttpRequest {
         return stringBuilder.append(method)
                 .append(" ")
                 .append(path)
-                .append(getQuery() != null ? getQuery() : "")
+                .append(getQuery().size() != 0 ? "?" + getQuery() : "")
                 .append(" ")
                 .append(version)
                 .append(CRLF)
                 .append(header.buildHeader())
-                .append(getBody() != null ? getBody() : "")
+                .append(getBody().size() != 0 ? StringUtils.CRLF + "Body : " + getBody() : "")
                 .toString();
     }
 
