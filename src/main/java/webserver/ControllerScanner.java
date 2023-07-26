@@ -1,9 +1,6 @@
 package webserver;
 
 import java.io.File;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
 import org.slf4j.Logger;
@@ -11,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import webserver.annotation.Controller;
 import webserver.annotation.RequestMapping;
-import webserver.http.message.HttpResponse;
+import webserver.mapping.ControllerMapping;
 import webserver.mapping.UrlMapping;
 
 public class ControllerScanner {
@@ -23,6 +20,7 @@ public class ControllerScanner {
 	private static final String EXTENSION = ".java";
 
 	private final UrlMapping urlMapping = UrlMapping.getInstance();
+	private final ControllerMapping controllerMapping = ControllerMapping.getInstance();
 
 	private ControllerScanner() {
 	}
@@ -50,40 +48,35 @@ public class ControllerScanner {
 			if (!file.isFile()) {
 				continue;
 			}
-			String path = file.getPath();
-			String className = path.substring(PROJECT_PATH.length(), path.lastIndexOf(EXTENSION))
-				.replace("/", ".");
-			logger.debug(className);
-			Class<?> clazz = Class.forName(className);
-			logger.debug(clazz.getName());
+			Class<?> clazz = convertFileToClass(file);
+			addControllerMapping(clazz);
 			if (clazz.isAnnotationPresent(Controller.class)) {
 				scanRequestMappings(clazz);
 			}
 		}
 	}
 
-	private void scanRequestMappings(Class<?> controllerClass) throws ReflectiveOperationException {
+	private Class<?> convertFileToClass(File file) throws ReflectiveOperationException {
+		String path = file.getPath();
+		String className = path.substring(PROJECT_PATH.length(), path.lastIndexOf(EXTENSION))
+			.replace("/", ".");
+		logger.debug(className);
+		return Class.forName(className);
+	}
+
+	private void addControllerMapping(Class<?> controllerClass) throws ReflectiveOperationException {
 		Object controller = controllerClass.getConstructor().newInstance();
+		controllerMapping.add(controllerClass, controller);
+	}
+
+	private void scanRequestMappings(Class<?> controllerClass) {
 		for (Method method : controllerClass.getMethods()) {
 			RequestMapping annotation = method.getAnnotation(RequestMapping.class);
 			if (annotation == null) {
 				continue;
 			}
-			MethodHandle methodHandle = getMethodHandle(controller, method);
-			urlMapping.add(annotation.method(), annotation.path(), methodHandle);
+			urlMapping.add(annotation.method(), annotation.path(), method);
 		}
-	}
-
-	private MethodHandle getMethodHandle(Object controller, Method method) throws ReflectiveOperationException {
-		MethodType methodType = MethodType.methodType(HttpResponse.class);
-		Class<?>[] parameterTypes = method.getParameterTypes();
-		if (parameterTypes.length > 0) {
-			methodType = MethodType.methodType(HttpResponse.class, method.getParameterTypes());
-		}
-		logger.debug(method.getName());
-		return MethodHandles.lookup()
-			.findVirtual(controller.getClass(), method.getName(), methodType)
-			.bindTo(controller);
 	}
 
 }

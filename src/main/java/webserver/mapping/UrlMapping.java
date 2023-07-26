@@ -1,6 +1,6 @@
 package webserver.mapping;
 
-import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import webserver.http.message.HttpMethod;
 
 public class UrlMapping {
 
-	private final Map<HttpMethod, Map<String, MethodHandle>> mapping = new EnumMap<>(HttpMethod.class);
+	private final Map<HttpMethod, Map<String, Method>> mapping = new EnumMap<>(HttpMethod.class);
 
 	private UrlMapping() {
 		for (HttpMethod httpMethod : HttpMethod.values()) {
@@ -21,11 +21,11 @@ public class UrlMapping {
 		return LazyHolder.instance;
 	}
 
-	public void add(HttpMethod httpMethod, String path, MethodHandle methodHandle) {
-		mapping.get(httpMethod).put(path, methodHandle);
+	public void add(HttpMethod httpMethod, String path, Method method) {
+		mapping.get(httpMethod).put(path, method);
 	}
 
-	public MethodHandle getMethodHandle(HttpMethod httpMethod, String path) {
+	public Method getMethod(HttpMethod httpMethod, String path) {
 		return mapping.get(httpMethod).get(path);
 	}
 
