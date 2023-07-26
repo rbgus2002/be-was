@@ -6,6 +6,11 @@ public class LoginRequestDto {
     private String userId;
     private String password;
 
+    public LoginRequestDto(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
+
     public LoginRequestDto(Map<String, String> params) {
         this.userId = params.get("userId");
         this.password = params.get("password");
