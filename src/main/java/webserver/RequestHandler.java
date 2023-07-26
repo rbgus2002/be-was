@@ -1,7 +1,6 @@
 package webserver;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = HttpRequest.of(in);
             HttpResponse response = HttpResponse.createEmpty();
+            response.setHttpVersion(request.getVersion());
             DataOutputStream dos = new DataOutputStream(out);
             DispatcherServlet dispatcherServlet = new DispatcherServlet();
             dispatcherServlet.dispatch(request, response, dos);
