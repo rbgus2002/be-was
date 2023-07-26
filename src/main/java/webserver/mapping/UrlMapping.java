@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import webserver.http.message.HttpMethod;
-import webserver.http.message.HttpStatus;
 
 public class UrlMapping {
 
@@ -27,11 +26,7 @@ public class UrlMapping {
 	}
 
 	public MethodHandle getMethodHandle(HttpMethod httpMethod, String path) {
-		MethodHandle methodHandle = mapping.get(httpMethod).get(path);
-		if (methodHandle == null) {
-			throw new RuntimeException(HttpStatus.NOT_FOUND.getMessage());
-		}
-		return methodHandle;
+		return mapping.get(httpMethod).get(path);
 	}
 
 	private static class LazyHolder {

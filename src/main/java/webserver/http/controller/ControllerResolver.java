@@ -1,12 +1,7 @@
 package webserver.http.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.nio.file.Files;
-import java.util.Arrays;
+import java.lang.invoke.MethodHandle;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,59 +9,53 @@ import webserver.annotation.RequestParam;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
-import webserver.http.utils.FileMapper;
-import webserver.mapping.ControllerMapping;
 import webserver.mapping.UrlMapping;
 
 public class ControllerResolver {
 
 	private final UrlMapping urlMapping = UrlMapping.getInstance();
-	private final ControllerMapping controllerMapping = ControllerMapping.getInstance();
-	private final FileMapper fileMapper = new FileMapper();
 
-	public void resolve(HttpRequest request, HttpResponse response) {
-		Method method = urlMapping.find(request.getUrlPath(), request.getHttpMethod());
-		if (method == null) {
-			setBadRequest(response);
-			return;
+	public HttpResponse resolve(HttpRequest request) throws Throwable {
+		MethodHandle methodHandle = urlMapping.getMethodHandle(request.getHttpMethod(), request.getUrlPath());
+		if (methodHandle == null) {
+			return HttpResponse.builder()
+				.status(HttpStatus.NOT_FOUND)
+				.build();
 		}
-
-		Object controller = controllerMapping.find(method.getDeclaringClass());
-		if (controller == null) {
-			setBadRequest(response);
-			return;
-		}
-
-		String fileName = null;
-		try {
-			fileName = invoke(method, controller, request, response);
-			File file = fileMapper.findFile(fileName);
-			response.setBody(Files.readAllBytes(file.toPath()), Files.probeContentType(file.toPath()));
-		} catch (IllegalAccessException | InvocationTargetException | IOException e) {
-			throw new RuntimeException(e);
-		}
+		return invoke(request, methodHandle);
 	}
 
-	private void setBadRequest(HttpResponse response) {
-		response.setStatus(HttpStatus.BAD_REQUEST);
-		response.setBody("test".getBytes(), "text/plain");
+	private HttpResponse invoke(HttpRequest request, MethodHandle methodHandle) throws Throwable {
+		List<Class<?>> parameterList = methodHandle.type().parameterList();
+		if (parameterList.isEmpty()) {
+			return (HttpResponse)methodHandle.invoke();
+		}
+
+		List<String> args = resolveArguments(request, parameterList);
+		if (args.isEmpty() || args.contains(null)) {
+			return HttpResponse.builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.build();
+		}
+		return (HttpResponse)methodHandle.invoke(args.toArray());
 	}
 
-	private String invoke(Method method, Object controller, HttpRequest request, HttpResponse response) throws
-		InvocationTargetException,
-		IllegalAccessException {
-		Parameter[] parameters = method.getParameters();
-		List<Object> args = Arrays.stream(parameters)
-			.filter(parameter -> parameter.isAnnotationPresent(RequestParam.class))
+	private List<String> resolveArguments(HttpRequest request, List<Class<?>> parameterList) {
+		if (request.isMethodGet()) {
+			return getRequestParams(request, parameterList);
+		}
+		// TODO: @RequestBody 처리
+		// if (request.isMethodPost()) {
+		// 	return getRequestBody(request, parameterList);
+		// }
+		return Collections.emptyList();
+	}
+
+	private List<String> getRequestParams(HttpRequest request, List<Class<?>> parameterList) {
+		return parameterList.stream()
 			.map(parameter -> parameter.getAnnotation(RequestParam.class))
-			.map(requestParam -> request.getParameterValue(requestParam.name()))
+			.map(requestParam -> request.getUrlParamValue(requestParam.name()))
 			.collect(Collectors.toList());
-
-		if (args.contains(null)) {
-			throw new IllegalArgumentException();
-		}
-		args.add(response);
-		return (String)method.invoke(controller, args.toArray());
 	}
 
 }

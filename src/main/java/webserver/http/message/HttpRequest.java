@@ -34,4 +34,12 @@ public class HttpRequest {
 		return url.isStaticResource();
 	}
 
+	public boolean isMethodGet() {
+		return httpMethod == HttpMethod.GET;
+	}
+
+	public boolean isMethodPost() {
+		return httpMethod == HttpMethod.POST;
+	}
+
 }
