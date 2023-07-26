@@ -34,8 +34,8 @@ public class HttpHandler {
     }
 
     private static void callViewResolver(HttpRequest request, HttpResponse response, String path) {
+        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         try {
-            ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
             View view = viewFactory.getViewByName(path);
             if (view != null) {
                 ViewResolver.buildView(request, response, view);
@@ -44,9 +44,14 @@ public class HttpHandler {
             }
             response.setStatus(HttpStatus.OK);
         } catch (IOException e) {
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.buildHeader(new NotFound());
+            buildErrorResponse(request, response, viewFactory);
         }
+    }
+
+    private static void buildErrorResponse(HttpRequest request, HttpResponse response, ViewFactory viewFactory) {
+        response.setStatus(HttpStatus.NOT_FOUND);
+        response.buildHeader(new NotFound());
+        ViewResolver.buildView(request, response, viewFactory.getErrorView());
     }
 
     public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
@@ -56,8 +61,8 @@ public class HttpHandler {
             return;
         }
 
-        response.setStatus(HttpStatus.NOT_FOUND);
-        response.buildHeader(new NotFound());
+        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
+        buildErrorResponse(request, response, viewFactory);
     }
 
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
