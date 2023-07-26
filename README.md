@@ -19,5 +19,11 @@ Java Web Application Server 2023
     - 회원가입을 POST로 구현
     - 가입을 완료하면 /index.html 페이지로 이동한다.
 
-- 다양한 컨텐츠 타입을 지원하도록 개선 
+- 다양한 컨텐츠 타입을 지원하도록 개선
 
+- 가입한 회원 정보로 로그인을 할 수 있다.
+    - 로그인이 성공하면 index.html로 이동한다.
+    - 로그인이 실패하면 /user/login_failed.html로 이동한다.
+    - 로그인이 성공할 경우 HTTP 헤더의 쿠키 값을 SID=세션 ID 로 응답한다.
+
+- [로그인] 메뉴를 클릭하면 http://localhost:8080/user/login.html 으로 이동해 로그인할 수 있다.
