@@ -7,7 +7,10 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Database {
-    private static Map<String, User> users = Maps.newConcurrentMap();
+    private Database() {
+
+    }
+    private static final Map<String, User> users = Maps.newConcurrentMap();
 
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
