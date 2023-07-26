@@ -2,8 +2,6 @@ package webserver.http.message;
 
 import java.util.Arrays;
 
-import webserver.exception.BadRequestException;
-
 public enum HttpMethod {
 	GET("GET"),
 	POST("POST");
@@ -18,7 +16,7 @@ public enum HttpMethod {
 		return Arrays.stream(HttpMethod.values())
 			.filter(value -> value.name.equals(methodString))
 			.findAny()
-			.orElseThrow(BadRequestException::new);
+			.orElseThrow(() -> new RuntimeException(HttpStatus.METHOD_NOT_ALLOWED.getMessage()));
 	}
 
 	public String getName() {

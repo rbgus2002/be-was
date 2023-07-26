@@ -4,14 +4,14 @@ public class HttpRequest {
 
 	private final HttpMethod httpMethod;
 	private final URL url;
-	private final ParameterMap headerFields;
-	private final ParameterMap bodyParameters;
+	private final HttpHeaderFields headerFields;
+	private final HttpRequestBody body;
 
-	public HttpRequest(HttpMethod httpMethod, URL url, ParameterMap headerFields, ParameterMap bodyParameters) {
+	public HttpRequest(HttpMethod httpMethod, URL url, HttpHeaderFields headerFields, HttpRequestBody body) {
 		this.httpMethod = httpMethod;
 		this.url = url;
 		this.headerFields = headerFields;
-		this.bodyParameters = bodyParameters;
+		this.body = body;
 	}
 
 	public HttpMethod getHttpMethod() {
@@ -26,15 +26,7 @@ public class HttpRequest {
 		return "HTTP/1.1";
 	}
 
-	public ParameterMap getHeaderFields() {
-		return headerFields;
-	}
-
-	public ParameterMap getBodyParameters() {
-		return bodyParameters;
-	}
-
-	public String getParameterValue(String key) {
+	public String getUrlParamValue(String key) {
 		return url.getParameterValue(key);
 	}
 

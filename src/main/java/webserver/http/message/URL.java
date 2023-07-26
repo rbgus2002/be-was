@@ -1,11 +1,13 @@
 package webserver.http.message;
 
+import java.util.Map;
+
 public class URL {
 
 	private final String path;
-	private final ParameterMap parameterMap;
+	private final Map<String, String> parameterMap;
 
-	public URL(String path, ParameterMap parameterMap) {
+	public URL(String path, Map<String, String> parameterMap) {
 		this.path = path;
 		this.parameterMap = parameterMap;
 	}
@@ -15,6 +17,6 @@ public class URL {
 	}
 
 	public String getParameterValue(String key) {
-		return parameterMap.getValue(key);
+		return parameterMap.get(key);
 	}
 }

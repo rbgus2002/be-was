@@ -4,26 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import webserver.exception.BadRequestException;
+import webserver.http.message.HttpHeaderFields;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpRequest;
-import webserver.http.message.ParameterMap;
+import webserver.http.message.HttpRequestBody;
 import webserver.http.message.URL;
 
 public class HttpMessageParser {
-
-	public static final String SINGLE_SPACE = " ";
-	public static final String SEPARATOR_REGEX = ": ?";
-
-	private static final String PATH_QUERY_SEPARATOR = "\\?";
-	private static final String PARAM_SEPARATOR = "&";
-	private static final String KEY_VALUE_SEPARATOR = "=";
-	private static final String EMPTY_VALUE = "";
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpMessageParser.class);
 
@@ -33,86 +27,68 @@ public class HttpMessageParser {
 		if (startLine == null) {
 			return null;
 		}
-
-		String[] requestLineTokens = startLine.split(SINGLE_SPACE);
+		logger.debug(startLine);
+		String[] requestLineTokens = startLine.split(" ");
 		if (requestLineTokens.length != 3) {
 			throw new BadRequestException();
 		}
-
 		HttpMethod httpMethod = HttpMethod.from(requestLineTokens[0]);
 		URL url = parseURL(requestLineTokens[1]);
-		ParameterMap headerFields = parseHeaderFields(br);
-		ParameterMap bodyParameters = parseBody(br, headerFields);
-		return new HttpRequest(httpMethod, url, headerFields, bodyParameters);
+		HttpHeaderFields headerFields = parseHeaderFields(br);
+
+		HttpRequestBody httpRequestBody = null;
+		String contentLength = headerFields.getContentLength();
+		if (contentLength != null) {
+			httpRequestBody = parseBody(br, Integer.parseInt(contentLength));
+		}
+		return new HttpRequest(httpMethod, url, headerFields, httpRequestBody);
 	}
 
 	private static URL parseURL(String urlString) {
-		ParameterMap parameterMap = new ParameterMap();
-		String[] tokens = urlString.split(PATH_QUERY_SEPARATOR);
+		Map<String, String> parameterMap = new HashMap<>();
+		String[] tokens = urlString.split("\\?");
 		if (tokens.length >= 2) {
 			parameterMap = parseParameter(tokens[1]);
 		}
 		return new URL(tokens[0], parameterMap);
 	}
 
-	private static ParameterMap parseParameter(String data) {
-		ParameterMap parameterMap = new ParameterMap();
-		String[] paramList = data.split(PARAM_SEPARATOR);
+	private static Map<String, String> parseParameter(String str) {
+		Map<String, String> parameterMap = new HashMap<>();
+		String[] paramList = str.split("&");
 		for (String param : paramList) {
-			String[] tokens = param.split(KEY_VALUE_SEPARATOR);
+			String[] tokens = param.split("=");
 			String key = tokens[0];
-			String value = EMPTY_VALUE;
+			String value = "";
 			if (tokens.length >= 2) {
 				value = tokens[1];
 			}
-			parameterMap.add(key, value);
+			parameterMap.put(key, value);
 		}
 		return parameterMap;
 	}
 
-	private static ParameterMap parseHeaderFields(BufferedReader br) throws IOException {
-		ParameterMap headerFields = new ParameterMap();
+	private static HttpHeaderFields parseHeaderFields(BufferedReader br) throws IOException {
+		HttpHeaderFields headerFields = new HttpHeaderFields();
 		String line = br.readLine();
-		while (!EMPTY_VALUE.equals(line)) {
-			String[] tokens = line.split(SEPARATOR_REGEX, 2);
-			if (tokens.length != 2) {
-				throw new BadRequestException();
+		while (!"".equals(line)) {
+			logger.debug(line);
+			String[] tokens = line.split(": ?", 2);
+			if (tokens.length == 2) {
+				headerFields.add(tokens[0], tokens[1]);
 			}
-			headerFields.add(tokens[0], tokens[1]);
 			line = br.readLine();
 		}
 		return headerFields;
 	}
 
-	private static ParameterMap parseBody(BufferedReader br, ParameterMap headerFields) throws
+	private static HttpRequestBody parseBody(BufferedReader br, Integer contentLength) throws
 		IOException {
-		String contentLength = headerFields.getValue("Content-Length");
-		if (contentLength == null) {
-			return new ParameterMap();
-		}
-
-		int length = Integer.parseInt(contentLength);
-		char[] body = new char[length];
-		br.read(body, 0, length);
+		char[] body = new char[contentLength];
+		br.read(body, 0, contentLength);
 		String bodyString = String.valueOf(body);
-
-		return parseParameter(bodyString);
-	}
-
-	public static void log(HttpRequest request) {
-		logger.debug("{} {} {}", request.getHttpMethod().getName(), request.getUrlPath(), request.getHttpVersion());
-		for (Map.Entry<String, String> field : request.getHeaderFields().getEntrySet()) {
-			logger.debug("{}: {}", field.getKey(), field.getValue());
-		}
-		logger.debug(EMPTY_VALUE);
-		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, String> bodyParam : request.getBodyParameters().getEntrySet()) {
-			sb.append("&").append(bodyParam.getKey()).append("=").append(bodyParam.getValue());
-		}
-		if (sb.length() > 0) {
-			String str = sb.substring(1);
-			logger.debug(str);
-		}
+		logger.debug(bodyString);
+		return new HttpRequestBody(parseParameter(bodyString));
 	}
 
 }
