@@ -40,6 +40,7 @@ public class LoginHandler implements Handler {
             User loginUser = userService.login(loginUserId, loginPassword);
             HttpResponse response = HttpResponse.redirect(LOGIN_SUCCESS);
             session.setUser(loginUser);
+            response.setCookie(session.getId(), "/");
             return response;
         } catch (NullPointerException e) {
             logger.warn("bad request : {}", e.getMessage());
