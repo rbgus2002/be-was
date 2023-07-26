@@ -1,9 +1,12 @@
 package controller;
 
+import db.Database;
+import model.Post;
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
+import support.annotation.PathVariable;
 import support.annotation.RequestMapping;
 import support.exception.FoundException;
 import support.web.HttpMethod;
@@ -31,13 +34,18 @@ public class PostViewController {
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/show")
-    public ModelAndView show(HttpRequest request) throws FoundException {
+    public ModelAndView show(@PathVariable("id") String postId, HttpRequest request) throws FoundException {
         logger.debug("게시글 세부 글 뷰 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession != null) {
+            Post post = Database.findPostById(Long.valueOf(postId));
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("/post/show");
+            modelAndView.addAttribute("title", post.getTitle());
+            modelAndView.addAttribute("writer", post.getWriter());
+            modelAndView.addAttribute("createDateTime", post.getCreateDateTime());
+            modelAndView.addAttribute("content", post.getContents());
             return modelAndView;
         }
 

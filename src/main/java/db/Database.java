@@ -54,4 +54,8 @@ public abstract class Database {
         return new ArrayList<>(posts.values());
     }
 
+    public static Post findPostById(Long id) {
+        return posts.get(id);
+    }
+
 }

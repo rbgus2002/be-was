@@ -4,6 +4,7 @@ import exception.ExceptionName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
+import support.annotation.PathVariable;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.exception.BadRequestException;
@@ -98,14 +99,17 @@ public abstract class ControllerResolver {
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
     private static Object[] transformQuery(HttpRequest request, HttpResponse response, Method method) throws BadRequestException {
-        KeyValue requestQuery = request.getPathQueryOrParameter()
-                .orElseThrow(() -> new BadRequestException(ExceptionName.WRONG_ARGUMENT));
+        KeyValue body = request.getBody();
+        KeyValue query = request.getQuery();
+        String id = query.getValue("id");
         Parameter[] parameters = method.getParameters();
 
         Object[] args = Arrays.stream(parameters)
                 .map(parameter -> {
                     if (parameter.isAnnotationPresent(RequestParam.class)) {
-                        return requestQuery.getValue(parameter.getAnnotation(RequestParam.class).value());
+                        return body.getValue(parameter.getAnnotation(RequestParam.class).value());
+                    } else if (parameter.isAnnotationPresent(PathVariable.class)) {
+                        return query.getValue(parameter.getAnnotation(PathVariable.class).value());
                     } else if (parameter.getType() == HttpRequest.class) {
                         return request;
                     } else if (parameter.getType() == HttpResponse.class) {

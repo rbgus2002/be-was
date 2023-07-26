@@ -6,4 +6,8 @@ public class Query extends KeyValue {
         super(queryString, true);
     }
 
+    public Query() {
+        super(true);
+    }
+
 }

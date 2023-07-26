@@ -115,7 +115,7 @@ public class IndexView implements View {
                             .append("                  <div class=\"wrap\">")
                             .append("                      <div class=\"main\">")
                             .append("                          <strong class=\"subject\">")
-                            .append("                              <a href=\"post/show\">").append(post.getTitle()).append("</a>")
+                            .append("                              <a href=\"post/show?id=").append(post.getId()).append("\">").append(post.getTitle()).append("</a>")
                             .append("                          </strong>")
                             .append("                          <div class=\"auth-info\">")
                             .append("                              <i class=\"icon-add-comment\"></i>")

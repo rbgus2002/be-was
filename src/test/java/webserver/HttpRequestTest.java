@@ -64,7 +64,7 @@ class HttpRequestTest {
         HttpRequest httpRequest = buildRequestHeader(createRequestLine);
 
         //when
-        KeyValue query = httpRequest.getPathQueryOrParameter().orElseThrow();
+        KeyValue query = httpRequest.getQuery();
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();

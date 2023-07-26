@@ -5,7 +5,6 @@ import webserver.Header;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static utils.StringUtils.CRLF;
 
@@ -73,11 +72,12 @@ public class HttpRequest {
         return path;
     }
 
-    public Optional<KeyValue> getPathQueryOrParameter() {
-        if (body == null && query == null) {
-            return Optional.of(new Parameter());
-        }
-        return body != null ? Optional.of(body) : Optional.of(query);
+    public KeyValue getQuery() {
+        return query == null ? new Query() : query;
+    }
+
+    public KeyValue getBody() {
+        return body == null ? new Parameter() : body;
     }
 
     public void setBody(String body) {
