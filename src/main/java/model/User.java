@@ -8,18 +8,15 @@ public class User {
     private String name;
     private String email;
 
+    public static User fromMap(Map<String, String> map) {
+        return new User(map.get("userId"), map.get("password"), map.get("name"), map.get("email"));
+    }
+
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
         this.password = password;
         this.name = name;
         this.email = email;
-    }
-
-    public User(Map<String, String> map) {
-        this.userId = map.get("userId");
-        this.password = map.get("password");
-        this.name = map.get("name");
-        this.email = map.get("email");
     }
 
     public String getUserId() {

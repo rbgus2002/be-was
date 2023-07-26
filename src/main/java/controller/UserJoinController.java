@@ -11,14 +11,10 @@ import org.slf4j.LoggerFactory;
 @RequestMapping(path = "/user/create")
 public class UserJoinController implements HttpController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserJoinController.class);
-
     @Override
     public String process(HttpRequest request, HttpResponse response) {
-        UserRepository.addUser(new User(request.getParams()));
-        for (User user : UserRepository.findAll()) {
-            logger.debug("{}", user);
-        }
+        User user = User.fromMap(request.getParams());
+        UserRepository.addUser(user);
         return "redirect:/index.html";
     }
 
