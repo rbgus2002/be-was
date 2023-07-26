@@ -1,7 +1,9 @@
 package http;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HttpResponse {
 
@@ -10,6 +12,7 @@ public class HttpResponse {
     private final Mime contentType;
     private final List<Cookie> cookies;
     private byte[] body;
+    private final Map<String, Object> viewParameters;
 
     public static HttpResponse ok(String path, Mime mime) {
         return new HttpResponse(path, mime, HttpStatus.OK);
@@ -28,6 +31,7 @@ public class HttpResponse {
         this.contentType = mime;
         this.httpStatus = httpStatus;
         this.cookies = new ArrayList<>();
+        this.viewParameters = new HashMap<>();
     }
 
     public String getPath() {
@@ -57,5 +61,13 @@ public class HttpResponse {
 
     public byte[] getBody() {
         return this.body;
+    }
+
+    public void setViewParameters(String key, Object value) {
+        this.viewParameters.put(key, value);
+    }
+
+    public Map<String, Object> getViewParameters() {
+        return this.viewParameters;
     }
 }

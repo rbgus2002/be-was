@@ -7,6 +7,7 @@ import http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpUtils;
+import view.ViewResolver;
 
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static util.StringUtils.getExtension;
@@ -28,7 +30,7 @@ public class ResponseHandler {
         this.sessionManager = sessionManager;
     }
 
-    public void response(DataOutputStream dos, HttpRequest httpRequest) throws IOException {
+    public void response(DataOutputStream dos, HttpRequest httpRequest) throws Throwable {
         HttpResponse httpResponse;
         try {
             httpResponse = handleHttpRequest(httpRequest);
@@ -83,10 +85,18 @@ public class ResponseHandler {
         return HttpResponse.redirect("/error.html");
     }
 
-    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws IOException {
+    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) throws Throwable {
         HttpStatus status = httpResponse.getHttpStatus();
-        InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
-        byte[] body = fileInputStream.readAllBytes();
+        Map<String, Object> viewParameters = httpResponse.getViewParameters();
+
+        byte[] body;
+        if (viewParameters.get("view") != null) {
+            logger.debug("{}를 실행합니다.", viewParameters);
+            body = ViewResolver.resolve(viewParameters);
+        } else {
+            InputStream fileInputStream = getResourceAsStream(httpResponse.getPath());
+            body = fileInputStream.readAllBytes();
+        }
         httpResponse.setBody(body);
 
         dos.writeBytes("HTTP/1.1 " + status.value() + " " + status.reasonPhrase() + " \r\n");
@@ -113,9 +123,9 @@ public class ResponseHandler {
     }
 
     private void writeBody(DataOutputStream dos, byte[] body) throws IOException {
-        if (body.length == 0)
-            return;
-        dos.write(body, 0, body.length);
+        if (body.length != 0) {
+            dos.write(body, 0, body.length);
+        }
         dos.flush();
     }
 
