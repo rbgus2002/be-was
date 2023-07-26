@@ -74,7 +74,6 @@ public class ResponseEntity {
             System.arraycopy(headersBytes, 0, responseBytes, 0, headersBytes.length);
             System.arraycopy(newLineBytes, 0, responseBytes, headersBytes.length, newLineBytes.length);
             System.arraycopy(responseBody, 0, responseBytes, headersBytes.length + newLineBytes.length, responseBody.length);
-
             return responseBytes;
         }
 

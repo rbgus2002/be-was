@@ -1,6 +1,7 @@
 package global.request;
 
 import exception.BadRequestException;
+import model.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,8 @@ class RequestMapperTest {
                 "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
                 "Cookie: sid=123456");
         RequestBody requestBody = new RequestBody("");
-        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody);
+        Session session = new Session();
+        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody, session);
 
         String expectedResponse = "HTTP/1.1 200 OK";
         byte[] actualResponse = requestMapper.response();
@@ -47,7 +49,8 @@ class RequestMapperTest {
                 "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
                 "Cookie: sid=123456");
         RequestBody requestBody = new RequestBody("");
-        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody);
+        Session session = new Session();
+        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody, session);
 
         assertThrows(BadRequestException.class, requestMapper::response);
     }

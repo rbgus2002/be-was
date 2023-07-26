@@ -7,16 +7,17 @@ import global.constant.StatusCode;
 import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.response.ResponseEntity;
+import model.Session;
 import service.UserService;
 
 import java.io.IOException;
 import java.util.Map;
 
 public class Controller {
-    private final UserService userService = new UserService();
+    private final static UserService userService = new UserService();
 
     @GetMapping(path = "/")
-    public byte[] root(Map<String, String> queryParams) throws IOException {
+    public byte[] root(RequestHeader header, RequestBody body, Session session) throws IOException {
         return ResponseEntity
                 .statusCode(StatusCode.OK)
                 .addHeaders(Headers.LOCATION, "/index.html")
@@ -25,7 +26,7 @@ public class Controller {
     }
 
     @PostMapping(path = "/user/create")
-    public byte[] createUser(RequestHeader header, RequestBody body) throws IOException {
+    public byte[] createUser(RequestHeader header, RequestBody body, Session session) throws IOException {
         Map<String, String> params = body.getParams();
         userService.register(params);
         return ResponseEntity
@@ -36,7 +37,7 @@ public class Controller {
     }
 
     @PostMapping(path = "/user/login")
-    public byte[] userLogin(RequestHeader header, RequestBody body) throws IOException {
+    public byte[] userLogin(RequestHeader header, RequestBody body, Session session) throws IOException {
         Map<String, String> headerParams = header.getHeaders();
         Map<String, String> bodyParams = body.getParams();
 
@@ -48,10 +49,11 @@ public class Controller {
                     .build();
         }
 
-        userService.login(headerParams, bodyParams);
+        String sid = userService.login(headerParams, bodyParams, session);
+
         return ResponseEntity
                 .statusCode(StatusCode.FOUND)
-                .setCookie(userService.getUserSession(bodyParams), "/")
+                .setCookie(sid, "/")
                 .addHeaders(Headers.LOCATION, "/index.html")
                 .responseResource("/index.html")
                 .build();

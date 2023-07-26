@@ -9,6 +9,7 @@ import global.handler.GetHandler;
 import global.handler.Handler;
 import global.handler.PostHandler;
 import global.response.ResponseEntity;
+import model.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,14 @@ public class RequestMapper {
     private final RequestLine requestLine;
     private final RequestHeader requestHeader;
     private final RequestBody requestBody;
+    private final Session session;
     private final Controller controller;
 
-    public RequestMapper(RequestLine requestLine, RequestHeader requestHeader, RequestBody requestBody) {
+    public RequestMapper(RequestLine requestLine, RequestHeader requestHeader, RequestBody requestBody, Session session) {
         this.requestLine = requestLine;
         this.requestBody = requestBody;
         this.requestHeader = requestHeader;
+        this.session = session;
         this.controller = new Controller();
     }
 
@@ -55,8 +58,8 @@ public class RequestMapper {
 
     private Handler findHandler(HttpMethod httpMethod) {
         final List<Handler> handlers = new ArrayList<>();
-        handlers.add(new GetHandler());
-        handlers.add(new PostHandler(requestHeader, requestBody));
+        handlers.add(new GetHandler(requestHeader, requestBody, session));
+        handlers.add(new PostHandler(requestHeader, requestBody, session));
 
         return handlers.stream()
                 .filter(handler -> handler.matchHttpMethod(httpMethod))

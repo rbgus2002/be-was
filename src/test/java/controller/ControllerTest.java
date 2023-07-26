@@ -2,6 +2,7 @@ package controller;
 
 import global.request.RequestBody;
 import global.request.RequestHeader;
+import model.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,22 @@ class ControllerTest {
     @DisplayName("root 메서드 테스트")
     void testRoot() throws IOException {
         // given
+        RequestHeader header = new RequestHeader("ost: localhost:8080\n" +
+                "Connection: keep-alive\n" +
+                "Origin: http://localhost:8080\n" +
+                "Accept: */*\n" +
+                "Referer: http://localhost:8080/css/bootstrap.min.css\n" +
+                "Accept-Encoding: gzip, deflate, br\n" +
+                "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
+                "Cookie: sid=123456");
+        RequestBody body = new RequestBody("\n" +
+                "userId=chocochip&password=password&name=kiho&email=fingercut@naver.com");
+        Session session = new Session();
         String expectedResponse = "HTTP/1.1 200 OK \n";
 
         Map<String, String> map = new LinkedHashMap<>();
         // when
-        byte[] response = controller.root(map);
+        byte[] response = controller.root(header, body, session);
 
         // then
         assertAll(
@@ -55,11 +67,11 @@ class ControllerTest {
                 "Cookie: sid=123456");
         RequestBody body = new RequestBody("\n" +
                 "userId=chocochip&password=password&name=kiho&email=fingercut@naver.com");
-
+        Session session = new Session();
         String expectedResponse = "HTTP/1.1 302 Found ";
 
         // when
-        byte[] actualResponse = controller.createUser(header, body);
+        byte[] actualResponse = controller.createUser(header, body, session);
 
         // then
         assertAll(
@@ -83,9 +95,10 @@ class ControllerTest {
                 "Cookie: sid=123456");
         RequestBody body = new RequestBody("\n" +
                 "userId=chocochip&password=password&name=kiho&email=fingercut@naver.com");
+        Session session = new Session();
 
         // when
-        byte[] actualResponse = controller.createUser(header, body);
+        byte[] actualResponse = controller.createUser(header, body, session);
 
         // then
         assertEquals(findAll().size(), 1);
@@ -97,11 +110,11 @@ class ControllerTest {
         // given
         RequestHeader header = new RequestHeader("\nAuthorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
         RequestBody body = new RequestBody("\nuserId=chocochip&password=password");
-
+        Session session = new Session();
         String expectedResponse = "HTTP/1.1 302 Found ";
 
         // when
-        byte[] actualResponse = controller.userLogin(header, body);
+        byte[] actualResponse = controller.userLogin(header, body, session);
 
         // then
         assertAll(
@@ -124,11 +137,11 @@ class ControllerTest {
                 "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
                 "Cookie: sid=123456");
         RequestBody body = new RequestBody("\nuserId=non_existent_user&password=invalid_password");
-
+        Session session = new Session();
         String expectedResponse = "HTTP/1.1 302 Found ";
 
         // when
-        byte[] actualResponse = controller.userLogin(header, body);
+        byte[] actualResponse = controller.userLogin(header, body, session);
 
         // then
         assertAll(

@@ -2,6 +2,7 @@ package service;
 
 import global.constant.Headers;
 import global.util.SessionUtil;
+import model.Session;
 import model.db.Database;
 import model.User;
 import model.UserParam;
@@ -11,7 +12,7 @@ import java.util.Map;
 import static model.db.Database.findUserById;
 
 public class UserService {
-    private final SessionUtil sessionUtil = new SessionUtil();
+    private final static SessionUtil sessionUtil = new SessionUtil();
 
     public void register(Map<String, String> params) {
         final User user = new User(
@@ -31,12 +32,12 @@ public class UserService {
         }
     }
 
-    public void login(Map<String, String> headerParams, Map<String, String> bodyParams) {
-        sessionUtil.setSession(headerParams.get(Headers.COOKIE.getKey()), findUserById(bodyParams.get(UserParam.ID)));
-    }
+    public String login(Map<String, String> headerParams, Map<String, String> bodyParams, Session session) {
+        String userId = bodyParams.get(UserParam.ID);
+        session.setAttribute("userId", userId);
 
-    public String getUserSession(Map<String, String> bodyParams) {
-        User user = findUserById(bodyParams.get(UserParam.ID));
-        return sessionUtil.getSessionByUser(user);
+        String sid = sessionUtil.createSession();
+        sessionUtil.setSession(sid, session);
+        return sid;
     }
 }

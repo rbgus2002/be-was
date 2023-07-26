@@ -3,7 +3,10 @@ package global.handler;
 import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
+import global.request.RequestBody;
+import global.request.RequestHeader;
 import global.request.RequestLine;
+import model.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +20,17 @@ public class GetHandlerTest {
 
     @BeforeEach
     public void setup() {
-        getHandler = new GetHandler();
+        RequestHeader header = new RequestHeader("ost: localhost:8080\n" +
+                "Connection: keep-alive\n" +
+                "Origin: http://localhost:8080\n" +
+                "Accept: */*\n" +
+                "Referer: http://localhost:8080/css/bootstrap.min.css\n" +
+                "Accept-Encoding: gzip, deflate, br\n" +
+                "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
+                "Cookie: sid=123456");
+        RequestBody body = new RequestBody("\nuserId=non_existent_user&password=invalid_password");
+        Session session = new Session();
+        getHandler = new GetHandler(header, body, session);
         controller = new Controller();
     }
 

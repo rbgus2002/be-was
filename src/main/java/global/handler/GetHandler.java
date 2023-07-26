@@ -4,7 +4,10 @@ import annotations.GetMapping;
 import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
+import global.request.RequestBody;
+import global.request.RequestHeader;
 import global.request.RequestLine;
+import model.Session;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -13,8 +16,14 @@ import java.util.stream.Collectors;
 
 public class GetHandler implements Handler {
     private final HttpMethod httpMethod = HttpMethod.GET;
+    private final RequestHeader requestHeader;
+    private final RequestBody requestBody;
+    private final Session session;
 
-    public GetHandler() {
+    public GetHandler(RequestHeader requestHeader, RequestBody requestBody, Session session) {
+        this.requestHeader = requestHeader;
+        this.requestBody = requestBody;
+        this.session = session;
     }
 
     public boolean matchHttpMethod(HttpMethod httpMethod) {
@@ -24,7 +33,7 @@ public class GetHandler implements Handler {
     public byte[] startController(RequestLine requestLine, Controller controller) throws Exception {
         for (Method method : Controller.class.getDeclaredMethods()) {
             if (isGetMapping(method, requestLine.getUri())) {
-                return (byte[]) method.invoke(controller, requestLine.getQueryParams());
+                return (byte[]) method.invoke(controller, requestHeader, requestBody, session);
             }
         }
 
