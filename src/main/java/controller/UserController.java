@@ -11,18 +11,22 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Parser;
+import webserver.FrontController;
 
 import java.util.Map;
 import java.util.UUID;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private static final UserController instance = new UserController();
+    private static UserController instance;
 
     private UserController() {
     }
 
     public static UserController getInstance() {
+        if(instance == null) {
+            instance = new UserController();
+        }
         return instance;
     }
 
