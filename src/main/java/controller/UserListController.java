@@ -1,11 +1,9 @@
 package controller;
 
 import annotation.RequestMapping;
-import db.Database;
+import db.UserRepository;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.HttpSession;
-import http.HttpSessionManager;
 import model.User;
 
 @RequestMapping(path = "/user/list")
@@ -102,7 +100,7 @@ public class UserListController implements HttpController {
         htmlBuilder.append("              </thead>\n");
         htmlBuilder.append("              <tbody>\n");
         int i = 1;
-        for (User user : Database.findAll()) {
+        for (User user : UserRepository.findAll()) {
             htmlBuilder.append("                <tr>\n");
             htmlBuilder.append("                    <th scope=\"row\">" + i++ + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
             htmlBuilder.append("                </tr>\n");

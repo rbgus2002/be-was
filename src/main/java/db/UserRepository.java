@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Database {
+public class UserRepository {
 
     private static final Map<String, User> users = new ConcurrentHashMap<>();
 
@@ -22,5 +22,5 @@ public class Database {
         return users.values();
     }
 
-    private Database() {}
+    private UserRepository() {}
 }

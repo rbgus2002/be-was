@@ -1,7 +1,7 @@
 package controller;
 
 import annotation.RequestMapping;
-import db.Database;
+import db.UserRepository;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpSession;
@@ -28,7 +28,7 @@ public class UserLoginController implements HttpController {
     private String doPost(HttpRequest request, HttpResponse response) {
         String userId = request.getParam("userId");
         String password = request.getParam("password");
-        User user = Database.findUserById(userId);
+        User user = UserRepository.findUserById(userId);
         if (user != null && user.getPassword().equals(password)) {
             HttpSession session = HttpSession.create();
             session.setAttribute("user", user);

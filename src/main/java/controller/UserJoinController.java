@@ -1,7 +1,7 @@
 package controller;
 
 import annotation.RequestMapping;
-import db.Database;
+import db.UserRepository;
 import http.HttpRequest;
 import http.HttpResponse;
 import model.User;
@@ -15,8 +15,8 @@ public class UserJoinController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
-        Database.addUser(new User(request.getParams()));
-        for (User user : Database.findAll()) {
+        UserRepository.addUser(new User(request.getParams()));
+        for (User user : UserRepository.findAll()) {
             logger.debug("{}", user);
         }
         return "redirect:/index.html";
