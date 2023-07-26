@@ -3,6 +3,7 @@ package controller;
 import annotation.Controller;
 import annotation.RequestMapping;
 import db.Database;
+import model.Model;
 import model.User;
 import utils.Parser;
 import utils.StringUtils;
@@ -44,7 +45,9 @@ public class UserController {
         }
 
         User user = Database.findUserById(paramMap.get("userId"));
-        return new ModelAndView("redirect:/index.html", user);
+        Model model = new Model();
+        model.addAttribute("user", user);
+        return new ModelAndView("redirect:/index.html", model);
     }
 
     private boolean validateUser(String userId, String password) {
