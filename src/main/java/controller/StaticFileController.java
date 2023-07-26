@@ -1,5 +1,6 @@
 package controller;
 
+import service.FileService;
 import webserver.model.Request;
 import webserver.model.Response;
 
@@ -12,7 +13,7 @@ import static http.HttpParser.parseMime;
 import static http.HttpUtil.*;
 import static service.FileService.readStaticFile;
 
-public class StaticFileController {
+public class StaticFileController extends FileController {
     public static Response genereateResponse(Request request) throws IOException {
         String targetUri = request.getTargetUri();
 
@@ -22,24 +23,17 @@ public class StaticFileController {
         }
 
         String targetPath;
-        byte[] body = null;
-
         targetPath = STATIC_FILEPATH + targetUri;
         if(new File(targetPath).exists()) {
-            body = readStaticFile(targetPath);
+            byte[] body = readStaticFile(targetPath);
+            return generate200Response(mime, body);
         }
         targetPath = TEMPLATE_FILEPATH + targetUri;
         if(new File(targetPath).exists()) {
-            body = readStaticFile(targetPath);
+            String httpDocument = generateHttpDocument(request);
+            return generate200Response(mime, httpDocument.getBytes());
         }
-        if(body == null) {
-            return null;
-        }
+        return null;
 
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-        return new Response(STATUS.OK, headerMap, body);
     }
 }

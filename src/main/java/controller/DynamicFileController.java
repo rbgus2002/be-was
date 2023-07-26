@@ -24,13 +24,7 @@ import static webserver.model.Request.Method;
 import static service.FileService.readStaticFile;
 import static service.SessionService.getUserIdBySid;
 
-public class DynamicFileController {
-    private static final String NAVBAR_RIGHT = "<li>.*?/user/list\\.html.*?</li>";
-    private static final String USERNAME_FORMAT = "<li>%s</li>";
-    private static final String BUTTON_LOGOUT = "<li>.*?로그아웃.*?</li>";
-    private static final String BUTTON_LOGIN = "<li>.*?로그인.*?</li>";
-    private static final String BUTTON_SIGNUP = "<li>.*?회원가입.*?</li>";
-    private static final String BUTTON_MODIFY_USERDATA = "<li>.*?개인정보수정.*?</li>";
+public class DynamicFileController extends FileController{
     private static final String USER_LIST_TBODY = "<tbody>";
     private static final String USER_LIST_ROW_FORM = "<tr>\n<th scope=\"row\">%d</th> <td>%s</td> <td>%s</td> <td>%s</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n</tr>";
     private static final String POST_LIST_UL = "<ul class=\"list\">";
@@ -80,13 +74,7 @@ public class DynamicFileController {
             httpDocument = appendElement(httpDocument, USER_LIST_TBODY, sb.toString());
         }
 
-        byte[] body = httpDocument.getBytes();
-
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-        return new Response(STATUS.OK, headerMap, body);
+        return generate200Response(mime, httpDocument.getBytes());
     }
 
     @RequestMapping(value="/qna/form.html", method=Method.GET)
@@ -104,13 +92,7 @@ public class DynamicFileController {
 
         httpDocument = appendElement(httpDocument, QNA_AUTHOR_LABEL, String.format(QNA_AUTHOR_FORM, userId));
 
-        byte[] body = httpDocument.getBytes();
-
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-        return new Response(STATUS.OK, headerMap, body);
+        return generate200Response(mime, httpDocument.getBytes());
     }
 
     @RequestMapping(value="/qna/form.html", method=Method.POST)
@@ -142,13 +124,7 @@ public class DynamicFileController {
         httpDocument = appendElement(httpDocument, QNA_BODY, post.getContent());
         httpDocument = appendElement(httpDocument, QNA_AUTHOR, post.getUserId());
 
-        byte[] body = httpDocument.getBytes();
-
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-        return new Response(STATUS.OK, headerMap, body);
+        return generate200Response(mime, httpDocument.getBytes());
     }
 
     @RequestMapping(value=INDEX_URL, method=Method.GET)
@@ -163,54 +139,6 @@ public class DynamicFileController {
         }
         httpDocument = appendElement(httpDocument, POST_LIST_UL, sb.toString());
 
-        byte[] body = httpDocument.getBytes();
-
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
-        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
-
-        return new Response(STATUS.OK, headerMap, body);
-    }
-
-    private static String generateHttpDocument(Request request) {
-        String targetUri = request.getTargetUri().split("\\?")[0];
-        String targetPath = TEMPLATE_FILEPATH + targetUri;
-        if(new File(targetPath).exists()) {
-            String sid = request.getSid();
-            String httpDocument = new String(readStaticFile(TEMPLATE_FILEPATH + targetUri));
-
-            // Navbar
-            if(sid == null) {
-                httpDocument = removeElement(httpDocument, BUTTON_LOGOUT);
-                httpDocument = removeElement(httpDocument, BUTTON_MODIFY_USERDATA);
-            }
-            else {
-                httpDocument = appendElement(httpDocument, NAVBAR_RIGHT, String.format(USERNAME_FORMAT, getUserIdBySid(sid)));
-                httpDocument = removeElement(httpDocument, BUTTON_LOGIN);
-                httpDocument = removeElement(httpDocument, BUTTON_SIGNUP);
-            }
-
-            return httpDocument;
-        }
-
-        return null;
-    }
-
-    private static String removeElement(String source, String regex) {
-        source = source.replaceAll(regex, "");
-
-        return source;
-    }
-
-    private static String appendElement(String source, String regex, String tail) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(source);
-
-        while(matcher.find()) {
-            String foundString = matcher.group();
-            source = source.replaceAll(regex, foundString + tail);
-        }
-
-        return source;
+        return generate200Response(mime, httpDocument.getBytes());
     }
 }
