@@ -20,10 +20,6 @@ public class HttpHeaderFields {
 		return headerFields.entrySet();
 	}
 
-	public String getContentType() {
-		return getValue("Content-Type");
-	}
-
 	public String getContentLength() {
 		return getValue("Content-Length");
 	}

@@ -22,10 +22,6 @@ public class HttpRequest {
 		return url.getPath();
 	}
 
-	public String getHttpVersion() {
-		return "HTTP/1.1";
-	}
-
 	public String getUrlParamValue(String key) {
 		return url.getParameterValue(key);
 	}
