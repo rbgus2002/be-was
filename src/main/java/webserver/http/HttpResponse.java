@@ -56,10 +56,8 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse.Builder setHeader(String headerString) {
-            int splitIndex = headerString.indexOf(":");
-            this.headers.setHeader(headerString.substring(0, splitIndex).trim(),
-                    headerString.substring(splitIndex + 1).trim());
+        public HttpResponse.Builder setHeader(String header, String value) {
+            this.headers.setHeader(header, value);
             return this;
         }
 

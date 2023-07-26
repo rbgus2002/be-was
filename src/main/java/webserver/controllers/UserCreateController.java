@@ -51,7 +51,7 @@ public class UserCreateController implements Controller {
         return builder.version(request.version())
                 .status(FOUND)
                 .contentType(HTML)
-                .setHeader("Location: ".concat(path))
+                .setHeader("Location", path)
                 .build();
     }
 
