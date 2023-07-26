@@ -14,6 +14,9 @@ public class FileMapper {
 		RESOURCE_PATH_LIST.add("src/main/resources/templates");
 	}
 
+	private FileMapper() {
+	}
+
 	public static File findFile(String path) throws FileNotFoundException {
 		File file;
 		for (String resourcePath : RESOURCE_PATH_LIST) {

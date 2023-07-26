@@ -10,7 +10,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import webserver.exception.BadRequestException;
 import webserver.http.message.HttpHeaderFields;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpRequest;
@@ -21,6 +20,9 @@ public class HttpMessageParser {
 
 	private static final Logger logger = LoggerFactory.getLogger(HttpMessageParser.class);
 
+	private HttpMessageParser() {
+	}
+
 	public static HttpRequest parseHttpRequest(InputStream in) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(in));
 		String startLine = br.readLine();
@@ -30,7 +32,7 @@ public class HttpMessageParser {
 		logger.debug(startLine);
 		String[] requestLineTokens = startLine.split(" ");
 		if (requestLineTokens.length != 3) {
-			throw new BadRequestException();
+			return null;
 		}
 		HttpMethod httpMethod = HttpMethod.from(requestLineTokens[0]);
 		URL url = parseURL(requestLineTokens[1]);
@@ -82,8 +84,7 @@ public class HttpMessageParser {
 		return headerFields;
 	}
 
-	private static HttpRequestBody parseBody(BufferedReader br, Integer contentLength) throws
-		IOException {
+	private static HttpRequestBody parseBody(BufferedReader br, Integer contentLength) throws IOException {
 		char[] body = new char[contentLength];
 		br.read(body, 0, contentLength);
 		String bodyString = String.valueOf(body);

@@ -23,9 +23,8 @@ public class FrontController {
 			if (request.forStaticResource()) {
 				return staticFileResolver.resolve(request.getUrlPath());
 			}
-			HttpResponse resolve = controllerResolver.resolve(request);
-			return resolve;
-		} catch (Throwable e) {
+			return controllerResolver.resolve(request);
+		} catch (Exception e) {
 			return HttpResponse.builder()
 				.status(HttpStatus.SERVER_ERROR)
 				.build();
