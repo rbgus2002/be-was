@@ -5,8 +5,6 @@ import static webserver.http.header.HeaderConst.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import webserver.http.header.Header;
 import webserver.http.header.MimeType;
@@ -26,12 +24,17 @@ public class HttpResponse {
 		responseBody(dos, body);
 	}
 
-	public void addFile(Path path) throws IOException, IllegalArgumentException {
-		body = Files.readAllBytes(path);
-		String fileName = path.getFileName().toString();
-		String extension = fileName.substring(fileName.lastIndexOf("."));
-		header.addHeader(CONTENT_TYPE, MimeType.typeOf(extension).extension + ";charset=utf-8");
+	public void addBody(byte[] body) throws IllegalArgumentException {
+		this.body = body;
+		setContentLength();
+	}
+
+	private void setContentLength() {
 		header.addHeader(CONTENT_LENGTH, String.valueOf(body.length));
+	}
+
+	public void addMimeType(MimeType mimeType) {
+		header.addHeader(CONTENT_TYPE, mimeType.extension + ";charset=utf-8");
 	}
 
 	public void setRedirect(final String redirectPath, StatusCode statusCode) {

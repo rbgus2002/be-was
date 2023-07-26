@@ -13,6 +13,7 @@ import controllers.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.statusline.HttpMethod;
+import webserver.view.ModelView;
 
 public class DeclaredControllers {
 
@@ -34,9 +35,9 @@ public class DeclaredControllers {
 		}
 	}
 
-	public static String runController(HttpMethod type, String path, HttpRequest httpRequest,
-		HttpResponse httpResponse) throws InvocationTargetException, IllegalAccessException {
-		return (String)methodMaps.get(type).get(path).invoke(instance, httpRequest, httpResponse);
+	public static ModelView runController(HttpMethod type, String path, HttpRequest httpRequest, HttpResponse httpResponse,
+		ModelView modelView) throws InvocationTargetException, IllegalAccessException {
+		return (ModelView)methodMaps.get(type).get(path).invoke(instance, httpRequest, httpResponse, modelView);
 	}
 
 	private static void scanMethods() throws ReflectiveOperationException {

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import webserver.view.Model;
+import webserver.view.ModelView;
 
 public class DeclaredViewPolicies {
 	private static Object instance;
@@ -29,10 +29,10 @@ public class DeclaredViewPolicies {
 		}
 	}
 
-	public static String runPolicyFor(final String regex, final String line, final Model model) throws
+	public static String runPolicyFor(final String regex, final String line, final ModelView modelView) throws
 		InvocationTargetException,
 		IllegalAccessException {
-		return (String)viewPolicies.get(regex).invoke(instance, line, model);
+		return (String)viewPolicies.get(regex).invoke(instance, line, modelView);
 	}
 
 	public static List<String> getViewPoliciesRegex() {

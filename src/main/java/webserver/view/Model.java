@@ -1,7 +1,6 @@
 package webserver.view;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import com.google.common.collect.Maps;
 

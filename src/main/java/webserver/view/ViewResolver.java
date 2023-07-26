@@ -1,23 +1,22 @@
 package webserver.view;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import annotations.DeclaredViewPolicies;
-import webserver.http.HttpResponse;
 
 public class ViewResolver {
-	public static String resolve(String body, Model model) throws InvocationTargetException, IllegalAccessException {
+	public static byte[] resolve(byte[] body, ModelView modelView) throws InvocationTargetException, IllegalAccessException {
+		String stringBody = new String(body);
 		for (String regex : DeclaredViewPolicies.getViewPoliciesRegex()) {
-			body.replaceAll(regex, DeclaredViewPolicies.runPolicyFor(regex, body, model));
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(stringBody);
+			while (matcher.find()) {
+				stringBody = stringBody.replaceAll(matcher.group(), DeclaredViewPolicies.runPolicyFor(regex, matcher.group(), modelView));
+			}
 		}
-		return body;
-	}
-
-	public static String resolve(HttpResponse httpResponse, Model model) throws InvocationTargetException, IllegalAccessException {
-		for (String regex : DeclaredViewPolicies.getViewPoliciesRegex()) {
-			body.replace(regex, DeclaredViewPolicies.runPolicyFor(regex, body, model));
-		}
-		return body;
+		return stringBody.getBytes();
 	}
 
 }
