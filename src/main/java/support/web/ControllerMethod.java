@@ -1,6 +1,10 @@
 package support.web;
 
+import support.instance.DefaultInstanceManager;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 public class ControllerMethod {
 
@@ -12,12 +16,17 @@ public class ControllerMethod {
         this.method = method;
     }
 
-    public Class<?> getControllerClass() {
-        return controllerClass;
+    public Parameter[] getParameters() {
+        return method.getParameters();
     }
 
-    public Method getMethod() {
-        return method;
+    public Class<?> getReturnType() {
+        return method.getReturnType();
+    }
+
+    public Object invoke(Object... args) throws InvocationTargetException, IllegalAccessException {
+        Object instance = DefaultInstanceManager.getInstanceMagager().getInstance(controllerClass);
+        return method.invoke(instance, args);
     }
 
 }

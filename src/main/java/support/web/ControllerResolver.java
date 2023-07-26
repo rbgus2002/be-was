@@ -16,14 +16,11 @@ import webserver.request.QueryParameter;
 import webserver.response.HttpResponse;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static support.instance.DefaultInstanceManager.getInstanceMagager;
 
 public abstract class ControllerResolver {
 
@@ -59,16 +56,13 @@ public abstract class ControllerResolver {
     public static ModelAndView invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
-        Class<?> controllerClass = controllerMethodStruct.getControllerClass();
-        Method method = controllerMethodStruct.getMethod();
 
         // 헤더 처리
-        Object[] args = transformQuery(request, response, method);
+        Object[] args = transformQuery(request, response, controllerMethodStruct.getParameters());
 
         // 메소드 실행
-        Object instance = getInstanceMagager().getInstance(controllerClass);
         try {
-            return (ModelAndView) method.invoke(instance, args);
+            return (ModelAndView) controllerMethodStruct.invoke(args);
         } catch (InvocationTargetException e) {
             Throwable throwable = e.getTargetException();
             throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();
@@ -91,11 +85,9 @@ public abstract class ControllerResolver {
      *
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
-    private static Object[] transformQuery(HttpRequest request, HttpResponse response, Method method) throws BadRequestException {
+    private static Object[] transformQuery(HttpRequest request, HttpResponse response, Parameter[] parameters) throws BadRequestException {
         QueryParameter body = request.getBody();
         QueryParameter query = request.getQuery();
-        String id = query.getValue("id");
-        Parameter[] parameters = method.getParameters();
 
         Object[] args = Arrays.stream(parameters)
                 .map(parameter -> {
