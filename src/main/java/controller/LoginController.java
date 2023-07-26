@@ -2,6 +2,9 @@ package controller;
 
 import db.Database;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import webserver.RequestHandler;
 import webserver.exception.BadRequestException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
@@ -12,6 +15,8 @@ import static utils.StringUtils.getDecodedString;
 
 public class LoginController implements Controller{
     private static LoginController loginController;
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     private final int LOGIN_PARAMS_LENGTH = 2;
     private final int KEY_VALUE_PAIR_LENGTH = 2;
@@ -34,7 +39,7 @@ public class LoginController implements Controller{
 
         User existedUser = Database.findUserById(tempUser.getUserId());
 
-        if(existedUser == null || !existedUser.isCorrectPassword(tempUser.getUserId())) {
+        if(existedUser == null || !existedUser.isCorrectPassword(tempUser.getPassword())) {
             response.setStatus(HttpResponseStatus.STATUS_302);
             response.setHeader("Location", "/user/login_failed.html");
             return;
