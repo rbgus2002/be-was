@@ -12,7 +12,7 @@ public class HttpRequest {
 
     private final HttpMethod method;
     private final String path;
-    private final Query query;
+    private Query query;
     private final Header header = new Header();
     private final String version;
     private Parameter body;
@@ -45,7 +45,9 @@ public class HttpRequest {
         // url 파싱
         String[] pathAndQuery = tokens[1].split("\\?");
         this.path = pathAndQuery[0];
-        query = pathAndQuery.length > 1 ? new Query(pathAndQuery[1]) : null;
+        if (pathAndQuery.length > 1) {
+            query = new Query(pathAndQuery[1]);
+        }
 
 
         this.version = tokens[2];
@@ -73,11 +75,17 @@ public class HttpRequest {
     }
 
     public KeyValue getQuery() {
-        return query == null ? new Query() : query;
+        if (query == null) {
+            query = new Query();
+        }
+        return query;
     }
 
     public KeyValue getBody() {
-        return body == null ? new Parameter() : body;
+        if (body == null) {
+            body = new Parameter();
+        }
+        return body;
     }
 
     public void setBody(String body) {
@@ -90,12 +98,12 @@ public class HttpRequest {
         return stringBuilder.append(method)
                 .append(" ")
                 .append(path)
-                .append(query != null ? query : "")
+                .append(getQuery() != null ? getQuery() : "")
                 .append(" ")
                 .append(version)
                 .append(CRLF)
                 .append(header.buildHeader())
-                .append(body != null ? body : "")
+                .append(getBody() != null ? getBody() : "")
                 .toString();
     }
 
