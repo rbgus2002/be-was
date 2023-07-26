@@ -40,12 +40,17 @@ public class UserController {
         String httpRequestBody = httpRequest.getHttpRequestBody();
         Map<String, String> paramMap = Parser.parseQueryParameters(httpRequestBody);
 
-        if (!Database.validateUser(paramMap.get("userId"), paramMap.get("password"))) {
+        if (!validateUser(paramMap.get("userId"), paramMap.get("password"))) {
             return new ModelAndView("redirect:/user/login_failed.html", null);
         }
 
         User user = Database.findUserById(paramMap.get("userId"));
         return new ModelAndView("redirect:/index.html", user);
+    }
+
+    private boolean validateUser(String userId, String password) {
+        User user = Database.findUserById(userId);
+        return user.getPassword().equals(password);
     }
 
 }
