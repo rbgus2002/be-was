@@ -13,10 +13,11 @@ public class LoginPageHandler implements Handler{
     TemplateRenderer templateRenderer = TemplateRenderer.getInstance();
 
     @Override
-    public HttpResponse handle(HttpRequest request, Session session, Model model) {
+    public HttpResponse handle(HttpRequest request, Session session) {
         String path = request.getURL().getPath();
         byte[] file = FileUtils.readFileFromTemplate(path);
 
+        Model model = new Model();
         model.setAttribute("loginStatus", "false");
         if (session.isValid()) {
             return HttpResponse.redirect("/index.html");

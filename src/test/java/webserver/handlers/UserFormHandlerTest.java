@@ -20,7 +20,7 @@ class UserFormHandlerTest {
         Model model = new Model();
 
         Handler handler = new UserFormHandler();
-        HttpResponse response = handler.handle(requestUserForm, session, model);
+        HttpResponse response = handler.handle(requestUserForm, session);
 
         assertThat(response.getBody())
                 .isEqualTo(FileUtils.readFileFromTemplate("/user/form.html"));

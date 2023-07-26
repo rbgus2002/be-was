@@ -32,7 +32,7 @@ public class LoginHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handle(HttpRequest request, Session session, Model model) {
+    public HttpResponse handle(HttpRequest request, Session session) {
         try {
             Map<String, String> body = getBody(request);
             String loginUserId = body.get("userId");
@@ -46,11 +46,12 @@ public class LoginHandler implements Handler {
             return HttpResponse.badRequest();
         } catch (UserServiceException e) {
             logger.warn("login Fail : {}", e.getMessage());
-            return responseFail(model);
+            return responseFail();
         }
     }
 
-    private HttpResponse responseFail(Model model) {
+    private HttpResponse responseFail() {
+        Model model = new Model();
         byte[] file = FileUtils.readFileFromTemplate(LOGIN_FAILED);
         model.setAttribute("loginStatus", "false");
         String html = templateRender.render(new String(file), model);

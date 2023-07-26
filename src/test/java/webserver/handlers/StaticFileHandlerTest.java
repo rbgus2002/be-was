@@ -50,7 +50,7 @@ class StaticFileHandlerTest {
         Session session = new Session("1");
         Model model = new Model();
 
-        HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session, model);
+        HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session);
         HttpHeaders headers = httpResponse.getHttpHeaders();
 
         assertThat(headers.getSingleValue(CONTENT_TYPE)).isEqualTo(contentType);
@@ -61,7 +61,7 @@ class StaticFileHandlerTest {
         Session session = new Session("1");
         Model model = new Model();
 
-        HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session, model);
+        HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session);
         HttpHeaders headers = httpResponse.getHttpHeaders();
 
         assertThat(headers.getSingleValue(CONTENT_TYPE)).isEqualTo(contentType);

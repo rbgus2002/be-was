@@ -1,13 +1,11 @@
 package webserver.handlers;
 
 import model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webserver.http.message.Mime;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
-import webserver.session.Session;
 import webserver.model.Model;
+import webserver.session.Session;
 import webserver.template.TemplateRenderer;
 import webserver.utils.ExtensionSeparator;
 import webserver.utils.FileUtils;
@@ -16,9 +14,10 @@ public class IndexHandler implements Handler {
     private final TemplateRenderer templateRenderer = TemplateRenderer.getInstance();
 
     @Override
-    public HttpResponse handle(HttpRequest request, Session session, Model model) {
+    public HttpResponse handle(HttpRequest request, Session session) {
         String path = request.getURL().getPath();
 
+        Model model = new Model();
         model.setAttribute("loginStatus", "false");
         if (session.isValid()) {
             model.setAttribute("loginStatus", "true");

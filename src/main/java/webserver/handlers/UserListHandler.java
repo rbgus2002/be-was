@@ -25,13 +25,15 @@ public class UserListHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handle(HttpRequest request, Session session, Model model) {
+    public HttpResponse handle(HttpRequest request, Session session) {
         try {
             if (!session.isValid()) {
                 return HttpResponse.redirect("/user/login.html");
             }
             Collection<User> users = userService.findAll();
             List<Map<String, String>> userInfos = getUserInfos(users);
+
+            Model model = new Model();
             model.setAttribute("userName", session.getUser().getName());
             model.setAttribute("user", userInfos);
             model.setAttribute("loginStatus", "true");
