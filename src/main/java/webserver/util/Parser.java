@@ -1,8 +1,5 @@
 package webserver.util;
 
-
-import webserver.http.request.HttpMethod;
-
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -13,17 +10,18 @@ public class Parser {
     private static final String QUERY_PARSER = "&";
     private static final String KEY_VALUE_PARSER = "=";
 
-    private static String parseQuery(String url) {
-        String[] urlQuery = splitUrl(url);
-        if (urlQuery.length == 1) {
+    public static Map<String,String> parseQuery(String url) {
+        if(!url.contains("?")) {
             return null;
         }
-        return urlQuery[1];
+        String[] urlQuery = splitUrl(url);
+        String entireQuery = urlQuery[1];
+        return parseData(entireQuery);
     }
 
-    public static Map<String, String> parseFormData(String formData) {
-        String[] queries = formData.split(QUERY_PARSER);
-        HashMap<String, String> parseQueries = new HashMap<>();
+    private static Map<String, String> parseData(String entireQuery) {
+        String[] queries = entireQuery.split(QUERY_PARSER);
+        Map<String, String> parseQueries = new HashMap<>();
         for (String query : queries) {
             query = URLDecoder.decode(query, StandardCharsets.UTF_8);
             String[] parse = query.split(KEY_VALUE_PARSER);
@@ -36,29 +34,23 @@ public class Parser {
         return url.split(START_QUERY);
     }
 
-    private static String parseUrl(String url) {
+    public static String parseUrl(String url) {
         String[] urlQuery = splitUrl(url);
         return urlQuery[0];
     }
 
     public static String getUrlExtension(String url) {
+        if(url == null) {
+            return null;
+        }
         return url.contains(".") ? url.substring(url.lastIndexOf(".")) : null;
     }
 
-    public static String[] parseUrlData(String url, HttpMethod method, String requestBody) {
-        String tmpUrl;
-        String tmpFormData = null;
-        if (url.contains("?")) {
-            if (method.equals(HttpMethod.GET)) {
-                tmpFormData = parseQuery(url);
-            }
-            tmpUrl = parseUrl(url);
-        } else {
-            tmpUrl = url;
+    public static Map<String,String> parseBody(String requestBody) {
+        if(requestBody == null) {
+            return null;
         }
-        if (method.equals(HttpMethod.POST)) {
-            tmpFormData = requestBody;
-        }
-        return new String[]{tmpFormData, tmpUrl};
+        return parseData(requestBody);
+
     }
 }

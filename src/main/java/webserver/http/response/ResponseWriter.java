@@ -2,20 +2,22 @@ package webserver.http.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.http.response.body.ResponseBody;
+import webserver.http.response.header.MimeType;
 import webserver.util.Parser;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ClientConnection {
+public class ResponseWriter {
 
 
     private final DataOutputStream dos;
     private final HttpResponse httpResponse;
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientConnection.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResponseWriter.class);
 
-    public ClientConnection(DataOutputStream dos, HttpResponse httpResponse) {
+    public ResponseWriter(DataOutputStream dos, HttpResponse httpResponse) {
         this.dos = dos;
         this.httpResponse = httpResponse;
     }
@@ -23,7 +25,7 @@ public class ClientConnection {
     public void sendRedirect(String redirectUrl) {
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         try {
-            writeHeader(responseMessageHeader.response302Header(redirectUrl));
+            writeHeader(responseMessageHeader.response302Header(redirectUrl, httpResponse.getCookie()));
         } catch(IOException e) {
             logger.error(e.getMessage());
         }
@@ -32,9 +34,9 @@ public class ClientConnection {
     }
 
     public void forward(String url) {
-        HttpContentType httpContentType = HttpContentType.createHttpContentType();
+        MimeType mimeType = MimeType.createHttpContentType();
         String extension = Parser.getUrlExtension(url);
-        String contentType = httpContentType.getContentType(extension);
+        String contentType = mimeType.getContentType(extension);
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         ResponseBody responseBody = httpResponse.getBody();
         try {
@@ -43,7 +45,7 @@ public class ClientConnection {
                 dos.flush();
                 return;
             }
-            writeHeader(responseMessageHeader.response404Header());
+            writeHeader(responseMessageHeader.response404Header(httpResponse.getCookie()));
             dos.flush();
         } catch(IOException e) {
             logger.error(e.getMessage());
@@ -53,7 +55,7 @@ public class ClientConnection {
     }
 
     private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, ResponseBody responseBody) throws IOException {
-        writeHeader(responseMessageHeader.response200Header(responseBody.getLength(), contentType));
+        writeHeader(responseMessageHeader.response200Header(responseBody.getLength(), contentType, httpResponse.getCookie()));
         writeBody(responseBody);
 
     }

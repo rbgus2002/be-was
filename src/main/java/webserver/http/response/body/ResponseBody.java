@@ -1,4 +1,4 @@
-package webserver.http.response;
+package webserver.http.response.body;
 
 import webserver.util.Parser;
 import webserver.util.IOUtils;

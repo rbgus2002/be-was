@@ -1,42 +1,66 @@
 package webserver.server;
 
-import controller.Controller;
-import controller.ForwardController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.response.ClientConnection;
+import webserver.http.response.ResponseWriter;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
-import webserver.http.response.ResponseBody;
+import webserver.http.response.body.ResponseBody;
 
 import java.io.DataOutputStream;
+import java.lang.reflect.InvocationTargetException;
+
+import static webserver.http.response.ResponseMessageHeader.BLANK;
 
 public class DispatcherServlet {
 
-    private final RequestMapper requestMapper = RequestMapper.createRequestMapper();
+    private final AnnotationProcessor annotationProcessor;
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    protected void service(HttpRequest req, HttpResponse resp, DataOutputStream dataOutputStream) {
-        final String REDIRECT = "redirect";
+    public static final String REDIRECT = "redirect:";
+
+    public DispatcherServlet() {
+        this.annotationProcessor = AnnotationProcessor.createAnnotationProcessor();
+    }
+
+    public void service(HttpRequest req, HttpResponse resp, DataOutputStream dataOutputStream) {
         logger.info("DispatcherServlet service");
-        Controller controller = requestMapper.getController(req.getUrl());
-        String toUrl;
-        if (controller == null) {
-            controller = new ForwardController();
-        }
-        toUrl = controller.execute(req, resp);
-        ResponseBody responseBody = new ResponseBody(toUrl);
-        resp.setBody(responseBody);
-        ClientConnection clientConnection = new ClientConnection(dataOutputStream, resp);
-        if (toUrl.contains(REDIRECT)) {
-            String redirectUrl = toUrl.split(":")[1];
-            if(redirectUrl.contains(req.BLANK)) {
-                redirectUrl = redirectUrl.trim();
-            }
-            clientConnection.sendRedirect(redirectUrl);
+        ControllerConfig handler = annotationProcessor.getHandler(req.getUrl());
+
+        executeController(req, resp, handler);
+
+        String toUrl = resp.getToUrl();
+        logger.debug("toUrl = {}", toUrl);
+        resp.setBody(new ResponseBody(toUrl));
+
+        ResponseWriter responseWriter = new ResponseWriter(dataOutputStream, resp);
+
+        if(toUrl.contains(REDIRECT)) {
+            sendRedirect(toUrl, responseWriter);
             return;
         }
-        clientConnection.forward(toUrl);
+        responseWriter.forward(toUrl);
+    }
+
+    private static void executeController(HttpRequest req, HttpResponse resp, ControllerConfig handler) {
+        resp.setToUrl(req.getUrl());
+
+        if (handler != null) {
+            try {
+                handler.getMethod().invoke(handler.getClazz().getConstructor().newInstance(),req, resp);
+            } catch (IllegalAccessException | InvocationTargetException
+                     | InstantiationException | NoSuchMethodException e) {
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
+    private static void sendRedirect(String toUrl, ResponseWriter responseWriter) {
+            String redirectUrl = toUrl.split(REDIRECT)[1];
+            if(redirectUrl.contains(BLANK)) {
+                redirectUrl = redirectUrl.trim();
+            }
+            responseWriter.sendRedirect(redirectUrl);
     }
 }

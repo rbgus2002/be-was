@@ -14,14 +14,15 @@ class ResponseMessageHeaderTest {
     void forward() {
         //given
         final int BODY_OF_LENGTH = 6902;
-        String expected = "HTTP/1.1 200\r\n"
+        String expected = "HTTP/1.1 200 OK\r\n"
                 + "Content-Type: text/html;charset=utf-8\r\n"
                 + "Content-Length: " + BODY_OF_LENGTH + "\r\n"
                 + "\r\n";
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
         //when
-        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, MimeType.HTML.getMimeType());
+
+        String header = responseMessageHeader.response200Header(BODY_OF_LENGTH, "text/html", null);
 
         //then
         assertEquals(expected, header);
@@ -33,7 +34,7 @@ class ResponseMessageHeaderTest {
     void redirect() {
         //given
         String url = "/";
-        String expected = "HTTP/1.1 302\r\n"
+        String expected = "HTTP/1.1 302 Found\r\n"
                 + "Location: http://localhost:8080/\r\n"
                 + "Content-Length: 0\r\n"
                 + "\r\n";
@@ -41,7 +42,7 @@ class ResponseMessageHeaderTest {
         //when
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
-        String header = responseMessageHeader.response302Header(url);
+        String header = responseMessageHeader.response302Header(url, null);
 
         //then
         assertEquals(expected, header);
@@ -51,12 +52,12 @@ class ResponseMessageHeaderTest {
     @DisplayName("404 not found 헤더가 제대로 생성되는지?")
     void not_found() {
         //given
-        String expected = "HTTP/1.1 404\r\n";
+        String expected = "HTTP/1.1 404 Not Found\r\n";
 
         //when
 
         ResponseMessageHeader responseMessageHeader = new ResponseMessageHeader();
-        String header = responseMessageHeader.response404Header();
+        String header = responseMessageHeader.response404Header(null);
 
         //then
         assertEquals(expected, header);

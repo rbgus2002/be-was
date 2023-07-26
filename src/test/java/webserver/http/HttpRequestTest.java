@@ -1,6 +1,6 @@
 package webserver.http;
 
-import controller.SignupController;
+import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.HttpMethod;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,15 +27,15 @@ class HttpRequestTest {
     @BeforeEach
     void setup() {
         httpRequest = new HttpRequest(METHOD + " " + URL +
-                "?" + SignupController.USERID_KEY + "=" + USERID_VAL + "&" +
-                SignupController.PASSWORD_KEY + "=" + PASSWORD_VAL + "&" +
-                SignupController.NAME_KEY + "=" + NAME_VAL + "&" +
-                SignupController.EMAIL_KEY + "=" + EMAIL_VAL + " " + VERSION, null);
+                "?" + User.USERID_KEY + "=" + USERID_VAL + "&" +
+                User.PASSWORD_KEY + "=" + PASSWORD_VAL + "&" +
+                User.NAME_KEY + "=" + NAME_VAL + "&" +
+                User.EMAIL_KEY + "=" + EMAIL_VAL + " " + VERSION, null);
 
     }
 
     @Test
-    @DisplayName("url이 파싱이 제대로 되는지?")
+    @DisplayName("url이 파싱되어 와야한다")
     void url_parsing() {
         //given
 
@@ -55,15 +54,15 @@ class HttpRequestTest {
     @DisplayName("Get 방식의 쿼리 파싱이 되는지?")
     void query_parsing() {
         //given
-        Map<String, String> queries = httpRequest.getFormDataMap();
+        Map<String, String> queries = httpRequest.getQueries();
 
         //when
 
         //then
-        softAssertions.assertThat(USERID_VAL).isEqualTo(queries.get(SignupController.USERID_KEY));
-        softAssertions.assertThat(PASSWORD_VAL).isEqualTo(queries.get(SignupController.PASSWORD_KEY));
-        softAssertions.assertThat(NAME_VAL).isEqualTo(queries.get(SignupController.NAME_KEY));
-        softAssertions.assertThat(EMAIL_VAL).isEqualTo(queries.get(SignupController.EMAIL_KEY));
+        softAssertions.assertThat(USERID_VAL).isEqualTo(queries.get(User.USERID_KEY));
+        softAssertions.assertThat(PASSWORD_VAL).isEqualTo(queries.get(User.PASSWORD_KEY));
+        softAssertions.assertThat(NAME_VAL).isEqualTo(queries.get(User.NAME_KEY));
+        softAssertions.assertThat(EMAIL_VAL).isEqualTo(queries.get(User.EMAIL_KEY));
 
         softAssertions.assertAll();
     }
@@ -94,7 +93,11 @@ class HttpRequestTest {
         testMap.put("test2", "2");
 
         //then
-        Assertions.assertEquals(testMap, httpRequest.getFormDataMap());
+        softAssertions = new SoftAssertions();
+        softAssertions.assertThat(testMap).isEqualTo(httpRequest.getBodies());
+        softAssertions.assertThat(httpRequest.getQueries()).isNull();
+
+        softAssertions.assertAll();
     }
 
     @Test
@@ -106,7 +109,7 @@ class HttpRequestTest {
         //when
 
         //then
-        Assertions.assertNull(httpRequest.getFormDataMap());
+        Assertions.assertNull(httpRequest.getQueries());
     }
 
 
@@ -117,9 +120,15 @@ class HttpRequestTest {
         httpRequest = new HttpRequest("POST /create/user?test11=11&test22=22 HTTP/1.1", null);
 
         //when
+        HashMap<String, String> testMap = new HashMap<>();
+        testMap.put("test11","11");
+        testMap.put("test22","22");
 
         //then
-        Assertions.assertNull(httpRequest.getFormDataMap());
+        softAssertions = new SoftAssertions();
+        softAssertions.assertThat(testMap).isEqualTo(httpRequest.getQueries());
+        softAssertions.assertThat(httpRequest.getBodies()).isNull();
+        softAssertions.assertAll();
     }
 
     @Test
@@ -133,9 +142,15 @@ class HttpRequestTest {
         HashMap<String, String> testMap = new HashMap<>();
         testMap.put("test", "1");
         testMap.put("test2", "2");
+        HashMap<String,String> testMap2 = new HashMap<>();
+        testMap2.put("test11","11");
+        testMap2.put("test2", "22");
 
         //then
-        Assertions.assertEquals(testMap, httpRequest.getFormDataMap());
+        softAssertions = new SoftAssertions();
+        softAssertions.assertThat(testMap).isEqualTo(httpRequest.getBodies());
+        softAssertions.assertThat(testMap2).isEqualTo(httpRequest.getQueries());
+        softAssertions.assertAll();
     }
 
     @Test
@@ -148,9 +163,16 @@ class HttpRequestTest {
         HashMap<String, String> testMap = new HashMap<>();
         testMap.put("test11", "11");
         testMap.put("test22", "22");
+        HashMap<String, String> testMap2 = new HashMap<>();
+        testMap2.put("test", "1");
+        testMap2.put("test2","2");
 
         //then
-        Assertions.assertEquals(testMap, httpRequest.getFormDataMap());
+        softAssertions = new SoftAssertions();
+        softAssertions.assertThat(testMap).isEqualTo(httpRequest.getQueries());
+        softAssertions.assertThat(testMap2).isEqualTo(httpRequest.getBodies());
+
+        softAssertions.assertAll();
     }
 
 }
