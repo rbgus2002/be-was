@@ -13,6 +13,7 @@ import static utils.StringUtils.*;
 public class Headers {
     private static final String CONTENT_LENGTH = "Content-Length";
     private static final String CONTENT_TYPE = "Content-Type";
+    private static final String LOCATION = "Location";
     private final Map<String, String> headers;
 
     public Headers() {
@@ -41,6 +42,12 @@ public class Headers {
 
     private static boolean isBlankLine(int separatorIndex) {
         return separatorIndex == -1;
+    }
+
+    public static Headers redirectHeaders(String path) {
+        Headers headers = Headers.from(Body.emptyBody());
+        headers.put(LOCATION, path);
+        return headers;
     }
 
     private void put(String key, String value) {

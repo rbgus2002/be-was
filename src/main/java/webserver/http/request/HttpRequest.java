@@ -1,4 +1,5 @@
 package webserver.http.request;
+
 import model.User;
 import webserver.http.Headers;
 import webserver.http.HttpMethod;
@@ -9,8 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
-import static utils.StringUtils.appendNewLine;
+import static utils.StringUtils.*;
 
 public class HttpRequest {
     private RequestLine requestLine;
@@ -49,10 +52,6 @@ public class HttpRequest {
         return this.requestLine.getVersion();
     }
 
-    public User createUserFromQuery() {
-        return requestLine.createUserFromQuery();
-    }
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -69,5 +68,15 @@ public class HttpRequest {
 
     public MIME getMime() {
         return requestLine.getMime();
+    }
+
+    public User createUserFromBody() {
+        Map<String, String> params = new HashMap<>();
+        String[] pairs = body.split(AMPERSAND);
+        for (String pair : pairs) {
+            String[] keyValue = pair.split(EQUAL);
+            params.put(keyValue[0], keyValue[1]);
+        }
+        return User.from(params);
     }
 }

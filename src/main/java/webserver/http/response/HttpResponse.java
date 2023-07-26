@@ -31,6 +31,10 @@ public class HttpResponse {
         return new HttpResponse(version, statusCode, Body.emptyBody(), Headers.from(Body.emptyBody()));
     }
 
+    public static HttpResponse redirectResponse(String version, String path) {
+        return new HttpResponse(version, HttpStatusCode.FOUND, Body.emptyBody(), Headers.redirectHeaders(path));
+    }
+
     public void response(OutputStream out) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
         dos.writeBytes(appendNewLine(version + " " + statusCode.toString()));

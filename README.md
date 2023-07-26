@@ -26,8 +26,16 @@ Java Web Application Server 2023
 - [x] Junit을 활용한 단위테스트
 
 ### step3 - 다양한 컨텐츠 타입 지원
-- [ ] html, css, js, ico, png, jpg 확장자를 지원해야 한다
-- [ ] static 폴더 내의 정적 콘텐츠에 대한 요청이 정상적으로 처리되어야 한다
+- [x] html, css, js, ico, png, jpg 확장자를 지원해야 한다
+- [x] static 폴더 내의 정적 콘텐츠에 대한 요청이 정상적으로 처리되어야 한다
+
+### step4 - POST로 회원 가입
+- [x] 회원가입 POST로 수정!
+  - [x] user/form.html 파일의 form 태그 method를 post로 수정
+  - [x] body에서 인자 읽어오기
+- [x] 가입 완료시 index.html 페이지로 리다이렉트
+  - [x] HTTP redirect 기능 구현하기
+  - [x] statusCode 302로 설정
 
 ---
 ## 학습할 내용
