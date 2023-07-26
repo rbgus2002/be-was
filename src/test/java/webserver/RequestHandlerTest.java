@@ -7,6 +7,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 import support.instance.DefaultInstanceManager;
 import support.web.HttpMethod;
+import support.web.view.ErrorView;
 import support.web.view.ViewFactory;
 
 import java.io.ByteArrayInputStream;
@@ -62,6 +63,7 @@ class RequestHandlerTest {
     static void prepare() {
         DefaultInstanceManager.getInstanceMagager().addInstance(UserController.class);
         DefaultInstanceManager.getInstanceMagager().addInstance(ViewFactory.class);
+        DefaultInstanceManager.getInstanceMagager().addInstance(ErrorView.class);
     }
 
     @BeforeEach

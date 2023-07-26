@@ -7,9 +7,10 @@ import support.exception.HttpException;
 import support.exception.NotSupportedException;
 import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
+import support.web.ModelAndView;
 import support.web.view.View;
 import support.web.view.ViewFactory;
-import support.web.view.ViewResolver;
+import support.web.ViewResolver;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -67,8 +68,8 @@ public class HttpHandler {
 
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
         try {
-            String viewName = ControllerResolver.invoke(path, request, response);
-            callViewResolver(request, response, viewName);
+            ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
+            callViewResolver(request, response, modelAndView.getViewName());
             return true;
         } catch (NotSupportedException e) {
             return false;

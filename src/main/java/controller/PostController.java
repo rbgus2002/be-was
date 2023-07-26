@@ -19,10 +19,10 @@ public class PostController {
     private final Logger logger = LoggerFactory.getLogger(PostViewController.class);
 
     @RequestMapping(method = HttpMethod.POST, value = "/write")
-    public String write(@RequestParam("title") String title,
-            @RequestParam("writer") String writer,
-            @RequestParam("contents") String contents,
-            HttpRequest request) throws FoundException {
+    public void write(@RequestParam("title") String title,
+                              @RequestParam("writer") String writer,
+                              @RequestParam("contents") String contents,
+                              HttpRequest request) throws FoundException {
         logger.debug("쓰기 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);

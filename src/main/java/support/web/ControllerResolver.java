@@ -58,11 +58,11 @@ public abstract class ControllerResolver {
     /**
      * {@link Controller}의 {@link RequestMapping}된 메소드를 실행한다.
      *
-     * @return 성공시 반환할 View 이름
+     * @return 성공시 {@link ModelAndView} 반환
      * @throws HttpException         컨트롤러 처리 대상이거나 연관된 경우 상황에 따라 Http Status를 반환하기 위한 각종 예외를 발생한다.
      * @throws NotSupportedException 컨트롤러 처리 대상이 아닐 경우 발생한다.
      */
-    public static String invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
+    public static ModelAndView invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
         Class<?> controllerClass = controllerMethodStruct.getControllerClass();
@@ -74,7 +74,7 @@ public abstract class ControllerResolver {
         // 메소드 실행
         Object instance = getInstanceMagager().getInstance(controllerClass);
         try {
-            return (String) method.invoke(instance, args);
+            return (ModelAndView) method.invoke(instance, args);
         } catch (InvocationTargetException e) {
             Throwable throwable = e.getTargetException();
             throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();

@@ -10,6 +10,7 @@ import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.exception.FoundException;
 import support.web.HttpMethod;
+import support.web.ModelAndView;
 import utils.LoginUtils;
 import webserver.Cookie;
 import webserver.request.HttpRequest;
@@ -21,7 +22,7 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping(method = HttpMethod.POST, value = "/login")
-    public String login(@RequestParam("userId") String userId,
+    public void login(@RequestParam("userId") String userId,
                         @RequestParam("password") String password,
                         HttpResponse response) throws FoundException {
         logger.debug("유저 로그인 요청");
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
-    public String create(@RequestParam("userId") String userId,
+    public void create(@RequestParam("userId") String userId,
                          @RequestParam("password") String password,
                          @RequestParam("name") String name,
                          @RequestParam("email") String email) throws FoundException {
@@ -62,12 +63,14 @@ public class UserController {
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/list")
-    public String userList(HttpRequest request) throws FoundException {
+    public ModelAndView userList(HttpRequest request) throws FoundException {
         logger.debug("리스트 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession != null) {
-            return "/user/list";
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("/user/list");
+            return modelAndView;
         }
 
         throw new FoundException("/user/login.html");

@@ -6,6 +6,7 @@ import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.exception.FoundException;
 import support.web.HttpMethod;
+import support.web.ModelAndView;
 
 @Controller(value = "/")
 public class IndexController {
@@ -13,10 +14,12 @@ public class IndexController {
     private final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
     @RequestMapping(method = HttpMethod.GET)
-    public String index() throws FoundException {
+    public ModelAndView index() throws FoundException {
         logger.debug("인덱스 요청");
 
-        return "/index";
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/index");
+        return modelAndView;
     }
 
 }

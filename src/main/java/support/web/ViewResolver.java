@@ -1,8 +1,9 @@
-package support.web.view;
+package support.web;
 
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.web.view.View;
 import utils.LoginUtils;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
