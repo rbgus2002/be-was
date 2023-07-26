@@ -13,35 +13,35 @@ import java.util.Objects;
 
 public class HandlerMapper {
     public static final String STATIC_PATH = "src/main/resources/static";
-    private final Map<RouteKey, Handler> routeTables = new HashMap<>();
+    private final Map<HandlerKey, Handler> handlerTable = new HashMap<>();
 
     {
-        routeTables.put(new RouteKey(HttpMethod.GET, "/index.html"), new IndexHandler());
-        routeTables.put(new RouteKey(HttpMethod.GET, "/user/login.html"), new LoginPageHandler());
-        routeTables.put(new RouteKey(HttpMethod.POST, "/user/login"), new LoginHandler(UserConfig.getUserService()));
-        routeTables.put(new RouteKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
-        routeTables.put(new RouteKey(HttpMethod.GET, "/user/list.html"), new UserListHandler(UserConfig.getUserService()));
-        routeTables.put(new RouteKey(HttpMethod.POST, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
+        handlerTable.put(new HandlerKey(HttpMethod.GET, "/index.html"), new IndexHandler());
+        handlerTable.put(new HandlerKey(HttpMethod.GET, "/user/login.html"), new LoginPageHandler());
+        handlerTable.put(new HandlerKey(HttpMethod.POST, "/user/login"), new LoginHandler(UserConfig.getUserService()));
+        handlerTable.put(new HandlerKey(HttpMethod.GET, "/user/form.html"), new UserFormHandler());
+        handlerTable.put(new HandlerKey(HttpMethod.GET, "/user/list.html"), new UserListHandler(UserConfig.getUserService()));
+        handlerTable.put(new HandlerKey(HttpMethod.POST, "/user/create"), new UserJoinHandler(UserConfig.getUserService()));
         addStaticFilesRecords();
     }
 
     private void addStaticFilesRecords() {
         StaticFileHandler staticFileHandler = new StaticFileHandler();
         List<String> filePaths = FileNameScanner.scan(STATIC_PATH);
-        filePaths.forEach(fileName -> routeTables.put(new RouteKey(HttpMethod.GET, fileName), staticFileHandler));
+        filePaths.forEach(fileName -> handlerTable.put(new HandlerKey(HttpMethod.GET, fileName), staticFileHandler));
     }
 
     public Handler findHandler(HttpRequest httpRequest) {
-        return routeTables.getOrDefault(
-                new RouteKey(httpRequest.getMethod(), httpRequest.getURL().getPath()),
+        return handlerTable.getOrDefault(
+                new HandlerKey(httpRequest.getMethod(), httpRequest.getURL().getPath()),
                 new NotFoundHandler());
     }
 
-    public static class RouteKey {
+    private static class HandlerKey {
         private final HttpMethod method;
         private final String path;
 
-        public RouteKey(HttpMethod method, String path) {
+        public HandlerKey(HttpMethod method, String path) {
             this.method = method;
             this.path = path;
         }
@@ -50,8 +50,8 @@ public class HandlerMapper {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            RouteKey routeKey = (RouteKey) o;
-            return method == routeKey.method && Objects.equals(path, routeKey.path);
+            HandlerKey that = (HandlerKey) o;
+            return method == that.method && Objects.equals(path, that.path);
         }
 
         @Override
