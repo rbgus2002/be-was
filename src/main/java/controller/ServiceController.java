@@ -4,15 +4,15 @@ import model.Session;
 import router.RequestMapping;
 import service.SessionService;
 import service.UserService;
-import webserver.model.Request;
-import webserver.model.Request.Method;
-import webserver.model.Response;
+import webserver.http.model.Request;
+import webserver.http.model.Request.Method;
+import webserver.http.model.Response;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static http.HttpUtil.*;
-import static http.HttpParser.*;
+import static webserver.http.HttpUtil.*;
+import static webserver.http.HttpParser.*;
 import static model.User.PASSWORD;
 import static model.User.USERID;
 

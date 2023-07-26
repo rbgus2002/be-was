@@ -1,6 +1,6 @@
 package router;
 
-import webserver.model.Request.Method;
+import webserver.http.model.Request.Method;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,8 +1,7 @@
 package controller;
 
-import http.HttpUtil;
-import webserver.model.Request;
-import webserver.model.Response;
+import webserver.http.model.Request;
+import webserver.http.model.Response;
 
 import java.io.File;
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static http.HttpUtil.*;
+import static webserver.http.HttpUtil.*;
 import static service.FileService.readStaticFile;
 import static service.SessionService.getUserIdBySid;
 

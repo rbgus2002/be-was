@@ -1,28 +1,20 @@
 package controller;
 
-import http.HttpUtil;
 import model.Post;
 import model.User;
 import router.RequestMapping;
 import service.PostService;
 import service.SessionService;
 import service.UserService;
-import webserver.model.Request;
-import webserver.model.Response;
+import webserver.http.model.Request;
+import webserver.http.model.Response;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static http.HttpUtil.*;
-import static http.HttpParser.*;
-import static webserver.model.Request.Method;
-import static service.FileService.readStaticFile;
-import static service.SessionService.getUserIdBySid;
+import static webserver.http.HttpUtil.*;
+import static webserver.http.HttpParser.*;
+import static webserver.http.model.Request.Method;
 
 public class DynamicFileController extends FileController{
     private static final String USER_LIST_TBODY = "<tbody>";

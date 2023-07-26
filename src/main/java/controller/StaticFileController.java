@@ -1,16 +1,13 @@
 package controller;
 
-import service.FileService;
-import webserver.model.Request;
-import webserver.model.Response;
+import webserver.http.model.Request;
+import webserver.http.model.Response;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import static http.HttpParser.parseMime;
-import static http.HttpUtil.*;
+import static webserver.http.HttpParser.parseMime;
+import static webserver.http.HttpUtil.*;
 import static service.FileService.readStaticFile;
 
 public class StaticFileController extends FileController {

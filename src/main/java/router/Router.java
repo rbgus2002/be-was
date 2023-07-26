@@ -6,15 +6,12 @@ import controller.StaticFileController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
-import webserver.model.Request;
-import webserver.model.Response;
+import webserver.http.model.Request;
+import webserver.http.model.Response;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Request 객체를 받아 컨트롤러에 정의된 메서드에게 처리를 맡기는 클래스
