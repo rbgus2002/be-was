@@ -1,4 +1,4 @@
-package support;
+package support.web;
 
 import java.lang.reflect.Method;
 

@@ -1,6 +1,6 @@
 package webserver.request;
 
-import support.HttpMethod;
+import support.web.HttpMethod;
 import webserver.Header;
 
 import java.util.ArrayList;
@@ -73,8 +73,11 @@ public class HttpRequest {
         return path;
     }
 
-    public Optional<KeyValue> getRequestOrParameter() {
-        return body != null ? Optional.of(body) : Optional.ofNullable(query);
+    public Optional<KeyValue> getPathQueryOrParameter() {
+        if (body == null && query == null) {
+            return Optional.of(new Parameter());
+        }
+        return body != null ? Optional.of(body) : Optional.of(query);
     }
 
     public void setBody(String body) {

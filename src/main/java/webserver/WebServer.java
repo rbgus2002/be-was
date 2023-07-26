@@ -2,7 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.InstanceInitializer;
+import support.instance.InstanceInitializer;
 
 import java.net.ServerSocket;
 import java.net.Socket;

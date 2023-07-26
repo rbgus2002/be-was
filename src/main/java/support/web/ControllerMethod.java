@@ -1,4 +1,4 @@
-package support;
+package support.web;
 
 import java.util.Map;
 

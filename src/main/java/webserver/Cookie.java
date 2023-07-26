@@ -9,7 +9,7 @@ public class Cookie {
     private final String value;
     private final Map<String, String> options = new HashMap<>();
 
-    public Cookie(String key, String value, String path) {
+    private Cookie(String key, String value, String path) {
         this.key = key;
         this.value = value;
         if (path != null) {

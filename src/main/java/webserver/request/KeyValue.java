@@ -18,12 +18,12 @@ public abstract class KeyValue {
         Arrays.stream(queries)
                 .forEach(queryComponent -> {
                     String[] keyAndValue = queryComponent.split("=");
-                    appendQuery(keyAndValue[0], keyAndValue[1]);
+                    append(keyAndValue[0], keyAndValue[1]);
                 });
         this.isQuery = isQuery;
     }
 
-    private void appendQuery(String key, String value) {
+    private void append(String key, String value) {
         this.query.put(key, value);
     }
 
@@ -42,9 +42,9 @@ public abstract class KeyValue {
             stringBuilder.append('?');
         }
         query.forEach(
-                (s, s2) -> stringBuilder.append(s)
+                (key, value) -> stringBuilder.append(key)
                         .append("=")
-                        .append(s2)
+                        .append(value)
                         .append("&")
         );
         return stringBuilder.toString().replaceAll(".$", "");

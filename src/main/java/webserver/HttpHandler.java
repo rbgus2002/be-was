@@ -2,20 +2,21 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.ControllerResolver;
-import support.annotation.ResponseStatus;
-import support.exception.*;
+import support.exception.FoundException;
+import support.exception.HttpException;
+import support.exception.NotSupportedException;
+import support.instance.DefaultInstanceManager;
+import support.web.ControllerResolver;
+import support.web.view.View;
+import support.web.view.ViewFactory;
+import support.web.view.ViewResolver;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
-import webserver.response.MIME;
 import webserver.response.strategy.NotFound;
-import webserver.response.strategy.OK;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-
-import static webserver.WebPageReader.readByPath;
 
 public class HttpHandler {
 
@@ -29,7 +30,23 @@ public class HttpHandler {
             return;
         }
 
-        searchAndReturnPage(response, path);
+        callViewResolver(request, response, path);
+    }
+
+    private static void callViewResolver(HttpRequest request, HttpResponse response, String path) {
+        try {
+            ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
+            View view = viewFactory.getViewByName(path);
+            if (view != null) {
+                ViewResolver.buildView(request, response, view);
+            } else {
+                ViewResolver.buildView(request, response, path);
+            }
+            response.setStatus(HttpStatus.OK);
+        } catch (IOException e) {
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.buildHeader(new NotFound());
+        }
     }
 
     public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
@@ -45,9 +62,8 @@ public class HttpHandler {
 
     private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
         try {
-            ResponseStatus responseStatus = ControllerResolver.invoke(path, request, response);
-            response.setStatus(responseStatus.status());
-            response.appendHeader("Location", responseStatus.redirectionUrl());
+            String viewName = ControllerResolver.invoke(path, request, response);
+            callViewResolver(request, response, viewName);
             return true;
         } catch (NotSupportedException e) {
             return false;
@@ -58,19 +74,6 @@ public class HttpHandler {
         } catch (HttpException e) {
             response.setStatus(e.getHttpStatus());
             return true;
-        }
-    }
-
-    private void searchAndReturnPage(HttpResponse response, String path) {
-        try {
-            byte[] body = readByPath(path);
-            response.setStatus(HttpStatus.OK);
-            String extension = path.substring(path.lastIndexOf("."));
-            response.buildHeader(new OK(MIME.getContentType(extension), body.length));
-            response.setBody(body);
-        } catch (IOException exception) {
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.buildHeader(new NotFound());
         }
     }
 

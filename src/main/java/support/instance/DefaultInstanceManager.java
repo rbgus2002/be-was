@@ -1,4 +1,4 @@
-package support;
+package support.instance;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,11 @@ public class DefaultInstanceManager implements InstanceManager {
     }
 
     @Override
-    public Object getInstance(Class<?> clazz) {
-        return instances.get(clazz);
+    public <T> T getInstance(Class<T> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+        return clazz.cast(instances.get(clazz));
     }
 
 }
