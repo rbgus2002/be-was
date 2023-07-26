@@ -17,7 +17,7 @@ class HttpResponseTest {
         String version = "HTTP/1.1";
         HttpStatusCode statusCode = HttpStatusCode.OK;
         byte[] content = "바디입니다.".getBytes();
-        Body body = Body.from(content, MIME.TXT);
+        ResponseBody body = ResponseBody.from(content, MIME.TXT);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(appendNewLine(version + " " + statusCode.toString()));
         stringBuilder.append(appendNewLine("Content-Type: " + MIME.TXT.getContentType()));

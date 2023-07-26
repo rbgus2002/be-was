@@ -1,6 +1,5 @@
 package webserver.http.request;
 
-import model.User;
 import webserver.http.Headers;
 import webserver.http.HttpMethod;
 import webserver.http.MIME;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 import static utils.StringUtils.*;
@@ -18,9 +16,9 @@ import static utils.StringUtils.*;
 public class HttpRequest {
     private RequestLine requestLine;
     private Headers headers;
-    private String body;
+    private RequestBody body;
 
-    private HttpRequest(RequestLine requestLine, Headers headers, String body) {
+    private HttpRequest(RequestLine requestLine, Headers headers, RequestBody body) {
         this.requestLine = requestLine;
         this.headers = headers;
         this.body = body;
@@ -31,17 +29,11 @@ public class HttpRequest {
         try {
             RequestLine requestLine = RequestLine.from(bufferedReader.readLine());
             Headers headers = Headers.from(bufferedReader);
-            String body = buildBody(bufferedReader, headers.getContentLength());
+            RequestBody body = RequestBody.from(bufferedReader, headers.getContentLength());
             return new HttpRequest(requestLine, headers, body);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String buildBody(BufferedReader bufferedReader, int contentLength) throws IOException {
-        char[] buffer = new char[contentLength];
-        bufferedReader.read(buffer, 0, contentLength);
-        return new String(buffer);
     }
 
     public String getPath() {
@@ -58,7 +50,7 @@ public class HttpRequest {
         stringBuilder.append(appendNewLine(requestLine.toString()));
         stringBuilder.append(headers.toString());
         stringBuilder.append(appendNewLine(""));
-        stringBuilder.append(body);
+        body.appendBody(stringBuilder);
         return stringBuilder.toString();
     }
 
@@ -70,13 +62,7 @@ public class HttpRequest {
         return requestLine.getMime();
     }
 
-    public User createUserFromBody() {
-        Map<String, String> params = new HashMap<>();
-        String[] pairs = body.split(AMPERSAND);
-        for (String pair : pairs) {
-            String[] keyValue = pair.split(EQUAL);
-            params.put(keyValue[0], keyValue[1]);
-        }
-        return User.from(params);
+    public Map<String, String> getParams() {
+        return this.body.getParams();
     }
 }
