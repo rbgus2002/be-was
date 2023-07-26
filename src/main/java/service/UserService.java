@@ -12,8 +12,11 @@ public class UserService {
         Database.addUser(dto.toEntity());
     }
 
-    public static boolean login(LoginRequestDto dto) {
+    public static Optional<User> login(LoginRequestDto dto) {
         Optional<User> findUser = Database.findUserById(dto.getUserId());
-        return findUser.isPresent() && findUser.get().checkPassword(dto.getPassword());
+        if(findUser.isPresent() && findUser.get().checkPassword(dto.getPassword())) {
+            return findUser;
+        }
+        return Optional.empty();
     }
 }
