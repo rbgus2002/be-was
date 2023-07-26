@@ -1,6 +1,7 @@
 package webserver.controller.article;
 
 import db.ArticleDatabase;
+import db.SessionDatabase;
 import db.UserDatabase;
 import model.Article;
 import model.User;
@@ -10,7 +11,6 @@ import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
@@ -35,6 +35,18 @@ public class ArticleSaveController implements Controller {
         }
     }
 
+    private void addNewArticle(HttpParameters articleParameters, User user) {
+        String userId = user.getUserId();
+        String userName = user.getName();
+        String title = articleParameters.get("title");
+        String contents = articleParameters.get("contents");
+        LocalDate createDate = LocalDate.now();
+
+        Article article = new Article(userId, userName, title, contents, createDate);
+
+        ArticleDatabase.save(article);
+    }
+
     private void checkLoginStatus(String sessionId) throws UnauthorizedException {
         if (!SessionDatabase.verifySessionId(sessionId)) {
             throw new UnauthorizedException();
@@ -49,17 +61,5 @@ public class ArticleSaveController implements Controller {
     private void redirectToIndexPage(HttpResponse httpResponse) {
         httpResponse.setStatus(HttpStatus.FOUND);
         httpResponse.set(HttpField.LOCATION, "/index.html");
-    }
-
-    private void addNewArticle(HttpParameters articleParameters, User user) {
-        String userId = user.getUserId();
-        String userName = user.getName();
-        String title = articleParameters.get("title");
-        String contents = articleParameters.get("contents");
-        LocalDate createDate = LocalDate.now();
-
-        Article article = new Article(userId, userName, title, contents, createDate);
-
-        ArticleDatabase.save(article);
     }
 }

@@ -32,7 +32,7 @@ public class ArticleViewController implements Controller {
 
     private void setHttpResponseWithArticleViewHtml(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         Article article = findArticle(httpRequest);
-        String articleViewHtml = getArticleViewHtml(article);
+        String articleViewHtml = createArticleViewHtml(article);
         setHttpResponseWithHtml(httpResponse, articleViewHtml);
     }
 
@@ -49,16 +49,14 @@ public class ArticleViewController implements Controller {
         return ArticleDatabase.findByArticleId(articleId);
     }
 
-    private String getArticleViewHtml(Article article) throws IOException {
+    private String createArticleViewHtml(Article article) throws IOException {
         String templateHtml = getTemplateHtml();
 
-        String articleViewHtml = templateHtml
+        return templateHtml
                 .replace("${title}", article.getTitle())
                 .replace("${username}", article.getUsername())
                 .replace("${createDate}", article.getCreateDate().toString())
                 .replace("${contents}", article.getContents());
-
-        return articleViewHtml;
     }
 
     private String getTemplateHtml() throws IOException {
