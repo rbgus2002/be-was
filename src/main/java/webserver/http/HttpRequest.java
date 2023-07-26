@@ -1,7 +1,12 @@
 package webserver.http;
 
+import com.google.common.collect.Maps;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import static webserver.utils.StringUtils.getKeyString;
+import static webserver.utils.StringUtils.getValueString;
 
 public class HttpRequest {
     private String method;
@@ -10,15 +15,17 @@ public class HttpRequest {
     private String contentType = "text/plain";
     private HttpHeaders headers;
     private Map<String, String> body;
+    private Cookie cookie;
 
     private HttpRequest(String method, HttpUri uri, String version, String contentType,
-                        HttpHeaders headers, Map<String, String> body) {
+                        HttpHeaders headers, Map<String, String> body, Cookie cookie) {
         this.method = method;
         this.uri = uri;
         this.version = version;
         this.contentType = contentType;
         this.headers = headers;
         this.body = body;
+        this.cookie = cookie;
     }
 
     public static class Builder {
@@ -28,6 +35,7 @@ public class HttpRequest {
         private String contentType = "text/plain";
         private HttpHeaders headers;
         private Map<String, String> body;
+        private Cookie cookie;
 
         public Builder() {
             this.headers = new HttpHeaders();
@@ -44,15 +52,25 @@ public class HttpRequest {
             return this;
         }
 
-        public HttpRequest.Builder setHeader(String headerString) {
-            int splitIndex = headerString.indexOf(":");
-            this.headers.setHeader(headerString.substring(0, splitIndex).trim(),
-                    headerString.substring(splitIndex + 1).trim());
+        public HttpRequest.Builder setHeader(String header, String value) {
+            this.headers.setHeader(header, value);
+            if ("Cookie".equals(header))
+                setCookie(value);
             return this;
         }
 
+        private void setCookie(String value) {
+            Map<String, String> attributes = Maps.newHashMap();
+            String[] attrStrings = value.split(";");
+            for (String attrString : attrStrings) {
+                int splitIndex = attrString.indexOf("=");
+                attributes.put(getKeyString(attrString, splitIndex), getValueString(attrString, splitIndex));
+            }
+            cookie = new Cookie(attributes);
+        }
+
         public int getContentLength() {
-            if(this.headers.getHeader("Content-Length") == null){
+            if (this.headers.getHeader("Content-Length") == null) {
                 return 0;
             }
             return Integer.parseInt(this.headers.getHeader("Content-Length"));
@@ -60,8 +78,7 @@ public class HttpRequest {
 
         public HttpRequest.Builder setBody(String bodyString) {
             int splitIndex = bodyString.indexOf("=");
-            this.body.put(bodyString.substring(0, splitIndex).trim(),
-                    bodyString.substring(splitIndex + 1).trim());
+            this.body.put(getKeyString(bodyString, splitIndex), getValueString(bodyString, splitIndex));
             return this;
         }
 
@@ -71,7 +88,7 @@ public class HttpRequest {
         }
 
         public HttpRequest build() {
-            return new HttpRequest(method, uri, version, contentType, headers, body);
+            return new HttpRequest(method, uri, version, contentType, headers, body, cookie);
         }
     }
 
@@ -106,4 +123,6 @@ public class HttpRequest {
     public Map<String, String> body() {
         return body;
     }
+
+    public Cookie cookie() { return cookie; }
 }
