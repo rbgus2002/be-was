@@ -15,6 +15,8 @@ public class StaticViewResolver implements ViewResolver {
 
     @Override
     public Optional<View> resolve(final String viewName) {
+        if(viewName.equals("redirect:")) return Optional.of(new StaticView(viewName));
+
         Path templatesFilePath = Paths.get(RESOURCES_TEMPLATES, viewName);
 
         if (!Files.exists(templatesFilePath)) {

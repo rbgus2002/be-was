@@ -24,6 +24,10 @@ public class StaticView implements View {
     public void render(final HttpRequest request, final HttpResponse response, final Map<String, Object> model, final DataOutputStream dos) throws FileRenderException {
 
         try {
+            if(filePath.equals("redirect:")) {
+                response.sendResponse(dos);
+                return;
+            }
             byte[] body = Files.readAllBytes(Paths.get(filePath));
 
             response.setHttpStatus(HttpStatus.OK);
