@@ -1,4 +1,2 @@
-package container;
-
-public class StaticController {
+package container;public class StaticController {
 }
