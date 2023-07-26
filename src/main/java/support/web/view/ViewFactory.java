@@ -13,10 +13,6 @@ public class ViewFactory {
         return defaultInstanceManager.getInstance(viewClass);
     }
 
-    public View getErrorView() {
-        return defaultInstanceManager.getInstance(ErrorView.class);
-    }
-
     // TODO: 이름 mapper 추가
     public Class<? extends View> nameConverter(String name) {
         if ("/user/list".equals(name)) {

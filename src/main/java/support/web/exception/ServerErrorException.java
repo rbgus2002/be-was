@@ -5,7 +5,11 @@ import webserver.response.HttpStatus;
 public class ServerErrorException extends HttpException {
 
     public ServerErrorException() {
-        super(HttpStatus.SERVER_ERROR);
+        this(null);
+    }
+
+    public ServerErrorException(final String message) {
+        super(message, HttpStatus.SERVER_ERROR);
     }
 
 }

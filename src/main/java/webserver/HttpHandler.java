@@ -26,8 +26,7 @@ public class HttpHandler {
 
         try {
             try {
-                ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
-                callViewResolver(request, response, modelAndView);
+                ControllerResolver.invoke(path, request, response);
             } catch (NotSupportedException e) {
                 ModelAndView modelAndView = new ModelAndView();
                 modelAndView.setViewName(path);
@@ -39,6 +38,9 @@ public class HttpHandler {
         } catch (HttpException e) {
             logger.debug(e.getMessage());
             response.setStatus(e.getHttpStatus());
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
 
     }
@@ -47,8 +49,7 @@ public class HttpHandler {
         String path = request.getRequestPath();
 
         try {
-            ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
-            callViewResolver(request, response, modelAndView);
+            ControllerResolver.invoke(path, request, response);
         } catch (NotSupportedException e) {
             buildErrorResponse(request, response);
         } catch (FoundException e) {
@@ -56,6 +57,9 @@ public class HttpHandler {
             response.appendHeader("Location", e.getRedirectionUrl());
         } catch (HttpException e) {
             response.setStatus(e.getHttpStatus());
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -68,11 +72,11 @@ public class HttpHandler {
         }
     }
 
-    private  void buildErrorResponse(HttpRequest request, HttpResponse response) {
+    private void buildErrorResponse(HttpRequest request, HttpResponse response) {
         ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         response.setStatus(HttpStatus.NOT_FOUND);
         response.buildHeader(new NotFound());
-        ViewResolver.buildView(request, response, viewFactory.getErrorView(), null);
+        ViewResolver.buildErrorView(request, response);
     }
 
 }

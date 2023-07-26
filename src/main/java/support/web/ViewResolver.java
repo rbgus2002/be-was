@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import support.web.exception.NotFoundException;
 import support.web.exception.ServerErrorException;
 import support.instance.DefaultInstanceManager;
+import support.web.view.ErrorView;
 import support.web.view.View;
 import support.web.view.ViewFactory;
 import utils.LoginUtils;
@@ -25,6 +26,7 @@ public abstract class ViewResolver {
     private static final Logger logger = LoggerFactory.getLogger(ViewResolver.class);
     private static final String START_TAG = "<%";
     private static final String END_TAG = "%>";
+    private static final ErrorView errorView = new ErrorView();
 
     public static List<String> parseHtml(HttpRequest request, List<String> body) {
         return body.stream()
@@ -120,6 +122,10 @@ public abstract class ViewResolver {
         byte[] bodyBytes = view.render(request, response, model).getBytes();
         response.setBody(bodyBytes);
         response.buildHeader(new OK(MIME.getContentType(".html"), bodyBytes.length));
+    }
+
+    public static void buildErrorView(HttpRequest request, HttpResponse response) {
+        buildView(request, response, errorView, null);
     }
 
 }

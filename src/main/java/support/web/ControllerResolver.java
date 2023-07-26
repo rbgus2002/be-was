@@ -7,15 +7,15 @@ import support.annotation.PathVariable;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.web.exception.BadRequestException;
-import support.web.exception.HttpException;
 import support.web.exception.NotSupportedException;
-import support.web.exception.ServerErrorException;
+import support.web.handler.ControllerMethodReturnValueHandlerComposite;
+import support.web.handler.ModelAndViewHandler;
+import support.web.handler.VoidHandler;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.QueryParameter;
 import webserver.response.HttpResponse;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import java.util.Map;
 public abstract class ControllerResolver {
 
     private static final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
+    private static final ControllerMethodReturnValueHandlerComposite handlers = new ControllerMethodReturnValueHandlerComposite();
     private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
     static {
@@ -44,16 +45,15 @@ public abstract class ControllerResolver {
                         );
             }
         });
+
+        handlers.addHandler(new VoidHandler());
+        handlers.addHandler(new ModelAndViewHandler());
     }
 
     /**
      * {@link Controller}의 {@link RequestMapping}된 메소드를 실행한다.
-     *
-     * @return 성공시 {@link ModelAndView} 반환
-     * @throws HttpException         컨트롤러 처리 대상이거나 연관된 경우 상황에 따라 Http Status를 반환하기 위한 각종 예외를 발생한다.
-     * @throws NotSupportedException 컨트롤러 처리 대상이 아닐 경우 발생한다.
      */
-    public static ModelAndView invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
+    public static void invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
 
@@ -61,14 +61,7 @@ public abstract class ControllerResolver {
         Object[] args = transformQuery(request, response, controllerMethodStruct.getParameters());
 
         // 메소드 실행
-        try {
-            return (ModelAndView) controllerMethodStruct.invoke(args);
-        } catch (InvocationTargetException e) {
-            Throwable throwable = e.getTargetException();
-            throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();
-        } catch (IllegalAccessException e) {
-            throw new ServerErrorException();
-        }
+        handlers.handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
     }
 
     private static ControllerMethod findControllerMethodStruct(String url, HttpRequest request) throws NotSupportedException {
