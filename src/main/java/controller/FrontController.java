@@ -1,7 +1,9 @@
 package controller;
 
+import model.Model;
 import model.User;
-import session.UserSessionManager;
+import session.Session;
+import session.SessionManager;
 import http.Cookie;
 import http.request.HttpRequest;
 import http.response.HttpResponse;
@@ -32,7 +34,9 @@ public class FrontController {
         ModelAndView modelAndView = ControllerAdapter.runHandlerMethod(method, httpRequest);
 
         if (isRedirect(modelAndView.getViewPath())) {
-            Cookie cookie = createSession(modelAndView);
+            String sessionId = createSession(modelAndView);
+            Session session = SessionManager.getSession(sessionId);
+            Cookie cookie = Cookie.create(sessionId, session.getExpires());
             HttpResponse httpResponse = HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
             httpResponse.responseRedirect(dos);
             return;
@@ -43,11 +47,13 @@ public class FrontController {
     }
 
     //TODO: ModelAndView랑 세션 종속성 끊기
-    private Cookie createSession(ModelAndView modelAndView) {
-        if (!(modelAndView.getModel() instanceof User)) {
+    private String createSession(ModelAndView modelAndView) {
+        Model model = modelAndView.getModel();
+        User user = (User) model.getValue("user");
+        if (user == null) {
             return null;
         }
-        return UserSessionManager.addUser((User) modelAndView.getModel());
+        return SessionManager.addSession(user);
     }
 
     private boolean isRedirect(String viewPath) {
