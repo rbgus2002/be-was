@@ -43,17 +43,13 @@ public class ViewPolicy {
 		List<Map<String, String>> attributes = (List<Map<String, String>>)modelView.getAttribute(attributeName);
 
 		StringBuilder result = new StringBuilder();
-		StringBuilder stringBuilder = new StringBuilder();
-		int cnt = 1;
+		int currentIter = 1;
 		for (Map<String, String> attribute : attributes) {
-			stringBuilder.setLength(0);
-			stringBuilder.append(line);
-			String appended = stringBuilder.toString();
-			appended = appended.replaceAll("\\$\\{iter\\}", String.valueOf(cnt));
-			for (String at : attribute.keySet()) {
-				appended = appended.replaceAll("\\$\\{" + at + "\\}", attribute.get(at));
+			String newLine = line.replaceAll("\\$\\{iter\\}", String.valueOf(currentIter));
+			for (String value : attribute.keySet()) {
+				newLine = newLine.replaceAll("\\$\\{" + value + "\\}", attribute.get(value));
 			}
-			result.append(appended);
+			result.append(newLine);
 		}
 
 		return result.toString();
