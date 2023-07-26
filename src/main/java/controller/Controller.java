@@ -20,8 +20,6 @@ public class Controller {
 
     @PostMapping(value = "/user/create")
     public HttpResponse createUser(Map<String, String> body){
-        logger.debug("POST user/create API START");
-
         User user = UserFactory.createUserFrom(body);
         Database.addUser(user);
         logger.debug("user 생성 : {}", Database.findUserById(body.get("userId")));
@@ -36,8 +34,11 @@ public class Controller {
             logger.error("아이디 혹은 비밀번호가 일치하지 않습니다");
             return HttpResponse.ok("/user/login_failed.html");
         }
+
         String sid = SessionManager.createSession(user.get());
-        logger.debug("session 생성 {}", sid);
-        return HttpResponse.redirect();
+        HttpResponse response = HttpResponse.redirect();
+        response.addCookie("sid", sid);
+        logger.debug("SESSION COOKIE 생성 :: {}", response);
+        return response;
     }
 }

@@ -27,10 +27,8 @@ public class RequestHandler implements Runnable {
             DispatcherServlet dispatcherServlet = DispatcherServlet.getInstance();
             dispatcherServlet.doService(request, out);
         } catch (IOException e) {
-            logger.error(Arrays.toString(e.getStackTrace()));
             logger.error("readAllBytes ERROR");
         } catch (Throwable e) {
-            logger.error(Arrays.toString(e.getStackTrace()));
             logger.error(e.getMessage());
         }
     }

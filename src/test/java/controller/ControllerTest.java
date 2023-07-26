@@ -41,7 +41,7 @@ class ControllerTest {
             HttpResponse result = controller.loginUser(body);
 
             // then
-            assertEquals(HttpResponse.redirect(), result);
+            assertEquals("/index.html", result.getFilePath());
         }
 
         @Test
@@ -54,7 +54,20 @@ class ControllerTest {
             HttpResponse result = controller.loginUser(body);
 
             // then
-            assertEquals(HttpResponse.redirect(), result);
+            assertEquals("/user/login_failed.html", result.getFilePath());
+        }
+
+        @Test
+        @DisplayName("로그인에 성공하면 세션 생성 후 쿠키에 집어넣는다")
+        void checkCookieSize(){
+            // given
+            Map<String, String> body = Map.of("userId", "rbgus2002", "password", "0000");
+
+            // when
+            HttpResponse result = controller.loginUser(body);
+
+            // then
+            assertEquals(1, result.getCookieSize());
         }
     }
 }

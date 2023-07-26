@@ -31,7 +31,7 @@ public class DispatcherServlet {
     }
 
     public void doService(HttpRequest request, OutputStream out) throws Throwable {
-        logger.debug("{}", request);
+        logger.debug("REQUEST START :: \n{}", request);
 
         doDispatch(request, out);
     }
@@ -40,6 +40,7 @@ public class DispatcherServlet {
         Method method = HandlerMapping.getMethodMapped(request);
         HttpResponse response = handle(request, method);
         processDispatchResult(response, out);
+        logger.debug("RESPONSE END :: \n{}", response);
     }
 
     private HttpResponse handle(HttpRequest request, Method method) throws Throwable {
@@ -51,7 +52,6 @@ public class DispatcherServlet {
         } else {
             response = HttpResponse.init(path);
         }
-        logger.debug("response : {}", response);
         processResources(response);
         return response;
     }
@@ -75,9 +75,7 @@ public class DispatcherServlet {
     private void processResources(HttpResponse response) throws IOException {
         try {
             ContentType type = ContentType.findBy(response.getFilePath());
-            logger.debug("type : {}", type);
             response.mapResourcePath(type);
-            logger.debug("pathFile 변경 후 response : {}", response);
             response.doResponse();
         } catch (NotSupportedContentTypeException e) {
             logger.debug("NotSupportedContentTypeException >> {}", response);
