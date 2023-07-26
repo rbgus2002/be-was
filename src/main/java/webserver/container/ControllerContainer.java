@@ -24,6 +24,9 @@ public class ControllerContainer {
     private static final Map<String, Controller> controllerMap = Maps.newConcurrentMap();
     private static final Map<EndPoint, Method> methodMap = Maps.newConcurrentMap();
 
+    private Controller staticFileController;
+    private Method staticFileHandle;
+
     public static ControllerContainer getInstance() {
         return controllerContainer;
     }
@@ -48,6 +51,12 @@ public class ControllerContainer {
         }
 
         addControllerToMap(classes);
+        setStaticController();
+    }
+
+    private void setStaticController() {
+        staticFileController = controllerMap.get("/");
+        staticFileHandle = methodMap.get(new EndPoint("/", "GET"));
     }
 
     private void addControllerToMap(List<Class> classList) {
@@ -81,17 +90,14 @@ public class ControllerContainer {
 
     public HttpResponse getController(HttpRequest request) throws InvocationTargetException, IllegalAccessException {
         EndPoint endPoint = new EndPoint(request.uri().getPath(), request.method());
-        EndPoint defaultPoint = new EndPoint("/", "GET");
-        logger.debug("end Point info: path = {}, method = {}", endPoint.path, endPoint.method);
-        logger.debug("hashCode: {}", defaultPoint.hashCode());
-//        Controller controller = CONTROLLER_MAP.getOrDefault(request.uri().getPath(), CONTROLLER_MAP.get("/"));
-        Controller controller = controllerMap.getOrDefault(endPoint.path, null);
-        Method method = methodMap.getOrDefault(endPoint, null);
+
+        Controller controller = controllerMap.getOrDefault(endPoint.path, staticFileController);
+        Method method = methodMap.getOrDefault(endPoint, staticFileHandle);
+
         if (method == null) {
-            method = methodMap.get(defaultPoint);
-            controller = controllerMap.get(defaultPoint.path);
-            return (HttpResponse) method.invoke(controller, request);
+            throw new RuntimeException("No Handler Exists");
         }
+
         return (HttpResponse) method.invoke(controller, request);
     }
 }
