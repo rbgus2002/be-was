@@ -34,13 +34,15 @@ public class HttpRequestParser {
         Map<String, String> params = parseParams(firstLine[1]);
         String header = parseHeader(br, line);
         Map<String, String> headersMap = parseHeaderToMap(header);
+        Map<String, String> cookieMap = parseCookiesToMap(headersMap.get("Cookie"));
         String body = null;
+
         if(headersMap.get("Content-Length") != null){
             logger.debug(headersMap.get("Content-Length"));
             body = parseBody(br, Integer.parseInt(headersMap.get("Content-Length")));
         }
 
-        return new HttpRequest(method, url, params, header, headersMap, body);
+        return new HttpRequest(method, url, params, header, headersMap, cookieMap, body);
 
     }
 
@@ -82,6 +84,17 @@ public class HttpRequestParser {
                 .forEach(line -> headersMap.put(line.split(": ")[0].trim(), line.split(": ")[1].trim()));
 
         return headersMap;
+    }
+
+    private static Map<String, String> parseCookiesToMap(String cookies) {
+        Map<String, String> cookieMap = new HashMap<>();
+
+        if(cookies != null) {
+            Arrays.stream(cookies.split("; "))
+                    .forEach(line -> cookieMap.put(line.split("=")[0].trim(), line.split("=")[1].trim()));
+        }
+
+        return cookieMap;
     }
 
 }

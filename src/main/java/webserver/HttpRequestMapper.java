@@ -1,6 +1,7 @@
 package webserver;
 
 import controller.Controller;
+import controller.LoginController;
 import controller.SignUpController;
 
 import java.util.Arrays;
@@ -8,12 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestMapper {
-    private Map<String, Controller> controllerMap;
+    private final Map<String, Controller> controllerMap;
     private static HttpRequestMapper requestMapper;
 
     private HttpRequestMapper(){
         controllerMap = new HashMap<>();
         controllerMap.put("POST /user/create", SignUpController.getInstance());
+        controllerMap.put("POST /user/login", LoginController.getInstance());
     }
 
     public static HttpRequestMapper getInstance(){

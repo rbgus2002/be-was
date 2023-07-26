@@ -2,54 +2,58 @@ package controller;
 
 import db.Database;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import webserver.RequestHandler;
 import webserver.exception.BadRequestException;
-import webserver.exception.ConflictException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
 import webserver.request.HttpRequest;
-
-import java.util.Arrays;
+import webserver.session.UserSessionManager;
 
 import static utils.StringUtils.getDecodedString;
 
-public class SignUpController implements Controller {
+public class LoginController implements Controller{
+    private static LoginController loginController;
 
-    private final int SIGN_UP_PARAMS_LENGTH = 4;
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+    private final int LOGIN_PARAMS_LENGTH = 2;
     private final int KEY_VALUE_PAIR_LENGTH = 2;
     private final int VALUE_INDEX = 1;
-
-    private static SignUpController signUpController;
-
-    private SignUpController() {
+    private LoginController() {
 
     }
 
-    public static SignUpController getInstance() {
-        if(signUpController == null) {
-            signUpController = new SignUpController();
+    public static LoginController getInstance() {
+        if(loginController == null) {
+            loginController = new LoginController();
         }
-        return signUpController;
+        return loginController;
     }
 
     @Override
     public void execute(HttpRequest request, HttpResponse response) {
-        User user = new User();
-        verifyRequest(request, user);
-        addUser(user);
-        manageResponse(response);
-    }
+        User tempUser = new User();
+        verifyRequest(request, tempUser);
 
-    private void addUser(User user) {
-        if(Database.findUserById(user.getUserId()) != null) {
-            throw new ConflictException("이미 존재하는 아이디입니다!");
+        User existedUser = Database.findUserById(tempUser.getUserId());
+
+        if(existedUser == null || !existedUser.isCorrectPassword(tempUser.getPassword())) {
+            response.setStatus(HttpResponseStatus.STATUS_302);
+            response.setHeader("Location", "/user/login_failed.html");
+            return;
         }
-        Database.addUser(user);
+
+        String sessionId = UserSessionManager.getInstance().putSession(existedUser, response);
+        response.setStatus(HttpResponseStatus.STATUS_302);
+        response.setHeader("Location", "/index.html");
     }
 
-    private void verifyRequest(HttpRequest request, User user){
+    private void verifyRequest(HttpRequest request, User user) {
         String[] bodys = request.getBody().split("[&]");
 
-        if(bodys.length != SIGN_UP_PARAMS_LENGTH) {
+        if(bodys.length != LOGIN_PARAMS_LENGTH) {
             throw new BadRequestException("파라미터의 개수가 잘못되었습니다!");
         }
 
@@ -57,7 +61,6 @@ public class SignUpController implements Controller {
     }
 
     private void parseBody(String[] bodys, User user) {
-        //바디 파싱을 여기서 하는게 맞을까?
         for (String body : bodys) {
             String[] param = body.split("[=]");
 
@@ -77,22 +80,9 @@ public class SignUpController implements Controller {
             case "password":
                 user.setPassword(getDecodedString(param[VALUE_INDEX]));
                 break;
-            case "name":
-                user.setName(getDecodedString(param[VALUE_INDEX]));
-                break;
-            case "email":
-                user.setEmail(getDecodedString(param[VALUE_INDEX]));
-                break;
             default:
                 throw new BadRequestException("알맞은 key값을 넣어주세요!");
         }
     }
-
-    private void manageResponse(HttpResponse response) {
-        response.setStatus(HttpResponseStatus.STATUS_302);
-        response.setHeader("Location","/index.html");
-    }
-
-
 
 }
