@@ -35,6 +35,7 @@ public class HttpHandler {
             response.setStatus(e.getHttpStatus());
             response.appendHeader("Location", e.getRedirectionUrl());
         } catch (HttpException e) {
+            logger.debug(e.getMessage());
             response.setStatus(e.getHttpStatus());
         }
 
@@ -44,8 +45,6 @@ public class HttpHandler {
         String path = request.getRequestPath();
 
         try {
-
-
             ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
             callViewResolver(request, response, modelAndView);
         } catch (NotSupportedException e) {

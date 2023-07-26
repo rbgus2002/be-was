@@ -115,7 +115,6 @@ public abstract class ControllerResolver {
         logger.debug("요청 인자 크기 : {}", args.length);
 
         if (Arrays.asList(args).contains(null)) {
-            logger.debug("BadRequest 발생");
             throw new BadRequestException();
         }
 
