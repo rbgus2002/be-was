@@ -15,7 +15,7 @@ public class Cookie {
         this.options = options;
     }
 
-    public Cookie of(final String string) {
+    public static Cookie of(final String string) {
         String[] tokens = string.split(SEMICOLON);
 
         HashMap<String, String> options = new HashMap<>();
