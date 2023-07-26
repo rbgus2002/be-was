@@ -40,7 +40,6 @@ public class Header {
         for (String s : headers.keySet()) {
             sb.append(s).append(COLON).append(SPACE).append(headers.get(s)).append(NEWLINE);
         }
-        sb.append(NEWLINE);
         return sb.toString();
     }
 }
