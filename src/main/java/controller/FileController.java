@@ -71,4 +71,10 @@ public abstract class FileController {
 
         return new Response(STATUS.OK, headerMap, body);
     }
+
+    protected static Response generate303Response(String redirectUrl) {
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_REDIRECT_LOCATION, redirectUrl);
+        return new Response(STATUS.SEE_OTHER, headerMap, null);
+    }
 }

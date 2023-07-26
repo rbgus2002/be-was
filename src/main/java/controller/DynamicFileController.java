@@ -59,9 +59,7 @@ public class DynamicFileController extends FileController{
         String sid = request.getSid();
 
         if(sid == null) {
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-            return new Response(STATUS.SEE_OTHER, headerMap, null);
+            return generate303Response(INDEX_URL);
         }
         else {
             StringBuilder sb = new StringBuilder();
@@ -85,9 +83,7 @@ public class DynamicFileController extends FileController{
         String userId = SessionService.getUserIdBySid(sid);
 
         if(sid == null) {
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login.html");
-            return new Response(STATUS.SEE_OTHER, headerMap, null);
+            return generate303Response("/user/login.html");
         }
 
         httpDocument = appendElement(httpDocument, QNA_AUTHOR_LABEL, String.format(QNA_AUTHOR_FORM, userId));
@@ -100,9 +96,7 @@ public class DynamicFileController extends FileController{
         Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
         PostService.addPost(bodyParameterMap);
 
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-        return new Response(STATUS.SEE_OTHER, headerMap, null);
+        return generate303Response(INDEX_URL);
     }
 
     @RequestMapping(value="/qna/show.html?", method=Method.GET)
@@ -114,9 +108,7 @@ public class DynamicFileController extends FileController{
         int postId = Integer.parseInt(queryParameterMap.get(Post.POST_ID));
 
         if(sid == null) {
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login.html");
-            return new Response(STATUS.SEE_OTHER, headerMap, null);
+            return generate303Response("/user/login.html");
         }
 
         Post post = PostService.getPostByPostId(postId);
