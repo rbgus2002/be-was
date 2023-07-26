@@ -3,6 +3,8 @@ package controller;
 import controller.annotaion.GetMapping;
 import controller.annotaion.PostMapping;
 import service.UserService;
+import webserver.http.HttpMime;
+import webserver.http.HttpStatus;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
 
@@ -28,7 +30,6 @@ public class Controller {
 
     @PostMapping(path = "/user/login")
     public HttpResponse signInUser(HttpRequest request) throws IOException {
-        Map<String, String> headers = request.getHeadersMap();
         Map<String, String> body = request.getBodyMap();
 
         String userId = body.get("userId");
@@ -38,7 +39,8 @@ public class Controller {
             return HttpResponse.redirect("/user/login_failed.html");
         }
 
-        userService.signIn(headers, body);
-        return null;
+        HttpResponse response = new HttpResponse(HttpStatus.FOUND, "/index.html", HttpMime.HTML);
+        userService.signIn(response, userId);
+        return response;
     }
 }
