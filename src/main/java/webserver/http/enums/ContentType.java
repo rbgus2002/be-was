@@ -9,9 +9,9 @@ public enum ContentType {
     CSS("text/css"),
     JS("text/javascript"),
     ICON("image/x-icon"),
-    TTF("application/x-font-ttf"),
-    WOFF("application/x-font-woff"),
-    WOFF2("application/font-woff2"),
+    TTF("font/ttf"),
+    WOFF("font/woff"),
+    WOFF2("font/woff2"),
     PNG("image/png"),
     JPEG("image/jpeg"),
     SVG("image/svg+xml"),
@@ -44,6 +44,6 @@ public enum ContentType {
 
     public static ContentType getContentTypeByExtension(String extension) {
         if(extension == null) return contentTypeMap.get("default");
-        return contentTypeMap.getOrDefault(extension, contentTypeMap.get("default"));
+        return contentTypeMap.getOrDefault(extension, PLAIN);
     }
 }

@@ -1,6 +1,5 @@
 package webserver.controllers;
 
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controllers.annotations.RequestMethod;
@@ -13,6 +12,7 @@ import webserver.http.enums.ContentType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import static service.SessionService.getSession;
 import static webserver.http.Cookie.isValidCookie;
@@ -34,15 +34,15 @@ public class StaticFileController implements Controller {
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
         byte[] body;
-        String fileContent;
         try {
-            fileContent = Files.readString(Paths.get(path));
             body = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             return createErrorResponse(request, NOT_FOUND);
         }
 
-        if(isValidCookie(request.cookie()))
+        String fileContent = new String(body);
+
+        if (isValidCookie(request.cookie()) && contentType == HTML)
             body = reviseContentWithUserInfo(request, fileContent);
 
         builder.version(request.version())
@@ -69,8 +69,8 @@ public class StaticFileController implements Controller {
         String fileName = request.uri().getPath();
 
         if (contentType == HTML) {
-            return System.getProperty("user.dir").concat("/src/main/resources/templates").concat(fileName);
+            return "src/main/resources/templates".concat(fileName);
         }
-        return System.getProperty("user.dir").concat("/src/main/resources/static").concat(fileName);
+        return "src/main/resources/static".concat(fileName);
     }
 }
