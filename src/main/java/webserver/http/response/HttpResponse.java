@@ -2,10 +2,12 @@ package webserver.http.response;
 
 import java.io.Serializable;
 import java.util.Map;
+import webserver.http.Cookie;
 import webserver.http.Headers;
 import webserver.http.Http;
 import webserver.http.Http.MIME;
 import webserver.http.Http.StatusCode;
+import webserver.http.Session;
 
 public class HttpResponse implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -48,6 +50,11 @@ public class HttpResponse implements Serializable {
         this.responseLine = new ResponseLine(statusCode);
         this.headers.addAll(headers);
         this.body = body;
+    }
+
+    public void setSession(final String key, final Object value) {
+        Session.DEFAULT.put(key, value);
+        this.headers.set(new Cookie(key));
     }
 
     protected ResponseLine getResponseLine() {

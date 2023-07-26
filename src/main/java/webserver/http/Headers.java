@@ -50,6 +50,10 @@ public class Headers {
         }
     }
 
+    public void set(final Cookie cookie) {
+        this.map.put(Cookie.SET_HEADER_KEY, cookie.getValue());
+    }
+
     @Override
     public String toString() {
         return this.map.entrySet().stream()
