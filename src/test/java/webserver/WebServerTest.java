@@ -6,6 +6,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.Http.Headers;
 
 @DisplayName("웹 서버 테스트")
 class WebServerTest {
@@ -63,5 +64,51 @@ class WebServerTest {
                 .then().log().all()
                 .assertThat()
                 .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
+    }
+
+    @DisplayName("회원가입된 유저로 /user/login 을 요청하면 index.html로 이동한다.")
+    @Test
+    void loginSuccess() {
+        // given
+        RestAssured.given().log().all()
+                .when()
+                .body("userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .post("/user/create")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
+
+        // when
+        RestAssured.given().log().all()
+                .when()
+                .body("userId=javajigi&password=password")
+                .post("/user/login")
+                .then().log().all()
+                .assertThat()
+                .header(Headers.LOCATION.getName(), "/index.html")
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
+    }
+
+    @DisplayName("회원가입되지 않은 유저로 /user/login 을 요청하면 /user/login_failed.html로 이동한다.")
+    @Test
+    void loginFail() {
+        // given
+        RestAssured.given().log().all()
+                .when()
+                .body("userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net")
+                .post("/user/create")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_MOVED_TEMPORARILY);
+
+        // when
+        RestAssured.given().log().all()
+                .when()
+                .body("userId=javajigi&password=password")
+                .post("/user/login")
+                .then().log().all()
+                .assertThat()
+                .header(Headers.LOCATION.getName(), "/user/login_failed.html")
+                .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 }
