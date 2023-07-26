@@ -14,7 +14,20 @@ public class Database {
     }
 
     public static User findUserById(String userId) {
-        return users.get(userId);
+        if (users.containsKey(userId)) {
+            return users.get(userId);
+        }
+        throw new IllegalArgumentException("해당 userId가 존재하지 않습니다.");
+    }
+
+    public static boolean authenticateUser(String userId, String password) {
+        User user = findUserById(userId);
+
+        return password.equals(user.getPassword());
+    }
+
+    public static boolean hasUserId(String userId) {
+        return users.containsKey(userId);
     }
 
     public static Collection<User> findAll() {

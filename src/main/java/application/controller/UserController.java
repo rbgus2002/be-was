@@ -19,14 +19,18 @@ public class UserController {
         return "redirect:/index.html";
     }
 
-    private void verifyCreateUser(String userId) {
-        if (isUserIdExists(userId)) {
-            throw new IllegalArgumentException("이미 존재하는 userId 입니다.");
+    @RequestMapping(path = "/user/login", method = HttpMethod.POST)
+    public String loginUser(@RequestParameter(value = "userId") String userId,
+                            @RequestParameter(value = "password") String password) {
+        if (Database.authenticateUser(userId, password)) {
+            return "redirect:/index.html";
         }
+        return "redirect:/user/login_failed.html";
     }
 
-    private boolean isUserIdExists(String userId) {
-        return Database.findAll().stream()
-                .anyMatch(user -> user.getUserId().equals(userId));
+    private void verifyCreateUser(String userId) {
+        if (Database.hasUserId(userId)) {
+            throw new IllegalArgumentException("이미 존재하는 userId 입니다.");
+        }
     }
 }
