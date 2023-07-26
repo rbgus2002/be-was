@@ -15,14 +15,8 @@ public class UserController {
     private final UserService userService = new UserService();
 
     //TODO: 파라미터가 잘 왔는지 확인하고 안온 값이 있으면 exception처리 해야함
-    @RequestMapping(value = "/user/create", method = HttpMethod.GET)
-    public String getUserCreate(HttpRequest request, HttpResponse response) {
-
-        UserDTO userDTO = new UserDTO(
-                request.getParameter("userId"),
-                request.getParameter("password"),
-                request.getParameter("name"),
-                request.getParameter("email"));
+    @RequestMapping(value = "/user/create", method = HttpMethod.POST)
+    public String getUserCreate(HttpRequest request, HttpResponse response, UserDTO userDTO) {
 
         userService.createUser(userDTO);
 
