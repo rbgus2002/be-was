@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.Set;
 
 import webserver.http.utils.FileMapper;
 
@@ -24,6 +26,18 @@ public class HttpResponse {
 		return new HttpResponseBuilder();
 	}
 
+	public String getStatusMessage() {
+		return status.getMessage();
+	}
+
+	public Set<Map.Entry<String, String>> getHeaderFields() {
+		return headerFields.getAllFields();
+	}
+
+	public byte[] getBody() {
+		return body;
+	}
+
 	public static class HttpResponseBuilder {
 
 		private final HttpHeaderFields headerFields;
@@ -38,7 +52,7 @@ public class HttpResponse {
 		}
 
 		public HttpResponseBuilder status(HttpStatus status) {
-			if (status == HttpStatus.OK) {
+			if (this.status == HttpStatus.OK) {
 				this.status = status;
 			}
 			return this;
@@ -57,7 +71,11 @@ public class HttpResponse {
 			}
 			try {
 				this.body = Files.readAllBytes(resourcePath);
-				this.headerFields.add("Content-Type", Files.probeContentType(resourcePath));
+				String contentType = Files.probeContentType(resourcePath);
+				if (contentType.startsWith("text")) {
+					contentType = contentType.concat(";charset=UTF-8");
+				}
+				this.headerFields.add("Content-Type", contentType);
 				this.headerFields.add("Content-Length", String.valueOf(body.length));
 				return this;
 			} catch (IOException e) {
