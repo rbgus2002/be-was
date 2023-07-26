@@ -106,6 +106,10 @@ Java Web Application Server 2023
 [X] HTTP Cookie & Session 공부
 [X] 공부한 내용 Wiki 작성
 [X] 로그인 구현
-[ ] Cookie 구현
-[ ] Session 구현
+[X] Cookie 구현
+[X] Session 구현
 [X] 리다이렉션 구현
+
+### 고민
+- Session과 Cookie 클래스를 생성하였는데 필요한 필드를 모두 가지고 있는지 확신이 서지 않는다..
+- 테스트케이스를 잘 짠 것인지 고민....
