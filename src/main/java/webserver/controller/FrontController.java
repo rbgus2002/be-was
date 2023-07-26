@@ -43,6 +43,7 @@ public class FrontController {
         httpResponse.responseDynamic(dos);
     }
 
+    //TODO: ModelAndView랑 세션 종속성 끊기
     private Cookie createSession(ModelAndView modelAndView) {
         if (!(modelAndView.getModel() instanceof User)) {
             return null;

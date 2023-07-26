@@ -29,10 +29,12 @@ public class RequestHandler implements Runnable {
              OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest httpRequest = HttpRequest.create(in);
-            FrontController frontController = new FrontController(httpRequest, dos);
-            frontController.doDispatch();
+            //TODO: dos를 FrontController로 넘기는 것보다는 응답 객체 받아서 아래에서 dos 따로 처리하기
+            //TODO: FrontController 싱글톤으로 만들기
+            new FrontController(httpRequest, dos).doDispatch();
         } catch (IOException | InvocationTargetException | IllegalAccessException e) {
             logger.error(e.getMessage());
+            //TODO: NoSuchMethodException은 Method를 만드는 곳에서 예외를 발생시킬 것
         } catch (InstantiationException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

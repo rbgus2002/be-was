@@ -29,9 +29,15 @@ public class HttpResponse {
     }
 
     public void responseDynamic(DataOutputStream dos) {
+        response200Header(dos);
+        responseBody(dos);
+    }
+
+    public void responseRedirect(DataOutputStream dos) {
         response302Header(dos);
     }
 
+    //TODO: dos 하드코딩 느낌으로 쓰는 것 보다는 좀 더 유연성있게 만들기
     private void response200Header(DataOutputStream dos) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
@@ -49,7 +55,7 @@ public class HttpResponse {
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: 0" + "\r\n");
             dos.writeBytes("Location: " + httpHeaders.getLocation() + "\r\n");
-            dos.writeBytes("Set-Cookie: " + httpHeaders.getCookie() + "\r\n");
+            dos.writeBytes("Set-Cookie: " + httpHeaders.getResponseCookie() + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -83,4 +89,12 @@ public class HttpResponse {
         );
     }
 
+    public static HttpResponse createDynamic(String viewPath) throws IOException {
+        byte[] body = Files.readAllBytes(new File(Parser.parsePath(viewPath)).toPath());
+        return new HttpResponse(
+                HttpStatusLine.createStaticStatusLine(),
+                HttpHeaders.createStaticStatusHeaders(body.length, viewPath),
+                body
+        );
+    }
 }

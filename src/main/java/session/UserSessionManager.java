@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+//TODO: 세션 매니저 유저에 종속적이지 않게 만들기
 public class UserSessionManager {
     private static final Logger log = LoggerFactory.getLogger(UserSessionManager.class);
     private static final Map<String, User> userSession = new ConcurrentHashMap<>();
@@ -16,7 +17,6 @@ public class UserSessionManager {
     public static Cookie addUser(User user) {
         String sessionId = createSessionId();
         Cookie cookie = Cookie.create(sessionId);
-        cookie.setExpires();
         userSession.put(sessionId, user);
         log.info("=====세션 생성=====");
         log.info("세션 id = {}", sessionId);

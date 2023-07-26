@@ -2,6 +2,7 @@ package webserver;
 
 public class ModelAndView {
     private final String viewPath;
+    //TODO: Model Class 만들어보기 (Model이 여러 개 들어올 수 있으므로)
     private final Object model;
 
     public ModelAndView(String viewPath, Object model) {

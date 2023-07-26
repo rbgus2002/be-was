@@ -7,9 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Database {
-    private Database() {
-
-    }
+    private Database() {}
     private static final Map<String, User> users = Maps.newConcurrentMap();
 
     public static void addUser(User user) {

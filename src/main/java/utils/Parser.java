@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: 추상화, 파싱해서 HttpRequest 객체 반환하도록 수정해보기
 public class Parser {
     public static Map<String, String> parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
