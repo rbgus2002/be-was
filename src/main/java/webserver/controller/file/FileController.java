@@ -30,7 +30,7 @@ public class FileController implements Controller {
     }
 
     private HttpStatus resolveHttpStatus(String path) {
-        if (path.equals("/404.html")) {
+        if (path.equals(FileUtils.NOT_FOUND_PAGE_PATH)) {
             return HttpStatus.NOT_FOUND;
         }
         return HttpStatus.OK;
