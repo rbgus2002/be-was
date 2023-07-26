@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.instance.DefaultInstanceManager;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
@@ -12,9 +13,10 @@ import java.nio.charset.StandardCharsets;
 
 import static utils.MathUtils.parseIntOrDefault;
 
-public class RequestHandler extends HttpHandler implements Runnable {
+public class RequestHandler implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final HttpHandler httpHandler = DefaultInstanceManager.getInstanceMagager().getInstance(HttpHandler.class);
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -30,17 +32,18 @@ public class RequestHandler extends HttpHandler implements Runnable {
 
             // 요청 해석
             HttpRequest request = buildHttpRequest(in);
-            logger.debug("Request Line & Headers: \n{}", request.toString());
+            logger.debug("Request Line & Headers: \n{}", request);
 
             // 요청 수립
             HttpResponse response = new HttpResponse();
 
+
             switch (request.getRequestMethod()) {
                 case GET:
-                    doGet(request, response);
+                    httpHandler.doGet(request, response);
                     break;
                 case POST:
-                    doPost(request, response);
+                    httpHandler.doPost(request, response);
                     break;
             }
 

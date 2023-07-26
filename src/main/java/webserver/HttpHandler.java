@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.annotation.Container;
 import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
 import support.web.ModelAndView;
@@ -15,6 +16,7 @@ import webserver.response.strategy.NotFound;
 
 import java.lang.reflect.InvocationTargetException;
 
+@Container
 public class HttpHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
@@ -57,7 +59,7 @@ public class HttpHandler {
         }
     }
 
-    private static void callViewResolver(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws ServerErrorException {
+    private void callViewResolver(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws ServerErrorException {
         try {
             ViewResolver.buildView(request, response, modelAndView);
             response.setStatus(HttpStatus.OK);
@@ -66,7 +68,7 @@ public class HttpHandler {
         }
     }
 
-    private static void buildErrorResponse(HttpRequest request, HttpResponse response) {
+    private  void buildErrorResponse(HttpRequest request, HttpResponse response) {
         ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         response.setStatus(HttpStatus.NOT_FOUND);
         response.buildHeader(new NotFound());
