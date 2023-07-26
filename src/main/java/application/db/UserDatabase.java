@@ -1,13 +1,13 @@
-package Application.db;
+package application.db;
 
 import webserver.exceptions.BadRequestException;
-import Application.model.User;
+import application.model.User;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Database {
+public class UserDatabase {
     private static Map<String, User> users = new ConcurrentHashMap<>();
 
     public static void addUser(User user) throws BadRequestException {

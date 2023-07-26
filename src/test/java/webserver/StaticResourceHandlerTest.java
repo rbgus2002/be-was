@@ -1,11 +1,11 @@
 package webserver;
 
-import webserver.exceptions.PathNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import webserver.exceptions.PathNotFoundException;
 import webserver.handlers.StaticResourceHandler;
 import webserver.http.message.*;
 
@@ -13,9 +13,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static webserver.handlers.StaticResourceHandler.handle;
-import static webserver.utils.HttpHeaderUtils.CONTENT_TYPE_HEADER;
+import static webserver.http.message.HttpHeaderUtils.CONTENT_TYPE_HEADER;
 public class StaticResourceHandlerTest {
 
     @Test
@@ -33,9 +35,9 @@ public class StaticResourceHandlerTest {
     void getStaticResourceNonExisting() {
         String resourcePath = "/non_existing.txt";
         URI uri = new URI(resourcePath, Map.of(), MIME.TXT);
-        assertThrows(PathNotFoundException.class, () -> {
-            StaticResourceHandler.getResourceForTest(uri);
-        });
+
+        assertThatThrownBy(() -> StaticResourceHandler.getResourceForTest(uri))
+                .isInstanceOf(PathNotFoundException.class);
     }
 
     @ParameterizedTest
@@ -50,8 +52,8 @@ public class StaticResourceHandlerTest {
                 .build();
 
         HttpResponse httpResponse = handle(httpRequest);
-        Map<String, String> headers = httpResponse.getHeaders();
-        assertEquals(headers.get(CONTENT_TYPE_HEADER), mime.contentType);
+        HttpMessageHeader headers = httpResponse.getHeaders();
+        assertThat(mime.contentType).isEqualTo(headers.getValue(CONTENT_TYPE_HEADER));
     }
 
     public static Stream<Arguments> provideContentTypeForTestingHandle() {
