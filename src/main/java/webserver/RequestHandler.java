@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import webserver.http.controller.FrontController;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.http.utils.HttpMessageParser;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,7 +30,12 @@ public class RequestHandler implements Runnable {
 			 DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
 			// Request 로그 출력
 			// Request & Response 객체 생성
-			HttpRequest request = HttpRequest.from(inputStream);
+			// HttpRequest request = HttpRequest.from(inputStream);
+			HttpRequest request = HttpMessageParser.parseHttpRequest(inputStream);
+			if (request == null) {
+				return;
+			}
+			HttpMessageParser.log(request);
 			HttpResponse response = HttpResponse.from(request, outputStream);
 			// 요청 처리
 			FrontController frontController = new FrontController();

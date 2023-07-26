@@ -20,11 +20,11 @@ public class HttpResponse {
 	private DataOutputStream outputStream;
 	private String httpVersion;
 	private HttpStatus status;
-	private HttpHeaderFields headerFields;
+	private ParameterMap headerFields;
 	private byte[] body;
 
 	private HttpResponse() {
-		headerFields = new HttpHeaderFields();
+		headerFields = new ParameterMap();
 	}
 
 	public static HttpResponse from(HttpRequest request, DataOutputStream outputStream) {
@@ -40,7 +40,7 @@ public class HttpResponse {
 	}
 
 	public void setHeader(String key, String value) {
-		headerFields.addHeaderField(key, value);
+		headerFields.add(key, value);
 	}
 
 	public void setBody(byte[] body, String contentType) {

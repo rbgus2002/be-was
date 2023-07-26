@@ -1,40 +1,20 @@
 package webserver.http.message;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class URL {
-	private String path;
-	private Map<String, String> queryMap;
 
-	private URL() {
-	}
+	private final String path;
+	private final ParameterMap parameterMap;
 
-	public static URL from(String urlString) {
-		URL url = new URL();
-		String[] tokens = urlString.split("\\?");
-		url.path = tokens[0];
-		if (tokens.length >= 2) {
-			url.queryMap = parseQueryString(tokens[1]);
-		}
-		return url;
-	}
-
-	private static Map<String, String> parseQueryString(String queryString) {
-		Map<String, String> queryMap = new HashMap<>();
-		String[] queryList = queryString.split("&");
-		for (String query : queryList) {
-			String[] queryTokens = query.split("=");
-			queryMap.put(queryTokens[0], queryTokens[1]);
-		}
-		return queryMap;
+	public URL(String path, ParameterMap parameterMap) {
+		this.path = path;
+		this.parameterMap = parameterMap;
 	}
 
 	public String getPath() {
 		return path;
 	}
 
-	public String getQueryValue(String key) {
-		return queryMap.get(key);
+	public String getParameterValue(String key) {
+		return parameterMap.getValue(key);
 	}
 }

@@ -59,7 +59,7 @@ public class ControllerResolver {
 		List<Object> args = Arrays.stream(parameters)
 			.filter(parameter -> parameter.isAnnotationPresent(RequestParam.class))
 			.map(parameter -> parameter.getAnnotation(RequestParam.class))
-			.map(requestParam -> request.getParam(requestParam.name()))
+			.map(requestParam -> request.getParameterValue(requestParam.name()))
 			.collect(Collectors.toList());
 
 		if (args.contains(null)) {
