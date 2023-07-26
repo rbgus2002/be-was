@@ -1,5 +1,10 @@
 package controllers;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +103,16 @@ public class Controller {
 	public ModelView listPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		modelView = reflectLogin(httpRequest, modelView);
 		if (isLoggedIn(modelView)) {
+			List<Map<String, String>> userStats = new ArrayList<>();
+			Map<String, String> userStat;
+			for (User user : Database.getUserList()) {
+				userStat = new HashMap<>();
+				userStat.put("userId", user.getUserId());
+				userStat.put("name", user.getName());
+				userStat.put("email", user.getEmail());
+				userStats.add(userStat);
+			}
+			modelView.addAttribute("userStats", userStats);
 			return modelView.setPath("user/list.html");
 		}
 		return modelView.setPath("redirect:/user/login.html");

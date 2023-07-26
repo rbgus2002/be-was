@@ -13,10 +13,10 @@ public class ViewResolver {
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(stringBody);
 			while (matcher.find()) {
-				stringBody = stringBody.replaceAll(matcher.group(), DeclaredViewPolicies.runPolicyFor(regex, matcher.group(), modelView));
+				stringBody = stringBody.replace(matcher.group(),
+					DeclaredViewPolicies.runPolicyFor(regex, matcher.group(), modelView));
 			}
 		}
 		return stringBody.getBytes();
 	}
-
 }

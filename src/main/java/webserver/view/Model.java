@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 public class Model {
 	private Map<String, Object> attributes = Maps.newHashMap();
 
-	public void addAttribute(final String key, final String value) {
+	public void addAttribute(final String key, final Object value) {
 		attributes.put(key, value);
 	}
 
