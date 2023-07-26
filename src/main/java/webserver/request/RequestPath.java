@@ -1,5 +1,8 @@
 package webserver.request;
 
+import exception.unsupportedMediaType.InvalidContentTypeException;
+import webserver.Constants.ContentType;
+
 public class RequestPath {
 
     private final int ROOT_PATH_INDEX = 1;
@@ -22,5 +25,16 @@ public class RequestPath {
 
     public String getFullPath() {
         return this.fullPath;
+    }
+
+    public ContentType getContentType() {
+        int idx = fullPath.lastIndexOf(".");
+        String fileExtension = fullPath.substring(idx + 1).toUpperCase();
+
+        try {
+            return ContentType.valueOf(fileExtension);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidContentTypeException(fileExtension);
+        }
     }
 }

@@ -2,7 +2,7 @@ package application.repositiory;
 
 import application.dto.UserDto;
 import db.Database;
-import exception.InvalidQueryParameterException;
+import exception.badRequest.MissingParameterException;
 import model.User;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public enum UserRepository {
     public UserDto findUserById(final String userId) {
         User user = database.findUserById(userId);
 
-        if (user == null) throw new InvalidQueryParameterException();
+        if (user == null) throw new MissingParameterException();
 
         return new UserDto.Builder()
                 .withUserId(user.getUserId())
