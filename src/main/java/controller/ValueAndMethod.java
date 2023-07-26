@@ -1,6 +1,6 @@
-package webserver.controller;
+package controller;
 
-import webserver.http.request.RequestMethod;
+import http.request.RequestMethod;
 
 import java.util.Objects;
 

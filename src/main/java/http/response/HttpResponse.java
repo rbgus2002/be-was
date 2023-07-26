@@ -1,10 +1,10 @@
-package webserver.http.response;
+package http.response;
 
+import http.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Parser;
-import webserver.http.Cookie;
-import webserver.http.HttpHeaders;
+import http.HttpHeaders;
 
 import java.io.DataOutputStream;
 import java.io.File;

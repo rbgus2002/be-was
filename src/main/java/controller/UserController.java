@@ -1,4 +1,4 @@
-package webserver.controller;
+package controller;
 
 import annotation.Controller;
 import annotation.RequestMapping;
@@ -6,12 +6,11 @@ import db.Database;
 import model.User;
 import utils.Parser;
 import utils.StringUtils;
-import webserver.ModelAndView;
-import webserver.http.request.HttpRequest;
+import http.request.HttpRequest;
 
 import java.util.Map;
 
-import static webserver.http.request.RequestMethod.POST;
+import static http.request.RequestMethod.POST;
 
 @Controller
 public class UserController {

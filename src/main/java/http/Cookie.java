@@ -1,4 +1,4 @@
-package webserver.http;
+package http;
 
 import java.time.LocalDateTime;
 

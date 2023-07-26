@@ -1,11 +1,10 @@
-package webserver.http;
+package http;
 
 import utils.GMTStringConverter;
 import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,7 +1,7 @@
-package webserver.http.response;
+package http.response;
 
-import static webserver.http.StatusCode.FOUND;
-import static webserver.http.StatusCode.OK;
+import static http.StatusCode.FOUND;
+import static http.StatusCode.OK;
 
 public class HttpStatusLine {
     private final String version;

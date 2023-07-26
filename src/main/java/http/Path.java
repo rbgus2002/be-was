@@ -1,4 +1,4 @@
-package webserver.http;
+package http;
 
 public enum Path {
     STATIC("src/main/resources/static"),

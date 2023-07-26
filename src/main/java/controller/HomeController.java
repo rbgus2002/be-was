@@ -1,13 +1,12 @@
-package webserver.controller;
+package controller;
 
 import annotation.Controller;
 import annotation.RequestMapping;
 import model.User;
 import session.UserSessionManager;
-import webserver.ModelAndView;
-import webserver.http.request.HttpRequest;
+import http.request.HttpRequest;
 
-import static webserver.http.request.RequestMethod.GET;
+import static http.request.RequestMethod.GET;
 
 @Controller
 public class HomeController {

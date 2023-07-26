@@ -1,11 +1,10 @@
-package webserver.controller;
+package controller;
 
 import model.User;
 import session.UserSessionManager;
-import webserver.ModelAndView;
-import webserver.http.Cookie;
-import webserver.http.request.HttpRequest;
-import webserver.http.response.HttpResponse;
+import http.Cookie;
+import http.request.HttpRequest;
+import http.response.HttpResponse;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,14 +22,14 @@ public class FrontController {
     }
 
     public void doDispatch() throws IOException, InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
-        if (!HandlerMapper.hasHandler(httpRequest)) {
+        if (!ControllerMapper.hasHandler(httpRequest)) {
             HttpResponse httpResponse = HttpResponse.createStatic(httpRequest.getRequestUri());
             httpResponse.responseStatic(dos);
             return;
         }
 
-        Method method = HandlerMapper.getHandlerMethod(httpRequest);
-        ModelAndView modelAndView = HandlerAdapter.runHandlerMethod(method, httpRequest);
+        Method method = ControllerMapper.getHandlerMethod(httpRequest);
+        ModelAndView modelAndView = ControllerAdapter.runHandlerMethod(method, httpRequest);
 
         if (isRedirect(modelAndView.getViewPath())) {
             Cookie cookie = createSession(modelAndView);

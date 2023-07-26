@@ -3,7 +3,7 @@ package session;
 import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.Cookie;
+import http.Cookie;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 

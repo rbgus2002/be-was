@@ -1,4 +1,4 @@
-package webserver;
+package controller;
 
 public class ModelAndView {
     private final String viewPath;
