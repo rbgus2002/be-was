@@ -18,6 +18,11 @@ class StringUtilsTest {
         softAssertions = new SoftAssertions();
     }
 
+    @AfterEach
+    void after() {
+        softAssertions.assertAll();
+    }
+
     @Test
     @DisplayName("\"line.separator\"를 사용해 줄바꿈할 수 있어야 한다")
     void appendNewLineTest() {
@@ -43,11 +48,6 @@ class StringUtilsTest {
 
         // Then
         softAssertions.assertThat(actualDecoded).isEqualTo("김아현");
-    }
-
-    @AfterEach
-    void after() {
-        softAssertions.assertAll();
     }
 
 }
