@@ -26,44 +26,20 @@ public class HttpRequestParser {
 
     private static HttpRequest parseRequest(BufferedReader br) throws IOException {
         String line = br.readLine();
-        String[] firstLine = line.split(" ");
 
-        String method = firstLine[0];
-        String url = firstLine[1].split("[?]")[0];
-        Map<String, String> params = parseParams(firstLine[1]);
-        String header = parseHeader(br, line);
-        Map<String, String> headersMap = parseHeaderToMap(header);
-        Map<String, String> cookieMap = parseCookiesToMap(headersMap.get("Cookie"));
+        HttpRequestLine requestLine = new HttpRequestLine(line);
+
+        HttpRequestHeader requestHeader = new HttpRequestHeader(br, line);
+
         String body = null;
 
-        if(headersMap.get("Content-Length") != null){
-            logger.debug(headersMap.get("Content-Length"));
-            body = parseBody(br, Integer.parseInt(headersMap.get("Content-Length")));
+        if(requestHeader.getHeaderValueByKey("Content-Length") != null){
+            logger.debug(requestHeader.getHeaderValueByKey("Content-Length"));
+            body = parseBody(br, Integer.parseInt(requestHeader.getHeaderValueByKey("Content-Length")));
         }
 
-        return new HttpRequest(method, url, params, header, headersMap, cookieMap, body);
+        return new HttpRequest(requestLine, requestHeader, body);
 
-    }
-
-    private static Map<String, String> parseParams(String line) {
-        String[] params = line.split("[?]");
-        Map<String, String> paramsMap = new HashMap<>();
-        if(params.length > 1){
-            Arrays.stream(params[1].split("[&]"))
-                    .filter(param -> param.split("[=]").length == 2)
-                    .forEach(param -> paramsMap.put(param.split("[=]")[0],param.split("[=]")[1]));
-        }
-
-        return paramsMap;
-    }
-
-    private static String parseHeader(BufferedReader br, String line) throws IOException {
-        StringBuilder headerBuilder = new StringBuilder();
-        while (line != null && !line.equals("")) {
-            headerBuilder.append(StringUtils.appendLineSeparator(line));
-            line = br.readLine();
-        }
-        return headerBuilder.toString();
     }
 
     private static String parseBody(BufferedReader br, int contentLength) throws IOException {
@@ -73,27 +49,6 @@ public class HttpRequestParser {
         }
 
         return bodyBuilder.toString();
-    }
-
-    private static Map<String ,String> parseHeaderToMap(String header) {
-        Map<String, String> headersMap = new HashMap<>();
-
-        Arrays.stream(header.split("\n"))
-                .filter(line -> line.split(": ").length > 1)
-                .forEach(line -> headersMap.put(line.split(": ")[0].trim(), line.split(": ")[1].trim()));
-
-        return headersMap;
-    }
-
-    private static Map<String, String> parseCookiesToMap(String cookies) {
-        Map<String, String> cookieMap = new HashMap<>();
-
-        if(cookies != null) {
-            Arrays.stream(cookies.split("; "))
-                    .forEach(line -> cookieMap.put(line.split("=")[0].trim(), line.split("=")[1].trim()));
-        }
-
-        return cookieMap;
     }
 
 }

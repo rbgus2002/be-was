@@ -7,7 +7,6 @@ import webserver.exception.ConflictException;
 import webserver.exception.NotFoundException;
 import webserver.reponse.HttpResponse;
 import webserver.reponse.HttpResponseStatus;
-import webserver.reponse.Type;
 import webserver.request.HttpRequest;
 
 import java.io.IOException;
@@ -16,15 +15,15 @@ public class FrontController {
 
     public static void service(HttpRequest request, HttpResponse response) throws IOException {
         try {
-            Controller controller = HttpRequestMapper.getInstance().getController(request.getMethod(), request.getUrl());
+            Controller controller = HttpRequestMapper.getInstance().getController(request.getMethod(), request.getPath());
 
             if(controller != null){
                 controller.execute(request, response);
                 return;
             }
 
-            if(StaticFIleUtils.isExistedStaticFileRequest(request.getUrl())) {
-                StaticFIleUtils.getStaticByte(request.getUrl(), response);
+            if(StaticFIleUtils.isExistedStaticFileRequest(request.getPath())) {
+                StaticFIleUtils.getStaticByte(request.getPath(), response);
                 response.setStatus(HttpResponseStatus.STATUS_200);
                 return;
             }

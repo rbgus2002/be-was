@@ -1,52 +1,38 @@
 package webserver.request;
 
-import java.util.Map;
-
 public class HttpRequest {
-    private final String method;
 
-    private final String url;
+    private final HttpRequestLine requestLine;
 
-    private final Map<String, String> headersMap;
-
-    private final Map<String, String> cookieMap;
-
-    private final String header;
+    private final HttpRequestHeader httpRequestHeader;
 
     private final String body;
 
-    private final Map<String, String> paramsMap;
-
     public HttpRequest(){
-        this.method = null;
-        this.url = null;
-        this.header = null;
-        this.headersMap = null;
+        this.requestLine = null;
+        //requestLine
+        this.httpRequestHeader = null;
+        //headerToString
         this.body = null;
-        this.cookieMap = null;
-        this.paramsMap = null;
+
     }
 
-    public HttpRequest(String method, String url, Map<String, String> paramsMap, String header, Map<String, String> headersMap, Map<String, String> cookieMap, String body){
-        this.method = method;
-        this.url = url;
-        this.paramsMap = paramsMap;
-        this.header = header;
-        this.headersMap = headersMap;
+    public HttpRequest(HttpRequestLine requestLine, HttpRequestHeader httpRequestHeader, String body){
+        this.requestLine = requestLine;
+        this.httpRequestHeader = httpRequestHeader;
         this.body = body;
-        this.cookieMap = cookieMap;
     }
 
     public String getMethod(){
-        return this.method;
+        return requestLine.getMethod();
     }
 
-    public String getHeader(){
-        return this.header;
+    public String getHeaderString(){
+        return httpRequestHeader.getHeaderString();
     }
 
-    public String getUrl(){
-        return this.url;
+    public String getPath(){
+        return requestLine.getPath();
     }
 
     public String getBody(){
@@ -54,13 +40,13 @@ public class HttpRequest {
     }
 
     public String getHeaderValueByKey(String key) {
-        return headersMap.get(key);
+        return httpRequestHeader.getHeaderValueByKey(key);
     }
 
     public String getParamValueByKey(String key){
-        return paramsMap.get(key);
+        return requestLine.getValueByKey(key);
     }
 
-    public String getSessionIdBySessionName(String sessionName) { return cookieMap.get(sessionName); }
+    public String getSessionIdBySessionName(String sessionName) { return httpRequestHeader.getCookieValueByKey(sessionName); }
 
 }
