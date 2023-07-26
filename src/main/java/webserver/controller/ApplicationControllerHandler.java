@@ -19,63 +19,89 @@ import static webserver.controller.ApplicationMethod.apiRouteToMethodMap;
 import static webserver.handler.HttpBodyParser.parseBodyByContentType;
 
 public class ApplicationControllerHandler {
+    private HttpRequestMessage request;
+    private HttpResponseMessage response;
+    private ApiRoute apiRoute;
+    private Class<?> targetClass;
+    private Method targetMethod;
 
-    public static Object executeMethod(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage) throws ReflectiveOperationException {
-        ApiRoute requestApiRoute = new ApiRoute(httpRequestMessage.getPath(), httpRequestMessage.getMethod());
+    private ApplicationControllerHandler(HttpRequestMessage request, HttpResponseMessage response) {
+        this.request = request;
+        this.response = response;
+        initialize();
+    }
 
-        if (!apiRouteToClassMap.containsKey(requestApiRoute)) {
+    private void initialize() {
+        apiRoute = new ApiRoute(request.getPath(), request.getMethod());
+        this.targetClass = apiRouteToClassMap.get(apiRoute);
+        this.targetMethod = apiRouteToMethodMap.get(apiRoute);
+    }
+
+    public static ApplicationControllerHandler of(HttpRequestMessage request, HttpResponseMessage response) {
+        return new ApplicationControllerHandler(request, response);
+    }
+
+    public Object executeMethod() throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException {
+        verifyExecuteMethod();
+        if (request.getMethod().equals(HttpMethod.GET)) {
+            return executeGet();
+        }
+        if (request.getMethod().equals(HttpMethod.POST)) {
+            return executePost();
+        }
+        throw new IllegalArgumentException("메서드가 존재하지 않습니다.");
+    }
+
+    private void verifyExecuteMethod() {
+        if (!apiRouteToClassMap.containsKey(apiRoute)) {
             throw new IllegalArgumentException("존재하지 않은 클래스입니다.");
         }
-
-        Class<?> targetClass = apiRouteToClassMap.get(requestApiRoute);
-        Method targetMethod = apiRouteToMethodMap.get(requestApiRoute);
-
-        if (requestApiRoute.getMethod().equals(HttpMethod.GET)) {
-            return executeGet(httpRequestMessage, targetClass, targetMethod, httpResponseMessage);
-        }
-        if (requestApiRoute.getMethod().equals(HttpMethod.POST)) {
-            return executePost(httpRequestMessage, targetClass, targetMethod, httpResponseMessage);
-        }
-        throw new IllegalArgumentException("수행할 HTTP 메서드가 존재하지 않습니다.");
     }
 
-    private static Object executeGet(HttpRequestMessage httpRequestMessage, Class<?> targetClass, Method targetMethod, HttpResponseMessage httpResponseMessage) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, httpRequestMessage.getParameters(), httpResponseMessage));
+    private Object executeGet() throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(request.getParameters()));
     }
 
-    private static Object executePost(HttpRequestMessage httpRequestMessage, Class<?> targetClass, Method targetMethod, HttpResponseMessage httpResponseMessage) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        Map<String, String> data = parseBodyByContentType(httpRequestMessage.getHeader("Content-Type"), httpRequestMessage.getBody());
-        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(targetMethod, data, httpResponseMessage));
+    private Object executePost() throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+        Map<String, String> data = parseBodyByContentType(request.getHeader("Content-Type"), request.getBody());
+        return targetMethod.invoke(targetClass.getDeclaredConstructor().newInstance(), getArguments(data));
     }
 
-    private static Object[] getArguments(Method targetMethod, Map<String, String> requestParameters, HttpResponseMessage httpResponseMessage) {
-        if (requestParameters.size() != targetMethod.getParameterCount()) {
-            throw new IllegalArgumentException("요청된 파라미터의 갯수가 다릅니다.");
-        }
+    private Object[] getArguments(Map<String, String> requestData) {
+        verifyParameterCount(targetMethod, requestData);
 
         Object[] arguments = new Object[targetMethod.getParameterCount()];
         Parameter[] targetParameters = targetMethod.getParameters();
         for (int i = 0; i < targetMethod.getParameterCount(); i++) {
             if (targetParameters[i].isAnnotationPresent(RequestParameter.class)) {
                 RequestParameter targetParameter = targetParameters[i].getAnnotation(RequestParameter.class);
-                arguments[i] = requestParameters.get(targetParameter.value());
+                arguments[i] = requestData.get(targetParameter.value());
 
-                // todo @SetCookie 어노테이션이 달려있다면 쿠키 지정.
                 if (hasCookieAnnotation(targetParameters[i])) {
-                    logger.debug("[SetCookie Annotation key = {}, value = {} ]", targetParameter.value(), requestParameters.get(targetParameter.value()));
-
-                    String clientId = requestParameters.get(targetParameter.value());
-                    String sessionId = UUID.randomUUID().toString();
-                    SessionStorage.setSession(sessionId, clientId);
-
-                    httpResponseMessage.setHeader("Set-Cookie", "sid=" + sessionId + "; " + "path=/");
+                    setCookieConnection(requestData, targetParameter);
                 }
             }
         }
         return arguments;
     }
 
-    private static boolean hasCookieAnnotation(Parameter targetParameters) {
+    private void setCookieConnection(Map<String, String> requestData, RequestParameter targetParameter) {
+        logger.debug("[SetCookie Annotation key = {}, value = {} ]", targetParameter.value(), requestData.get(targetParameter.value()));
+
+        String clientId = requestData.get(targetParameter.value());
+        String sessionId = UUID.randomUUID().toString();
+        SessionStorage.setSession(sessionId, clientId);
+
+        response.setHeader("Set-Cookie", "sid=" + sessionId + "; " + "path=/");
+    }
+
+    private void verifyParameterCount(Method targetMethod, Map<String, String> requestParameters) {
+        if (requestParameters.size() != targetMethod.getParameterCount()) {
+            throw new IllegalArgumentException("요청된 파라미터의 갯수가 다릅니다.");
+        }
+    }
+
+    private boolean hasCookieAnnotation(Parameter targetParameters) {
         return targetParameters.isAnnotationPresent(SetCookie.class);
     }
 }
