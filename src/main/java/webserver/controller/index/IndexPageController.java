@@ -11,6 +11,7 @@ import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
+import webserver.utils.Location;
 
 import java.io.IOException;
 
@@ -74,7 +75,7 @@ public class IndexPageController implements Controller {
     }
 
     private String getTemplateHtml() throws IOException {
-        byte[] bytes = FileUtils.readFileBytes("/index.html");
+        byte[] bytes = FileUtils.readFileBytes(Location.LOGIN_FAIL_PAGE);
         return new String(bytes);
     }
 

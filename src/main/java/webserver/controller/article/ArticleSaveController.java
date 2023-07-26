@@ -12,6 +12,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.utils.CookieConstants;
+import webserver.utils.Location;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
 
@@ -60,6 +61,6 @@ public class ArticleSaveController implements Controller {
 
     private void redirectToIndexPage(HttpResponse httpResponse) {
         httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, "/index.html");
+        httpResponse.set(HttpField.LOCATION, Location.INDEX_PAGE);
     }
 }

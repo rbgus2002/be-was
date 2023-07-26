@@ -11,6 +11,7 @@ import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
+import webserver.utils.Location;
 
 import java.io.IOException;
 
@@ -66,6 +67,6 @@ public class ArticleViewController implements Controller {
 
     private void redirectToLoginPage(HttpResponse httpResponse) {
         httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, "/user/login.html");
+        httpResponse.set(HttpField.LOCATION, Location.LOGIN_PAGE);
     }
 }

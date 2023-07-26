@@ -11,6 +11,7 @@ import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
+import webserver.utils.Location;
 
 import java.io.IOException;
 
@@ -60,6 +61,6 @@ public class UserSaveController implements Controller {
 
     private void redirectToIndexPage(HttpResponse httpResponse) {
         httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, "/index.html");
+        httpResponse.set(HttpField.LOCATION, Location.INDEX_PAGE);
     }
 }

@@ -13,6 +13,7 @@ import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
+import webserver.utils.Location;
 
 public class UserLoginController implements Controller {
 
@@ -37,14 +38,14 @@ public class UserLoginController implements Controller {
         String sessionId = createSession(userId);
 
         httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, "/index.html");
+        httpResponse.set(HttpField.LOCATION, Location.INDEX_PAGE);
         httpResponse.setCookie(CookieConstants.SESSION_ID, sessionId);
         httpResponse.setCookie(CookieConstants.PATH, "/");
     }
 
     private void processLoginFailure(HttpResponse httpResponse) {
         httpResponse.setStatus(HttpStatus.FOUND);
-        httpResponse.set(HttpField.LOCATION, "/user/login_failed.html");
+        httpResponse.set(HttpField.LOCATION, Location.LOGIN_FAIL_PAGE);
     }
 
     private void verifyParameters(String userId, String password) throws BadRequestException {

@@ -7,6 +7,7 @@ import webserver.http.HttpStatus;
 import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
+import webserver.utils.Location;
 
 import java.io.IOException;
 
@@ -21,10 +22,10 @@ public class ArticleWriteController implements Controller {
 
     private void setRedirectLocation(HttpResponse httpResponse, String sessionId) {
         if (isLoginStatus(sessionId)) {
-            httpResponse.set(HttpField.LOCATION, "/article/write.html");
+            httpResponse.set(HttpField.LOCATION, Location.ARTICLE_WRITE_PAGE);
             return;
         }
-        httpResponse.set(HttpField.LOCATION, "/user/login.html");
+        httpResponse.set(HttpField.LOCATION, Location.LOGIN_PAGE);
     }
 
     private boolean isLoginStatus(String sessionId) {
