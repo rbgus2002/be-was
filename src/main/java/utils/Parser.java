@@ -58,4 +58,8 @@ public class Parser {
         }
         return Path.STATIC.getPath() + requestUri;
     }
+
+    public static String parseCookie(String requestCookie) {
+        return requestCookie.substring(12);
+    }
 }
