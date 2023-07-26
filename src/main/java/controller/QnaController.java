@@ -51,7 +51,16 @@ public class QnaController {
     }
 
     @RequestMapping(value = "/show", method = HttpMethod.GET)
-    public void showPost(@RequestParam("postId") long postId, HttpResponse httpResponse, Model model) {
+    public void showPost(@RequestParam("postId") long postId,
+                         HttpRequest httpRequest,
+                         HttpResponse httpResponse,
+                         Model model) {
+        Session session = httpRequest.getSession(false);
+        if(session == null) {
+            httpResponse.sendRedirection("/user/login.html");
+            return;
+        }
+
         Post post = PostTable.findByPostId(postId);
         if(post == null) {
             httpResponse.setStatus(HttpStatus.NOT_FOUND);
