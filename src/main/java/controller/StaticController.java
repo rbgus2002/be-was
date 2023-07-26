@@ -1,4 +1,4 @@
-package user.controller;
+package controller;
 
 import db.UserTable;
 import model.User;

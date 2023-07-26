@@ -1,8 +1,9 @@
-package user.controller;
+package controller;
 
 import db.UserTable;
 import model.User;
-import user.service.UserService;
+import service.UserService;
+import utils.ControllerUtils;
 import webserver.http.HttpMethod;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
@@ -28,7 +29,7 @@ public class UserController {
     @RequestMapping(value = "/create", method = HttpMethod.POST)
     public void signUp(@RequestBody String body, HttpResponse httpResponse) {
         try {
-            Map<String, String> parameterMap = getParameterMap(body, 4);
+            Map<String, String> parameterMap = ControllerUtils.getParameterMap(body, 4);
             userService.signUp(
                     parameterMap.get("userId"),
                     parameterMap.get("password"),
@@ -43,7 +44,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = HttpMethod.POST)
     public void signIn(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            Map<String, String> parameterMap = getParameterMap(httpRequest.getBodyToString(), 2);
+            Map<String, String> parameterMap = ControllerUtils.getParameterMap(httpRequest.getBodyToString(), 2);
             User user = userService.signIn(parameterMap.get("userId"), parameterMap.get("password"));
             if (user == null) {
                 httpResponse.sendRedirection("/user/login_failed.html");
@@ -68,27 +69,5 @@ public class UserController {
         model.addParameter("user", user);
         model.addParameter("users", new ArrayList<>(UserTable.findAll()));
         httpResponse.setUri("/user/list.html");
-    }
-
-    private static void verifyParameters(Map<String, String> parameterMap, int size) {
-        if (parameterMap.values().size() != size ||
-            parameterMap.values().stream()
-                    .anyMatch(Objects::isNull)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private static Map<String, String> getParameterMap(String body, int size) {
-        Map<String, String> parameterMap = new HashMap<>();
-        for (String parameter : body.split("&")) {
-            String[] keyValue = parameter.split("=");
-            if (keyValue.length != 2) {
-                throw new IllegalArgumentException();
-            }
-            parameterMap.put(keyValue[0].trim(), keyValue[1].trim());
-        }
-
-        verifyParameters(parameterMap, size);
-        return parameterMap;
     }
 }
