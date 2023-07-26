@@ -8,7 +8,7 @@ import http.HttpSession;
 import model.User;
 
 @RequestMapping(path = "/user/login")
-public class LoginController implements HttpController {
+public class UserLoginController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {

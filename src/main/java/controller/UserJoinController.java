@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RequestMapping(path = "/user/create")
-public class JoinController implements HttpController {
+public class UserJoinController implements HttpController {
 
-    private static final Logger logger = LoggerFactory.getLogger(JoinController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserJoinController.class);
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
