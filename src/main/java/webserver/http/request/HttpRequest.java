@@ -1,14 +1,14 @@
-package webserver.request;
+package webserver.http.request;
 
 import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.utils.StringUtils;
-import webserver.Constants.ContentType;
-import webserver.Constants.HttpMethod;
-import webserver.Constants.HttpVersion;
+import webserver.http.Constants.ContentType;
+import webserver.http.Constants.HttpMethod;
+import webserver.http.Constants.HttpVersion;
 import webserver.RequestHandler;
-import webserver.Header;
+import webserver.http.Header;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -7,12 +7,12 @@ import exception.internalServerError.MethodInvocationException;
 import exception.notFound.InvalidResourcePathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.Constants.ContentType;
-import webserver.Constants.HeaderField;
-import webserver.response.HttpResponse;
+import webserver.http.Constants.ContentType;
+import webserver.http.Constants.HeaderField;
+import webserver.http.response.HttpResponse;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
-import webserver.request.HttpRequest;
+import webserver.http.request.HttpRequest;
 
 import java.io.DataOutputStream;
 import java.lang.reflect.InvocationTargetException;

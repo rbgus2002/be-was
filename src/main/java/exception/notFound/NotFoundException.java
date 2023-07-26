@@ -1,7 +1,7 @@
 package exception.notFound;
 
 import exception.CustomException;
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HttpStatus;
 
 public abstract class NotFoundException extends CustomException {
 

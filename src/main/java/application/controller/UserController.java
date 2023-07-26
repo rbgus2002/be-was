@@ -7,14 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
-import webserver.Constants.HeaderField;
-import webserver.Constants.HttpMethod;
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HeaderField;
+import webserver.http.Constants.HttpMethod;
+import webserver.http.Constants.HttpStatus;
 import webserver.ModelAndView;
-import webserver.request.HttpRequest;
-import webserver.request.RequestBody;
-import webserver.request.RequestQuery;
-import webserver.response.HttpResponse;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.RequestBody;
+import webserver.http.request.RequestQuery;
+import webserver.http.response.HttpResponse;
 
 import java.nio.charset.StandardCharsets;
 
@@ -46,6 +46,27 @@ public class UserController implements WebController {
         response.setHttpStatus(HttpStatus.SEE_OTHER);
         response.addHeaderElement(HeaderField.Location, "/index.html");
         response.setBody(HttpStatus.SEE_OTHER.getDescription().getBytes(StandardCharsets.UTF_8));
+        return new ModelAndView("redirect:", null);
+    }
+
+    @RequestMapping(method = HttpMethod.POST, value = "/user/login")
+    public ModelAndView loginUser(final HttpRequest request, final HttpResponse response) throws MissingParameterException {
+        RequestBody requestBody = request.getRequestBody();
+
+        String userId = requestBody.getValue("userId");
+        String password = requestBody.getValue("password");
+
+        UserDto userdto = userRepository.findUserById(userId);
+
+        response.setHttpStatus(HttpStatus.SEE_OTHER);
+        response.addHeaderElement(HeaderField.Location, "/user/login_failed.html");
+        response.setBody(HttpStatus.SEE_OTHER.getDescription().getBytes(StandardCharsets.UTF_8));
+
+        if(userdto.getPassword().equals(password)) {
+            logger.debug("{}라는 이름의 유저가 로그인하였습니다.", userdto.getName());
+            response.addHeaderElement(HeaderField.Location, "/index.html");
+        }
+
         return new ModelAndView("redirect:", null);
     }
 

@@ -1,4 +1,4 @@
-package webserver.Constants;
+package webserver.http.Constants;
 
 public class HeaderField {
 

@@ -5,7 +5,7 @@ import application.controller.WebController;
 import exception.notFound.InvalidControllerPathException;
 import exception.notFound.InvalidMethodPathException;
 import support.annotation.RequestMapping;
-import webserver.request.HttpRequest;
+import webserver.http.request.HttpRequest;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

@@ -1,10 +1,10 @@
 package webserver.view.view;
 
 import exception.internalServerError.FileRenderException;
-import webserver.Constants.HeaderField;
-import webserver.request.HttpRequest;
-import webserver.response.HttpResponse;
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HeaderField;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
+import webserver.http.Constants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

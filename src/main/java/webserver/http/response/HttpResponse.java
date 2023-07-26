@@ -1,10 +1,10 @@
-package webserver.response;
+package webserver.http.response;
 
 import exception.internalServerError.HttpResponseSendException;
-import webserver.Constants.HeaderField;
-import webserver.Constants.HttpStatus;
-import webserver.Constants.HttpVersion;
-import webserver.Header;
+import webserver.http.Constants.HeaderField;
+import webserver.http.Constants.HttpStatus;
+import webserver.http.Constants.HttpVersion;
+import webserver.http.Header;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

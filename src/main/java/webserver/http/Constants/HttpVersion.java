@@ -1,4 +1,4 @@
-package webserver.Constants;
+package webserver.http.Constants;
 
 import exception.httpVersionNotSupported.InvalidVersionException;
 

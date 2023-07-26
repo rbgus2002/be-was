@@ -1,7 +1,7 @@
 package exception.unsupportedMediaType;
 
 import exception.CustomException;
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HttpStatus;
 
 public abstract class UnsupportedMediaTypeException extends CustomException {
     protected static final HttpStatus httpStatus = HttpStatus.UNSUPPORTED_MEDIA_TYPE;

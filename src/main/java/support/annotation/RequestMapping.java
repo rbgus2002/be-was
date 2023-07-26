@@ -1,6 +1,6 @@
 package support.annotation;
 
-import webserver.Constants.HttpMethod;
+import webserver.http.Constants.HttpMethod;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
