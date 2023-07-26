@@ -14,7 +14,10 @@ public class UserController {
                              @RequestParameter(value = "password") String password,
                              @RequestParameter(value = "name") String name,
                              @RequestParameter(value = "email") String email) {
-        verifyCreateUser(userId);
+
+        if (isUserIdDuplicate(userId)) {
+            return "redirect:/user/form_failed.html";
+        }
         Database.addUser(new User(userId, password, name, email));
         return "redirect:/index.html";
     }
@@ -28,9 +31,7 @@ public class UserController {
         return "redirect:/user/login_failed.html";
     }
 
-    private void verifyCreateUser(String userId) {
-        if (Database.hasUserId(userId)) {
-            throw new IllegalArgumentException("이미 존재하는 userId 입니다.");
-        }
+    private boolean isUserIdDuplicate(String userId) {
+        return Database.hasUserId(userId);
     }
 }

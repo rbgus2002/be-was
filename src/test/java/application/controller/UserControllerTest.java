@@ -1,11 +1,13 @@
 package application.controller;
 
 import db.Database;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("UserController 클래스 테스트")
 class UserControllerTest {
@@ -14,8 +16,13 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         userController = new UserController();
+    }
+
+    @BeforeAll
+    static void beforeAll() {
         Database.clear();
     }
+
 
     @Test
     @DisplayName("유저를 추가한다.")
@@ -50,8 +57,7 @@ class UserControllerTest {
         userController.createUser(userId, password, name, email);
 
         // then
-        assertThrows(IllegalArgumentException.class,
-                () -> userController.createUser(userId, password, name, email));
+        assertEquals("redirect:/user/form_failed.html", userController.createUser(userId, password, name, email));
     }
 
     @Test
@@ -80,7 +86,6 @@ class UserControllerTest {
         userController.createUser(userId, password, name, email);
 
         String wrongPassword = "notpassword";
-
 
         // then
         assertEquals("redirect:/user/login_failed.html", userController.loginUser(userId, wrongPassword));
