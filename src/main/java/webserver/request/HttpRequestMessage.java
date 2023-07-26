@@ -36,6 +36,10 @@ public class HttpRequestMessage {
         return Collections.unmodifiableMap(headers).get(key);
     }
 
+    public boolean hasHeader(String key) {
+        return Collections.unmodifiableMap(headers).containsKey(key);
+    }
+
     public String getBody() {
         return body;
     }
