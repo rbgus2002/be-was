@@ -3,6 +3,7 @@ package application.infrastructure;
 import application.model.User;
 import db.Database;
 import java.util.Collection;
+import java.util.Optional;
 
 public class LocalUserRepository implements UserRepository {
     @Override
@@ -11,8 +12,8 @@ public class LocalUserRepository implements UserRepository {
     }
 
     @Override
-    public User findUserById(final String userId) {
-        return Database.findUserById(userId);
+    public Optional<User> findUserById(final String userId) {
+        return Optional.ofNullable(Database.findUserById(userId));
     }
 
     @Override
