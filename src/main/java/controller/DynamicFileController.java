@@ -51,6 +51,9 @@ public class DynamicFileController {
             "                      </div>\n" +
             "                  </div>\n" +
             "              </li>";
+    private static final String QNA_TITLE = "<h2 class=\"qna-title\">";
+    private static final String QNA_BODY = "<div class=\"article-doc\">";
+    private static final String QNA_AUTHOR = "<a class=\"article-author-name\">";
 
     @RequestMapping(value="/user/list.html", method=Method.GET)
     public Response showUserList(Request request) {
@@ -116,11 +119,23 @@ public class DynamicFileController {
 
     @RequestMapping(value="/qna/show.html?", method=Method.GET)
     public Response showQna(Request request) {
+        String httpDocument = generateHttpDocument(request);
+        MIME mime = parseMime(request.getTargetUri());
         Map<String, String> queryParameterMap = request.getQueryParameterMap();
         int postId = Integer.parseInt(queryParameterMap.get(Post.POST_ID));
 
+        Post post = PostService.getPostByPostId(postId);
+        httpDocument = appendElement(httpDocument, QNA_TITLE, post.getTitle());
+        httpDocument = appendElement(httpDocument, QNA_BODY, post.getContent());
+        httpDocument = appendElement(httpDocument, QNA_AUTHOR, post.getUserId());
 
-        return null;
+        byte[] body = httpDocument.getBytes();
+
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, mime.getMime() + HEADER_CHARSET);
+        headerMap.put(HEADER_CONTENT_LENGTH, String.valueOf(body.length));
+
+        return new Response(STATUS.OK, headerMap, body);
     }
 
     @RequestMapping(value=INDEX_URL, method=Method.GET)
@@ -145,7 +160,7 @@ public class DynamicFileController {
     }
 
     private static String generateHttpDocument(Request request) {
-        String targetUri = request.getTargetUri();
+        String targetUri = request.getTargetUri().split("\\?")[0];
         String targetPath = TEMPLATE_FILEPATH + targetUri;
         if(new File(targetPath).exists()) {
             String sid = request.getSid();
