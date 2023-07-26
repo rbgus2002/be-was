@@ -20,53 +20,41 @@ public class Controller {
 
 	@GetMapping(path = "/")
 	public ModelView getMainIndex(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		try {
-			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
-				// 인증 성공
-				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
-				Database.findUserById(userId).getName();
-
-				modelView.addAttribute("login", "true");
-
-				return modelView.setPath("index.html");
-			}
-		} catch (Exception e) {
-		}
-		// 인증 실패
+		modelView = reflectLogin(httpRequest, modelView);
 		return modelView.setPath("index.html");
 	}
 
 	@GetMapping(path = "/index.html")
 	public ModelView getIndex(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		try {
-			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
-				// 인증 성공
-				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
-				Database.findUserById(userId).getName();
-
-				modelView.addAttribute("login", "true");
-
-				return modelView.setPath("index.html");
-			}
-		} catch (Exception e) {
-		}
-		// 인증 실패
+		modelView = reflectLogin(httpRequest, modelView);
 		return modelView.setPath("index.html");
+	}
+
+	@GetMapping(path = "/qna/form.html")
+	public ModelView qnaFormPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		modelView = reflectLogin(httpRequest, modelView);
+		return modelView.setPath("qna/form.html");
 	}
 
 	@GetMapping(path = "/qna/show.html")
 	public ModelView getQna(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
-			// 인증 성공
-			return modelView.setPath("/qna/show.html");
+		modelView = reflectLogin(httpRequest, modelView);
+		if (isLoggedIn(modelView)) {
+			return modelView.setPath("qna/show.html");
 		}
-		// 인증 실패
 		return modelView.setPath("redirect:/user/login.html");
+	}
+
+	@GetMapping(path = "/user/form.html")
+	public ModelView userFormPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		modelView = reflectLogin(httpRequest, modelView);
+		return modelView.setPath("user/form.html");
 	}
 
 	@PostMapping(path = "/user/create")
 	public ModelView createUser(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) throws
 		IllegalArgumentException {
+		modelView = reflectLogin(httpRequest, modelView);
 		try {
 			Database.addUser(parameterToUser(httpRequest.getParameter()));
 		} catch (IllegalArgumentException e) {
@@ -82,6 +70,7 @@ public class Controller {
 
 	@PostMapping(path = "/user/login")
 	public ModelView login(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		modelView = reflectLogin(httpRequest, modelView);
 		String userId = httpRequest.getParameter().getParameter("userId");
 		String password = httpRequest.getParameter().getParameter("password");
 		if (LoginService.login(userId, password)) {
@@ -93,9 +82,44 @@ public class Controller {
 		return modelView.setPath("user/login_failed.html");
 	}
 
+	@GetMapping(path = "/user/login.html")
+	public ModelView loginPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		modelView = reflectLogin(httpRequest, modelView);
+		return modelView.setPath("user/login.html");
+	}
+
+	@GetMapping(path = "/user/list.html")
+	public ModelView listPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		modelView = reflectLogin(httpRequest, modelView);
+		return modelView.setPath("user/list.html");
+	}
+
+	@GetMapping(path = "/user/profile.html")
+	public ModelView userProfilePage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		modelView = reflectLogin(httpRequest, modelView);
+		return modelView.setPath("user/profile.html");
+	}
+
 	private User parameterToUser(HttpParameter httpParameter) {
 		return new User(httpParameter.getParameter("userId"), httpParameter.getParameter("password"),
 			httpParameter.getParameter("name"), httpParameter.getParameter("email"));
+	}
+
+	private ModelView reflectLogin(HttpRequest httpRequest, ModelView modelView) {
+		try {
+			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
+				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
+				Database.findUserById(userId).getName();
+				// 인증 성공
+				modelView.addAttribute("login", "true");
+			}
+		} catch (Exception e) {
+		}
+		return modelView;
+	}
+
+	private boolean isLoggedIn(ModelView modelView) {
+		return (modelView.containsAttribute("login")) && (modelView.getAttribute("login").equals("true"));
 	}
 
 }

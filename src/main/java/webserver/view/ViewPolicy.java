@@ -8,12 +8,22 @@ public class ViewPolicy {
 	 * @return body에서 regex에 해당하는 부분의 대체 결과가 될 문장
 	 */
 	@annotations.ViewPolicy(regex = "<li only_non_user=\"true\">.*<\\/li>")
-	public String disableUserConntent(String line, ModelView modelView) {
+	public String onlyShowForNonUser(String line, ModelView modelView) {
 		if (modelView.containsAttribute("login")) {
 			if (modelView.getAttribute("login").equals("true")) {
 				return "";
 			}
 		}
 		return line;
+	}
+
+	@annotations.ViewPolicy(regex = "<li only_login_user=\"true\">.*<\\/li>")
+	public String onlyShowForLoginUser(String line, ModelView modelView) {
+		if (modelView.containsAttribute("login")) {
+			if (modelView.getAttribute("login").equals("true")) {
+				return line;
+			}
+		}
+		return "";
 	}
 }
