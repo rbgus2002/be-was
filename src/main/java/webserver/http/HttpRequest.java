@@ -1,8 +1,6 @@
 package webserver.http;
 
 import webserver.utils.HttpField;
-import webserver.utils.HttpMethod;
-import webserver.utils.UrlEncodedParameterParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,14 +14,12 @@ public class HttpRequest {
 
     private String method;
     private final HttpHeaders httpHeaders;
-    private HttpParameters httpParameters;
+    private final HttpParameters httpParameters;
     private final Cookie cookie;
     private String body = "";
 
-
     public HttpRequest(InputStream in) throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(in));
-
         httpHeaders = new HttpHeaders();
         httpParameters = new HttpParameters();
         cookie = new Cookie();
@@ -35,7 +31,7 @@ public class HttpRequest {
         parseHeader();
         parseBody();
         parsePath();
-        parseParameters();
+        parseUrlEncodedParameters();
     }
 
     private void parseHeader() throws IOException {
@@ -57,27 +53,42 @@ public class HttpRequest {
         httpHeaders.put(HttpField.PATH, path);
     }
 
-    private void parseParameters() {
-        if (method.equals(HttpMethod.GET)) {
-            parseURIParameters();
-        }
-        if (method.equals(HttpMethod.POST)) {
-            parseBodyParameters();
-        }
+    private void parseUrlEncodedParameters() {
+        parseURIParameters();
+        parseBodyParameters();
     }
 
     private void parseURIParameters() {
         String URI = httpHeaders.get(HttpField.URI);
         String[] uriTokens = URI.split("\\?");
         if (uriTokens.length == 2) {
-            httpParameters = UrlEncodedParameterParser.parse(uriTokens[1]);
+            parseParameters(uriTokens[1]);
         }
     }
 
     private void parseBodyParameters() {
-        String contentType = httpHeaders.get(HttpField.CONTENT_TYPE);
-        if (contentType.equals("application/x-www-form-urlencoded")) {
-            httpParameters = UrlEncodedParameterParser.parse(body);
+        if (checkContentType()) {
+            parseParameters(body);
+        }
+    }
+
+    private boolean checkContentType() {
+        return httpHeaders.get(HttpField.CONTENT_TYPE)
+                    .equals("application/x-www-form-urlencoded");
+    }
+
+    private void parseParameters(String parameters) {
+        String parameterSeparator = "&";
+
+        for (String parameter : parameters.split(parameterSeparator)) {
+            addParameter(parameter);
+        }
+    }
+
+    private void addParameter(String parameter) {
+        String[] tokens = parameter.split("=");
+        if (tokens.length == 2) {
+            httpParameters.put(tokens[0], tokens[1]);
         }
     }
 
