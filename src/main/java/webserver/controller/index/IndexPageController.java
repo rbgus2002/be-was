@@ -7,7 +7,7 @@ import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import webserver.session.SessionManager;
+import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
@@ -80,12 +80,12 @@ public class IndexPageController implements Controller {
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
         String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
-        return SessionManager.verifySessionId(sessionId);
+        return SessionDatabase.verifySessionId(sessionId);
     }
 
     private String getUsername(HttpRequest httpRequest) {
         String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
-        String userId = SessionManager.findUserIdBySessionId(sessionId);
+        String userId = SessionDatabase.findUserIdBySessionId(sessionId);
         return UserDatabase.findUserById(userId).getName();
     }
 

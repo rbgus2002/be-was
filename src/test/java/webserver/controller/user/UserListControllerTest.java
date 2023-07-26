@@ -11,7 +11,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.Session;
-import webserver.session.SessionManager;
+import db.SessionDatabase;
 import webserver.utils.HttpField;
 import webserver.utils.HttpRequestCreateUtil;
 
@@ -36,7 +36,7 @@ class UserListControllerTest {
     public void requestUserListWithValidSessionId() throws Exception {
         //given
         Session loginUserSession = new Session("userC");
-        SessionManager.addSession(loginUserSession);
+        SessionDatabase.addSession(loginUserSession);
 
         String requestMessage = "GET /user/list HTTP/1.1\r\n" +
                 "Cookie: sid=" + loginUserSession.getSessionId() + "\r\n" +
@@ -80,7 +80,7 @@ class UserListControllerTest {
     public void requestUserListWithInvalidSessionId() throws Exception {
         //given
         Session loginUserSession = new Session("userC");
-        SessionManager.addSession(loginUserSession);
+        SessionDatabase.addSession(loginUserSession);
 
         String requestMessage = "GET /user/list HTTP/1.1\r\n" +
                 "Cookie: sid=" + loginUserSession.getSessionId() + "dummyString" + "\r\n" +

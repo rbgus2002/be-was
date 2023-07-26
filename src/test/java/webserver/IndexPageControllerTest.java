@@ -10,7 +10,7 @@ import webserver.controller.index.IndexPageController;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.session.Session;
-import webserver.session.SessionManager;
+import db.SessionDatabase;
 import webserver.utils.HttpRequestCreateUtil;
 
 class IndexPageControllerTest {
@@ -26,7 +26,7 @@ class IndexPageControllerTest {
     void userRequestIndexPage() throws Exception {
         //given
         Session loginUserSession = new Session("userId");
-        SessionManager.addSession(loginUserSession);
+        SessionDatabase.addSession(loginUserSession);
 
         String requestMessage = "GET /index.html HTTP/1.1\r\n"
                 + "Cookie: sid=" + loginUserSession.getSessionId() + "\r\n"

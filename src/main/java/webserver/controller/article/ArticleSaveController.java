@@ -10,7 +10,7 @@ import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import webserver.session.SessionManager;
+import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
@@ -36,13 +36,13 @@ public class ArticleSaveController implements Controller {
     }
 
     private void checkLoginStatus(String sessionId) throws UnauthorizedException {
-        if (!SessionManager.verifySessionId(sessionId)) {
+        if (!SessionDatabase.verifySessionId(sessionId)) {
             throw new UnauthorizedException();
         }
     }
 
     private User getUser(String sessionId) {
-        String userID = SessionManager.findUserIdBySessionId(sessionId);
+        String userID = SessionDatabase.findUserIdBySessionId(sessionId);
         return UserDatabase.findUserById(userID);
     }
 

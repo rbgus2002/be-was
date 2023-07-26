@@ -4,7 +4,7 @@ import webserver.controller.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import webserver.session.SessionManager;
+import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 
@@ -20,7 +20,7 @@ public class ArticleWriteController implements Controller {
     }
 
     private void checkLoginStatusAndSetLocation(HttpResponse httpResponse, String sessionId) {
-        if (SessionManager.verifySessionId(sessionId)) {
+        if (SessionDatabase.verifySessionId(sessionId)) {
             httpResponse.set(HttpField.LOCATION, "/article/write.html");
             return;
         }

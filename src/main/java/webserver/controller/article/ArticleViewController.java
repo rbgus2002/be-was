@@ -7,7 +7,7 @@ import webserver.http.HttpParameters;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import webserver.session.SessionManager;
+import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
@@ -27,7 +27,7 @@ public class ArticleViewController implements Controller {
     }
 
     private boolean isLoginStatus(String sessionId) {
-        return SessionManager.verifySessionId(sessionId);
+        return SessionDatabase.verifySessionId(sessionId);
     }
 
     private void setHttpResponseWithArticleViewHtml(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
