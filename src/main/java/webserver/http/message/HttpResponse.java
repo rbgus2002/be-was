@@ -12,6 +12,10 @@ import webserver.resolver.utils.FileMapper;
 
 public class HttpResponse {
 
+	private static final String CONTENT_TYPE = "Content-Type";
+	private static final String CONTENT_LENGTH = "Content-Length";
+	private static final String LOCATION = "Location";
+
 	private final HttpStatus status;
 	private final HttpHeaderFields headerFields;
 	private final byte[] body;
@@ -47,8 +51,16 @@ public class HttpResponse {
 		private HttpResponseBuilder() {
 			status = HttpStatus.OK;
 			headerFields = new HttpHeaderFields();
-			body = null;
+			resetBody();
 			// TODO : 요청의 general header는 응답에도 바로 저장하기
+		}
+
+		private void resetBody() {
+			body = new byte[0];
+			headerFields.setHeaderField(CONTENT_LENGTH, "0");
+			if (headerFields.getValue(CONTENT_TYPE) != null) {
+				headerFields.removeHeaderField(CONTENT_TYPE);
+			}
 		}
 
 		public HttpResponseBuilder status(HttpStatus status) {
@@ -59,24 +71,19 @@ public class HttpResponse {
 		}
 
 		public HttpResponseBuilder headerField(String key, String value) {
-			if (headerFields.getValue(value) == null) {
-				this.headerFields.add(key, value);
-			}
+			this.headerFields.setHeaderField(key, value);
 			return this;
 		}
 
 		public HttpResponseBuilder body(Path resourcePath) {
-			if (body != null) {
-				return this;
-			}
 			try {
 				this.body = Files.readAllBytes(resourcePath);
 				String contentType = Files.probeContentType(resourcePath);
 				if (contentType.startsWith("text")) {
 					contentType = contentType.concat(";charset=UTF-8");
 				}
-				this.headerFields.add("Content-Type", contentType);
-				this.headerFields.add("Content-Length", String.valueOf(body.length));
+				this.headerFields.setHeaderField(CONTENT_TYPE, contentType);
+				this.headerFields.setHeaderField(CONTENT_LENGTH, String.valueOf(body.length));
 				return this;
 			} catch (IOException e) {
 				this.status = HttpStatus.SERVER_ERROR;
@@ -85,13 +92,23 @@ public class HttpResponse {
 		}
 
 		public HttpResponseBuilder view(String viewName) {
+			if (this.headerFields.getValue(LOCATION) != null) {
+				this.headerFields.removeHeaderField(LOCATION);
+			}
 			try {
 				File view = FileMapper.findFile(viewName + ".html");
 				return body(view.toPath());
 			} catch (FileNotFoundException e) {
-				this.status = HttpStatus.SERVER_ERROR;
+				status = HttpStatus.SERVER_ERROR;
 				return this;
 			}
+		}
+
+		public HttpResponseBuilder redirection(String targetUrl) {
+			if (this.body.length > 0) {
+				resetBody();
+			}
+			return headerField(LOCATION, targetUrl);
 		}
 
 		public HttpResponse build() {
