@@ -19,12 +19,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import webserver.Main;
-import webserver.http.Headers;
-import webserver.http.Http.StatusCode;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.QueryParameter;
 import webserver.http.response.HttpResponse;
-import webserver.http.response.ResponseLine;
 
 public class ApplicationProcessStrategy implements ContentProcessStrategy {
     private static final String CLASS_EXTENSION = ".class";
@@ -32,17 +29,19 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
 
     @Override
     public HttpResponse process(final HttpRequest httpRequest) {
+        HttpResponse result = HttpResponse.init();
         try {
             List<Class> classes = findByHasAnnotationClasses(Controller.class);
             Method targetMethod = findTargetMethod(httpRequest, classes);
-            return processMethod(httpRequest, targetMethod);
+            processMethod(httpRequest, result, targetMethod);
         } catch (
                 InstantiationException | IllegalAccessException | IOException | NoSuchMethodException |
                 ClassNotFoundException exception) {
-            return HttpResponse.internalError(httpRequest.getMIME());
+            result.internalError(httpRequest.getMIME());
         } catch (InvocationTargetException e) {
-            return HttpResponse.badRequest(httpRequest.getMIME());
+            result.badRequest(httpRequest.getMIME());
         }
+        return result;
     }
 
     private List<Class> findByHasAnnotationClasses(final Class annotation) throws ClassNotFoundException {
@@ -63,7 +62,7 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
         return getClassesBy(getClassPaths(canonicalName, canonicalName));
     }
 
-    private static List<Class> getClassesBy(final List<String> list) throws ClassNotFoundException {
+    private List<Class> getClassesBy(final List<String> list) throws ClassNotFoundException {
         List<Class> result = new ArrayList<>();
         for (String s : list) {
             Class<?> clazz = ClassLoader.getSystemClassLoader()
@@ -98,18 +97,20 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 경로의 메서드를 찾을 수 없습니다."));
     }
 
-    private HttpResponse processMethod(final HttpRequest httpRequest, final Method method)
+    private void processMethod(
+            final HttpRequest httpRequest,
+            final HttpResponse httpResponse,
+            final Method method
+    )
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
         Object targetClass = method.getDeclaringClass().getDeclaredConstructor().newInstance();
         Object invoke = invokeMethod(method, targetClass, httpRequest);
-
         if (isRedirect(invoke)) {
             String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
-            return HttpResponse.found(redirectUrl);
+            httpResponse.found(redirectUrl);
+            return;
         }
-        return new HttpResponse(
-                new ResponseLine(StatusCode.OK), Headers.create(httpRequest.getMIME()), convertObjectToBytes(invoke)
-        );
+        httpResponse.ok(httpRequest.getMIME(), convertObjectToBytes(invoke));
     }
 
     private Object invokeMethod(

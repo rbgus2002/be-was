@@ -6,15 +6,13 @@ import webserver.http.Headers;
 import webserver.http.Http;
 import webserver.http.Http.MIME;
 import webserver.http.Http.StatusCode;
-import webserver.http.request.HttpRequest;
-import webserver.http.response.process.ContentProcessStrategy;
 
 public class HttpResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final ResponseLine responseLine;
-    private final Headers headers;
-    private final byte[] body;
+    private ResponseLine responseLine;
+    private Headers headers;
+    private byte[] body;
 
     public HttpResponse(final ResponseLine responseLine, final Headers headers, final byte[] body) {
         this.responseLine = responseLine;
@@ -22,29 +20,38 @@ public class HttpResponse implements Serializable {
         this.body = body;
     }
 
-    public static HttpResponse found(final String url) {
-        return new HttpResponse(
-                new ResponseLine(StatusCode.FOUND),
-                new Headers(Map.of(Http.Headers.LOCATION.getName(), url)),
-                null
-        );
+    public static HttpResponse init() {
+        return new HttpResponse(null, null, null);
     }
 
-    public static HttpResponse notFound(final MIME mime) {
-        return new HttpResponse(new ResponseLine(StatusCode.NOT_FOUND), Headers.create(mime), null);
+    public void ok(final MIME mime, final byte[] body) {
+        this.responseLine = new ResponseLine(StatusCode.OK);
+        this.headers = Headers.create(mime);
+        this.body = body;
     }
 
-    public static HttpResponse internalError(final MIME mime) {
-        return new HttpResponse(new ResponseLine(StatusCode.INTERNAL_ERROR), Headers.create(mime), null);
+    public void found(final String url) {
+        this.responseLine = new ResponseLine(StatusCode.FOUND);
+        this.headers = new Headers(Map.of(Http.Headers.LOCATION.getName(), url));
+        this.body = null;
     }
 
-    public static HttpResponse badRequest(final MIME mime) {
-        return new HttpResponse(new ResponseLine(StatusCode.BAD_REQUEST), Headers.create(mime), null);
+    public void notFound(final MIME mime) {
+        this.responseLine = new ResponseLine(StatusCode.NOT_FOUND);
+        this.headers = Headers.create(mime);
+        this.body = null;
     }
 
-    public static HttpResponse from(final HttpRequest httpRequest) {
-        ContentProcessStrategy contentProcessStrategy = httpRequest.getMIME().getStrategy();
-        return contentProcessStrategy.process(httpRequest);
+    public void internalError(final MIME mime) {
+        this.responseLine = new ResponseLine(StatusCode.INTERNAL_ERROR);
+        this.headers = Headers.create(mime);
+        this.body = null;
+    }
+
+    public void badRequest(final MIME mime) {
+        this.responseLine = new ResponseLine(StatusCode.BAD_REQUEST);
+        this.headers = Headers.create(mime);
+        this.body = null;
     }
 
     public ResponseLine getResponseLine() {
