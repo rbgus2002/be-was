@@ -14,33 +14,33 @@ public class HttpResponse implements Serializable {
     private final Headers headers;
     private byte[] body;
 
-    public HttpResponse(final ResponseLine responseLine, final Headers headers, final byte[] body) {
+    protected HttpResponse(final ResponseLine responseLine, final Headers headers, final byte[] body) {
         this.responseLine = responseLine;
         this.headers = headers;
         this.body = body;
     }
 
-    public static HttpResponse init() {
+    protected static HttpResponse init() {
         return new HttpResponse(null, new Headers(), null);
     }
 
-    public void ok(final MIME mime, final byte[] body) {
+    protected void ok(final MIME mime, final byte[] body) {
         set(StatusCode.OK, Headers.create(mime), body);
     }
 
-    public void found(final String url) {
+    protected void found(final String url) {
         set(StatusCode.FOUND, new Headers(Map.of(Http.Headers.LOCATION.getName(), url)), null);
     }
 
-    public void notFound(final MIME mime) {
+    protected void notFound(final MIME mime) {
         set(StatusCode.NOT_FOUND, Headers.create(mime), null);
     }
 
-    public void internalError(final MIME mime) {
+    protected void internalError(final MIME mime) {
         set(StatusCode.INTERNAL_ERROR, Headers.create(mime), null);
     }
 
-    public void badRequest(final MIME mime) {
+    protected void badRequest(final MIME mime) {
         set(StatusCode.BAD_REQUEST, Headers.create(mime), null);
     }
 
@@ -50,15 +50,15 @@ public class HttpResponse implements Serializable {
         this.body = body;
     }
 
-    public ResponseLine getResponseLine() {
+    protected ResponseLine getResponseLine() {
         return responseLine;
     }
 
-    public Headers getHeaders() {
+    protected Headers getHeaders() {
         return headers;
     }
 
-    public byte[] getBody() {
+    protected byte[] getBody() {
         return body;
     }
 }

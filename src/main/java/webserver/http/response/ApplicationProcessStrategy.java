@@ -1,4 +1,4 @@
-package webserver.http.response.process;
+package webserver.http.response;
 
 import common.annotation.Controller;
 import common.annotation.RequestBody;
@@ -21,7 +21,6 @@ import java.util.stream.IntStream;
 import webserver.Main;
 import webserver.http.request.HttpRequest;
 import webserver.http.request.QueryParameter;
-import webserver.http.response.HttpResponse;
 
 public class ApplicationProcessStrategy implements ContentProcessStrategy {
     private static final String CLASS_EXTENSION = ".class";
@@ -104,7 +103,7 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
     )
             throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
         Object targetClass = method.getDeclaringClass().getDeclaredConstructor().newInstance();
-        Object invoke = invokeMethod(method, targetClass, httpRequest);
+        Object invoke = invokeMethod(method, targetClass, httpRequest, httpResponse);
         if (isRedirect(invoke)) {
             String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
             httpResponse.found(redirectUrl);
@@ -116,20 +115,32 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
     private Object invokeMethod(
             final Method method,
             final Object targetClass,
-            final HttpRequest httpRequest
+            final HttpRequest httpRequest,
+            final HttpResponse httpResponse
     ) throws IllegalAccessException, InvocationTargetException {
         if (method.getParameters().length == 0) {
             return method.invoke(targetClass);
         }
-        return method.invoke(targetClass, mappingParameters(method, httpRequest));
+        return method.invoke(targetClass, mappingParameters(method, httpRequest, httpResponse));
     }
 
-    private Object[] mappingParameters(final Method method, final HttpRequest httpRequest) {
+    private Object[] mappingParameters(
+            final Method method,
+            final HttpRequest httpRequest,
+            final HttpResponse httpResponse
+    ) {
         Parameter[] parameters = method.getParameters();
         Object[] result = new Object[parameters.length];
         setRequestBody(httpRequest, parameters, result);
         setQueryParam(httpRequest, parameters, result);
+        setHttpResponse(httpResponse, parameters, result);
         return result;
+    }
+
+    private void setHttpResponse(final HttpResponse httpResponse, final Parameter[] parameters, final Object[] result) {
+        IntStream.range(0, parameters.length)
+                .filter(i -> parameters[i].isAnnotationPresent(common.annotation.HttpResponse.class))
+                .forEach(i -> result[i] = httpResponse);
     }
 
     private void setQueryParam(final HttpRequest httpRequest, final Parameter[] parameters, final Object[] result) {

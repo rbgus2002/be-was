@@ -1,10 +1,10 @@
 package webserver.http;
 
-import static webserver.http.response.process.ProcessStrategy.*;
+import static webserver.http.response.ProcessStrategy.*;
 
 import java.util.Arrays;
-import webserver.http.response.process.ContentProcessStrategy;
-import webserver.http.response.process.ProcessStrategy;
+import webserver.http.response.ContentProcessStrategy;
+import webserver.http.response.ProcessStrategy;
 
 public class Http {
     public static final String CRLF = "\r\n";

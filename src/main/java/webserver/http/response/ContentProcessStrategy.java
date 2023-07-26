@@ -1,4 +1,4 @@
-package webserver.http.response.process;
+package webserver.http.response;
 
 import common.util.FileUtil;
 import java.net.URL;
@@ -6,8 +6,6 @@ import webserver.http.Headers;
 import webserver.http.Http.MIME;
 import webserver.http.Http.StatusCode;
 import webserver.http.request.HttpRequest;
-import webserver.http.response.HttpResponse;
-import webserver.http.response.ResponseLine;
 
 public interface ContentProcessStrategy {
     String getRoot();

@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.ResponseHandler;
-import webserver.http.response.process.ContentProcessStrategy;
+import webserver.http.response.ContentProcessStrategy;
 
 public class RequestHandler implements Runnable {
     private final Socket connection;

@@ -1,4 +1,4 @@
-package webserver.http.response.process;
+package webserver.http.response;
 
 public enum ProcessStrategy {
     APPLICATION(new ApplicationProcessStrategy()),
