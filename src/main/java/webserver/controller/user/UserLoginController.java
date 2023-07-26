@@ -10,6 +10,7 @@ import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.Session;
 import webserver.session.SessionManager;
+import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
 
@@ -37,8 +38,8 @@ public class UserLoginController implements Controller {
 
         httpResponse.setStatus(HttpStatus.FOUND);
         httpResponse.set(HttpField.LOCATION, "/index.html");
-        httpResponse.setCookie("sid=" + sessionId);
-        httpResponse.setCookie("Path=/");
+        httpResponse.setCookie(CookieConstants.SESSION_ID, sessionId);
+        httpResponse.setCookie(CookieConstants.PATH, "/");
     }
 
     private void processLoginFailure(HttpResponse httpResponse) {

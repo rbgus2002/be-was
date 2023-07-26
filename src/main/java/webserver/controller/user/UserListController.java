@@ -7,6 +7,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.SessionManager;
+import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
 
@@ -26,7 +27,7 @@ public class UserListController implements Controller {
     }
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
-        String sessionId = httpRequest.getCookie().get("sid");
+        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
         return SessionManager.verifySessionId(sessionId);
     }
 

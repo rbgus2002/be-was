@@ -11,6 +11,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.SessionManager;
+import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 import webserver.utils.HttpParametersParser;
 
@@ -21,7 +22,7 @@ public class ArticleSaveController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
-            String sessionId = httpRequest.getCookie().get("sid");
+            String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
             HttpParameters articleParameters = HttpParametersParser.parse(httpRequest.getBody());
 
             checkLoginStatus(sessionId);

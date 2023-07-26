@@ -5,6 +5,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.SessionManager;
+import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.io.IOException;
 public class ArticleWriteController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String sessionId = httpRequest.getCookie().get("sid");
+        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
 
         httpResponse.setStatus(HttpStatus.FOUND);
         checkLoginStatusAndSetLocation(httpResponse, sessionId);

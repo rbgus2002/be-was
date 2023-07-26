@@ -8,6 +8,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.SessionManager;
+import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
 
@@ -15,10 +16,10 @@ import java.io.IOException;
 
 public class IndexPageController implements Controller {
     private static final String articleInfoTemplateHtml = "<tr>\n"
-                    + "<td>${createDate}</td>\n"
-                    + "<td>${username}</td>\n"
-                    + "<td><a href=\"/article/view?articleId=${articleId}\">${title}</a></td>\n"
-                    + "</tr>\n";
+            + "<td>${createDate}</td>\n"
+            + "<td>${username}</td>\n"
+            + "<td><a href=\"/article/view?articleId=${articleId}\">${title}</a></td>\n"
+            + "</tr>\n";
 
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
@@ -78,12 +79,12 @@ public class IndexPageController implements Controller {
     }
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
-        String sessionId = httpRequest.getCookie().get("sid");
+        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
         return SessionManager.verifySessionId(sessionId);
     }
 
     private String getUsername(HttpRequest httpRequest) {
-        String sessionId = httpRequest.getCookie().get("sid");
+        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
         String userId = SessionManager.findUserIdBySessionId(sessionId);
         return UserDatabase.findUserById(userId).getName();
     }

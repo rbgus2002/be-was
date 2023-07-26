@@ -3,13 +3,15 @@ package webserver.utils;
 import webserver.http.HttpParameters;
 
 public final class HttpParametersParser {
+    private static final String parameterSeparator = "&";
+
     private HttpParametersParser() {
     }
 
     public static HttpParameters parse(String parameters) {
         HttpParameters httpParameters = new HttpParameters();
 
-        for (String parameter : parameters.split("&")) {
+        for (String parameter : parameters.split(parameterSeparator)) {
             addParameter(httpParameters, parameter);
         }
 

@@ -6,8 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class FileUtils {
-    public static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
-    public static final String STATIC_DIRECTORY = "src/main/resources/static";
+    private static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
+    private static final String STATIC_DIRECTORY = "src/main/resources/static";
+    private static final String NOT_FOUND_PAGE_PATH = "/404.html";
 
     private FileUtils() {
     }
@@ -23,7 +24,7 @@ public final class FileUtils {
         if (isFileExist(path)) {
             return path;
         }
-        return "/404.html";
+        return NOT_FOUND_PAGE_PATH;
     }
 
     private static boolean isFileExist(String URI) {
