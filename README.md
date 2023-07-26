@@ -38,14 +38,14 @@ Java Web Application Server 2023
   - [x] statusCode 302로 설정
 
 ### step5 - 쿠키를 이용한 로그인
-- [ ] 로그인 메뉴 클릭시 user/login.html로 이동해 로그인할 수 있음
+- [x] 로그인 메뉴 클릭시 user/login.html로 이동해 로그인할 수 있음
 - 로그인 성공 시
-  - [ ] DataBase에 저장된 유저의 아이디, 비밀번호와 같은지 확인하여 성공여부 판단
-  - [ ] index.html로 리다이렉트
-  - [ ] 헤더의 쿠키 값을 SID=[세션 ID]로 응답
-    - [ ] 세션 ID는 랜덤한 숫자 또는 문자열
-    - [ ] 세션 아이디에 해당하는 유저 정보에 접근 가능해야한다.
-- [ ] 로그인 실패 시 user/login_failed.html로 리다이렉트
+  - [x] DataBase에 저장된 유저의 아이디, 비밀번호와 같은지 확인하여 성공여부 판단
+  - [x] index.html로 리다이렉트
+  - [x] 헤더의 쿠키 값을 SID=[세션 ID]로 응답
+    - [x] 세션 ID는 랜덤한 숫자 또는 문자열 (UUID로 구현)
+    - [x] 세션 아이디에 해당하는 유저 정보에 접근 가능해야한다.
+- [x] 로그인 실패 시 user/login_failed.html로 리다이렉트
 
 
 ---
