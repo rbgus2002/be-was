@@ -13,10 +13,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class FrontController {
+    private static final String REDIRECT = "redirect:";
     private final HttpRequest httpRequest;
     private final DataOutputStream dos;
 
-    public FrontController(HttpRequest httpRequest, DataOutputStream dos) throws IOException {
+    public FrontController(HttpRequest httpRequest, DataOutputStream dos) {
         this.httpRequest = httpRequest;
         this.dos = dos;
     }
@@ -30,15 +31,15 @@ public class FrontController {
 
         Method method = HandlerMapper.getHandlerMethod(httpRequest);
         ModelAndView modelAndView = HandlerAdapter.runHandlerMethod(method, httpRequest);
-        Cookie cookie = createSession(modelAndView);
 
         if (isRedirect(modelAndView.getViewPath())) {
+            Cookie cookie = createSession(modelAndView);
             HttpResponse httpResponse = HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
             httpResponse.responseRedirect(dos);
             return;
         }
 
-        HttpResponse httpResponse = HttpResponse.createDynamic(modelAndView.getViewPath(), cookie);
+        HttpResponse httpResponse = HttpResponse.createDynamic(modelAndView.getViewPath());
         httpResponse.responseDynamic(dos);
     }
 
@@ -50,7 +51,7 @@ public class FrontController {
     }
 
     private boolean isRedirect(String viewPath) {
-        return viewPath.startsWith("redirect:");
+        return viewPath.startsWith(REDIRECT);
     }
 
 }
