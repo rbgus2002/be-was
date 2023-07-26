@@ -1,27 +1,21 @@
 package webserver.http.controller;
 
-import java.io.File;
+import java.io.IOException;
 
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
-import webserver.http.utils.FileMapper;
-import webserver.mapping.ControllerScanner;
 
 public class FrontController {
 
-	FileMapper fileMapper = new FileMapper();
 	StaticFileResolver staticFileResolver = new StaticFileResolver();
-	ControllerResolver controllerResolver = new ControllerResolver();
+	// ControllerResolver controllerResolver = new ControllerResolver();
 
-	public void service(HttpRequest request, HttpResponse response) {
-		String path = request.getUrlPath();
-		ControllerScanner.initialize();
-		File file = fileMapper.findFile(path);
-		if (file != null) {
-			staticFileResolver.resolve(response, file);
-			return;
+	public HttpResponse service(HttpRequest request) throws IOException {
+		if (request.forStaticResource()) {
+			return staticFileResolver.resolve(request.getUrlPath());
 		}
-		controllerResolver.resolve(request, response);
+		// controllerResolver.resolve(request, response);
+		return null;
 	}
 
 }

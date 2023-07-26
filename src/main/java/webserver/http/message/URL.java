@@ -19,4 +19,9 @@ public class URL {
 	public String getParameterValue(String key) {
 		return parameterMap.get(key);
 	}
+
+	public boolean isStaticResource() {
+		int index = path.lastIndexOf(".");
+		return index > 0 && index < path.length() - 1;
+	}
 }

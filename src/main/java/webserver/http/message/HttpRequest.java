@@ -30,4 +30,8 @@ public class HttpRequest {
 		return url.getParameterValue(key);
 	}
 
+	public boolean forStaticResource() {
+		return url.isStaticResource();
+	}
+
 }
