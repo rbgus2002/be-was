@@ -14,13 +14,13 @@ public class ListController implements Controller {
     @Override
     public String process(HTTPServletRequest request, HTTPServletResponse response) {
         if (isLogInStatus(request)) {
-            return HOME_PATH.getPath();
+            return "/user/list.html";
         }
-        return "/user/list.html";
+        return "/user/login.html";
     }
 
     private boolean isLogInStatus(HTTPServletRequest request) {
         logger.debug("SessionManager.getSession(request) = {}", SessionManager.getSession(request));
-         return SessionManager.getSession(request) == null;
+         return SessionManager.getSession(request) != null;
     }
 }
