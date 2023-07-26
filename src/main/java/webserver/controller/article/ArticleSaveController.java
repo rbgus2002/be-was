@@ -21,7 +21,7 @@ public class ArticleSaveController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
-            String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
+            String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
             HttpParameters articleParameters = httpRequest.getParameters();
 
             checkLoginStatus(sessionId);

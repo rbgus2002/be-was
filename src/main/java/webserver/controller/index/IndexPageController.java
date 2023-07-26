@@ -80,12 +80,12 @@ public class IndexPageController implements Controller {
     }
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
-        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
+        String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
         return SessionDatabase.verifySessionId(sessionId);
     }
 
     private String getUsername(HttpRequest httpRequest) {
-        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
+        String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
         String userId = SessionDatabase.findUserIdBySessionId(sessionId);
         return UserDatabase.findUserById(userId).getName();
     }

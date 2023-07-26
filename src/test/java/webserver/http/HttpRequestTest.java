@@ -33,10 +33,9 @@ class HttpRequestTest {
         try {
             //when
             HttpRequest httpRequest = new HttpRequest(inputStream);
-            Cookie cookie = httpRequest.getCookie();
 
             //then
-            softAssertions.assertThat(httpRequest.getHeader("Method")).isEqualTo("GET");
+            softAssertions.assertThat(httpRequest.getMethod()).isEqualTo("GET");
             softAssertions.assertThat(httpRequest.getHeader("URI")).isEqualTo("/hello-world");
             softAssertions.assertThat(httpRequest.getHeader("Version")).isEqualTo("HTTP/1.1");
             softAssertions.assertThat(httpRequest.getHeader("Host")).isEqualTo("localhost:8080");
@@ -47,8 +46,8 @@ class HttpRequestTest {
             softAssertions.assertThat(httpRequest.getHeader("Connection")).isEqualTo("keep-alive");
             softAssertions.assertThat(httpRequest.getHeader("Upgrade-Insecure-Requests")).isEqualTo("1");
             softAssertions.assertThat(httpRequest.getHeader("Cache-Control")).isEqualTo("max-age=0");
-            softAssertions.assertThat("1234").isEqualTo(cookie.get("sid"));
-            softAssertions.assertThat("U3213e!K").isEqualTo(cookie.get("authorization"));
+            softAssertions.assertThat("1234").isEqualTo(httpRequest.getCookie("sid"));
+            softAssertions.assertThat("U3213e!K").isEqualTo(httpRequest.getCookie("authorization"));
             softAssertions.assertAll();
         } catch (IOException e) {
             e.printStackTrace();

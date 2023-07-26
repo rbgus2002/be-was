@@ -12,7 +12,7 @@ import java.io.IOException;
 public class ArticleWriteController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
+        String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
 
         if (isLoginStatus(sessionId)) {
             httpResponse.sendRedirect(Location.ARTICLE_WRITE_PAGE);

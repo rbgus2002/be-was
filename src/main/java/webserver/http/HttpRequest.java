@@ -128,8 +128,8 @@ public class HttpRequest {
         return httpParameters;
     }
 
-    public Cookie getCookie() {
-        return cookie;
+    public String getCookie(String name) {
+        return cookie.get(name);
     }
 
     public String getBody() {
