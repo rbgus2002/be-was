@@ -6,6 +6,7 @@ import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.wrapper.Queries;
 import domain.Post;
+import exception.UnauthorizedException;
 import service.PostService;
 import domain.User;
 import service.UserService;
@@ -128,12 +129,10 @@ public class Controller {
 
     @RequestMapping(method = POST, path = "/post/create")
     public ModelView createPost(HttpRequest request, HttpResponse response) {
-        User loginUser = UserSessionManager.getSession(request);
+        User loginUser = validatedUser(request);
 
-        if (loginUser != null) {
-            Queries queries = request.getQueries();
-            PostService.createPost(loginUser, queries.getValue("title"), queries.getValue("contents"));
-        }
+        Queries queries = request.getQueries();
+        PostService.createPost(loginUser, queries.getValue("title"), queries.getValue("contents"));
 
         return new ModelView("redirect:/index.html");
     }
@@ -162,15 +161,15 @@ public class Controller {
     @TemplateMapping(name = EditPostTemplate.class)
     @RequestMapping(method = GET, path = "/post/edit.html")
     public ModelView editPostForm(HttpRequest request, HttpResponse response) {
-        User loginUser = UserSessionManager.getSession(request);
+        User loginUser = validatedUser(request);
 
         Queries queries = request.getQueries();
         Post post = PostService.findPost(queries.getValue("postId"));
 
-        if (loginUser != null && loginUser == post.getUser()) {
+        if (isPostOwner(post, loginUser)) {
             ModelView mv = new ModelView("/post/edit.html");
-
             mv.addModelAttribute("post", post);
+
             return mv;
         }
 
@@ -181,12 +180,11 @@ public class Controller {
     public ModelView editPost(HttpRequest request, HttpResponse response) {
         Queries queries = request.getQueries();
 
-        User loginUser = UserSessionManager.getSession(request);
+        User loginUser = validatedUser(request);
         Post post = PostService.findPost(queries.getValue("postId"));
 
-        if (loginUser != null && post != null && loginUser == post.getUser()) {
-            post.setTitle(queries.getValue("title"));
-            post.setContents(queries.getValue("contents"));
+        if (isPostOwner(post, loginUser)) {
+            PostService.editPost(post.getPostId(), queries.getValue("title"), queries.getValue("contents"));
 
             return new ModelView("redirect:/post/show.html?postId=" + post.getPostId());
         }
@@ -199,10 +197,10 @@ public class Controller {
         Queries queries = request.getQueries();
         String postId = queries.getValue("postId");
 
-        User loginUser = UserSessionManager.getSession(request);
+        User loginUser = validatedUser(request);
         Post post = PostService.findPost(postId);
 
-        if (loginUser != null && post != null && loginUser == post.getUser()) {
+        if (isPostOwner(post, loginUser)) {
             PostService.deletePost(postId);
         }
 
@@ -212,7 +210,6 @@ public class Controller {
     @RequestMapping(method = GET,  path = "/user/logout")
     public ModelView logout(HttpRequest request, HttpResponse response) {
         UserSessionManager.destroySession(request);
-
         return new ModelView("redirect:/index.html");
     }
 
@@ -221,5 +218,19 @@ public class Controller {
         if (user != null) {
             mv.addModelAttribute("user", user);
         }
+    }
+
+    private User validatedUser(HttpRequest request) {
+        User user = UserSessionManager.getSession(request);
+
+        if (user == null) {
+            throw new UnauthorizedException("인증되지 않은 사용자");
+        }
+
+        return user;
+    }
+
+    private boolean isPostOwner(Post post, User user) {
+        return post.getUser() == user;
     }
 }

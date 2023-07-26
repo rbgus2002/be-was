@@ -2,14 +2,16 @@ package webserver;
 
 import common.http.HttpRequest;
 import common.http.HttpResponse;
-import exception.NoSuchControllerMethodException;
+import exception.NotFoundException;
+import exception.MethodNotAllowedException;
+import exception.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.View;
 
 import java.lang.reflect.Method;
 
-import static webserver.ServerConfig.ERROR_PAGE;
+;import static webserver.ServerConfig.*;
 
 /**
  * Dispatcher의 역할
@@ -24,21 +26,39 @@ public class Dispatcher {
 
     public void dispatch(HttpRequest request, HttpResponse response) throws Exception {
         ControllerMapper mapper = ControllerMapper.getInstance();
+        ModelView mv;
 
-        ModelView mv = null;
         try {
-            Method controllerMethod = mapper.getControllerMethod(request.getRequestMethod(), request.getRequestPath());
+            Method controllerMethod = mapper.getControllerMethod(request.getRequestPath(), request.getRequestMethod());
             mv = (ModelView) controllerMethod.invoke(controller, request, response);
 
-        } catch (NoSuchControllerMethodException | IllegalArgumentException e) {
-            mv = new ModelView(ERROR_PAGE);
-            logger.error(e.getMessage());
-        } finally {
-            if (mv != null) {
-                View view = ViewResolver.resolveViewName(mv.getViewName());
-                view.render(mv.getModel(), request, response);
-            }
+        } catch (Exception e) {
+            mv = controlException(e);
+
         }
+
+        if (mv == null) {
+            mv = new ModelView(INTERNAL_SERVER_ERROR_PAGE);
+        }
+
+        View view = ViewResolver.resolveViewName(mv.getViewName());
+        view.render(mv.getModel(), request, response);
+    }
+
+    private ModelView controlException(Exception e) {
+        if (e instanceof NotFoundException) {
+            return new ModelView(NOT_FOUND_PAGE);
+        }
+        if (e instanceof MethodNotAllowedException) {
+            return new ModelView(METHOD_NOT_ALLOWED_PAGE);
+        }
+        if (e instanceof IllegalArgumentException) {
+            return new ModelView(BAD_REQUEST_PAGE);
+        }
+        if (e instanceof UnauthorizedException) {
+            return new ModelView(UNAUTHORIZED_PAGE);
+        }
+        return new ModelView(INTERNAL_SERVER_ERROR_PAGE);
     }
 
 }
