@@ -1,5 +1,6 @@
 package model;
 
+import com.google.common.net.HttpHeaders;
 import model.enums.HttpStatusCode;
 
 import static util.StringUtils.NEXTLINE;
@@ -35,13 +36,17 @@ public class HttpResponse {
                 .append(SPACE)
                 .append(this.statusCode.getDescription())
                 .append(NEXTLINE)
-                .append(httpHeader.stringfy())
+                .append(httpHeader.stringify())
                 .append(NEXTLINE)
                 .toString();
     }
 
     public byte[] getByteArrayOfBody() {
         return body;
+    }
+
+    public void setCookie(String sessionId) {
+        httpHeader.put(HttpHeaders.SET_COOKIE, "sid=" +sessionId + "; path=/");
     }
 }
 

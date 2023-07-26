@@ -1,7 +1,7 @@
 package controller;
 
+import dto.LoginRequestDto;
 import dto.UserFormRequestDto;
-import mapper.ResponseMapper;
 import model.HttpRequest;
 import model.HttpResponse;
 import model.enums.HttpStatusCode;
@@ -12,44 +12,59 @@ import service.UserService;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
-import static constant.Uri.INDEX_HTML_URI;
-import static constant.Uri.USER_CREATE_URI;
+import static constant.Uri.*;
+import static mapper.ResponseMapper.*;
 import static util.StringUtils.COMMA_MARK;
 import static util.StringUtils.splitBy;
 
 public class RestController {
     private final FileService fileService;
     private final UserService userService;
-    private final ResponseMapper responseMapper;
 
     public RestController() {
         fileService = new FileService();
         userService = new UserService();
-        responseMapper = new ResponseMapper();
     }
 
     public HttpResponse route(HttpRequest httpRequest) {
-        HttpResponse response = responseMapper.createNotFoundResponse(httpRequest);
+        HttpResponse response = createNotFoundResponse(httpRequest);
         try {
+            if (httpRequest.match(Method.POST, USER_CREATE_REQUEST_URI)) {
+                response = addUserByForm(httpRequest);
+            }
+
+            if (httpRequest.match(Method.POST, USER_LOGIN_REQUEST_URI)) {
+                response = loginUser(httpRequest);
+            }
+
             if (isNotRestfulRequest(httpRequest)) {
                 response = sendNotRestfulResponse(httpRequest);
             }
-
-            if (httpRequest.match(Method.POST, USER_CREATE_URI)) {
-                response = addUserByForm(httpRequest);
-            }
             return response;
         } catch (IOException e) {
-            return responseMapper.createBadRequestResponse(httpRequest);
+            return createBadRequestResponse(httpRequest);
         }
+    }
+
+    private HttpResponse loginUser(HttpRequest httpRequest) {
+        Map<String, String> bodyMap = httpRequest.getBodyMap();
+        LoginRequestDto dto = new LoginRequestDto(bodyMap);
+        boolean loginResult = userService.login(dto);
+        if (loginResult) {
+            HttpResponse response = createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+            String sessionId = UUID.randomUUID().toString();
+            response.setCookie(sessionId);
+            return response;
+        }
+        return createRedirectResponse(httpRequest, HttpStatusCode.MOVED_PERMANENTLY, USER_LOGIN_FAILED_URI);
     }
 
     private HttpResponse addUserByForm(HttpRequest request) {
         Map<String, String> bodyMap = request.getBodyMap();
         userService.createByForm(new UserFormRequestDto(bodyMap));
-        return responseMapper
-                .createRedirectResponse(request, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+        return createRedirectResponse(request, HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
     }
 
     private HttpResponse sendNotRestfulResponse(HttpRequest httpRequest) throws IOException {
@@ -63,8 +78,7 @@ public class RestController {
 
     private HttpResponse getHttpResponse(HttpRequest request, String path, MIME extension) throws IOException {
         byte[] fileContents = fileService.openFile(path, extension);
-        return responseMapper
-                .createHttpResponse(request, HttpStatusCode.OK, fileContents, extension);
+        return createHttpResponse(request, HttpStatusCode.OK, fileContents, extension);
     }
 
     private boolean isNotRestfulRequest(HttpRequest httpRequest) {

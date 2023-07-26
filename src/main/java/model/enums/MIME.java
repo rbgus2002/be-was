@@ -12,6 +12,7 @@ public enum MIME {
     TTF("font/ttf"),
     WOFF("font/woff"),
     WOFF2("application/x-font-woff2"),
+    DEFAULT("application/octet-stream"),
     ;
 
     private final String contentType;
