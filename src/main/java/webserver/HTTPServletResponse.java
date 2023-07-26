@@ -69,11 +69,11 @@ public class HTTPServletResponse {
     }
 
     public String info() {
-        String line = "";
-        line += version + " " + statusCode + " " + statusMessage + "\r\n";
+        String line = version + " " + statusCode + " " + statusMessage + "\r\n";
         for (Map.Entry<String, String> header : headers.entrySet()) {
             line += (header.getKey() + " : " + header.getValue() + "\r\n");
         }
+        //append (StringBuilder)
         line += "\r\n";
         return line;
     }

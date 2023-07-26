@@ -14,11 +14,13 @@ import static util.PathList.FAILED_PATH;
 import static util.PathList.HOME_PATH;
 @RequestMapping(path = "/user/login")
 public class LogInTestController implements Controller {
-
     private static final Logger logger = LoggerFactory.getLogger(LogInTestController.class);
 
     @Override
     public String process(HTTPServletRequest request, HTTPServletResponse response) {
+        if(request.getMethod().equals("GET")){
+            return "/user/login.html";
+        }
         Map<String, String> query = request.getQuery();
         String userId = query.get("userId");
         User findUser = Database.findUserById(userId);

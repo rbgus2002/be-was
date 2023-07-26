@@ -6,7 +6,6 @@ import view.ViewResolver;
 import webserver.ControllerScanner;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -27,11 +26,9 @@ public class DispatcherServlet {
 
     public void service(HTTPServletRequest request, HTTPServletResponse response) throws InvocationTargetException, IllegalAccessException, IOException, InstantiationException {
         String url = request.getUrl();
-        String viewPath = url;
-        Controller controller = map.get(url);
-        if (controller != null) {
-            viewPath = controller.process(request, response);
-        }
+        String viewPath;
+        Controller controller = map.getOrDefault(url, new StaticController());
+        viewPath = controller.process(request, response);
         ViewResolver view = new ViewResolver(viewPath, response, request);
         view.service();
         view.render();

@@ -22,6 +22,10 @@ public class HTTPServletRequest {
         logger.debug("method = {}, url = {}, version = {}", method, url, version);
     }
 
+    public String getMethod() {
+        return method;
+    }
+
     public String getUrl() {
         return url;
     }
