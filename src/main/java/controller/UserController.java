@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Parser;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,33 +26,25 @@ public class UserController {
         return instance;
     }
 
-    @RequestMapping(path = "/user/create", method = HttpMethod.GET)
-    public String createUserByGET(HttpRequest request, HttpResponse response) throws IOException {
-        Map<String, String> params = request.getParams();
-
-        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        UserDatabase.addUser(user);
-
-        return "/index.html";
-    }
-
     @RequestMapping(path = "/user/create", method = HttpMethod.POST)
-    public String createUserByPOST(HttpRequest request, HttpResponse response) throws IOException {
+    public String createUser(HttpRequest request, HttpResponse response) {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
         // TODO: 예외처리 및 에러페이지로 이동
-        if (UserDatabase.findUserById(params.get("userId")) != null) {
-            return "redirect:/index.html";
+        if (validateDuplicatedUser(params)) {
+            User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+            UserDatabase.addUser(user);
         }
-
-        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        UserDatabase.addUser(user);
 
         return "redirect:/index.html";
     }
 
+    private static boolean validateDuplicatedUser(Map<String, String> params) {
+        return UserDatabase.findUserById(params.get("userId")) == null;
+    }
+
     @RequestMapping(path = "/user/login", method = HttpMethod.POST)
-    public String login(HttpRequest request, HttpResponse response) throws IOException {
+    public String login(HttpRequest request, HttpResponse response) {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
         String userId = params.get("userId");
         String password = params.get("password");
