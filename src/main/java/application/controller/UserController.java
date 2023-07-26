@@ -36,9 +36,10 @@ public class UserController {
     }
 
     @RequestMapping(path = "/user/logout", method = HttpMethod.GET)
-    public void logout(@HttpResponse HttpResponseMessage response,
-                       @Cookies Map<String, String> cookies) {
+    public String logout(@HttpResponse HttpResponseMessage response,
+                         @Cookies Map<String, String> cookies) {
         CookieController.deleteCookie(cookies, response);
+        return "redirect:/index.html";
     }
 
     private boolean isUserIdDuplicate(String userId) {

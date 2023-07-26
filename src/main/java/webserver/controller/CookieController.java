@@ -11,7 +11,7 @@ public class CookieController {
     public static void createCookie(HttpResponseMessage response, String value) {
         String sessionId = UUID.randomUUID().toString();
         SessionStorage.setSession(sessionId, value);
-        response.setHeader("Set-Cookie", "sid=" + sessionId + "; Expires=Thu, 01 Jan 2070 00:00:00 GMT; path=/");
+        response.setHeader("Set-Cookie", "sid=" + sessionId + "; path=/");
     }
 
     public static void deleteCookie(Map<String, String> cookies, HttpResponseMessage response) {
