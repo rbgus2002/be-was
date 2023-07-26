@@ -33,16 +33,19 @@ public class HttpRequest {
 		String startLine = bufferedReader.readLine();
 		// 로그
 		logger.debug(startLine);
+		if (startLine == null) {
+			return;
+		}
 
 		String[] requestLineTokens = startLine.split(SINGLE_SPACE);
 		httpMethod = HttpMethod.from(requestLineTokens[0]);
-		url = URL.of(requestLineTokens[1]);
+		url = URL.from(requestLineTokens[1]);
 		httpVersion = requestLineTokens[2];
 	}
 
 	private void parseAndSetHeaderFields(BufferedReader bufferedReader) throws IOException {
 		String line = bufferedReader.readLine();
-		while (line != null && !line.equals("")) {
+		while (!"".equals(line)) {
 			String[] headerFieldTokens = line.split(SEPARATOR_REGEX, 2);
 			headerFields.addHeaderField(headerFieldTokens[0], headerFieldTokens[1]);
 			line = bufferedReader.readLine();
@@ -53,7 +56,15 @@ public class HttpRequest {
 		return url.getPath();
 	}
 
+	public HttpMethod getHttpMethod() {
+		return httpMethod;
+	}
+
 	public String getHttpVersion() {
 		return httpVersion;
+	}
+
+	public String getParam(String key) {
+		return url.getQueryValue(key);
 	}
 }

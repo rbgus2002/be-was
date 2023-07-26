@@ -1,7 +1,5 @@
 package webserver;
 
-import static webserver.http.utils.HttpConstant.*;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +14,6 @@ import webserver.http.message.HttpResponse;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-	private static final String RESOURCES_PATH = "src/main/resources/templates";
 
 	private final Socket connection;
 
@@ -31,47 +28,20 @@ public class RequestHandler implements Runnable {
 		try (InputStream inputStream = connection.getInputStream();
 			 DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
 			// Request 로그 출력
-			preProcess(inputStream);
 			// Request & Response 객체 생성
 			HttpRequest request = HttpRequest.from(inputStream);
-			HttpResponse response = HttpResponse.from(request);
+			HttpResponse response = HttpResponse.from(request, outputStream);
 			// 요청 처리
 			FrontController frontController = new FrontController();
 			frontController.service(request, response);
 			// 응답 전송
-			sendResponse(outputStream, response);
+			response.sendResponse(outputStream);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	private void sendResponse(DataOutputStream outputStream, HttpResponse response) {
-		writeResponseHeader(outputStream, response);
-		writeResponseBody(outputStream, response);
-	}
-
-	private void writeResponseHeader(DataOutputStream outputStream, HttpResponse response) {
-		try {
-			outputStream.writeBytes(String.join(SINGLE_SPACE, response.getStatusLineTokens()) + CRLF);
-			outputStream.writeBytes("Content-Type: text/html;charset=utf-8" + CRLF);
-			outputStream.writeBytes("Content-Length: " + response.getBody().length + CRLF);
-			outputStream.writeBytes(CRLF);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	private void writeResponseBody(DataOutputStream outputStream, HttpResponse response) {
-		try {
-			byte[] body = response.getBody();
-			outputStream.write(body, 0, body.length);
-			outputStream.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
-		}
-	}
-
-	private void preProcess(InputStream inputStream) throws IOException {
-		// TODO: 전체 로그 출력
-	}
+	// private void preProcess(InputStream inputStream) throws IOException {
+	// 	// TODO: 전체 로그 출력
+	// }
 }
