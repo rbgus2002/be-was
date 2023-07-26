@@ -4,9 +4,11 @@ import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.Constants.ContentType;
+import webserver.http.Constants.HeaderOption;
 import webserver.http.Constants.HttpMethod;
 import webserver.http.Constants.HttpVersion;
 import webserver.RequestHandler;
+import webserver.http.Cookie;
 import webserver.http.Header;
 
 import java.io.BufferedReader;
@@ -20,6 +22,7 @@ import static support.utils.StringUtils.*;
 public class HttpRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final int Content_Length_Index = 16;
 
     private final HttpMethod httpMethod;
     private final HttpVersion version;
@@ -27,6 +30,7 @@ public class HttpRequest {
     private final RequestQuery requestQuery;
     private final Header header;
     private final RequestBody requestBody;
+    private Cookie cookie;
 
     private HttpRequest(String requestLine, String header, String body) {
 
@@ -54,7 +58,7 @@ public class HttpRequest {
         while (!line.equals("")) {
             line = br.readLine();
 
-            if(line.startsWith("Content-Length")) contentLength = Integer.parseInt(line.substring(16));
+            if(line.startsWith("Content-Length")) contentLength = Integer.parseInt(line.substring(Content_Length_Index));
             logger.debug("header: {}", line);
             header.append(line).append(NEWLINE);
         }
@@ -74,10 +78,16 @@ public class HttpRequest {
         return RequestQuery.of(pathAndQueries[1]);
     }
 
-
     private RequestBody parseRequestBody(final String body) {
         if(body == null) return null;
         return RequestBody.of(body);
+    }
+
+    public void setCookie() {
+        String cookie = header.getElement(HeaderOption.COOKIE);
+        if(cookie != null) {
+            this.cookie = Cookie.of(cookie);
+        }
     }
 
     public HttpMethod getHttpMethod() {

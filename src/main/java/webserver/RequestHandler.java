@@ -23,6 +23,7 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = HttpRequest.of(in);
+            request.setCookie();
             HttpResponse response = HttpResponse.createEmpty();
             response.setHttpVersion(request.getVersion());
             DataOutputStream dos = new DataOutputStream(out);
