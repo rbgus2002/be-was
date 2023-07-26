@@ -27,7 +27,7 @@ public class HttpResponse implements Serializable {
     }
 
     protected void ok(final MIME mime, final byte[] body) {
-        set(StatusCode.OK, Headers.create(mime), body);
+        set(StatusCode.OK, Headers.create(mime, body.length), body);
     }
 
     protected void found(final String url) {
