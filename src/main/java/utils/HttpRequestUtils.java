@@ -8,14 +8,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+
+import static java.net.URLDecoder.*;
+import static java.nio.charset.StandardCharsets.*;
 
 public class HttpRequestUtils {
 
     private HttpRequestUtils() {}
 
     public static HttpRequest createRequest(InputStream in) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, UTF_8));
 
         String line = br.readLine();
         String firstLine = line;
@@ -30,9 +34,9 @@ public class HttpRequestUtils {
             parseBody((char) br.read(), bodyBuilder);
         }
 
-        RequestLine requestLine = parseRequestLine(firstLine);
-        Headers headers = new Headers(headerBuilder.toString());
-        RequestBody requestBody = new RequestBody(bodyBuilder.toString());
+        RequestLine requestLine = parseRequestLine(decode(firstLine, UTF_8));
+        Headers headers = new Headers(decode(headerBuilder.toString(), UTF_8));
+        RequestBody requestBody = new RequestBody(decode(bodyBuilder.toString(), UTF_8));
 
         return new HttpRequest(requestLine, headers, requestBody);
     }
