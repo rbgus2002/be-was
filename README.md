@@ -35,3 +35,8 @@ Java Web Application Server 2023
   - [X] HttpWasResponse 클래스 커졌으면 분리하기
 - [X] 로그인 기능 구현
 - [X] 단위 테스트 작성
+### Step-6
+- [X] View를 동적으로 생성하기 
+  - [X] 쿠키값을 보고 index.html에 사용자 이름 표시하기
+  - [X] 로그인을 하고 있을 경우 로그인 버튼 없애기
+  - [X] 사용자 목록 출력하기 

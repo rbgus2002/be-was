@@ -4,16 +4,16 @@ import java.time.LocalDateTime;
 
 public class SessionData {
 
-	private final String sessionId;
+	private final String userId;
 	private final LocalDateTime expiredTime;
 
-	public SessionData(final String sessionId, final LocalDateTime expiredTime) {
-		this.sessionId = sessionId;
+	public SessionData(final String userId, final LocalDateTime expiredTime) {
+		this.userId = userId;
 		this.expiredTime = expiredTime;
 	}
 
-	public String getSessionId() {
-		return sessionId;
+	public String getUserId() {
+		return userId;
 	}
 
 	public LocalDateTime getExpiredTime() {

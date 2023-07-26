@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import controller.Controller;
 import controller.FrontController;
 import controller.annotation.RequestMapping;
 import webserver.request.HttpWasRequest;
@@ -28,26 +27,30 @@ public class WasHandler {
 	}
 
 	public void service() {
-		final String resourcePath = httpWasRequest.getResourcePath();
-		if (httpWasResponse.isExistResource(resourcePath)) {
-			httpWasResponse.responseResource(resourcePath);
-			return;
-		}
-
 		try {
-			apiService();
+			if (responseDynamicFile()) {
+				return;
+			}
+			final String resourcePath = httpWasRequest.getResourcePath();
+			if (httpWasResponse.isExistResource(resourcePath)) {
+				httpWasResponse.responseResource(resourcePath);
+				return;
+			}
+			apiService(resourcePath);
 		} catch (InvocationTargetException | IllegalAccessException e) {
 			httpWasResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
 			httpWasResponse.setBody(e.getCause().getMessage() , HttpMimeType.NOTING);
 			httpWasResponse.doResponse();
 		}
+		
 	}
 
-	private void apiService() throws InvocationTargetException, IllegalAccessException {
-		final List<Method> methods = getResourcePathMethod();
+	private void apiService(String resourcePath) throws InvocationTargetException, IllegalAccessException {
+		final List<Method> methods = getResourcePathMethod(resourcePath);
 
 		if (methods.isEmpty()) {
-			httpWasResponse.response404();
+			httpWasResponse.setHttpStatus(HttpStatus.NOT_FOUND);
+			httpWasResponse.setBody(HttpStatus.NOT_FOUND.getName(), HttpMimeType.PLAIN);
 			return;
 		}
 
@@ -58,7 +61,26 @@ public class WasHandler {
 			return;
 		}
 
-		httpWasResponse.response405();
+		httpWasResponse.setHttpStatus(HttpStatus.METHOD_NOT_ALLOWED);
+		httpWasResponse.setBody(HttpStatus.METHOD_NOT_ALLOWED.getName(), HttpMimeType.PLAIN);
+	}
+
+	private boolean responseDynamicFile() throws InvocationTargetException, IllegalAccessException {
+		final String resourcePath = httpWasRequest.getResourcePath();
+		final String[] token = resourcePath.split("\\.");
+
+		final List<Method> methods = getResourcePathMethod(token[0]);
+
+		if (methods.isEmpty())
+			return false;
+
+		final Optional<Method> matchHttpMethod = getMatchHttpMethod(methods, HttpMethod.GET.name());
+		if (matchHttpMethod.isPresent()) {
+			runApiMethod(matchHttpMethod.get());
+			return true;
+		}
+
+		return false;
 	}
 
 	private void runApiMethod(final Method method) throws InvocationTargetException, IllegalAccessException {
@@ -67,10 +89,8 @@ public class WasHandler {
 		method.invoke(frontController.getInstance(methodClass.getName()), httpWasRequest, httpWasResponse);
 	}
 
-	private List<Method> getResourcePathMethod() {
-		final String resourcePath = httpWasRequest.getResourcePath();
-
-		final Method[] declaredMethods = Controller.class.getDeclaredMethods();
+	private List<Method> getResourcePathMethod(String resourcePath) {
+		final Method[] declaredMethods = frontController.getDeclaredMethods();
 		return Arrays.stream(declaredMethods)
 			.filter(method -> method.isAnnotationPresent(RequestMapping.class))
 			.filter(method -> {

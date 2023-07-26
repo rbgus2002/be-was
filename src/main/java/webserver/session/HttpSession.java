@@ -1,7 +1,6 @@
 package webserver.session;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -22,11 +21,11 @@ public class HttpSession {
 
 	private HttpSession() {}
 
-	public String createSession(String username) {
-		final UUID sessionId = UUID.randomUUID();
-		final SessionData sessionData = new SessionData(sessionId.toString(), createExpiredTime());
+	public String createSession(String userId) {
+		final SessionData sessionData = new SessionData(userId, createExpiredTime());
 
-		attributes.put(username, sessionData);
+		final UUID sessionId = UUID.randomUUID();
+		attributes.put(sessionId.toString(), sessionData);
 		return sessionId.toString();
 	}
 
@@ -34,17 +33,16 @@ public class HttpSession {
 		return LocalDateTime.now().plusHours(EXPIRED_TIME);
 	}
 
-	public boolean verifySession(String username, String sessionId) {
-		final SessionData sessionData = attributes.get(username);
+	public boolean verifySession(String sessionId) {
+		final SessionData sessionData = attributes.get(sessionId);
 		if (sessionData == null) {
 			return false;
 		}
 
-		if (sessionData.getExpiredTime().isBefore(LocalDateTime.now())) {
-			return false;
-		}
+		return !sessionData.getExpiredTime().isBefore(LocalDateTime.now());
+	}
 
-		final String savedSessionId = sessionData.getSessionId();
-		return Objects.equals(sessionId, savedSessionId);
+	public SessionData getSessionData(String key) {
+		return attributes.get(key);
 	}
 }

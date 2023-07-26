@@ -7,6 +7,7 @@ import webserver.request.HttpWasRequest;
 import webserver.response.HttpWasResponse;
 import webserver.session.Cookie;
 import webserver.session.HttpSession;
+import webserver.utils.HttpHeader;
 import webserver.utils.HttpMethod;
 import webserver.utils.HttpStatus;
 
@@ -21,7 +22,8 @@ public class Controller {
 		final User user = new User(userId, password, name, email);
 		Database.addUser(user);
 
-		response.response302Header("http://localhost:8080/index.html");
+		response.setHttpStatus(HttpStatus.FOUND);
+		response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
 	}
 
 	@RequestMapping(method = HttpMethod.POST, path = "/user/login")
@@ -47,6 +49,7 @@ public class Controller {
 			.build();
 
 		response.addCookie(cookie);
-		response.response302Header("http://localhost:8080/index.html");
+		response.setHttpStatus(HttpStatus.FOUND);
+		response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
 	}
 }

@@ -42,7 +42,8 @@ public class HttpWasResponse {
 			this.body = files;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			response404();
+			setHttpStatus(HttpStatus.NOT_FOUND);
+			setBody(HttpStatus.NOT_FOUND.getName(), HttpMimeType.PLAIN);
 		}
 	}
 
@@ -65,30 +66,6 @@ public class HttpWasResponse {
 		for (Cookie cookie : cookies) {
 			dos.writeBytes(cookie.convertToHeader());
 		}
-	}
-
-	public void response302Header(String location) {
-		header.clearHeader();
-		httpStatus = HttpStatus.FOUND;
-		header.addHeader(HttpHeader.LOCATION, location);
-	}
-
-	public void response404() {
-		String response = "404 Not Found";
-		header.clearHeader();
-		httpStatus = HttpStatus.NOT_FOUND;
-		header.addHeader(HttpHeader.CONTENT_TYPE, HttpMimeType.PLAIN.getCharsetUtf8());
-		header.addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(response.getBytes().length));
-		body = response.getBytes();
-	}
-
-	public void response405() {
-		final String response = "405 Method Not Allowed";
-		httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
-		header.clearHeader();
-		header.addHeader(HttpHeader.CONTENT_TYPE, HttpMimeType.PLAIN.getCharsetUtf8());
-		header.addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(response.getBytes().length));
-		body = response.getBytes();
 	}
 
 	private String getRequestLine(HttpStatus httpStatus) {
