@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static db.Sessions.getSession;
+import static webserver.http.Cookie.isValidCookie;
 import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.ContentType.getContentTypeByExtension;
 import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
@@ -26,7 +27,7 @@ public class StaticFileController implements Controller {
 
     @RequestMethod(method = "GET")
     public HttpResponse handleGet(HttpRequest request) {
-        if(request.cookie() != null) {
+        if (isValidCookie(request.cookie())) {
             Session session = getSession(request.cookie().getSessionId());
             logger.debug("session Id: {}", session.getSessionId());
             User user = session.getUser();
