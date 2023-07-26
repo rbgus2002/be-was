@@ -1,6 +1,7 @@
 package controller;
 
 import annotation.RequestMapping;
+import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpSession;
@@ -101,11 +102,11 @@ public class UserListController implements HttpController {
         htmlBuilder.append("              </thead>\n");
         htmlBuilder.append("              <tbody>\n");
         int i = 0;
-        for (HttpSession session : HttpSessionManager.getAllSessions()) {
-            User user = (User) session.getAttribute("user");
+        for (User user : Database.findAll()) {
             htmlBuilder.append("                <tr>\n");
             htmlBuilder.append("                    <th scope=\"row\">" + i + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
             htmlBuilder.append("                </tr>\n");
+
         }
         htmlBuilder.append("              </tbody>\n");
         htmlBuilder.append("          </table>\n");
