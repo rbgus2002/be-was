@@ -2,8 +2,8 @@ package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import support.exception.NotFoundException;
-import support.exception.ServerErrorException;
+import support.web.exception.NotFoundException;
+import support.web.exception.ServerErrorException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

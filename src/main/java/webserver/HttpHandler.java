@@ -2,11 +2,11 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.exception.*;
 import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
 import support.web.ModelAndView;
 import support.web.ViewResolver;
+import support.web.exception.*;
 import support.web.view.ViewFactory;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -44,7 +44,6 @@ public class HttpHandler {
         String path = request.getRequestPath();
 
         try {
-
 
 
             ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);

@@ -61,6 +61,7 @@ class RequestHandlerTest {
 
     @BeforeAll
     static void prepare() {
+        DefaultInstanceManager.getInstanceMagager().clear();
         DefaultInstanceManager.getInstanceMagager().addInstance(UserController.class);
         DefaultInstanceManager.getInstanceMagager().addInstance(ViewFactory.class);
         DefaultInstanceManager.getInstanceMagager().addInstance(ErrorView.class);

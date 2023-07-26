@@ -1,4 +1,4 @@
-package support.exception;
+package support.web.exception;
 
 import webserver.response.HttpStatus;
 

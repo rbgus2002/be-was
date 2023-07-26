@@ -7,8 +7,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import static exception.ExceptionName.ALREADY_REGISTERED;
-
 public class DefaultInstanceManager implements InstanceManager {
 
     private static final DefaultInstanceManager INSTANCE = new DefaultInstanceManager();
@@ -22,10 +20,15 @@ public class DefaultInstanceManager implements InstanceManager {
         return INSTANCE;
     }
 
+    public void clear() {
+        instances.clear();
+    }
+
     @Override
     public void addInstance(Class<?> clazz) {
         if (instances.containsKey(clazz)) {
-            throw new RuntimeException(ALREADY_REGISTERED);
+            logger.debug("이미 생성된 인스턴스입니다. {}", clazz.getName());
+            return;
         }
 
         try {

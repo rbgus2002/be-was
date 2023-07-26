@@ -1,7 +1,7 @@
 package webserver;
 
-import support.exception.NotFoundException;
-import support.exception.ServerErrorException;
+import support.web.exception.NotFoundException;
+import support.web.exception.ServerErrorException;
 
 import java.io.File;
 import java.io.IOException;

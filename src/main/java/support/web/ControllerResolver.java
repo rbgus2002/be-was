@@ -1,16 +1,15 @@
 package support.web;
 
-import exception.ExceptionName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.PathVariable;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
-import support.exception.BadRequestException;
-import support.exception.HttpException;
-import support.exception.NotSupportedException;
-import support.exception.ServerErrorException;
+import support.web.exception.BadRequestException;
+import support.web.exception.HttpException;
+import support.web.exception.NotSupportedException;
+import support.web.exception.ServerErrorException;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.KeyValue;
@@ -123,7 +122,7 @@ public abstract class ControllerResolver {
 
         if (Arrays.asList(args).contains(null)) {
             logger.debug("BadRequest 발생");
-            throw new BadRequestException(ExceptionName.WRONG_ARGUMENT);
+            throw new BadRequestException();
         }
 
         return args;
