@@ -26,6 +26,10 @@ public class Index implements Controller {
     @Override
     public void execute(HttpRequest request, HttpResponse response) {
         User user = UserSessionManager.getInstance().getSession(request);
+        setResponse(response, user);
+    }
+
+    private void setResponse(HttpResponse response, User user) {
         response.setStatus(HttpResponseStatus.STATUS_200);
         response.setBodyByFile(getHtml(user), Type.HTML);
     }

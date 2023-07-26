@@ -16,11 +16,11 @@ public class HttpRequestLine {
 
         method = contents[0];
         path = contents[1].split("[?]")[0];
-        paramsMap = parseParams(requestLine);
+        paramsMap = parseParams(contents[1]);
     }
 
-    private Map<String, String> parseParams(String line) {
-        String[] params = line.split("[?]");
+    private Map<String, String> parseParams(String path) {
+        String[] params = path.split("[?]");
         Map<String, String> paramsMap = new HashMap<>();
         if(params.length > 1){
             Arrays.stream(params[1].split("[&]"))

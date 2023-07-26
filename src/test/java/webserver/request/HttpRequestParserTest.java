@@ -92,7 +92,7 @@ class HttpRequestParserTest {
         tempMap.put("id","1");
         tempMap.put("password","1234");
 
-        assertTrue(tempMap.get("id").equals(request.getParamValueByKey("id")));
-        assertTrue(tempMap.get("password").equals(request.getParamValueByKey("password")));
+        assertEquals(tempMap.get("id"), request.getParamValueByKey("id"));
+        assertEquals(tempMap.get("password"), request.getParamValueByKey("password"));
     }
 }
