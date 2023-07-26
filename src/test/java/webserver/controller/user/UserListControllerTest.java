@@ -1,6 +1,6 @@
 package webserver.controller.user;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,9 +21,9 @@ class UserListControllerTest {
 
     @BeforeAll
     static void init() {
-        Database.addUser(new User("userIdA", "passwordA", "userA", "userA@naver.com"));
-        Database.addUser(new User("userIdB", "passwordB", "userB", "userB@naver.com"));
-        Database.addUser(new User("userIdC", "passwordC", "userC", "userC@naver.com"));
+        UserDatabase.addUser(new User("userIdA", "passwordA", "userA", "userA@naver.com"));
+        UserDatabase.addUser(new User("userIdB", "passwordB", "userB", "userB@naver.com"));
+        UserDatabase.addUser(new User("userIdC", "passwordC", "userC", "userC@naver.com"));
     }
 
     @BeforeEach

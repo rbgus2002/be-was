@@ -1,6 +1,6 @@
 package webserver.controller.user;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +21,7 @@ class UserSaveControllerTest {
 
     @BeforeEach
     void init() {
-        Database.clear();
+        UserDatabase.clear();
         userSaveController = new UserSaveController();
         httpResponse  = new HttpResponse();
     }
@@ -43,7 +43,7 @@ class UserSaveControllerTest {
 
         //when
         userSaveController.process(httpRequest, httpResponse);
-        User user = Database.findUserById("javajigi");
+        User user = UserDatabase.findUserById("javajigi");
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();
@@ -105,7 +105,7 @@ class UserSaveControllerTest {
     void userSaveRequestWithConflictedUserID() throws Exception {
         //given
         User user = new User("javajigi", "password", "name", "email@domain.com");
-        Database.addUser(user);
+        UserDatabase.addUser(user);
 
         //when
         String requestMessage = "POST /user/create HTTP/1.1\r\n" +

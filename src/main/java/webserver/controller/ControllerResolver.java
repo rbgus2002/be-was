@@ -1,7 +1,10 @@
 package webserver.controller;
 
-import webserver.IndexPageController;
+import webserver.controller.article.ArticleSaveController;
+import webserver.controller.article.ArticleViewController;
+import webserver.controller.article.ArticleWriteController;
 import webserver.controller.file.FileController;
+import webserver.controller.index.IndexPageController;
 import webserver.controller.user.UserListController;
 import webserver.controller.user.UserLoginController;
 import webserver.controller.user.UserSaveController;
@@ -36,6 +39,9 @@ public class ControllerResolver {
         controllers.put(new ControllerSignature("/user/create", HttpMethod.POST), new UserSaveController());
         controllers.put(new ControllerSignature("/user/login", HttpMethod.POST), new UserLoginController());
         controllers.put(new ControllerSignature("/user/list", HttpMethod.GET), new UserListController());
+        controllers.put(new ControllerSignature("/article/write", HttpMethod.GET), new ArticleWriteController());
+        controllers.put(new ControllerSignature("/article/save", HttpMethod.POST), new ArticleSaveController());
+        controllers.put(new ControllerSignature("/article/view", HttpMethod.GET), new ArticleViewController());
     }
 
     public Controller resolve(String path, String method) {

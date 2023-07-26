@@ -3,6 +3,7 @@ package webserver.http;
 public enum HttpStatus {
     OK(200, "HTTP/1.1 200 OK"),
     FOUND(302, "HTTP/1.1 302 Found"),
+    UNAUTHORIZED(401, "HTTP/1.1 401 Unauthorized"),
     NOT_FOUND(404, "HTTP/1.1 404 Not Found"),
     FORBIDDEN(403, "HTTP/1.1 403 Forbidden"),
     INTERNAL_SERVER_ERROR(500, "HTTP/1.1 500 Internal Server Error"),

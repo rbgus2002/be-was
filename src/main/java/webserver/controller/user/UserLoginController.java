@@ -1,6 +1,6 @@
 package webserver.controller.user;
 
-import db.Database;
+import db.UserDatabase;
 import webserver.controller.Controller;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.LoginFailException;
@@ -58,13 +58,13 @@ public class UserLoginController implements Controller {
     }
 
     private void verifyUserIdExistence(String userId) throws LoginFailException {
-        if (Database.findUserById(userId) == null) {
+        if (UserDatabase.findUserById(userId) == null) {
             throw new LoginFailException();
         }
     }
 
     private void verifyCredentials(String userId, String password) throws LoginFailException {
-        if (!Database.findUserById(userId).getPassword().equals(password)) {
+        if (!UserDatabase.findUserById(userId).getPassword().equals(password)) {
             throw new LoginFailException();
         }
     }
