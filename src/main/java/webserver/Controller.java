@@ -183,17 +183,13 @@ public class Controller {
 
         User loginUser = UserSessionManager.getSession(request);
         Post post = PostService.findPost(queries.getValue("postId"));
-
-
-
+        
         if (loginUser != null && post != null && loginUser == post.getUser()) {
-            System.out.println("==========================");
             post.setTitle(queries.getValue("title"));
             post.setContents(queries.getValue("contents"));
 
             return new ModelView("redirect:/post/show.html?postId=" + post.getPostId());
         }
-        System.out.println("==========================");
 
         return new ModelView("redirect:/index.html");
     }

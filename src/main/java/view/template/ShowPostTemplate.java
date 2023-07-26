@@ -21,14 +21,15 @@ public class ShowPostTemplate extends DynamicTemplate {
             "   </article>\n" +
             "</div>";
     private  final String BUTTONS_FORMAT =
+            "<br>\n"+
             "<div class=\"col-md-3 qna-write\">\n" +
             "   <form action=\"/post/edit.html\" method=\"get\">\n" +
             "       <input type=\"hidden\" name=\"postId\" value=\"%s\"><br>\n" +
-            "       <button class=\"btn btn-primary pull-left\" type=\"submit\">수정하기</button>\n" +
+            "       <button class=\"btn btn-primary pull-left\" type=\"submit\" style=\"margin-right: 40px\">수정하기</button>\n" +
             "   </form>"+
             "   <form action=\"/post/delete\" method=\"post\">\n" +
-            "       <input type=\"hidden\" name=\"postId\" value=\"%s\"><br>\n" +
-            "       <button class=\"btn btn-primary pull-left\" type=\"submit\">삭제하기</button>\n" +
+            "       <input type=\"hidden\" name=\"postId\" value=\"%s\">\n" +
+            "       <button class=\"btn btn-primary pull-right btn-danger\" type=\"submit\">삭제하기</button>\n" +
             "   </form>"+
             "</div>\n";
 
