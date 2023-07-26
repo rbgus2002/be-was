@@ -21,8 +21,8 @@ public class HttpSession {
 
 	private HttpSession() {}
 
-	public String createSession(String username) {
-		final SessionData sessionData = new SessionData(username, createExpiredTime());
+	public String createSession(String userId) {
+		final SessionData sessionData = new SessionData(userId, createExpiredTime());
 
 		final UUID sessionId = UUID.randomUUID();
 		attributes.put(sessionId.toString(), sessionData);
