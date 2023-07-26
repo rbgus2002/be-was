@@ -4,20 +4,24 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionStorage {
-    static final ConcurrentHashMap<UUID, Session> sessionStorage = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<UUID, SessionValue> sessionStorage = new ConcurrentHashMap<>();
 
     public static String setSession(String userId) {
         UUID sessionId = UUID.randomUUID();
-        Session session = new Session(userId);
-        sessionStorage.put(sessionId, session);
+        SessionValue sessionValue = new SessionValue(userId);
+        sessionStorage.put(sessionId, sessionValue);
         return sessionId.toString();
     }
 
+    //todo getSession해서 책임 분리
     public static String getUserId(UUID sessionId) {
-        Session session = sessionStorage.get(sessionId);
-        if(!session.isExpired()) {
+        SessionValue sessionValue = sessionStorage.get(sessionId);
+        if(sessionValue == null) {
             return null;
         }
-        return session.getUserId();
+        if(sessionValue.isExpired()) {
+            return null;
+        }
+        return sessionValue.getUserId();
     }
 }

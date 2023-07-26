@@ -20,7 +20,7 @@ public class LoginController{
 
     @RequestMapping(path = "/user/login")
     public void login(HttpRequest request, HttpResponse response) {
-        UserService userService = new UserService();
+        UserService userService = UserService.of();
         response.setToUrl(REDIRECT_LOGIN_FAILED);
 
         Map<String, String> data = request.getQueries();
@@ -32,7 +32,7 @@ public class LoginController{
         if(userService.canLogin(userId, userPw)) {
             response.setToUrl(REDIRECT_HOME);
             String sessionId = SessionStorage.setSession(userId);
-            response.setCookie(sessionId);
+            response.setCookie("sid=" + sessionId);
         }
     }
 

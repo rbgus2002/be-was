@@ -23,7 +23,7 @@ public class SignUpController {
 
     @RequestMapping(path = "/user/create")
     public void signUp(HttpRequest request, HttpResponse response) {
-        UserService userService = new UserService();
+        UserService userService = UserService.of();
         Map<String, String> queries = request.getQueries();
         if(request.getMethod() == HttpMethod.POST) {
             queries = request.getBodies();

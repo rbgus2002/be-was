@@ -3,11 +3,11 @@ package session;
 import java.time.Duration;
 import java.time.Instant;
 
-public class Session {
+public class SessionValue {
     private final String userId;
     private final Instant expired;
 
-    public Session(String userId) {
+    public SessionValue(String userId) {
         this.userId = userId;
         int PERIOD_HOURS = 1;
         this.expired = Instant.now().plus(Duration.ofHours(PERIOD_HOURS));

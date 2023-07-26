@@ -10,7 +10,7 @@ import java.io.*;
 
 class DispatcherServletTest {
 
-    DispatcherServlet dispatcherServlet = new DispatcherServlet();
+    DispatcherServlet dispatcherServlet = DispatcherServlet.of();
 
     @Test
     @DisplayName("index.html이 반환되어야 한다.")

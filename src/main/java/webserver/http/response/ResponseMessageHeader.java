@@ -16,14 +16,13 @@ public class ResponseMessageHeader {
 
     public static final String BLANK = " ";
 
-    public String response200Header(int bodyOfLength, String contentType, String cookie) {
+    public String response200Header(String contentType, String cookie) {
         String header = "";
         header += getStatusHeader(RESPONSE_200)+ NEW_LINE;
         header += getContentTypeHeader(contentType);
         if(cookie != null) {
             header += setCookie(cookie);
         }
-        header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + BLANK + bodyOfLength + NEW_LINE;
         header += NEW_LINE;
 
         return header;
@@ -37,18 +36,14 @@ public class ResponseMessageHeader {
         if(cookie != null) {
             header += setCookie(cookie);
         }
-        header += CONTENT_LENGTH.getConstant() + KEY_VALUE_PARSER + BLANK + "0" + NEW_LINE;
         header += NEW_LINE;
 
         return header;
     }
 
-    public String response404Header(String cookie) {
+    public String response404Header() {
         String header = "";
         header += getStatusHeader(RESPONSE_404) + NEW_LINE;
-        if(cookie != null) {
-            header += setCookie(cookie);
-        }
         return header;
     }
 
