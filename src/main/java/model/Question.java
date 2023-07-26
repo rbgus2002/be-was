@@ -1,24 +1,20 @@
 package model;
 
+import java.util.Map;
+
 public class Question {
-    int id;
     String writer;
     String title;
     String contents;
 
-    public Question(int id, String writer, String title, String contents) {
-        this.id = id;
+    public static Question fromMap(Map<String, String> map) {
+        return new Question(map.get("writer"), map.get("title"), map.get("contents"));
+    }
+
+    public Question(String writer, String title, String contents) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getWriter() {

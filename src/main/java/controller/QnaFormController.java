@@ -1,8 +1,10 @@
 package controller;
 
 import annotation.RequestMapping;
+import db.QuestionRepository;
 import http.HttpRequest;
 import http.HttpResponse;
+import model.Question;
 
 @RequestMapping(path = "/qna/form")
 public class QnaFormController implements HttpController {
@@ -22,8 +24,8 @@ public class QnaFormController implements HttpController {
     }
 
     private String doPost(HttpRequest request, HttpResponse response) {
-
-
+        Question question = Question.fromMap(request.getParams());
+        QuestionRepository.addQuestion(question);
         return "redirect:/index.html";
     }
 }

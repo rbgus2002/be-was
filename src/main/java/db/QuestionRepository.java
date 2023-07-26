@@ -9,13 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class QuestionRepository {
 
     private static final Map<Integer, Question> questions = new ConcurrentHashMap<>();
+    private static int index = 1;
 
     public static Question findById(int id) {
         return questions.get(id);
     }
 
-    public static void addQuestion(Question question) {
-        questions.put(question.getId(), question);
+    public static synchronized void addQuestion(Question question) {
+        questions.put(index++, question);
     }
 
     public static Collection<Question> findAll() {
