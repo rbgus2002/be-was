@@ -26,6 +26,10 @@ public class HttpRequest {
 		return url.getParameterValue(key);
 	}
 
+	public String getBodyValue(String key) {
+		return body.getValue(key);
+	}
+
 	public boolean forStaticResource() {
 		return url.isStaticResource();
 	}

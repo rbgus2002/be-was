@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import webserver.annotation.RequestBody;
 import webserver.annotation.RequestParam;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
@@ -49,10 +50,10 @@ public class ControllerResolver {
 		if (request.isMethodGet()) {
 			return getRequestParams(request, parameters);
 		}
-		// TODO: @RequestBody 처리
-		// if (request.isMethodPost()) {
-		// 	return getRequestBody(request, parameters);
-		// }
+		if (request.isMethodPost()) {
+			List<String> requestBody = getRequestBody(request, parameters);
+			return requestBody;
+		}
 		return Collections.emptyList();
 	}
 
@@ -60,6 +61,13 @@ public class ControllerResolver {
 		return Arrays.stream(parameters)
 			.map(parameter -> parameter.getAnnotation(RequestParam.class))
 			.map(requestParam -> request.getUrlParamValue(requestParam.name()))
+			.collect(Collectors.toList());
+	}
+
+	private List<String> getRequestBody(HttpRequest request, Parameter[] parameters) {
+		return Arrays.stream(parameters)
+			.map(parameter -> parameter.getAnnotation(RequestBody.class))
+			.map(requestBody -> request.getBodyValue(requestBody.name()))
 			.collect(Collectors.toList());
 	}
 
