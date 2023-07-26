@@ -12,11 +12,13 @@ import webserver.http.controller.FrontController;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.utils.HttpMessageParser;
+import webserver.http.utils.HttpMessageWriter;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
 	private final Socket connection;
+	private final FrontController frontController = FrontController.getInstance();
 
 	public RequestHandler(Socket connectionSocket) {
 		this.connection = connectionSocket;
@@ -28,26 +30,18 @@ public class RequestHandler implements Runnable {
 
 		try (InputStream inputStream = connection.getInputStream();
 			 DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
-			// Request 로그 출력
 			// Request & Response 객체 생성
-			// HttpRequest request = HttpRequest.from(inputStream);
 			HttpRequest request = HttpMessageParser.parseHttpRequest(inputStream);
 			if (request == null) {
 				return;
 			}
-			HttpMessageParser.log(request);
-			HttpResponse response = HttpResponse.from(request, outputStream);
 			// 요청 처리
-			FrontController frontController = new FrontController();
-			frontController.service(request, response);
+			HttpResponse response = frontController.service(request);
 			// 응답 전송
-			response.sendResponse(outputStream);
+			HttpMessageWriter.sendResponse(outputStream, response);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
 
-	// private void preProcess(InputStream inputStream) throws IOException {
-	// 	// TODO: 전체 로그 출력
-	// }
 }
