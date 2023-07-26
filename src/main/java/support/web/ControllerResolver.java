@@ -27,27 +27,21 @@ import static support.instance.DefaultInstanceManager.getInstanceMagager;
 
 public abstract class ControllerResolver {
 
-    private static final Map<HttpMethod, Map<String, ControllerMethod>> methodController = new HashMap<>();
+    private static final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
     static {
-        Arrays.stream(HttpMethod.values())
-                .forEach(httpMethod -> methodController.put(httpMethod, new HashMap<>()));
-
         List<Class<?>> controllerClasses = ClassListener.scanClass("controller");
 
         controllerClasses.forEach(controllerClass -> {
             Controller controller = controllerClass.getAnnotation(Controller.class);
             if (controller != null) {
-                String path = controller.value();
-
                 Arrays.stream(controllerClass.getDeclaredMethods())
                         .filter(method -> method.isAnnotationPresent(RequestMapping.class))
                         .forEach(
                                 method -> {
                                     RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                                    Map<String, ControllerMethod> controllers = methodController.get(requestMapping.method());
-                                    controllers.put(path + requestMapping.value(),
+                                    controllers.put(new HttpMethodAndPath(requestMapping.method(), controller.value() + requestMapping.value()),
                                             new ControllerMethod(controllerClass, method));
                                 }
                         );
@@ -84,8 +78,8 @@ public abstract class ControllerResolver {
     }
 
     private static ControllerMethod findControllerMethodStruct(String url, HttpRequest request) throws NotSupportedException {
-        Map<String, ControllerMethod> controllers = methodController.get(request.getRequestMethod());
-        ControllerMethod controllerMethodStruct = controllers.get(url);
+        ControllerMethod controllerMethodStruct = controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url));
+
         if (controllerMethodStruct == null) {
             throw new NotSupportedException();
         }
