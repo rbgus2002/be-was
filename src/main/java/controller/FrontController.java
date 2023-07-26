@@ -17,7 +17,7 @@ public class FrontController {
 	}
 
 	private void initializeInstances() {
-		instances.put(Controller.class.getName(), new Controller());
+		instances.put(UserController.class.getName(), new UserController());
 		instances.put(IndexView.class.getName(), new IndexView());
 		instances.put(ListView.class.getName(), new ListView());
 	}

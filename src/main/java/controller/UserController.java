@@ -11,7 +11,7 @@ import webserver.utils.HttpHeader;
 import webserver.utils.HttpMethod;
 import webserver.utils.HttpStatus;
 
-public class Controller {
+public class UserController {
 
 	@RequestMapping(method = HttpMethod.POST, path = "/user/create")
 	public void saveUser(HttpWasRequest request, HttpWasResponse response) {

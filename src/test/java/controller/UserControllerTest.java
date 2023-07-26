@@ -17,9 +17,9 @@ import model.User;
 import webserver.request.HttpWasRequest;
 import webserver.response.HttpWasResponse;
 
-class ControllerTest {
+class UserControllerTest {
 
-	private Controller controller = new Controller();
+	private UserController userController = new UserController();
 	@BeforeEach
 	void beforeEach() {
 		Database.deleteAll();
@@ -39,7 +39,7 @@ class ControllerTest {
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(new ByteArrayOutputStream());
 
 		//when
-		controller.saveUser(httpWasRequest, httpWasResponse);
+		userController.saveUser(httpWasRequest, httpWasResponse);
 
 		//then
 		final User findUser = Database.findUserById("chan");
@@ -69,7 +69,7 @@ class ControllerTest {
 		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
 
 		// when
-		controller.loginUser(httpWasRequest, httpWasResponse);
+		userController.loginUser(httpWasRequest, httpWasResponse);
 		httpWasResponse.doResponse();
 
 		// then
