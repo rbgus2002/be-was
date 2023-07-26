@@ -56,26 +56,20 @@ public class Cookie {
     public String buildCookie() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(key);
-        stringBuilder.append("=");
-        stringBuilder.append(value);
-        stringBuilder.append("; ");
+        stringBuilder.append(key)
+                .append("=")
+                .append(value)
+                .append("; ");
 
         options.forEach(
                 (key, value) -> {
-                    stringBuilder.append(key);
-                    stringBuilder.append("=");
-                    stringBuilder.append(value);
-                    stringBuilder.append("; ");
+                    stringBuilder.append(key)
+                            .append("=")
+                            .append(value)
+                            .append("; ");
                 }
         );
-
-        int length = stringBuilder.length();
-        if (length != 0) {
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
-        return stringBuilder.toString();
+        return stringBuilder.toString().replaceAll(".$", "");
     }
 
 }
