@@ -39,6 +39,15 @@ Java Web Application Server 2023
 - [X] 리다이렉션 기능을 구현한다.
     - [X] 회원 가입을 완료하면 메인 페이지로 리다이렉션 한다.
 
+### Step - 5
+
+- [X] 로그인 기능을 구현한다.
+    - [X] 로그인을 성공하면 루트 페이지로 리다이렉트된다.
+    - [X] 로그인에 실패하면 실패 페이지로 리다이렉트된다.
+- [X] 세션 기능을 구현한다.
+- [X] 쿠키 기능을 구현한다.
+- [X] 로그아웃 기능을 구현한다.
+
 ## 학습 내용
 
 - 코드 분석 및 동작
@@ -50,3 +59,4 @@ Java Web Application Server 2023
 - 불변 객체 - https://github.com/ddingmin/be-was/wiki/%EB%B6%88%EB%B3%80-%EA%B0%9D%EC%B2%B4-(Immutable-Object)
 - static 블록과 싱글톤
   패턴 - https://github.com/ddingmin/be-was/wiki/static-%EB%B8%94%EB%A1%9D-vs-%EC%8B%B1%EA%B8%80%ED%86%A4-(Singleton)
+- 쿠키 - https://github.com/ddingmin/be-was/wiki/%EC%BF%A0%ED%82%A4

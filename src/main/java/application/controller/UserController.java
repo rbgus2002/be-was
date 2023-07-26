@@ -3,9 +3,11 @@ package application.controller;
 import application.model.User;
 import db.Database;
 import webserver.HttpMethod;
-import webserver.annotation.Controller;
-import webserver.annotation.RequestMapping;
-import webserver.annotation.RequestParameter;
+import webserver.annotation.*;
+import webserver.controller.CookieController;
+import webserver.response.HttpResponseMessage;
+
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -14,19 +16,33 @@ public class UserController {
                              @RequestParameter(value = "password") String password,
                              @RequestParameter(value = "name") String name,
                              @RequestParameter(value = "email") String email) {
-        verifyCreateUser(userId);
+
+        if (isUserIdDuplicate(userId)) {
+            return "redirect:/user/form_failed.html";
+        }
         Database.addUser(new User(userId, password, name, email));
         return "redirect:/index.html";
     }
 
-    private void verifyCreateUser(String userId) {
-        if (isUserIdExists(userId)) {
-            throw new IllegalArgumentException("이미 존재하는 userId 입니다.");
+    @RequestMapping(path = "/user/login", method = HttpMethod.POST)
+    public String loginUser(@RequestParameter(value = "userId") String userId,
+                            @RequestParameter(value = "password") String password,
+                            @HttpResponse HttpResponseMessage response) {
+        if (Database.authenticateUser(userId, password)) {
+            CookieController.createCookie(response, userId);
+            return "redirect:/index.html";
         }
+        return "redirect:/user/login_failed.html";
     }
 
-    private boolean isUserIdExists(String userId) {
-        return Database.findAll().stream()
-                .anyMatch(user -> user.getUserId().equals(userId));
+    @RequestMapping(path = "/user/logout", method = HttpMethod.GET)
+    public String logout(@HttpResponse HttpResponseMessage response,
+                         @Cookies Map<String, String> cookies) {
+        CookieController.deleteCookie(cookies, response);
+        return "redirect:/index.html";
+    }
+
+    private boolean isUserIdDuplicate(String userId) {
+        return Database.hasUserId(userId);
     }
 }
