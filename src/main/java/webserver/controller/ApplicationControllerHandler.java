@@ -2,20 +2,23 @@ package webserver.controller;
 
 import webserver.HttpMethod;
 import webserver.annotation.RequestParameter;
+import webserver.annotation.SetCookie;
 import webserver.request.HttpRequestMessage;
+import webserver.response.HttpResponseMessage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 
+import static webserver.WebServer.logger;
 import static webserver.controller.ApplicationMethod.apiRouteToClassMap;
 import static webserver.controller.ApplicationMethod.apiRouteToMethodMap;
 import static webserver.handler.HttpBodyParser.parseBodyByContentType;
 
 public class ApplicationControllerHandler {
 
-    public static Object executeMethod(HttpRequestMessage httpRequestMessage) throws ReflectiveOperationException {
+    public static Object executeMethod(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage) throws ReflectiveOperationException {
         ApiRoute requestApiRoute = new ApiRoute(httpRequestMessage.getPath(), httpRequestMessage.getMethod());
 
         if (!apiRouteToClassMap.containsKey(requestApiRoute)) {
@@ -51,9 +54,20 @@ public class ApplicationControllerHandler {
         Object[] arguments = new Object[targetMethod.getParameterCount()];
         Parameter[] targetParameters = targetMethod.getParameters();
         for (int i = 0; i < targetMethod.getParameterCount(); i++) {
-            RequestParameter targetParameter = targetParameters[i].getAnnotation(RequestParameter.class);
-            arguments[i] = requestParameters.get(targetParameter.value());
+            if (targetParameters[i].isAnnotationPresent(RequestParameter.class)) {
+                RequestParameter targetParameter = targetParameters[i].getAnnotation(RequestParameter.class);
+                arguments[i] = requestParameters.get(targetParameter.value());
+
+                // todo @SetCookie 어노테이션이 달려있다면 쿠키 지정.
+                if (hasCookieAnnotation(targetParameters[i])) {
+                    logger.debug("[SetCookie Annotation key = {}, value = {} ]", targetParameter.value(), requestParameters.get(targetParameter.value()));
+                }
+            }
         }
         return arguments;
+    }
+
+    private static boolean hasCookieAnnotation(Parameter targetParameters) {
+        return targetParameters.isAnnotationPresent(SetCookie.class);
     }
 }

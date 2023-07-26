@@ -50,7 +50,7 @@ public class HttpHandler {
     private void handlingController() {
         try {
             // 결과값 반환
-            Object returnValue = executeMethod(httpRequestMessage);
+            Object returnValue = executeMethod(httpRequestMessage, httpResponseMessage);
             httpResponseMessage.setStatusLine(HttpStatus.CREATED);
 
             if (returnValue == null) {

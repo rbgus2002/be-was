@@ -6,6 +6,7 @@ import webserver.HttpMethod;
 import webserver.annotation.Controller;
 import webserver.annotation.RequestMapping;
 import webserver.annotation.RequestParameter;
+import webserver.annotation.SetCookie;
 
 @Controller
 public class UserController {
@@ -23,7 +24,7 @@ public class UserController {
     }
 
     @RequestMapping(path = "/user/login", method = HttpMethod.POST)
-    public String loginUser(@RequestParameter(value = "userId") String userId,
+    public String loginUser(@RequestParameter(value = "userId") @SetCookie String userId,
                             @RequestParameter(value = "password") String password) {
         if (Database.authenticateUser(userId, password)) {
             return "redirect:/index.html";
