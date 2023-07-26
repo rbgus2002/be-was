@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public class Post {
 
     private static Long NEXT_POST_ID = 1L;
@@ -7,6 +9,7 @@ public class Post {
     private String title;
     private String writer;
     private String contents;
+    private final LocalDateTime createDateTime;
 
     public Post(String title, String writer, String contents) {
         //TODO: Lock
@@ -14,6 +17,7 @@ public class Post {
         this.title = title;
         this.writer = writer;
         this.contents = contents;
+        this.createDateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -30,5 +34,9 @@ public class Post {
 
     public String getContents() {
         return contents;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
     }
 }

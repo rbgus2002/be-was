@@ -118,7 +118,7 @@ public class IndexView implements View {
                             .append("                          </strong>")
                             .append("                          <div class=\"auth-info\">")
                             .append("                              <i class=\"icon-add-comment\"></i>")
-                            .append("                              <span class=\"time\">2016-01-15 18:47</span>")
+                            .append("                              <span class=\"time\">").append(post.getCreateDateTime()).append("</span>")
                             .append("                              <a href=\"./user/profile.html\" class=\"author\">").append(post.getWriter()).append("</a>")
                             .append("                          </div>")
                             .append("                          <div class=\"reply\" title=\"댓글\">")
