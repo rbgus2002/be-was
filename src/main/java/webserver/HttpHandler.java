@@ -2,39 +2,60 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.exception.FoundException;
-import support.exception.HttpException;
-import support.exception.NotSupportedException;
+import support.exception.*;
 import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
 import support.web.ModelAndView;
+import support.web.ViewResolver;
 import support.web.view.View;
 import support.web.view.ViewFactory;
-import support.web.ViewResolver;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 import webserver.response.strategy.NotFound;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 public class HttpHandler {
 
-    public static final String MAIN_PAGE = "/index.html";
     private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
 
     public void doGet(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
         String path = request.getRequestPath();
 
-        if (interceptController(request, response, path)) {
-            return;
+        try {
+            try {
+                ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
+                callViewResolver(request, response, modelAndView.getViewName());
+            } catch (NotSupportedException e) {
+                callViewResolver(request, response, path);
+            }
+        } catch (FoundException e) {
+            response.setStatus(e.getHttpStatus());
+            response.appendHeader("Location", e.getRedirectionUrl());
+        } catch (HttpException e) {
+            response.setStatus(e.getHttpStatus());
         }
 
-        callViewResolver(request, response, path);
     }
 
-    private static void callViewResolver(HttpRequest request, HttpResponse response, String path) {
+    public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
+        String path = request.getRequestPath();
+
+        try {
+            ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
+            callViewResolver(request, response, modelAndView.getViewName());
+        } catch (NotSupportedException e) {
+            buildErrorResponse(request, response);
+        } catch (FoundException e) {
+            response.setStatus(e.getHttpStatus());
+            response.appendHeader("Location", e.getRedirectionUrl());
+        } catch (HttpException e) {
+            response.setStatus(e.getHttpStatus());
+        }
+    }
+
+    private static void callViewResolver(HttpRequest request, HttpResponse response, String path) throws ServerErrorException {
         ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         try {
             View view = viewFactory.getViewByName(path);
@@ -44,43 +65,16 @@ public class HttpHandler {
                 ViewResolver.buildView(request, response, path);
             }
             response.setStatus(HttpStatus.OK);
-        } catch (IOException e) {
-            buildErrorResponse(request, response, viewFactory);
+        } catch (NotFoundException e) {
+            buildErrorResponse(request, response);
         }
     }
 
-    private static void buildErrorResponse(HttpRequest request, HttpResponse response, ViewFactory viewFactory) {
+    private static void buildErrorResponse(HttpRequest request, HttpResponse response) {
+        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         response.setStatus(HttpStatus.NOT_FOUND);
         response.buildHeader(new NotFound());
         ViewResolver.buildView(request, response, viewFactory.getErrorView());
-    }
-
-    public void doPost(HttpRequest request, HttpResponse response) throws InvocationTargetException, IllegalAccessException {
-        String path = request.getRequestPath();
-
-        if (interceptController(request, response, path)) {
-            return;
-        }
-
-        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
-        buildErrorResponse(request, response, viewFactory);
-    }
-
-    private boolean interceptController(HttpRequest request, HttpResponse response, String path) {
-        try {
-            ModelAndView modelAndView = ControllerResolver.invoke(path, request, response);
-            callViewResolver(request, response, modelAndView.getViewName());
-            return true;
-        } catch (NotSupportedException e) {
-            return false;
-        } catch (FoundException e) {
-            response.setStatus(e.getHttpStatus());
-            response.appendHeader("Location", e.getRedirectionUrl());
-            return true;
-        } catch (HttpException e) {
-            response.setStatus(e.getHttpStatus());
-            return true;
-        }
     }
 
 }

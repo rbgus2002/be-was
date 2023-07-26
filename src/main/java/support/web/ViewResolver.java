@@ -3,6 +3,8 @@ package support.web;
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.exception.NotFoundException;
+import support.exception.ServerErrorException;
 import support.web.view.View;
 import utils.LoginUtils;
 import webserver.request.HttpRequest;
@@ -10,7 +12,6 @@ import webserver.response.HttpResponse;
 import webserver.response.MIME;
 import webserver.response.strategy.OK;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -88,7 +89,7 @@ public abstract class ViewResolver {
         return START_TAG + " " + command + " " + argument + " " + END_TAG;
     }
 
-    public static void buildView(HttpRequest request, HttpResponse response, String path) throws IOException {
+    public static void buildView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, ServerErrorException {
         List<String> body = readStringLineByPath(path);
         String extension = path.substring(path.lastIndexOf("."));
         if (".html".equals(extension)) {
