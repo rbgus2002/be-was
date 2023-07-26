@@ -96,7 +96,7 @@ public class IndexView implements View {
                 .append("                <li><a href=\"#loginModal\" role=\"button\" data-toggle=\"modal\">로그인</a></li>")
                 .append("                <li><a href=\"#registerModal\" role=\"button\" data-toggle=\"modal\">회원가입</a></li>")
                 .append("                -->")
-                .append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>")
+                .append("                <li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>")
                 .append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>")
                 .append("            </ul>")
                 .append("        </div>")

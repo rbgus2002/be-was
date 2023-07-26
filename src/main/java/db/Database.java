@@ -16,6 +16,11 @@ public abstract class Database {
     private static final Map<String, Session> sessions = new ConcurrentHashMap<>();
     private static final Map<Long, Post> posts = new ConcurrentHashMap<>();
 
+    static {
+        User awdcgy = new User("awdcgy", "awdcgy", "awdcgy", "awdcgy@hash.hash");
+        addUser(awdcgy);
+    }
+
     public static void clear() {
         users.clear();
         sessions.clear();
@@ -58,4 +63,7 @@ public abstract class Database {
         return posts.get(id);
     }
 
+    public static void deleteById(String sessionId) {
+        sessions.remove(sessionId);
+    }
 }

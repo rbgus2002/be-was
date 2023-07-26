@@ -16,6 +16,10 @@ import webserver.Cookie;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @Controller(value = "/user")
 public class UserController {
 
@@ -23,8 +27,8 @@ public class UserController {
 
     @RequestMapping(method = HttpMethod.POST, value = "/login")
     public void login(@RequestParam("userId") String userId,
-                        @RequestParam("password") String password,
-                        HttpResponse response) throws FoundException {
+                      @RequestParam("password") String password,
+                      HttpResponse response) throws FoundException {
         logger.debug("유저 로그인 요청");
 
         User user = Database.findUserById(userId);
@@ -51,9 +55,9 @@ public class UserController {
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
     public void create(@RequestParam("userId") String userId,
-                         @RequestParam("password") String password,
-                         @RequestParam("name") String name,
-                         @RequestParam("email") String email) throws FoundException {
+                       @RequestParam("password") String password,
+                       @RequestParam("name") String name,
+                       @RequestParam("email") String email) throws FoundException {
 
         logger.debug("유저 생성 요청");
         User user = new User(userId, password, name, email);
@@ -74,6 +78,28 @@ public class UserController {
         }
 
         throw new FoundException("/user/login.html");
+    }
+
+    @RequestMapping(method = HttpMethod.GET, value = "/logout")
+    public void logout(HttpRequest request, HttpResponse response) throws FoundException {
+        logger.debug("로그 아웃 요청");
+
+        Session loginSession = LoginUtils.getLoginSession(request);
+        if (loginSession != null) {
+            Database.deleteById(loginSession.getSessionId());
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")
+                    .withZone(ZoneId.of("GMT"));
+            Cookie.CookieBuilder cookieBuilder = new Cookie.CookieBuilder();
+            Cookie cookie = cookieBuilder.key("sid")
+                    .value("")
+                    .path("/")
+                    .expires(formatter.format(now))
+                    .build();
+            response.appendHeader("Set-Cookie", cookie.buildCookie());
+        }
+
+        throw new FoundException("/");
     }
 
 }
