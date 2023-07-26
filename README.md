@@ -71,3 +71,21 @@ Java Web Application Server 2023
 
 <br/>
 
+## Mission 4. 웹 서버 4단계 - POST로 회원 가입
+
+### 기능요구사항
+- 로그인을 GET에서 POST로 수정 후 동작하도록 작동
+- 가입 완료 시 index.html로 이동
+
+### 프로그래밍 요구사항
+- form.html에서 post 방식으로 수정
+- http redirection 구현
+
+### 구현에 대한 설명
+1. POST 요청은 쿼리가 body를 통해 오기 때문에 body를 parse 해주어야 한다.
+2. Content-Length 헤더가 있을 경우 읽어서 그 길이 만큼만 read 하도록 해주었다.
+3. GET/POST 구분과 확장성을 위해 annotation과 container를 추가하였다. 
+
+### 고민 
+- Container 클래스도 테스트를 해야할 것 같은데 어떻게 해야할지 고민이다..
+- 리팩토링에 대한 고민..
