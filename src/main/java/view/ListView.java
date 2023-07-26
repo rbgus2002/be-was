@@ -36,6 +36,7 @@ public class ListView {
             }
 
             if (line.contains("<tbody>")) {
+                sb.append(line);
                 flag = false;
             }
             if (flag) {

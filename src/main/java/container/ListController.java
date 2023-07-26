@@ -1,12 +1,11 @@
 package container;
 
+import annotation.RequestMapping;
 import db.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
-
-import static util.PathList.HOME_PATH;
 @RequestMapping(path = "/user/list")
 public class ListController implements Controller {
 

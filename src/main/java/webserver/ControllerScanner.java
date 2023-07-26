@@ -1,7 +1,7 @@
 package webserver;
 
 import container.Controller;
-import container.RequestMapping;
+import annotation.RequestMapping;
 
 import java.io.File;
 import java.net.URL;
