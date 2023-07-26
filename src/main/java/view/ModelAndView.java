@@ -63,6 +63,10 @@ public class ModelAndView {
         modelMap.put(name, value);
     }
 
+    public HttpStatus getStatus() {
+        return this.status;
+    }
+
 
     public void setResponse(HttpResponse response) {
         try {
