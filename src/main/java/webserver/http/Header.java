@@ -34,6 +34,10 @@ public class Header {
         headers.put(key, value);
     }
 
+    public String getElement(final String key) {
+        return headers.get(key);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
