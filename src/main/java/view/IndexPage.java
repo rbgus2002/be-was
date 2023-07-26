@@ -4,7 +4,7 @@ import http.HttpRequest;
 
 import java.io.*;
 
-import static db.SessionDatabase.findAllSessionIds;
+import static db.SessionStorage.findAllSessionIds;
 import static http.FilePath.INDEX;
 import static utils.FileIOUtils.TEMPLATES_DIRECTORY;
 

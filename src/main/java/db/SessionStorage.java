@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public class SessionDatabase {
+public class SessionStorage {
 
     private static Map<String, String> sessionIds = Maps.newConcurrentMap();
 

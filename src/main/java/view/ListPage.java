@@ -10,7 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import static db.Database.findAll;
-import static db.SessionDatabase.findAllSessionIds;
+import static db.SessionStorage.findAllSessionIds;
 import static exception.ExceptionList.NOT_EXIST_SESSION_ID;
 import static exception.ExceptionList.NO_SESSION_ID;
 import static http.FilePath.LIST;

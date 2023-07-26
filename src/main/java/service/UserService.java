@@ -8,7 +8,7 @@ import model.User;
 import java.util.Map;
 
 import static db.Database.*;
-import static db.SessionDatabase.*;
+import static db.SessionStorage.*;
 import static exception.ExceptionList.*;
 
 public class UserService {
