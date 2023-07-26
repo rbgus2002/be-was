@@ -5,26 +5,25 @@ import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import view.ModelAndView;
+import view.View;
+import view.ViewResolver;
 
 public final class DispatcherServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    private final HttpRequest request;
-    private final HttpResponse response;
     private HandlerMapping handlerMapping;
     private HandlerAdapter handlerAdapter;
+    private ViewResolver viewResolver;
 
-    public DispatcherServlet(HttpRequest request, HttpResponse response) {
-        this.request = request;
-        this.response = response;
-
+    public DispatcherServlet() {
         initStrategies();
     }
 
     private void initStrategies() {
         initHandlerMapping();
         initHandlerAdapter();
+        initViewResolver();
     }
 
     private void initHandlerAdapter() {
@@ -33,6 +32,10 @@ public final class DispatcherServlet {
 
     private void initHandlerMapping() {
         handlerMapping = new HandlerMapping();
+    }
+
+    private void initViewResolver() {
+        viewResolver = new ViewResolver();
     }
 
      void doService(HttpRequest request, HttpResponse response) {
@@ -44,19 +47,20 @@ public final class DispatcherServlet {
         Class<?> handler = handlerMapping.getHandler(request);
 
         try {
-            ModelAndView modelAndView = null;
+            ModelAndView modelAndView = handlerAdapter.handle(request, response, handler);
+            View view = getViewFromResolver(request, modelAndView);
 
-            //URI와 매핑되는 Controller가 존재하지 않거나 Controller 클래스 자체가 존재하지 않을 때
-            if(handler == null) {
-                modelAndView = handlerAdapter.staticView(request);
-                modelAndView.setResponse(response);
-                return;
-            }
-
-            modelAndView = handlerAdapter.handle(request, response, handler);
-            modelAndView.setResponse(response);
+            view.render(request, response, modelAndView);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private View getViewFromResolver(HttpRequest request, ModelAndView mv) {
+        if(mv == null) {
+            return viewResolver.getStaticView(request);
+        }
+
+        return viewResolver.getDynamicView(mv);
     }
 }

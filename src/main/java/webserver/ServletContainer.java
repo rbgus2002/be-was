@@ -26,7 +26,7 @@ public class ServletContainer implements Runnable {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(request);
 
-            DispatcherServlet dispatcherServlet = new DispatcherServlet(request, response);
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
             dispatcherServlet.doService(request, response);
             DataOutputStream dos = new DataOutputStream(out);
             response.write(dos);
