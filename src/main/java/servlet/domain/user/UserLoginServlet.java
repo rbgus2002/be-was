@@ -9,14 +9,15 @@ import org.slf4j.LoggerFactory;
 
 import servlet.Servlet;
 import container.annotation.MyMapping;
-import db.Database;
+import db.UserDatabase;
 import model.user.User;
 import servlet.domain.user.exception.IncorrectPasswordException;
 import servlet.domain.user.exception.UserNotExistException;
 import session.SessionStorage;
 import webserver.http.HttpRequest;
+import webserver.http.Method;
 
-@MyMapping("/user/login")
+@MyMapping(url = "/user/login", method = Method.POST)
 public class UserLoginServlet implements Servlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserLoginServlet.class);
@@ -27,7 +28,7 @@ public class UserLoginServlet implements Servlet {
 		String userId = model.get("userId");
 		String password = model.get("password");
 
-		Optional<User> userById = Database.findUserById(userId);
+		Optional<User> userById = UserDatabase.findUserById(userId);
 
 		try {
 			User user = getUser(userById);

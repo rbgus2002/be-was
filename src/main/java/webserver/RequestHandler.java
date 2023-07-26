@@ -5,14 +5,15 @@ import java.lang.annotation.Annotation;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Map;
 
+import container.Mapping;
 import container.annotation.ResponseBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import container.MyContainer;
 import servlet.Servlet;
+import webserver.exception.InvalidRequestException;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
@@ -35,9 +36,13 @@ public class RequestHandler implements Runnable {
 			 BufferedOutputStream bufferedOut = new BufferedOutputStream(connection.getOutputStream());
 			 DataOutputStream dos = new DataOutputStream(bufferedOut)) {
 
-			HttpRequest httpRequest = new HttpRequest(reader);
-
-			HttpResponse httpResponse = dispatchRequest(httpRequest);
+			HttpResponse httpResponse = null;
+			try {
+				HttpRequest httpRequest = new HttpRequest(reader);
+				httpResponse = dispatchRequest(httpRequest);
+			} catch (InvalidRequestException e) {
+				httpResponse = HttpResponse.createBadRequestResponse();
+			}
 
 			httpResponse.doResponse(dos);
 		} catch (IOException e) {
@@ -46,7 +51,8 @@ public class RequestHandler implements Runnable {
 	}
 
 	private HttpResponse dispatchRequest(HttpRequest httpRequest) throws IOException {
-		Object mappingClass = MyContainer.getMappingClass(httpRequest.getPath());
+		Mapping mapping = new Mapping(httpRequest.getPath(), httpRequest.getMethod());
+		Object mappingClass = MyContainer.getMappingClass(mapping);
 
 		if (mappingClass instanceof Servlet) {
 			return processServlet((Servlet) mappingClass, httpRequest);
@@ -57,16 +63,15 @@ public class RequestHandler implements Runnable {
 
 	private HttpResponse processServlet(Servlet servlet, HttpRequest httpRequest) throws IOException {
 		Annotation[] declaredAnnotations = servlet.getClass().getDeclaredAnnotations();
-//		Map<String, String> model = httpRequest.getModel();
 
 		String result = servlet.execute(httpRequest);
 
-		if (isResponseBody(declaredAnnotations)) {
-			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), httpRequest.getModel());
-		}
-
 		if (isRedirect(result)) {
 			return HttpResponse.createRedirectResponse(result, httpRequest.getModel());
+		}
+
+		if (isResponseBody(declaredAnnotations)) {
+			return HttpResponse.createDefaultResponse(result, httpRequest.getContentType(), httpRequest.getModel());
 		}
 
 		return HttpResponse.createResourceResponse(result, httpRequest.getContentType(), httpRequest.getModel());
