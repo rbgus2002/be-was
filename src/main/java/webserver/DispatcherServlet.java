@@ -8,6 +8,8 @@ import view.ModelAndView;
 import view.View;
 import view.ViewResolver;
 
+import java.io.IOException;
+
 public final class DispatcherServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
@@ -40,27 +42,37 @@ public final class DispatcherServlet {
 
      void doService(HttpRequest request, HttpResponse response) {
 
-        doDispatch(request, response);
-    }
+         try {
+             doDispatch(request, response);
+         } catch (IOException e) {
+             logger.error("404 페이지가 존재하지 않습니다.");
+         }
+     }
 
-    private void doDispatch(HttpRequest request, HttpResponse response) {
+    private void doDispatch(HttpRequest request, HttpResponse response) throws IOException {
         Class<?> handler = handlerMapping.getHandler(request);
 
-        try {
-            ModelAndView modelAndView = handlerAdapter.handle(request, response, handler);
-            View view = getViewFromResolver(request, modelAndView);
+        View view;
+        ModelAndView modelAndView = null;
 
-            view.render(request, response, modelAndView);
+        try {
+            modelAndView = handlerAdapter.handle(request, response, handler);
+            view = getViewFromResolver(request, modelAndView);
+
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            view = getViewFromResolver(request, null);
         }
+
+        view.render(request, response, modelAndView);
     }
 
     private View getViewFromResolver(HttpRequest request, ModelAndView mv) {
         if(mv == null) {
-            return viewResolver.getStaticView(request);
+            View view =  viewResolver.getStaticView(request);
+            return view;
         }
 
-        return viewResolver.getDynamicView(mv);
+        View view = viewResolver.getDynamicView(mv);
+        return view;
     }
 }
