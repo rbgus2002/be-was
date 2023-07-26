@@ -26,13 +26,13 @@ public class UserController {
         //TODO: 확장성을 고려했을 때 코드가 지저분해질 수 있다.
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(name) || StringUtils.isEmpty(email) ) {
-            return new ModelAndView("redirect:/user/form.html", null);
+            return new ModelAndView("redirect:/user/form.html");
         }
 
         User user = new User(userId, password, name, email);
         Database.addUser(user);
 
-        return new ModelAndView("redirect:/index.html", null);
+        return new ModelAndView("redirect:/index.html");
     }
 
     @RequestMapping(method = POST, value = "/user/login")
@@ -41,7 +41,7 @@ public class UserController {
         Map<String, String> paramMap = Parser.parseQueryParameters(httpRequestBody);
 
         if (!validateUser(paramMap.get("userId"), paramMap.get("password"))) {
-            return new ModelAndView("redirect:/user/login_failed.html", null);
+            return new ModelAndView("redirect:/user/login_failed.html");
         }
 
         User user = Database.findUserById(paramMap.get("userId"));

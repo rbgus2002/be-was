@@ -15,7 +15,7 @@ public class HomeController {
     public ModelAndView showHome(HttpRequest httpRequest) {
         User user = UserSessionManager.getUser(httpRequest.getSessionId());
         if (user == null) {
-            return new ModelAndView("/index.html", null);
+            return new ModelAndView("/index.html");
         }
 
         Model model = new Model();

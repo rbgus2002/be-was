@@ -7,6 +7,11 @@ public class ModelAndView {
     //TODO: Model Class 만들어보기 (Model이 여러 개 들어올 수 있으므로)
     private final Model model;
 
+    public ModelAndView(String viewPath) {
+        this.viewPath = viewPath;
+        model = null;
+    }
+
     public ModelAndView(String viewPath, Model model) {
         this.viewPath = viewPath;
         this.model = model;
