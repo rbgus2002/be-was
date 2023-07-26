@@ -47,6 +47,7 @@ public class Dispatcher implements Runnable {
         // todo 응답 로직도 view 클래스를 만들어서 분리하자.
         DataOutputStream dos = new DataOutputStream(out);
         dos.writeBytes(httpResponseMessage.getResponseHeader());
+        logger.debug("[response message] [header]\n{}", httpResponseMessage.getResponseHeader());
         dos.writeBytes(NEW_LINE);
         if (httpResponseMessage.getResponseBody() != null) {
             dos.write(httpResponseMessage.getResponseBody());
