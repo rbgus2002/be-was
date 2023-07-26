@@ -123,7 +123,7 @@ public class Controller {
             return mv;
         }
 
-        return new ModelView("redirect:/index.html");
+        return new ModelView("redirect:/user/login.html");
     }
 
     @RequestMapping(method = POST, path = "/post/create")
@@ -156,7 +156,7 @@ public class Controller {
             return mv;
         }
 
-        return new ModelView("redirect:/index.html");
+        return new ModelView("redirect:/user/login.html");
     }
 
     @TemplateMapping(name = EditPostTemplate.class)
@@ -183,7 +183,7 @@ public class Controller {
 
         User loginUser = UserSessionManager.getSession(request);
         Post post = PostService.findPost(queries.getValue("postId"));
-        
+
         if (loginUser != null && post != null && loginUser == post.getUser()) {
             post.setTitle(queries.getValue("title"));
             post.setContents(queries.getValue("contents"));
@@ -205,6 +205,13 @@ public class Controller {
         if (loginUser != null && post != null && loginUser == post.getUser()) {
             PostService.deletePost(postId);
         }
+
+        return new ModelView("redirect:/index.html");
+    }
+
+    @RequestMapping(method = GET,  path = "/user/logout")
+    public ModelView logout(HttpRequest request, HttpResponse response) {
+        UserSessionManager.destroySession(request);
 
         return new ModelView("redirect:/index.html");
     }

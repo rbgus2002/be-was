@@ -23,6 +23,13 @@ public class UserSessionManager {
         response.addCookie(cookie);
     }
 
+    public static void destroySession(HttpRequest request) {
+        Cookies cookies = request.getCookies();
+        String key = cookies.getValue(SESSION_COOKIE_KEY);
+
+        sessionStorage.remove(key);
+    }
+
     public static User getSession(HttpRequest request) {
         Cookies cookies = request.getCookies();
         String key = cookies.getValue(SESSION_COOKIE_KEY);

@@ -12,7 +12,7 @@ public class DynamicTemplate {
     private final String USER_NAME_TAG_FORMAT = "<li><a>%s 로그인 됨</a></li>\n";
     private final String LOGIN_TAG = "<li><a href=\"/user/login.html\" role=\"button\">로그인</a></li>\n";
     private final String SIGNUP_TAG = "<li><a href=\"/user/form.html\" role=\"button\">회원가입</a></li>\n";
-    private final String LOGOUT_TAG = "<li><a href=\"#\" role=\"button\">로그아웃</a></li>\n";
+    private final String LOGOUT_TAG = "<li><a href=\"/user/logout\" role=\"button\">로그아웃</a></li>\n";
     private final String EDIT_PRIVACY_TAG = "<li><a href=\"#\" role=\"button\">개인정보수정</a></li>";
 
     public String decorateHeaderBar(String html, Map<String, Object> model) {
@@ -43,7 +43,6 @@ public class DynamicTemplate {
             html = replaceTag(html, "signUp", SIGNUP_TAG);
             html = replaceTag(html, "logout", "");
             html = replaceTag(html, "privacy", "");
-
         }
 
         return html;
