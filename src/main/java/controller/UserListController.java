@@ -101,10 +101,10 @@ public class UserListController implements HttpController {
         htmlBuilder.append("                </tr>\n");
         htmlBuilder.append("              </thead>\n");
         htmlBuilder.append("              <tbody>\n");
-        int i = 0;
+        int i = 1;
         for (User user : Database.findAll()) {
             htmlBuilder.append("                <tr>\n");
-            htmlBuilder.append("                    <th scope=\"row\">" + i + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
+            htmlBuilder.append("                    <th scope=\"row\">" + i++ + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
             htmlBuilder.append("                </tr>\n");
 
         }
