@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class HandlerKey {
 
-    private String path;
-    private HttpMethod httpMethod;
+    private final String path;
+    private final HttpMethod httpMethod;
 
     public HandlerKey(String path, HttpMethod httpMethod) {
         this.path = path;

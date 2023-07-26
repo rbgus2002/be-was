@@ -7,12 +7,11 @@ import http.HttpMethod;
 import http.HttpRequest;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 
 public class HandlerMapping {
 
-    public static final Map<HandlerKey, Method> mappings = Maps.newConcurrentMap();
+    private static final Map<HandlerKey, Method> mappings = Maps.newConcurrentMap();
 
     static {
         Method[] methods = UserController.class.getDeclaredMethods();
