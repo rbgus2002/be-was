@@ -5,12 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import webserver.Constants.HttpVersion;
+import webserver.http.Constants.HttpVersion;
 import webserver.ModelAndView;
-import webserver.request.HttpRequest;
-import webserver.request.RequestBody;
-import webserver.request.RequestQuery;
-import webserver.response.HttpResponse;
+import webserver.http.request.HttpRequest;
+import webserver.http.request.RequestBody;
+import webserver.http.response.HttpResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;

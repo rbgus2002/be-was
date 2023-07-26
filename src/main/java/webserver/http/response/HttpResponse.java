@@ -1,7 +1,7 @@
 package webserver.http.response;
 
 import exception.internalServerError.HttpResponseSendException;
-import webserver.http.Constants.HeaderField;
+import webserver.http.Constants.HeaderOption;
 import webserver.http.Constants.HttpStatus;
 import webserver.http.Constants.HttpVersion;
 import webserver.http.Header;
@@ -50,7 +50,7 @@ public class HttpResponse {
 
     public void setBody(final byte[] body) {
         this.body = body;
-        addHeaderElement(HeaderField.contentLength, String.valueOf(body.length));
+        addHeaderElement(HeaderOption.CONTENT_LENGTH, String.valueOf(body.length));
     }
 
     public void sendResponse(final DataOutputStream dos) throws HttpResponseSendException {

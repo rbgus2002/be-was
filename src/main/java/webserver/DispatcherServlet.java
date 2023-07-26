@@ -8,7 +8,7 @@ import exception.notFound.InvalidResourcePathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.Constants.ContentType;
-import webserver.http.Constants.HeaderField;
+import webserver.http.Constants.HeaderOption;
 import webserver.http.response.HttpResponse;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
@@ -43,7 +43,7 @@ public class DispatcherServlet {
         } catch (CustomException e) {
             logger.debug(e.getMessage());
             response.setHttpStatus(e.getHttpStatus());
-            response.addHeaderElement(HeaderField.contentType, ContentType.HTML.getDescription());
+            response.addHeaderElement(HeaderOption.CONTENT_TYPE, ContentType.HTML.getDescription());
             response.setBody(e.getHttpStatus().getDescription().getBytes(StandardCharsets.UTF_8));
             response.sendResponse(dos);
         }
