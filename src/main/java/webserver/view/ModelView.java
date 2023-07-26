@@ -25,7 +25,7 @@ public class ModelView {
 		model.addAttribute(key, value);
 	}
 
-	public String getAttribute(String key) {
+	public Object getAttribute(String key) {
 		return model.getAttribute(key);
 	}
 

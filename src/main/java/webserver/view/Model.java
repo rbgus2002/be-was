@@ -5,13 +5,13 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 public class Model {
-	private Map<String, String> attributes = Maps.newHashMap();
+	private Map<String, Object> attributes = Maps.newHashMap();
 
 	public void addAttribute(final String key, final String value) {
 		attributes.put(key, value);
 	}
 
-	public String getAttribute(final String key) {
+	public Object getAttribute(final String key) {
 		return attributes.get(key);
 	}
 
