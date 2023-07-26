@@ -1,5 +1,6 @@
 package controller;
 
+import http.HttpResponse;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,10 +38,10 @@ class ControllerTest {
             Map<String, String> body = Map.of("userId", "rbgus2002", "password", "0000");
 
             // when
-            String result = controller.loginUser(body);
+            HttpResponse result = controller.loginUser(body);
 
             // then
-            assertEquals("redirect:", result);
+            assertEquals(HttpResponse.redirect(), result);
         }
 
         @Test
@@ -50,10 +51,10 @@ class ControllerTest {
             Map<String, String> body = Map.of("userId", "tc", "password", "0000");
 
             // when
-            String result = controller.loginUser(body);
+            HttpResponse result = controller.loginUser(body);
 
             // then
-            assertEquals("/user/login_failed.html", result);
+            assertEquals(HttpResponse.redirect(), result);
         }
     }
 }

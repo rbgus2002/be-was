@@ -8,6 +8,7 @@ public class Session {
     private final Map<String, Object> attributes = Maps.newHashMap();
     private long lastAccessTime;
 
+    // FIXME : sid 수정 고려
     private Session(String sid, Object obj) {
         attributes.put(sid, obj);
         this.lastAccessTime = System.currentTimeMillis();

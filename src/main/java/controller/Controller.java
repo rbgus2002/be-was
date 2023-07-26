@@ -3,6 +3,7 @@ package controller;
 import annotation.PostMapping;
 import db.Database;
 import db.SessionManager;
+import http.HttpResponse;
 import model.User;
 import model.factory.UserFactory;
 import org.slf4j.Logger;
@@ -18,25 +19,25 @@ public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     @PostMapping(value = "/user/create")
-    public String createUser(Map<String, String> body){
+    public HttpResponse createUser(Map<String, String> body){
         logger.debug("POST user/create API START");
 
         User user = UserFactory.createUserFrom(body);
         Database.addUser(user);
         logger.debug("user 생성 : {}", Database.findUserById(body.get("userId")));
 
-        return "redirect:";
+        return HttpResponse.redirect();
     }
 
     @PostMapping(value = "/user/login")
-    public String loginUser(Map<String, String> body){
+    public HttpResponse loginUser(Map<String, String> body){
         Optional<User> user = Database.findUserById(body.get("userId"));
         if(user.isEmpty() || !user.get().checkPassword(body.get("password"))){
             logger.error("아이디 혹은 비밀번호가 일치하지 않습니다");
-            return "/user/login_failed.html";
+            return HttpResponse.ok("/user/login_failed.html");
         }
         String sid = SessionManager.createSession(user.get());
         logger.debug("session 생성 {}", sid);
-        return "redirect:";
+        return HttpResponse.redirect();
     }
 }
