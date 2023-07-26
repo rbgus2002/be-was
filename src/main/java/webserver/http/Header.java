@@ -19,7 +19,7 @@ public class Header {
         HashMap<String, String> headers = new HashMap<>();
 
         Arrays.stream(tokens)
-                .map(token -> token.split(":"))
+                .map(token -> token.split(COLON))
                 .forEach(header -> headers.put(header[0].trim(), header[1].trim()));
 
         return new Header(headers);
@@ -38,7 +38,7 @@ public class Header {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (String s : headers.keySet()) {
-            sb.append(s).append(SPACE).append(headers.get(s)).append(NEWLINE);
+            sb.append(s).append(COLON).append(SPACE).append(headers.get(s)).append(NEWLINE);
         }
         sb.append(NEWLINE);
         return sb.toString();

@@ -3,7 +3,6 @@ package webserver.http.request;
 import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.utils.StringUtils;
 import webserver.http.Constants.ContentType;
 import webserver.http.Constants.HttpMethod;
 import webserver.http.Constants.HttpVersion;
@@ -16,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static support.utils.StringUtils.*;
 
 public class HttpRequest {
 
@@ -30,7 +30,7 @@ public class HttpRequest {
 
     private HttpRequest(String requestLine, String header, String body) {
 
-        String[] tokens = requestLine.split(" ");
+        String[] tokens = requestLine.split(SPACE);
 
         String[] pathAndQueries = tokens[1].split("\\?");
 
@@ -56,7 +56,7 @@ public class HttpRequest {
 
             if(line.startsWith("Content-Length")) contentLength = Integer.parseInt(line.substring(16));
             logger.debug("header: {}", line);
-            header.append(line).append(StringUtils.NEWLINE);
+            header.append(line).append(NEWLINE);
         }
 
         String body = null;
