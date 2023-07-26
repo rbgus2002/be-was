@@ -1,13 +1,13 @@
 package webserver.handlers;
 
-import webserver.http.message.Mime;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.http.message.Mime;
 import webserver.session.Session;
 import webserver.utils.ExtensionSeparator;
 import webserver.utils.FileUtils;
 
-public class UserFormHandler implements Handler{
+public class LoginPageHandler implements Handler{
     @Override
     public HttpResponse handle(HttpRequest request, Session session) {
         String path = request.getURL().getPath();

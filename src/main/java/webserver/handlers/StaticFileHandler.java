@@ -4,6 +4,7 @@ import webserver.http.message.Mime;
 import webserver.http.message.HttpHeaders;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.session.Session;
 import webserver.utils.ExtensionSeparator;
 import webserver.utils.FileUtils;
 
@@ -11,7 +12,7 @@ import static webserver.http.message.HttpHeaders.ACCEPT;
 
 public class StaticFileHandler implements Handler {
     @Override
-    public HttpResponse handle(HttpRequest request) {
+    public HttpResponse handle(HttpRequest request, Session session) {
         if (request.containsHeader(ACCEPT)) {
             HttpResponse response = makeResponseUsingAccept(request);
             HttpHeaders headers = request.getHttpHeaders();

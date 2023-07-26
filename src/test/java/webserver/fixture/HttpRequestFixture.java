@@ -1,9 +1,6 @@
 package webserver.fixture;
 
-import webserver.http.message.HttpMethod;
-import webserver.http.message.HttpRequest;
-import webserver.http.message.HttpVersion;
-import webserver.http.message.URL;
+import webserver.http.message.*;
 
 public class HttpRequestFixture {
     public static HttpRequest getRequestIndex() {
@@ -19,6 +16,6 @@ public class HttpRequestFixture {
     }
 
     private static HttpRequest getHttpRequest(String url) {
-        return new HttpRequest(HttpMethod.GET, URL.from(url), HttpVersion.V1_1, null, null);
+        return new HttpRequest(HttpMethod.GET, URL.from(url), HttpVersion.V1_1, new HttpHeaders(), null);
     }
 }

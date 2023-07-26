@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import service.UserService;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
+import webserver.session.Session;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -31,7 +32,7 @@ public class UserJoinHandler implements Handler {
     }
 
     @Override
-    public HttpResponse handle(HttpRequest request) {
+    public HttpResponse handle(HttpRequest request, Session session) {
         try {
             char[] messageBody = request.getBody();
             String body = makeString(messageBody);
