@@ -1,19 +1,18 @@
 package webserver.controller;
 
 import webserver.HttpMethod;
+import webserver.annotation.Cookies;
+import webserver.annotation.HttpResponse;
 import webserver.annotation.RequestParameter;
-import webserver.annotation.SetCookie;
 import webserver.request.HttpRequestMessage;
 import webserver.response.HttpResponseMessage;
-import webserver.session.SessionStorage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import static webserver.WebServer.logger;
 import static webserver.controller.ApplicationMethod.apiRouteToClassMap;
 import static webserver.controller.ApplicationMethod.apiRouteToMethodMap;
 import static webserver.handler.HttpBodyParser.parseBodyByContentType;
@@ -68,40 +67,28 @@ public class ApplicationControllerHandler {
     }
 
     private Object[] getArguments(Map<String, String> requestData) {
-        verifyParameterCount(targetMethod, requestData);
-
         Object[] arguments = new Object[targetMethod.getParameterCount()];
         Parameter[] targetParameters = targetMethod.getParameters();
         for (int i = 0; i < targetMethod.getParameterCount(); i++) {
             if (targetParameters[i].isAnnotationPresent(RequestParameter.class)) {
                 RequestParameter targetParameter = targetParameters[i].getAnnotation(RequestParameter.class);
                 arguments[i] = requestData.get(targetParameter.value());
+            }
+            if (targetParameters[i].isAnnotationPresent(HttpResponse.class)) {
+                arguments[i] = response;
+            }
+            if (targetParameters[i].isAnnotationPresent(Cookies.class)) {
+                // todo 파싱 로직 리팩토링 필요
+                String data = request.getHeader("Cookie");
+                Map<String, String> cookies = new HashMap<>();
+                for (String tokens : data.split(";")) {
+                    String[] keyValue = tokens.trim().split("=");
 
-                if (hasCookieAnnotation(targetParameters[i])) {
-                    setCookieConnection(requestData, targetParameter);
+                    cookies.put(keyValue[0], keyValue[1]);
                 }
+                arguments[i] = cookies;
             }
         }
         return arguments;
-    }
-
-    private void setCookieConnection(Map<String, String> requestData, RequestParameter targetParameter) {
-        logger.debug("[SetCookie Annotation key = {}, value = {} ]", targetParameter.value(), requestData.get(targetParameter.value()));
-
-        String clientId = requestData.get(targetParameter.value());
-        String sessionId = UUID.randomUUID().toString();
-        SessionStorage.setSession(sessionId, clientId);
-
-        response.setHeader("Set-Cookie", "sid=" + sessionId + "; " + "path=/");
-    }
-
-    private void verifyParameterCount(Method targetMethod, Map<String, String> requestParameters) {
-        if (requestParameters.size() != targetMethod.getParameterCount()) {
-            throw new IllegalArgumentException("요청된 파라미터의 갯수가 다릅니다.");
-        }
-    }
-
-    private boolean hasCookieAnnotation(Parameter targetParameters) {
-        return targetParameters.isAnnotationPresent(SetCookie.class);
     }
 }

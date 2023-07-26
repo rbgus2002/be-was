@@ -55,6 +55,7 @@ public class HttpHandler {
             httpResponseMessage.setStatusLine(HttpStatus.CREATED);
 
             if (!hasReturnValue(returnValue)) {
+                httpResponseMessage.setStatusLine(HttpStatus.OK);
                 return;
             }
             // String을 받은 상황
@@ -64,7 +65,6 @@ public class HttpHandler {
                 // 리다이렉트를 처리해야 하는 상황
                 if (resultStringValue.startsWith("redirect:")) {
                     String redirectPath = resultStringValue.substring(resultStringValue.indexOf(":") + 1);
-                    logger.debug(redirectPath);
                     httpResponseMessage.setStatusLine(HttpStatus.FOUND);
                     httpResponseMessage.setHeader("Location", redirectPath);
                     logger.debug(httpResponseMessage.toString());

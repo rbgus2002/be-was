@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.response.HttpResponseMessage;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +72,7 @@ class UserControllerTest {
         userController.createUser(userId, password, name, email);
 
         // then
-        assertEquals("redirect:/index.html", userController.loginUser(userId, password));
+        assertEquals("redirect:/index.html", userController.loginUser(userId, password, new HttpResponseMessage()));
     }
 
     @Test
@@ -88,6 +89,6 @@ class UserControllerTest {
         String wrongPassword = "notpassword";
 
         // then
-        assertEquals("redirect:/user/login_failed.html", userController.loginUser(userId, wrongPassword));
+        assertEquals("redirect:/user/login_failed.html", userController.loginUser(userId, wrongPassword, new HttpResponseMessage()));
     }
 }

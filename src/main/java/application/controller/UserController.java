@@ -3,10 +3,11 @@ package application.controller;
 import application.model.User;
 import db.Database;
 import webserver.HttpMethod;
-import webserver.annotation.Controller;
-import webserver.annotation.RequestMapping;
-import webserver.annotation.RequestParameter;
-import webserver.annotation.SetCookie;
+import webserver.annotation.*;
+import webserver.controller.CookieController;
+import webserver.response.HttpResponseMessage;
+
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -24,12 +25,20 @@ public class UserController {
     }
 
     @RequestMapping(path = "/user/login", method = HttpMethod.POST)
-    public String loginUser(@RequestParameter(value = "userId") @SetCookie String userId,
-                            @RequestParameter(value = "password") String password) {
+    public String loginUser(@RequestParameter(value = "userId") String userId,
+                            @RequestParameter(value = "password") String password,
+                            @HttpResponse HttpResponseMessage response) {
         if (Database.authenticateUser(userId, password)) {
+            CookieController.createCookie(response, userId);
             return "redirect:/index.html";
         }
         return "redirect:/user/login_failed.html";
+    }
+
+    @RequestMapping(path = "/user/logout", method = HttpMethod.GET)
+    public void logout(@HttpResponse HttpResponseMessage response,
+                       @Cookies Map<String, String> cookies) {
+        CookieController.deleteCookie(cookies, response);
     }
 
     private boolean isUserIdDuplicate(String userId) {

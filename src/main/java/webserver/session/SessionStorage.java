@@ -10,4 +10,8 @@ public class SessionStorage {
     public static void setSession(String key, String value) {
         sessionMap.put(key, value);
     }
+
+    public static void deleteSession(String key) {
+        sessionMap.remove(key);
+    }
 }
