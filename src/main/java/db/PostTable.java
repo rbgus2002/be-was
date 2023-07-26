@@ -7,13 +7,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PostTable {
-    private static final Map<String, Post> posts = new ConcurrentHashMap<>();
+    private static final Map<Long, Post> posts = new ConcurrentHashMap<>();
 
     public static void addPost(Post post) {
         posts.put(post.getPostId(), post);
     }
 
-    public static Post findByPostId(String postId) {
+    public static Post findByPostId(Long postId) {
         return posts.get(postId);
     }
 
