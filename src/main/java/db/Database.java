@@ -21,9 +21,11 @@ public class Database {
     }
 
     public static boolean authenticateUser(String userId, String password) {
-        User user = findUserById(userId);
-
-        return password.equals(user.getPassword());
+        if (hasUserId(userId)) {
+            User user = findUserById(userId);
+            return password.equals(user.getPassword());
+        }
+        return false;
     }
 
     public static boolean hasUserId(String userId) {
