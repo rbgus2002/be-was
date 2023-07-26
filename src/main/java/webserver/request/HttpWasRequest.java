@@ -4,20 +4,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class HttpWasRequest {
 
 	private final Map<String, String> map = new HashMap<>();
 	private final Map<String, String> requestParam = new HashMap<>();
+	private final List<String> cookies = new ArrayList<>();
 
 	public HttpWasRequest(InputStream inputStream) throws IOException {
 		final BufferedReader bufferedReader = convertToBufferedReader(inputStream);
 		final HttpParser httpParser = HttpParser.getInstance();
-		httpParser.parseHttpRequestToMap(bufferedReader, map, requestParam);
+		httpParser.parseHttpRequestToMap(bufferedReader, map, requestParam, cookies);
 	}
 
 	private BufferedReader convertToBufferedReader(final InputStream inputStream) {
@@ -42,22 +43,18 @@ public class HttpWasRequest {
 	}
 
 	public String getSessionId() {
-		final String value = map.get("Cookie");
-		if (value == null || value.isBlank())
+		if (cookies.isEmpty())
 			return "";
 
-		final String[] token = value.split(";");
-		final String sessionValue = Arrays.stream(token)
-			.filter(attribute -> {
-				final String[] split = attribute.split("=");
-				return Objects.equals(split[0].trim(), "SID");
-			}).findFirst()
-			.orElse("");
+		final HttpParser httpParser = HttpParser.getInstance();
+		for (String cookie : cookies) {
+			final String sessionValue = httpParser.parseSessionId(cookie);
+			if (!sessionValue.isBlank()) {
+				final String[] split = sessionValue.split("=");
+				return split[1];
+			}
+		}
 
-		if (sessionValue.isBlank())
-			return sessionValue;
-
-		final String[] split = sessionValue.split("=");
-		return split[1];
+		return "";
 	}
 }

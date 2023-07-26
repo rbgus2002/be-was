@@ -6,7 +6,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 
@@ -21,13 +24,15 @@ public class HttpParser {
 
 	private Map<String, String> map;
 	private Map<String, String> requestParam;
+	private List<String> cookies;
 
 	public static HttpParser getInstance() {
 		return instance;
 	}
-	public void parseHttpRequestToMap(BufferedReader bufferedReader, Map<String, String> map, Map<String, String> requestParam) throws IOException {
+	public void parseHttpRequestToMap(BufferedReader bufferedReader, Map<String, String> map, Map<String, String> requestParam, List<String> cookies) throws IOException {
 		this.map = map;
 		this.requestParam = requestParam;
+		this.cookies = cookies;
 
 		String input = bufferedReader.readLine();
 		firstRequestHeader(input);
@@ -48,9 +53,13 @@ public class HttpParser {
 		String input = bufferedReader.readLine();
 		while (input != null && !input.isBlank()) {
 			final String[] keyValue = input.split(":", 2);
-			final String key = keyValue[0];
+			final String key = keyValue[0].trim();
 			final String value = keyValue[1].trim();
-			map.put(key, value);
+			if (key.equals("Cookie")) {
+				cookies.add(value);
+			} else {
+				map.put(key, value);
+			}
 			input = bufferedReader.readLine();
 		}
 	}
@@ -98,6 +107,16 @@ public class HttpParser {
 
 	private String base64Decoder(String value) {
 		return URLDecoder.decode(value, StandardCharsets.UTF_8);
+	}
+
+	public String parseSessionId(String value) {
+		final String[] token = value.split(";");
+		return Arrays.stream(token)
+			.filter(attribute -> {
+				final String[] split = attribute.split("=");
+				return Objects.equals(split[0].trim(), "SID");
+			}).findFirst()
+			.orElse("");
 	}
 
 }
