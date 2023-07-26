@@ -12,6 +12,7 @@ public class ListController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(ListController.class);
     @Override
+    @RequestMapping
     public String process(HTTPServletRequest request, HTTPServletResponse response) {
         if (isLogInStatus(request)) {
             return HOME_PATH.getPath();

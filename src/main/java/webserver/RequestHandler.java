@@ -1,11 +1,14 @@
 package webserver;
 
+import container.Controller;
+import container.ControllerGroup;
 import container.DispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import parser.ParserFactory;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 import static container.DispatcherServlet.*;
@@ -28,6 +31,7 @@ public class RequestHandler implements Runnable {
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
 
+
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             DispatcherServlet dispatcherServlet = getInstance();
             logger.debug("dispatcherServlet = {}", dispatcherServlet);
@@ -35,6 +39,14 @@ public class RequestHandler implements Runnable {
             dispatcherServlet.service(request, response);
         } catch (IOException e) {
             logger.error(e.getMessage());
+        } catch (InvocationTargetException e) {
+            logger.debug(e.getMessage());
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            logger.debug(e.getMessage());
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
         }
     }
 }

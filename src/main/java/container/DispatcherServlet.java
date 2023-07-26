@@ -7,19 +7,18 @@ import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DispatcherServlet {
     private static final Map<String, Controller> map = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
-    private static final String LOGIN_PATH = "/user/create";
-
     private static DispatcherServlet instance = null;
 
     public static DispatcherServlet getInstance(){
         if (instance == null) {
-            initialize();
             logger.debug("map.size() = {}", map.size());
             return instance = new DispatcherServlet();
         }
@@ -29,23 +28,30 @@ public class DispatcherServlet {
     private DispatcherServlet() {
     }
 
-    public static void initialize(){
-        map.put("/user/login", new LogInTestController());
-        map.put(LOGIN_PATH, new LogInController());
-        map.put("/user/list", new ListController());
-        map.put("/user/list.html", new ListController());
-    }
-
-    public void service(HTTPServletRequest request, HTTPServletResponse response) throws IOException {
+    public void service(HTTPServletRequest request, HTTPServletResponse response) throws InvocationTargetException, IllegalAccessException, IOException, InstantiationException {
         String url = request.getUrl();
-        Controller controller = map.get(url);
         String viewPath = url;
-        if (controller != null) {
-            viewPath = controller.process(request, response);
+        Method[] declaredMethods = ControllerGroup.class.getDeclaredMethods();
+        for (Method declaredMethod : declaredMethods) {
+            logger.debug("method = {}", declaredMethod);
+            logger.debug("isProper = {}", isProperMethod(declaredMethod, url));
+            if (isProperMethod(declaredMethod, url)) {
+                viewPath = (String) declaredMethod.invoke(new ControllerGroup(), request, response);
+                break;
+            }
         }
         logger.debug("viewName = {}", viewPath);
         ViewResolver view = new ViewResolver(viewPath, response, request);
         view.service();
         view.render();
+    }
+
+    private boolean isProperMethod(Method method, String url) {
+        if (method.isAnnotationPresent(RequestMapping.class)) {
+            if (method.getAnnotation(RequestMapping.class).path().equals(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
