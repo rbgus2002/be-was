@@ -15,6 +15,10 @@ public class SessionStorage {
         sessionMap.remove(key);
     }
 
+    public static String getSession(String key) {
+        return sessionMap.get(key);
+    }
+
     public static void clear() {
         sessionMap = Maps.newConcurrentMap();
     }
