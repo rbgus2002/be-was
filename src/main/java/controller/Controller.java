@@ -23,4 +23,16 @@ public class Controller {
 
         return HttpResponse.redirect("/index.html");
     }
+
+    @PostMapping(path = "/user/login")
+    public HttpResponse signInUser(Map<String, String> body) throws IOException {
+        String userId = body.get("userId");
+        String password = body.get("password");
+
+        if (!userService.existUser(userId, password)) {
+            return HttpResponse.redirect("/user/login_failed.html");
+        }
+
+        // TODO: 세션 설정
+    }
 }

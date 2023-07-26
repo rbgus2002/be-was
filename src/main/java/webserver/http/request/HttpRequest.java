@@ -33,7 +33,6 @@ public class HttpRequest {
         this.startLine = new HttpRequestStartLine(readStartLine());
         this.headers = new HttpRequestHeaders(readHeaderString());
         this.body = new HttpRequestBody(readBodyString());
-        logger.debug("body : {}", body);
     }
 
     private String readStartLine() throws IOException {

@@ -21,4 +21,14 @@ public class UserService {
         Database.addUser(user);
         logger.debug("User: {}", user);
     }
+
+    public boolean existUser(String userId, String password) {
+        User user = Database.findUserById(userId);
+
+        if (user != null && user.getPassword().equals(password)) {
+            return true;
+        }
+
+        return false;
+    }
 }

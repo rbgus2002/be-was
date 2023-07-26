@@ -65,12 +65,10 @@ public class DispatcherServlet {
 
     private HttpResponse getHttpResponse(HttpRequest request, MethodHandle methodHandle) throws Throwable {
         if (request.getParamMap().size() > 0) {
-            logger.debug("param");
             return (HttpResponse) methodHandle.invoke(request.getParamMap());
         }
 
         if (request.getBodyMap().size() > 0) {
-            logger.debug("body");
             return (HttpResponse) methodHandle.invoke(request.getBodyMap());
         }
 
