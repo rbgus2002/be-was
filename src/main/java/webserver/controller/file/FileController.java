@@ -15,18 +15,18 @@ public class FileController implements Controller {
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String filePath = httpRequest.getField(HttpField.PATH);
         String responsePage = FileUtils.checkFilePath(filePath);
-        processFileResponse(httpResponse, responsePage);
+        setResponseWithFileData(httpResponse, responsePage);
     }
 
-    private void processFileResponse(HttpResponse httpResponse, String filePath) throws IOException {
-        byte[] body = FileUtils.readFileBytes(filePath);
+    private void setResponseWithFileData(HttpResponse httpResponse, String filePath) throws IOException {
+        byte[] fileData = FileUtils.readFileBytes(filePath);
         HttpStatus status = resolveHttpStatus(filePath);
         String contentType = ContentTypeResolver.getContentType(filePath);
 
         httpResponse.setStatus(status);
         httpResponse.set(HttpField.CONTENT_TYPE, contentType);
-        httpResponse.set(HttpField.CONTENT_LENGTH, body.length);
-        httpResponse.setBody(body);
+        httpResponse.set(HttpField.CONTENT_LENGTH, fileData.length);
+        httpResponse.setBody(fileData);
     }
 
     private HttpStatus resolveHttpStatus(String path) {
