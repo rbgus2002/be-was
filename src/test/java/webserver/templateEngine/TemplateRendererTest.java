@@ -1,10 +1,15 @@
 package webserver.templateEngine;
 
+import model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import webserver.model.Model;
 import webserver.template.TemplateRenderer;
 import webserver.utils.FileUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 class TemplateRendererTest {
     TemplateRenderer templateRenderer = TemplateRenderer.getInstance();
@@ -84,6 +89,30 @@ class TemplateRendererTest {
         Assertions.assertEquals("good", html);
     }
 
+    @Test
+    void forTest() {
+        String html = "[for: user]\n" +
+                "        <th>[index]</th><td>[userId]</td><td>[name]</td><td>[email]</td>>\n" +
+                "      [/for]";
+
+        Model model = new Model();
+        User user1 = new User("id1", "pw1", "name1", "ee1@ee");
+        User user2 = new User("id2", "pw2", "name2", "ee2@ee");
+        List<Map<String, String>> users = new ArrayList<>();
+        users.add(Map.of("userId", user1.getUserId(), "name", user1.getName(), "email", user1.getEmail()));
+        users.add(Map.of("userId", user2.getUserId(), "name", user2.getName(), "email", user2.getEmail()));
+        model.setAttribute("user", users);
+
+        html = templateRenderer.renderFor(html, model);
+
+        String expectedHtml = "\n" +
+                "        <th>1</th><td>id1</td><td>name1</td><td>ee1@ee</td>>\n" +
+                "      \n" +
+                "        <th>2</th><td>id2</td><td>name2</td><td>ee2@ee</td>>\n" +
+                "      \n";
+
+        Assertions.assertEquals(expectedHtml, html);
+    }
 
     private static String readHtml(String resource) {
         byte[] html = FileUtils.readFileFromTemplate(resource);
