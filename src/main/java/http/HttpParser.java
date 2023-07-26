@@ -43,7 +43,7 @@ public class HttpParser {
 
     public static MIME parseMime(String targetUri) {
         String[] tokens = targetUri.split("\\.");
-        String extension = tokens[tokens.length-1];
+        String extension = tokens[tokens.length-1].split("\\?")[0];
 
         return MIME.getMimeByExtension(extension);
     }
