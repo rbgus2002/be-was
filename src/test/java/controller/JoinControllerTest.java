@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static controller.JoinController.JOIN_CONTROLLER;
+import static controller.UserJoinController.JOIN_CONTROLLER;
 
 class JoinControllerTest {
 
