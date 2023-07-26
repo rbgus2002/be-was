@@ -3,12 +3,11 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Container;
-import support.instance.DefaultInstanceManager;
 import support.web.ControllerResolver;
 import support.web.ModelAndView;
+import support.web.ResponseEntity;
 import support.web.ViewResolver;
 import support.web.exception.*;
-import support.web.view.ViewFactory;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
@@ -26,7 +25,9 @@ public class HttpHandler {
 
         try {
             try {
-                ControllerResolver.invoke(path, request, response);
+                ResponseEntity responseEntity = ControllerResolver.invoke(path, request, response);
+                response.setStatus(responseEntity.getStatus());
+                response.appendHeader(responseEntity.getHeader());
             } catch (NotSupportedException e) {
                 ModelAndView modelAndView = new ModelAndView();
                 modelAndView.setViewName(path);
@@ -49,7 +50,9 @@ public class HttpHandler {
         String path = request.getRequestPath();
 
         try {
-            ControllerResolver.invoke(path, request, response);
+            ResponseEntity responseEntity = ControllerResolver.invoke(path, request, response);
+            response.setStatus(responseEntity.getStatus());
+            response.appendHeader(responseEntity.getHeader());
         } catch (NotSupportedException e) {
             buildErrorResponse(request, response);
         } catch (FoundException e) {
@@ -73,7 +76,6 @@ public class HttpHandler {
     }
 
     private void buildErrorResponse(HttpRequest request, HttpResponse response) {
-        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         response.setStatus(HttpStatus.NOT_FOUND);
         response.buildHeader(new NotFound());
         ViewResolver.buildErrorView(request, response);

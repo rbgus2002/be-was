@@ -53,7 +53,7 @@ public abstract class ControllerResolver {
     /**
      * {@link Controller}의 {@link RequestMapping}된 메소드를 실행한다.
      */
-    public static void invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
+    public static ResponseEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
 
@@ -61,7 +61,7 @@ public abstract class ControllerResolver {
         Object[] args = transformQuery(request, response, controllerMethodStruct.getParameters());
 
         // 메소드 실행
-        handlers.handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
+        return handlers.handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
     }
 
     private static ControllerMethod findControllerMethodStruct(String url, HttpRequest request) throws NotSupportedException {

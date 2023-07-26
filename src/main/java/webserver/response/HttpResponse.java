@@ -39,6 +39,10 @@ public class HttpResponse {
         header.appendHeader(key, value);
     }
 
+    public void appendHeader(Header header) {
+        this.header.appendHeader(header);
+    }
+
     public void buildHeader(ResponseHeaderStrategy message) {
         message.buildHeader(header);
     }
@@ -46,4 +50,5 @@ public class HttpResponse {
     public void setBody(byte[] body) {
         this.body = body;
     }
+
 }
