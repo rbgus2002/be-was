@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import dto.UserDTO;
 import model.HttpRequest;
 import model.HttpResponse;
 import model.User;
@@ -56,7 +57,9 @@ class UserControllerTest {
     void getUserCreate() {
         User expectedUser = new User("asdf", "asdf", "asdf", "asdf@naver.com");
 
-        String result = userController.getUserCreate(httpRequest, httpResponse);
+        UserDTO userDTO = new UserDTO("asdf", "asdf", "asdf", "asdf@naver.com");
+
+        String result = userController.getUserCreate(httpRequest, httpResponse, userDTO);
         Collection<User> userSet = Database.findAll();
 
         assertEquals(1, userSet.stream().count());
