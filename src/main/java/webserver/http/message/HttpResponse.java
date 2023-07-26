@@ -1,82 +1,64 @@
 package webserver.http.message;
 
-import static webserver.http.utils.HttpConstant.*;
-
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import webserver.http.utils.StringUtils;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class HttpResponse {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
-
-	private DataOutputStream outputStream;
-	private String httpVersion;
 	private HttpStatus status;
-	private ParameterMap headerFields;
+	private HttpHeaderFields headerFields;
 	private byte[] body;
 
-	private HttpResponse() {
-		headerFields = new ParameterMap();
+	private HttpResponse(Builder builder) {
+		this.status = builder.status;
+		this.headerFields = builder.headerFields;
+		this.body = builder.body;
 	}
 
-	public static HttpResponse from(HttpRequest request, DataOutputStream outputStream) {
-		HttpResponse httpResponse = new HttpResponse();
-		httpResponse.httpVersion = request.getHttpVersion();
-		httpResponse.outputStream = outputStream;
-		// TODO : 요청의 general header는 응답에도 바로 저장하기
-		return httpResponse;
+	public static Builder builder() {
+		return new Builder();
 	}
 
-	public void setStatus(HttpStatus status) {
-		this.status = status;
-	}
+	public static class Builder {
 
-	public void setHeader(String key, String value) {
-		headerFields.add(key, value);
-	}
+		private HttpStatus status;
+		private HttpHeaderFields headerFields;
+		private byte[] body;
 
-	public void setBody(byte[] body, String contentType) {
-		this.body = body;
-		setHeader("Content-Type", contentType);
-		setHeader("Content-Length", String.valueOf(body.length));
-	}
-
-	public void sendResponse(DataOutputStream outputStream) {
-		writeResponseHeader(outputStream);
-		writeResponseBody(outputStream);
-	}
-
-	private void writeResponseHeader(DataOutputStream outputStream) {
-		try {
-			List<String> tokens = new ArrayList<>();
-			tokens.add(httpVersion);
-			tokens.add(status.getCode());
-			tokens.add(status.getMessage());
-			outputStream.writeBytes(StringUtils.joinStatusLine(tokens));
-			for (Map.Entry<String, String> headerField : headerFields.getEntrySet()) {
-				outputStream.writeBytes(StringUtils.joinHeaderFields(headerField.getKey(), headerField.getValue()));
-			}
-			outputStream.writeBytes(CRLF);
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+		private Builder() {
+			this.status = HttpStatus.OK;
+			headerFields = new HttpHeaderFields();
+			// TODO : 요청의 general header는 응답에도 바로 저장하기
 		}
-	}
 
-	private void writeResponseBody(DataOutputStream outputStream) {
-		try {
-			outputStream.write(body, 0, body.length);
-			outputStream.flush();
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+		public Builder status(HttpStatus status) {
+			this.status = status;
+			return this;
 		}
+
+		public Builder headerFields(HttpHeaderFields headerFields) {
+			this.headerFields = headerFields;
+			return this;
+		}
+
+		public Builder headerField(String key, String value) {
+			this.headerFields.add(key, value);
+			return this;
+		}
+
+		public Builder body(Path resourcePath) throws IOException {
+			byte[] body = Files.readAllBytes(resourcePath);
+			this.body = body;
+			this.headerFields.add("Content-Type", Files.probeContentType(resourcePath));
+			this.headerFields.add("Content-Length", String.valueOf(body.length));
+			return this;
+		}
+
+		public HttpResponse build() {
+			return new HttpResponse(this);
+		}
+
 	}
 
 }
