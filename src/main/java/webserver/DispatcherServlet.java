@@ -46,7 +46,7 @@ public class DispatcherServlet implements Runnable {
 
     private Controller resolveController(HttpRequest httpRequest) {
         String path = httpRequest.getHeader(HttpField.PATH);
-        String method = httpRequest.getHeader(HttpField.METHOD);
+        String method = httpRequest.getMethod();
         return controllerResolver.resolve(path, method);
     }
 

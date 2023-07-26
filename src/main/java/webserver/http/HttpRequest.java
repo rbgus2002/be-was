@@ -1,7 +1,8 @@
 package webserver.http;
 
 import webserver.utils.HttpField;
-import webserver.utils.HttpParametersParser;
+import webserver.utils.HttpMethod;
+import webserver.utils.UrlEncodedParameterParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +14,10 @@ import java.nio.charset.StandardCharsets;
 public class HttpRequest {
     private final BufferedReader bufferedReader;
 
+    private String method;
     private final HttpHeaders httpHeaders;
     private HttpParameters httpParameters;
-    private Cookie cookie;
+    private final Cookie cookie;
     private String body = "";
 
 
@@ -32,6 +34,8 @@ public class HttpRequest {
     private void parseRequestMessage() throws IOException {
         parseHeader();
         parseBody();
+        parsePath();
+        parseParameters();
     }
 
     private void parseHeader() throws IOException {
@@ -42,27 +46,38 @@ public class HttpRequest {
 
     private void parseRequestLine() throws IOException {
         String[] requestLineTokens = bufferedReader.readLine().split(" ");
-
-        httpHeaders.put(HttpField.METHOD, requestLineTokens[0]);
+        method = requestLineTokens[0];
         httpHeaders.put(HttpField.URI, URLDecoder.decode(requestLineTokens[1], StandardCharsets.UTF_8));
         httpHeaders.put(HttpField.VERSION, requestLineTokens[2]);
-
-        parsePathAndParameters(httpHeaders.get(HttpField.URI));
     }
 
-    private void parsePathAndParameters(String URI) {
+    private void parsePath() {
+        String URI = httpHeaders.get(HttpField.URI);
+        String path = URI.split("\\?")[0];
+        httpHeaders.put(HttpField.PATH, path);
+    }
+
+    private void parseParameters() {
+        if (method.equals(HttpMethod.GET)) {
+            parseURIParameters();
+        }
+        if (method.equals(HttpMethod.POST)) {
+            parseBodyParameters();
+        }
+    }
+
+    private void parseURIParameters() {
+        String URI = httpHeaders.get(HttpField.URI);
         String[] uriTokens = URI.split("\\?");
-        parsePath(uriTokens);
-        parseParameters(uriTokens);
-    }
-
-    private void parsePath(String[] uriTokens) {
-        httpHeaders.put(HttpField.PATH, uriTokens[0]);
-    }
-
-    private void parseParameters(String[] uriTokens) {
         if (uriTokens.length == 2) {
-            httpParameters = HttpParametersParser.parse(uriTokens[1]);
+            httpParameters = UrlEncodedParameterParser.parse(uriTokens[1]);
+        }
+    }
+
+    private void parseBodyParameters() {
+        String contentType = httpHeaders.get(HttpField.CONTENT_TYPE);
+        if (contentType.equals("application/x-www-form-urlencoded")) {
+            httpParameters = UrlEncodedParameterParser.parse(body);
         }
     }
 
@@ -85,7 +100,7 @@ public class HttpRequest {
     }
 
     private void parseBody() throws IOException {
-        if(httpHeaders.contains(HttpField.CONTENT_LENGTH)) {
+        if (httpHeaders.contains(HttpField.CONTENT_LENGTH)) {
             int bodyLength = Integer.parseInt(httpHeaders.get(HttpField.CONTENT_LENGTH));
             char[] requestBody = new char[bodyLength];
 
@@ -108,5 +123,9 @@ public class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+    public String getMethod() {
+        return method;
     }
 }

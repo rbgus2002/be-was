@@ -2,10 +2,10 @@ package webserver.utils;
 
 import webserver.http.HttpParameters;
 
-public final class HttpParametersParser {
+public final class UrlEncodedParameterParser {
     private static final String parameterSeparator = "&";
 
-    private HttpParametersParser() {
+    private UrlEncodedParameterParser() {
     }
 
     public static HttpParameters parse(String parameters) {

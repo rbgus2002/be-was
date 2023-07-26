@@ -12,9 +12,8 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.utils.CookieConstants;
-import webserver.utils.Location;
 import webserver.utils.HttpField;
-import webserver.utils.HttpParametersParser;
+import webserver.utils.Location;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,7 +23,7 @@ public class ArticleSaveController implements Controller {
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
             String sessionId = httpRequest.getCookie().get(CookieConstants.SESSION_ID);
-            HttpParameters articleParameters = HttpParametersParser.parse(httpRequest.getBody());
+            HttpParameters articleParameters = httpRequest.getParameters();
 
             checkLoginStatus(sessionId);
 

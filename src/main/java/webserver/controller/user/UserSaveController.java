@@ -10,7 +10,6 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.utils.HttpField;
-import webserver.utils.HttpParametersParser;
 import webserver.utils.Location;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ public class UserSaveController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
-            HttpParameters httpParameters = HttpParametersParser.parse(httpRequest.getBody());
+            HttpParameters httpParameters = httpRequest.getParameters();
             String userId = httpParameters.get("userId");
             String password = httpParameters.get("password");
             String name = httpParameters.get("name");
@@ -43,7 +42,7 @@ public class UserSaveController implements Controller {
     }
 
     private void checkNullOrBlank(String parameter) throws BadRequestException {
-        if(parameter == null || parameter.isBlank()) {
+        if (parameter == null || parameter.isBlank()) {
             throw new BadRequestException();
         }
     }

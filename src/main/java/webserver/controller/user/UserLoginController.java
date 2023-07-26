@@ -1,5 +1,6 @@
 package webserver.controller.user;
 
+import db.SessionDatabase;
 import db.UserDatabase;
 import webserver.controller.Controller;
 import webserver.exceptions.BadRequestException;
@@ -9,10 +10,8 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
 import webserver.session.Session;
-import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
-import webserver.utils.HttpParametersParser;
 import webserver.utils.Location;
 
 public class UserLoginController implements Controller {
@@ -20,7 +19,7 @@ public class UserLoginController implements Controller {
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            HttpParameters httpParameters = HttpParametersParser.parse(httpRequest.getBody());
+            HttpParameters httpParameters = httpRequest.getParameters();
             String userId = httpParameters.get("userId");
             String password = httpParameters.get("password");
 
