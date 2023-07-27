@@ -23,13 +23,13 @@ import static mapper.ResponseMapper.createHttpResponse;
 import static mapper.ResponseMapper.createRedirectResponse;
 import static util.Authorization.setSessionInCookie;
 
-public class RestController implements Controller {
+public class ControllerImpl implements Controller {
     public static final String USER_ID = "userId";
     public static final String PASSWORD = "password";
     private final FileService fileService;
     private final UserService userService;
 
-    public RestController() {
+    public ControllerImpl() {
         fileService = new FileService();
         userService = new UserService();
     }

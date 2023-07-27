@@ -1,6 +1,5 @@
 package controller;
 
-import controller.RestController;
 import controller.annotation.GetHandler;
 import controller.annotation.Handler;
 import controller.annotation.PostHandler;
@@ -13,16 +12,16 @@ import java.util.List;
 
 public class FrontController {
     private final HttpRequest httpRequest;
-    private final RestController restController;
+    private final ControllerImpl controllerImpl;
 
     public FrontController(HttpRequest httpRequest) {
         this.httpRequest = httpRequest;
-        this.restController = new RestController();
+        this.controllerImpl = new ControllerImpl();
     }
 
     public HttpResponse response() throws Exception {
         Handler handler = findHandler();
-        return handler.runController(restController, httpRequest);
+        return handler.runController(controllerImpl, httpRequest);
     }
 
     public Handler findHandler() {
