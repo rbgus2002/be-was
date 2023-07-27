@@ -31,4 +31,8 @@ public class Database {
         return users.values();
     }
     public static void deleteUserAll() {users.clear();}
+
+    public static int getBoardIndex() {
+        return boardIndex.get();
+    }
 }
