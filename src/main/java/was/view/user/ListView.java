@@ -2,10 +2,10 @@ package was.view.user;
 
 import java.util.Collection;
 
-import was.webserver.annotation.Controller;
 import was.controller.annotation.RequestMapping;
 import was.db.Database;
 import was.model.User;
+import was.webserver.annotation.View;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.session.HttpSession;
@@ -15,7 +15,7 @@ import was.webserver.utils.HttpMethod;
 import was.webserver.utils.HttpMimeType;
 import was.webserver.utils.HttpStatus;
 
-@Controller
+@View
 public class ListView {
 
 	@RequestMapping(method = HttpMethod.GET, path = "/user/list")

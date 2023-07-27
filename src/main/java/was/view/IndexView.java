@@ -6,7 +6,7 @@ import was.controller.annotation.RequestMapping;
 import was.db.Database;
 import was.model.Board;
 import was.model.User;
-import was.webserver.annotation.Controller;
+import was.webserver.annotation.View;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.session.HttpSession;
@@ -15,7 +15,7 @@ import was.webserver.utils.HttpMethod;
 import was.webserver.utils.HttpMimeType;
 import was.webserver.utils.HttpStatus;
 
-@Controller
+@View
 public class IndexView {
 
 	@RequestMapping(method = HttpMethod.GET, path = "/index")
