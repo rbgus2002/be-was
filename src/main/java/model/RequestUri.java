@@ -1,8 +1,5 @@
 package model;
 
-import dto.UserFormRequestDto;
-import model.enums.Mime;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +20,9 @@ public class RequestUri {
         this.uri = uri;
         this.params = params;
     }
+
     private RequestUri(String uri) {
-        this.uri= uri;
+        this.uri = uri;
         this.params = new HashMap<>();
     }
 
@@ -69,15 +67,8 @@ public class RequestUri {
     public String toString() {
         String s = "path uri = " + uri + "\n";
         for (var entry : params.entrySet()) {
-            s += "[key = " + entry.getKey() + " / value = " + entry.getValue()+"]\n";
+            s += "[key = " + entry.getKey() + " / value = " + entry.getValue() + "]\n";
         }
         return s;
-    }
-
-    public Mime getMimeType() {
-        String[] extension = splitBy(this.uri, COMMA_MARK);
-
-        int extensionIndex = extension.length - 1;
-        return Mime.valueOf(extension[extensionIndex].toUpperCase());
     }
 }

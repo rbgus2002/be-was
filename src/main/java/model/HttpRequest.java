@@ -2,7 +2,6 @@ package model;
 
 import com.google.common.net.HttpHeaders;
 import model.enums.HttpMethod;
-import model.enums.Mime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +40,6 @@ public class HttpRequest {
 
         return cookie.substring(indexOfSid + OFFSET, indexOfSid + OFFSET + UUID_LENGTH);
     }
-
-    public Mime getMimeType() {
-        return requestUri.getMimeType();
-    }
-
 
     public static class Builder {
         private RequestUri requestUri;

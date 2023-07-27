@@ -1,5 +1,8 @@
 package model.enums;
 
+import static util.StringUtils.COMMA_MARK;
+import static util.StringUtils.splitBy;
+
 public enum Mime {
     HTML("text/html"),
     CSS("text/css"),
@@ -19,6 +22,12 @@ public enum Mime {
 
     Mime(String contentType) {
         this.contentType = contentType;
+    }
+
+    public static Mime getValueOf(String uri) {
+        String[] extension = splitBy(uri, COMMA_MARK);
+        int extensionIndex = extension.length - 1;
+        return Mime.valueOf(extension[extensionIndex].toUpperCase());
     }
 
     public String getContentType() {

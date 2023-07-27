@@ -17,12 +17,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
-import static constant.Uri.*;
-import static mapper.ResponseMapper.*;
-import static util.Authorization.NEEDED_AUTHORIZATION;
+import static constant.Uri.INDEX_HTML_URI;
+import static constant.Uri.USER_LOGIN_FAILED_URI;
+import static mapper.ResponseMapper.createHttpResponse;
+import static mapper.ResponseMapper.createRedirectResponse;
 import static util.Authorization.setSessionInCookie;
-import static util.StringUtils.COMMA_MARK;
-import static util.StringUtils.splitBy;
 
 public class RestController implements Controller {
     public static final String USER_ID = "userId";
@@ -35,14 +34,18 @@ public class RestController implements Controller {
         userService = new UserService();
     }
 
-    private boolean needAuthorization(HttpRequest httpRequest) {
-        return NEEDED_AUTHORIZATION.contains(httpRequest.getUri());
+    @GetMapping(path = "/index.html")
+    public HttpResponse getIndexHtml(HttpRequest httpRequest) throws IOException {
+        return getHttpResponse(httpRequest.getUri());
     }
 
-    @GetMapping(path = "/index.html")
-    public HttpResponse getHttpResponse(String path, Mime extension) throws IOException {
-        byte[] fileContents = fileService.openFile(path, extension);
-        return createHttpResponse(HttpStatusCode.OK, fileContents, extension);
+    @GetMapping(path = "/user/list.html")
+    public HttpResponse authorizeUserList(HttpRequest httpRequest) throws IOException {
+        Optional<User> session = Authorization.getSession(httpRequest);
+        if (session.isEmpty()) {
+            return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+        }
+        return getHttpResponse(httpRequest.getUri());
     }
 
     @PostMapping(path = "/user/login")
@@ -64,13 +67,9 @@ public class RestController implements Controller {
         return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
     }
 
-    public HttpResponse sendNotRestfulResponse(HttpRequest httpRequest) throws IOException {
-        if (needAuthorization(httpRequest)) {
-            Optional<User> result = Authorization.getSession(httpRequest);
-            if (result.isEmpty()) {
-                return getHttpResponse(USER_LOGIN_URI, Mime.HTML);
-            }
-        }
-        return getHttpResponse(httpRequest.getUri(), httpRequest.getMimeType());
+    private HttpResponse getHttpResponse(String path) throws IOException {
+        Mime extension = Mime.getValueOf(path);
+        byte[] fileContents = fileService.openFile(path, extension);
+        return createHttpResponse(HttpStatusCode.OK, fileContents, extension);
     }
 }

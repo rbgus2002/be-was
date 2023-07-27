@@ -1,25 +1,24 @@
 package webserver;
 
 import controller.FrontController;
-import controller.RestController;
 import model.HttpRequest;
 import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Parser;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private final Socket connection;
-    private final RestController restController;
 
-    public RequestHandler(Socket connectionSocket, RestController restController) {
+    public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
-        this.restController = restController;
     }
 
     public void run() {
@@ -32,13 +31,12 @@ public class RequestHandler implements Runnable {
             FrontController frontController = new FrontController(httpRequest);
             HttpResponse httpResponse = frontController.response();
             String responseHeader = httpResponse.getHttpHeaderFormat();
-//            logger.debug("Response Header : {}", responseHeader);
 
             DataOutputStream dos = new DataOutputStream(out);
 
             dos.writeBytes(responseHeader);
             dos.write(httpResponse.getByteArrayOfBody());
-        } catch ( Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
