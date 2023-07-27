@@ -28,12 +28,12 @@ public class PostView {
 
 		final String index = request.getParameter("index");
 		if (index == null || index.isBlank()) {
-			response.setHttpStatus(HttpStatus.NOT_FOUND);
+			response.responseResource("/status/404.html", HttpStatus.NOT_FOUND);
 			return;
 		}
 		final Board board = Database.findBoardByIndex(Integer.parseInt(index));
 		if (board == null) {
-			response.setHttpStatus(HttpStatus.NOT_FOUND);
+			response.responseResource("/status/404.html", HttpStatus.NOT_FOUND);
 			return;
 		}
 
