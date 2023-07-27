@@ -11,7 +11,8 @@ import model.enums.HttpStatusCode;
 import model.enums.Mime;
 import service.FileService;
 import service.UserService;
-import util.Authorization;
+import session.Authorization;
+import session.HttpSession;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,7 +22,7 @@ import static constant.Uri.INDEX_HTML_URI;
 import static constant.Uri.USER_LOGIN_FAILED_URI;
 import static mapper.ResponseMapper.createHttpResponse;
 import static mapper.ResponseMapper.createRedirectResponse;
-import static util.Authorization.setSessionInCookie;
+import static session.Authorization.setSessionInCookie;
 
 public class ControllerImpl implements Controller {
     public static final String USER_ID = "userId";
@@ -41,7 +42,7 @@ public class ControllerImpl implements Controller {
 
     @GetMapping(path = "/user/list.html")
     public HttpResponse authorizeUserList(HttpRequest httpRequest) throws IOException {
-        Optional<User> session = Authorization.getSession(httpRequest);
+        Optional<HttpSession> session = Authorization.getSession(httpRequest);
         if (session.isEmpty()) {
             return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
         }

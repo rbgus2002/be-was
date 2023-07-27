@@ -8,7 +8,7 @@ import model.enums.HttpMethod;
 
 import java.lang.reflect.Method;
 
-import static util.Authorization.NEEDED_AUTHORIZATION;
+import static session.Authorization.NEEDED_AUTHORIZATION;
 
 public class GetHandler implements Handler {
 
