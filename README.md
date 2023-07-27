@@ -63,7 +63,7 @@ Java Web Application Server 2023
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
 #### Web Server step-3
-- [x] MIME 타가입 이해하기
+- [x] MIME 타입 이해하기
 #### Web Server step-4
 - [x] 자주 사용하는 status code 정리
 #### Web Server step-5
