@@ -3,8 +3,6 @@ package http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +31,13 @@ public class HttpResponse {
         headers.put("Location", path);
     }
 
-    private void setHeader(String path, HttpStatusCode statusCode) throws IOException {
+    private void setHeader(String path, HttpStatusCode statusCode) {
         this.path = path;
         this.statusCode = statusCode;
         this.mime = convertExtensionToMime(getExtension(path));
     }
 
-    public void setBody(byte[] body) throws IOException {
+    public void setBody(byte[] body) {
         this.body = body;
         headers.put("Content-Length", Integer.toString(body.length));
     }
@@ -52,8 +50,8 @@ public class HttpResponse {
         return this.statusCode;
     }
 
-    public void setCookie(String sessionId) {
-        this.headers.put("Set-Cookie", "sid=" + sessionId + "; Path=/");
+    public void setCookie(String value) {
+        this.headers.put("Set-Cookie", value);
     }
 
     public Map<String, String> getHeaders() {
