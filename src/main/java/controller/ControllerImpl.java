@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
-import static constant.Uri.INDEX_HTML_URI;
-import static constant.Uri.USER_LOGIN_FAILED_URI;
+import static constant.Uri.*;
 import static mapper.ResponseMapper.createHttpResponse;
 import static mapper.ResponseMapper.createRedirectResponse;
 import static session.Authorization.setSessionInCookie;
@@ -55,7 +54,7 @@ public class ControllerImpl implements Controller {
         String sessionId = httpRequest.getSessionIdInCookie();
         Optional<HttpSession> session = Authorization.getSession(sessionId);
         if (session.isEmpty()) {
-            return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
+            return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, USER_LOGIN_URI);
         }
         byte[] contents = new DynamicHtml().userList(Map.of("users", Database.findAll()));
         return getHttpResponse(httpRequest.getUri(), contents);
