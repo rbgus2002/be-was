@@ -5,12 +5,14 @@ import annotation.RequestMapping;
 import db.Database;
 import model.Model;
 import model.User;
+import session.SessionManager;
 import utils.Parser;
 import utils.StringUtils;
 import http.request.HttpRequest;
 
 import java.util.Map;
 
+import static http.request.RequestMethod.GET;
 import static http.request.RequestMethod.POST;
 
 @Controller
@@ -48,6 +50,21 @@ public class UserController {
         Model model = new Model();
         model.addAttribute("user", user);
         return new ModelAndView("redirect:/index.html", model);
+    }
+
+    @RequestMapping(method = GET, value = "/user/list.html")
+    public ModelAndView list(HttpRequest httpRequest) {
+        String sessionId = httpRequest.getSessionId();
+        sessionId = Parser.parseRequestCookie(sessionId);
+
+        if (sessionId.isEmpty()) {
+            return new ModelAndView("redirect:/user/login.html");
+        }
+
+        User user = SessionManager.getUser(sessionId);
+        Model model = new Model();
+        model.addAttribute("user", user);
+        return new ModelAndView("/list", model);
     }
 
     private boolean validateUser(String userId, String password) {
