@@ -91,7 +91,7 @@ public abstract class HtmlService {
                     .append(user.getName())
                     .append("</a></li>\n");
             htmlBuilder.append("<li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
-            htmlBuilder.append("<li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
+            htmlBuilder.append("<li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>\n");
             htmlBuilder.append("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         }
         htmlBuilder.append("</ul>\n");
