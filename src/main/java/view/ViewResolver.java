@@ -1,16 +1,19 @@
 package view;
 
+import container.Controller;
 import db.SessionManager;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
+import webserver.ViewScanner;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Map;
 
 import static util.PathList.*;
 
@@ -18,11 +21,12 @@ public class ViewResolver {
 
     private final String viewPath;
     private final HTTPServletResponse response;
-
+    private final Map<String, ViewBase> map;
     private final HTTPServletRequest request;
     private static final Logger logger = LoggerFactory.getLogger(ViewResolver.class);
 
     public ViewResolver(String viewPath, HTTPServletResponse response, HTTPServletRequest request) {
+        map = ViewScanner.scan();
         this.viewPath = viewPath;
         this.response = response;
         this.request = request;
@@ -42,18 +46,7 @@ public class ViewResolver {
         if ((file = new File(STATIC_PATH.getPath() + viewPath)).exists()) {
             body = Files.readAllBytes(file.toPath());
         } else if ((file = new File(TEMPLATE_PATH.getPath() + viewPath)).exists()) {
-            User findUser = SessionManager.getSession(request);
-            body = Files.readAllBytes(file.toPath());
-            logger.debug("viewPath = {}, findUser = {}", viewPath, findUser);
-            if (viewPath.equals("/index.html")) {
-                body = MainView.changeToDynamic(request).getBytes();
-            } else if (viewPath.equals("/user/list.html")) {
-                body = ListView.changeToDynamic().getBytes();
-            } else if (viewPath.equals("/user/profile.html")) {
-                body = ProfileView.changeToDynamic(findUser).getBytes();
-            } else if (viewPath.equals("/qna/show.html")) {
-                body = ContentView.changeToDynamic(Integer.parseInt(request.getQuery().get("index"))).getBytes();
-            }
+            body = map.containsKey(viewPath) ? map.get(viewPath).changeToDynamic(request).getBytes() : Files.readAllBytes(file.toPath());
         } else {
             throw new IllegalArgumentException("잘못된 경로입니다.");
         }

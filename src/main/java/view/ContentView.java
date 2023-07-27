@@ -5,16 +5,17 @@ import db.ContentDatabase;
 import model.Content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import webserver.HTTPServletRequest;
 
 import java.awt.*;
 
 @View(path = "/qna/show.html")
-public class ContentView {
+public class ContentView implements ViewBase{
 
     private static final Logger logger = LoggerFactory.getLogger(ContentView.class);
-    public static String changeToDynamic(int index){
+    public String changeToDynamic(HTTPServletRequest request){
         StringBuilder sb = new StringBuilder();
-
+        int index = Integer.parseInt(request.getQuery().get("index"));
         Content findContent = ContentDatabase.findById(index);
 
         logger.debug("findContent = {}", findContent.getContents());

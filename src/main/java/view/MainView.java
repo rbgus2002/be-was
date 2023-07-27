@@ -11,10 +11,10 @@ import webserver.HTTPServletRequest;
 
 import java.util.*;
 @View(path = "/index.html")
-public class MainView {
+public class MainView implements ViewBase{
     private static final Logger logger = LoggerFactory.getLogger(MainView.class);
 
-    public static String changeToDynamic(HTTPServletRequest request){
+    public String changeToDynamic(HTTPServletRequest request){
         StringBuilder sb = new StringBuilder();
         logger.debug("session의 삭제 = {}", SessionManager.getSession(request));
         sb.append("<!DOCTYPE html>\n");
