@@ -21,8 +21,6 @@ public class HttpResponse {
     private static final String INDEX = "/index.html";
     private static final String NOT_SUPPORT_ERROR_PAGE = "src/main/resources/templates/not_support_error.html";
     private static final String NOT_FOUND_ERROR_PAGE = "src/main/resources/templates/not_found_error.html";
-    private static final String LOGIN_PAGE = "src/main/resources/templates/user/login.html";
-    private static final String USER_LIST_PAGE = "src/main/resources/templates/user/list.html";
     private static final String MAIN_PAGE = "src/main/resources/templates" + INDEX;
 
     private byte[] body;
@@ -56,16 +54,15 @@ public class HttpResponse {
         if (type == NONE) {
             throw new NotSupportedContentTypeException();
         }
-
         this.filePath = ROOT_PATH + type.getPath() + this.filePath;
     }
 
-    public void doResponse(User user) throws IOException {
+    public void setResponse(User user) throws IOException {
         byte[] body = convertFilePathToBody(user);
         this.body = body;
     }
 
-    public void doResponse(HttpStatus status) throws IOException {
+    public void setResponse(HttpStatus status) throws IOException {
         this.status = status;
         byte[] body = convertFilePathToBody();
         this.body = body;
@@ -82,18 +79,11 @@ public class HttpResponse {
             MainPageView page = MainPageView.from(user);
             return page.getByteArray();
         }
-//        if(isUserListPage() && user == null){ // TODO : 별도의 분기 처리 말고 MainPageOfLoginUser에서 아예 링크를 login.html로 달아버리면 되지 않을까?
-//            filePath = LOGIN_PAGE;
-//        }
         return Files.readAllBytes(new File(filePath).toPath());
     }
 
     private boolean isMainPage() {
         return MAIN_PAGE.equals(filePath);
-    }
-
-    private boolean isUserListPage() {
-        return USER_LIST_PAGE.equals(filePath);
     }
 
     private void handlePathByHttpStatus() {
@@ -165,9 +155,8 @@ public class HttpResponse {
         cookies.add(Cookie.from(name, value));
     }
 
-    /**
-     * 테스트용 메소드
-     */
+
+    // for test
     public int getCookieSize() {
         return cookies.size();
     }

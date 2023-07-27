@@ -1,7 +1,6 @@
 package controller;
 
 import http.HttpResponse;
-import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,7 +37,7 @@ class ControllerTest {
             Map<String, String> body = Map.of("userId", "rbgus2002", "password", "0000");
 
             // when
-            HttpResponse result = controller.loginUser(body);
+            HttpResponse result = controller.login(body);
 
             // then
             assertEquals("/index.html", result.getFilePath());
@@ -51,7 +50,7 @@ class ControllerTest {
             Map<String, String> body = Map.of("userId", "tc", "password", "0000");
 
             // when
-            HttpResponse result = controller.loginUser(body);
+            HttpResponse result = controller.login(body);
 
             // then
             assertEquals("/user/login_failed.html", result.getFilePath());
@@ -64,7 +63,7 @@ class ControllerTest {
             Map<String, String> body = Map.of("userId", "rbgus2002", "password", "0000");
 
             // when
-            HttpResponse result = controller.loginUser(body);
+            HttpResponse result = controller.login(body);
 
             // then
             assertEquals(1, result.getCookieSize());
