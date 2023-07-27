@@ -48,3 +48,4 @@ Java Web Application Server 2023
   - [ ] 글쓰기 기능 구현 및 DB에 저장
 - [ ] 추가적으로 JDBC으로 Model 변경
 - [ ] 로그아웃기능으로 쿠키만료시키고 Session삭제 하는기능 제작
+- [ ] 에러페이지 작성 구현
