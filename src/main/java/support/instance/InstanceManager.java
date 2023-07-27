@@ -1,9 +1,15 @@
 package support.instance;
 
+import java.util.List;
+
 public interface InstanceManager {
 
-    void addInstance(Class<?> clazz);
+    boolean isContainInstance(String name);
 
-    <T> T getInstance(Class<T> clazz);
+    Object getInstance(String name);
+
+    <T> T getInstance(String name, Class<T> type);
+
+    <T> List<T> getInstances(Class<T> type);
 
 }

@@ -37,7 +37,7 @@ public class ControllerResolver {
                                 method -> {
                                     RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
                                     controllers.put(new HttpMethodAndPath(requestMapping.method(), controller.value() + requestMapping.value()),
-                                            new ControllerMethod(controllerClass, method));
+                                            new ControllerMethod(controllerClass, controllerClass.getName().replaceFirst(".*\\.", ""), method));
                                 }
                         );
             }
@@ -46,7 +46,7 @@ public class ControllerResolver {
 
     private ControllerMethodReturnValueHandlerComposite getHandlers() {
         if (handlers == null) {
-            handlers = DefaultInstanceManager.getInstanceManager().getInstance(ControllerMethodReturnValueHandlerComposite.class);
+            handlers = DefaultInstanceManager.getInstanceManager().getInstance("ControllerMethodReturnValueHandlerComposite", ControllerMethodReturnValueHandlerComposite.class);
         }
         return handlers;
     }

@@ -15,7 +15,7 @@ import static utils.MathUtils.parseIntOrDefault;
 public class RequestHandler implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private final HttpHandler httpHandler = DefaultInstanceManager.getInstanceManager().getInstance(HttpHandler.class);
+    private final HttpHandler httpHandler = DefaultInstanceManager.getInstanceManager().getInstance("HttpHandler", HttpHandler.class);
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {

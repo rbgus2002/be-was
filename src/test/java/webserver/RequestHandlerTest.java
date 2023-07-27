@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -61,13 +62,16 @@ class RequestHandlerTest {
     }
 
     @BeforeAll
-    static void prepare() {
-        DefaultInstanceManager.getInstanceManager().clear();
-        DefaultInstanceManager.getInstanceManager().addInstance(UserController.class);
-        DefaultInstanceManager.getInstanceManager().addInstance(ViewContainer.class);
-        DefaultInstanceManager.getInstanceManager().addInstance(ErrorView.class);
-        DefaultInstanceManager.getInstanceManager().addInstance(HttpHandler.class);
-        DefaultInstanceManager.getInstanceManager().addInstance(ControllerMethodReturnValueHandlerComposite.class);
+    static void prepare() throws NoSuchFieldException, IllegalAccessException {
+        DefaultInstanceManager defaultInstanceManager = new DefaultInstanceManager();
+        Field instance = DefaultInstanceManager.class.getDeclaredField("INSTANCE");
+        instance.setAccessible(true);
+        instance.set(null, defaultInstanceManager);
+        defaultInstanceManager.addInstance("UserController", new UserController());
+        defaultInstanceManager.addInstance("ViewContainer", new ViewContainer());
+        defaultInstanceManager.addInstance("ErrorView", new ErrorView());
+        defaultInstanceManager.addInstance("HttpHandler", new HttpHandler());
+        defaultInstanceManager.addInstance("ControllerMethodReturnValueHandlerComposite", new ControllerMethodReturnValueHandlerComposite());
     }
 
     @BeforeEach

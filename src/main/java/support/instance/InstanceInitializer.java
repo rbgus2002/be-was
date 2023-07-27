@@ -4,6 +4,7 @@ import support.annotation.Container;
 import utils.ClassListener;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +19,26 @@ public abstract class InstanceInitializer {
 
         List<Class<?>> filteredClasses = classes.stream()
                 .filter(clazz -> !clazz.isAnnotation() && hasAnnotation(clazz, Container.class, visited))
-                .collect(Collectors.toList());
+                .collect(Collectors.toUnmodifiableList());
 
         visited.clear();
 
-        DefaultInstanceManager manageObjectFactory = DefaultInstanceManager.getInstanceManager();
+        DefaultInstanceManager defaultInstanceManager = DefaultInstanceManager.getDefaultInstanceManger();
 
-        filteredClasses.forEach(manageObjectFactory::addInstance);
+
+        filteredClasses.forEach(type -> {
+            String name = type.getName().replaceFirst(".*\\.", "");
+            if ("".equals(name)) {
+                name = type.getName();
+            }
+            try {
+                Constructor<?> constructor = type.getConstructor();
+                Object instance = constructor.newInstance();
+                defaultInstanceManager.addInstance(name, instance);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass, Map<Class<?>, Integer> visited) {

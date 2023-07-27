@@ -18,7 +18,7 @@ public class ResponseEntityHandler implements ControllerMethodReturnValueHandler
 
     public ControllerMethodReturnValueHandlerComposite getHandlers() {
         if (handlers == null) {
-            handlers = DefaultInstanceManager.getInstanceManager().getInstance(ControllerMethodReturnValueHandlerComposite.class);
+            handlers = DefaultInstanceManager.getInstanceManager().getInstance("ControllerMethodReturnValueHandlerComposite", ControllerMethodReturnValueHandlerComposite.class);
         }
         return handlers;
     }

@@ -9,10 +9,12 @@ import java.lang.reflect.Parameter;
 public class ControllerMethod {
 
     private final Class<?> controllerClass;
+    private final String controllerName;
     private final Method method;
 
-    public ControllerMethod(Class<?> controllerClass, Method method) {
+    public ControllerMethod(Class<?> controllerClass, String controllerName, Method method) {
         this.controllerClass = controllerClass;
+        this.controllerName = controllerName;
         this.method = method;
     }
 
@@ -25,7 +27,7 @@ public class ControllerMethod {
     }
 
     public Object invoke(Object... args) throws IllegalAccessException, InvocationTargetException {
-        Object instance = DefaultInstanceManager.getInstanceManager().getInstance(controllerClass);
+        Object instance = DefaultInstanceManager.getInstanceManager().getInstance(controllerName, controllerClass);
         return method.invoke(instance, args);
     }
 

@@ -17,23 +17,22 @@ class DefaultInstanceManagerTest {
 
     @BeforeEach
     void setUp() {
-        defaultInstanceManager = DefaultInstanceManager.getInstanceManager();
-        defaultInstanceManager.clear();
+        defaultInstanceManager = new DefaultInstanceManager();
     }
 
     @Test
     @DisplayName("중복 인스턴스 생성")
     void addInstance() throws NoSuchFieldException, IllegalAccessException {
         //given
-        defaultInstanceManager.addInstance(UserController.class);
+        defaultInstanceManager.addInstance("UserController", new UserController());
 
         //when
-        defaultInstanceManager.addInstance(UserController.class);
+        defaultInstanceManager.addInstance("UserController", new UserController());
 
         //then
-        Field instancesField = DefaultInstanceManager.class.getDeclaredField("instances");
+        Field instancesField = DefaultInstanceManager.class.getDeclaredField("singletonInstances");
         instancesField.setAccessible(true);
-        Map instances = (Map) instancesField.get(defaultInstanceManager);
+        Map<?, ?> instances = (Map<?, ?>) instancesField.get(defaultInstanceManager);
         assertThat(instances.size()).isEqualTo(1);
     }
 
