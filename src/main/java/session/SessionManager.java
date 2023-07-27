@@ -34,6 +34,9 @@ public class SessionManager {
     }
 
     public static User getUser(String sessionId) {
+        if (sessionId == null) {
+            return null;
+        }
         Session session = sessions.get(sessionId);
         return (User) session.getObject();
     }
