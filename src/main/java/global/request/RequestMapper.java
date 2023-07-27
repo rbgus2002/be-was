@@ -34,26 +34,15 @@ public class RequestMapper {
     public byte[] response() throws Exception {
         final HttpMethod httpMethod = requestLine.getHttpMethod();
         final Handler handler = findHandler(httpMethod);
-        if (isFileType(requestLine)) {
+        try {
+            return handler.startController(requestLine, controller);
+        } catch (Exception e) {
             return ResponseEntity
                     .statusCode(StatusCode.OK)
                     .addHeaders(Headers.LOCATION, requestLine.getUri())
                     .responseResource(requestLine.getUri())
                     .build();
         }
-        return handler.startController(requestLine, controller);
-    }
-
-    private boolean isFileType(RequestLine requestLine) {
-        String path = requestLine.getUri();
-
-        int dotIndex = path.lastIndexOf(".");
-        if (dotIndex != -1 && dotIndex < path.length() - 1) {
-            String extension = path.substring(dotIndex + 1).toLowerCase();
-            return existContentType(extension);
-        }
-
-        return false;
     }
 
     private Handler findHandler(HttpMethod httpMethod) {
