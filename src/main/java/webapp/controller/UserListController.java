@@ -1,5 +1,6 @@
 package webapp.controller;
 
+import webapp.model.User;
 import webserver.annotation.Authenticated;
 import webserver.annotation.Controller;
 import webserver.annotation.RequestMapping;
@@ -12,10 +13,11 @@ public class UserListController {
 
 	@Authenticated
 	@RequestMapping(method = HttpMethod.GET, path = "/user/list")
-	public HttpResponse userList() {
-		View listView = View.of("user/list");
+	public HttpResponse userList(User user) {
+		View listView = View.of("user/list", user);
 		return HttpResponse.builder()
 			.view(listView)
 			.build();
 	}
+
 }
