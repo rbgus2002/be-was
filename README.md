@@ -44,13 +44,21 @@ Java Web Application Server 2023
     - [x] 응답 header의 Set-Cookie 값 설정
     - [x] user 정보에 접근할 수 있는 세션 ID 적용
   - [x] 로그인 실패 시 /user/login_failed.html 이동
+#### Web Server step-6
+- 동적인 HTML 구현
+  - 로그인 상태O
+    - [ ] 사용자 이름 표시
+    - [ ] 사용자 목록 표시 (/user/list)
+  - 로그인 상태X
+    - [ ] 로그인 버튼 표시
+    - [ ] 사용자 목록 페이지 접근 시도 시 로그인 페이지로 이동
 
 ## To Study List
 #### Web Server step-1
 - 단순 구현이 아닌 동작 원리 파악하기
   - [x] 자바 스레드 모델 
     - [x] 버전별 변경점
-    - [] 향후 지향점
+    - [ ] 향후 지향점
   - [x] Concurrent 패키지 학습
 #### Web Server step-2
 - [x] GET 프로토콜 이해하기
@@ -60,3 +68,4 @@ Java Web Application Server 2023
 - [x] 자주 사용하는 status code 정리
 #### Web Server step-5
 - [x] 쿠키, 세션 간단하게 학습
+#### Web Server step-6
