@@ -63,9 +63,9 @@ public class ErrorView implements View {
                 .appendCRLF("</head>")
                 .appendCRLF("<body>")
                 .appendCRLF("    <div class=\"container\">")
-                .append("        <h1>", "에러", "</h1>")
-                .appendCRLF("        <p>아이고! 이 페이지에는 너가 찾고 싶어하는 것이 없어!</p>")
-                .appendCRLF("        <p>다른 방식으로 접근하는 것을 권장하고 싶으니 돌아가, 요기 -><a href=\"/\">홈페이지</a>.</p>")
+                .append("        <h1>", "Error", "</h1>")
+                .appendCRLF("        <p>Oops! This page doesn't have what you're looking for!</p>")
+                .appendCRLF("        <p>I'd recommend a different approach. <a href=\"/\">homepage</a>.</p>")
                 .appendCRLF("    </div>")
                 .appendCRLF("</body>")
                 .appendCRLF("</html>");
