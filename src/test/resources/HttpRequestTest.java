@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static webserver.http.HttpUtil.HEADER_REDIRECT_LOCATION;
+import static webserver.http.HttpUtil.*;
 
 public class HttpRequestTest {
     private String testDirectory = "./src/test/resources/";
@@ -77,7 +77,7 @@ public class HttpRequestTest {
         // Given
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put(HEADER_REDIRECT_LOCATION, "/index.html");
-        Response response = new Response(HttpUtil.STATUS.SEE_OTHER, headerMap, null);
+        Response response = new Response(STATUS.SEE_OTHER, headerMap, null);
 
         // When
         response.sendResponse(createOutputStream("HTTP_Forward.txt"));
@@ -85,6 +85,37 @@ public class HttpRequestTest {
         // Then
         String body = new String(Files.readAllBytes(Paths.get(testDirectory + "HTTP_Forward.txt")));
         assertThat(body).contains("/index.html");
+    }
+
+    @Test
+    public void responseRedirect() throws Exception {
+        // Given
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login.html");
+        Response response = new Response(STATUS.SEE_OTHER, headerMap, null);
+
+        // When
+        response.sendResponse(createOutputStream("HTTP_Redirect.txt"));
+
+        // Then
+        String body = new String(Files.readAllBytes(Paths.get(testDirectory + "HTTP_Redirect.txt")));
+        assertThat(body).contains("/user/login.html");
+    }
+
+    @Test
+    public void responseCookies() throws Exception {
+        // Given
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+        headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + "1234" + HEADER_COOKIE_PATH);
+        Response response = new Response(STATUS.SEE_OTHER, headerMap, null);
+
+        // When
+        response.sendResponse(createOutputStream("HTTP_Cookie.txt"));
+
+        // Then
+        String body = new String(Files.readAllBytes(Paths.get(testDirectory + "HTTP_Cookie.txt")));
+        assertThat(body).contains(HEADER_SESSION_ID + "1234" + HEADER_COOKIE_PATH);
     }
 
     private OutputStream createOutputStream(String filename) throws FileNotFoundException {
