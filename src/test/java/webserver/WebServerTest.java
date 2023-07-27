@@ -149,13 +149,13 @@ class WebServerTest {
     @DisplayName("사용자가 로그인 상태일 경우 http://localhost:8080/user/list 에서 사용자 목록을 출력한다.")
     @Test
     void displayUserList() {
-        회원가입("user1", "password1", "최윤식", "user1@slip.net");
-        회원가입("user2", "password2", "서시언", "user2@slip.net");
-        회원가입("user3", "password3", "이요한", "user3@slip.net");
+        회원가입("yunsik", "password1", "yunsik", "yunsik@slip.net");
+        회원가입("siun", "password2", "siun", "siun@slip.net");
+        회원가입("yohan", "password3", "yohan", "yohan@slip.net");
 
         Cookie cookie = RestAssured.given().log().all()
                 .when()
-                .body("userId=user1&password=password")
+                .body("userId=yunsik&password=password1")
                 .post("/user/login")
                 .then().log().all()
                 .assertThat()
@@ -169,7 +169,7 @@ class WebServerTest {
         var response = RestAssured.given().log().all()
                 .when()
                 .cookie(cookie)
-                .get("/index.html")
+                .get("/user/list.html")
                 .then().log().all()
                 .statusCode(HttpStatus.SC_OK)
                 .extract();
@@ -177,9 +177,9 @@ class WebServerTest {
         // then
         Assertions.assertThat(response.body().asString())
                 .contains(
-                        "user1", "user2", "user3",
-                        "최윤식", "서시언", "이요한",
-                        "user1@slip.net", "user2@slip.net", "user3@slip.net"
+                        "yunsik", "siun", "yohan",
+                        "yunsik", "siun", "yohan",
+                        "yunsik@slip.net", "siun@slip.net", "yohan@slip.net"
                 );
     }
 
