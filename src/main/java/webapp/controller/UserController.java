@@ -20,7 +20,7 @@ public class UserController {
 		User user = new User(userId, password, name, email);
 		Database.addUser(user);
 		return HttpResponse.builder()
-			.status(HttpStatus.FOUND)
+			.status(HttpStatus.SEE_OTHER)
 			.redirection("/index")
 			.build();
 	}
