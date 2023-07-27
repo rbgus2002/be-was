@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static exception.ExceptionList.NOT_EXIST_SESSION_ID;
-import static exception.ExceptionList.NO_SESSION_ID;
+import static exception.ExceptionList.INVALID_SESSION_ID;
 import static http.HttpMethod.GET;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +30,7 @@ class PageTest {
     }
 
     @Test
-    @DisplayName("profile.html 요청 시 세션 아이디가 없을 때, NO_SESSION_ID 예외를 던져야 한다")
+    @DisplayName("profile.html 요청 시 세션 아이디가 없을 때, INVALID_SESSION_ID 예외를 던져야 한다")
     void noSessionIdProfile() {
         // Given
         String uri = "/user/profile.html";
@@ -48,8 +47,8 @@ class PageTest {
 
         // Then
         softAssertions.assertThat(exception.getMessage())
-                .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
-                .isEqualTo(NO_SESSION_ID);
+                .as("적절한 오류가 던져지지 않습니다.")
+                .isEqualTo(INVALID_SESSION_ID);
     }
 
     @Test
@@ -70,8 +69,8 @@ class PageTest {
 
         // Then
         softAssertions.assertThat(exception.getMessage())
-                .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
-                .isEqualTo(NOT_EXIST_SESSION_ID);
+                .as("적절한 오류가 던져지지 않습니다.")
+                .isEqualTo(INVALID_SESSION_ID);
     }
 
     @Test
@@ -92,8 +91,8 @@ class PageTest {
 
         // Then
         softAssertions.assertThat(exception.getMessage())
-                .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
-                .isEqualTo(NO_SESSION_ID);
+                .as("적절한 오류가 던져지지 않습니다.")
+                .isEqualTo(INVALID_SESSION_ID);
     }
 
     @Test
@@ -114,7 +113,7 @@ class PageTest {
 
         // Then
         softAssertions.assertThat(exception.getMessage())
-                .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
-                .isEqualTo(NOT_EXIST_SESSION_ID);
+                .as("적절한 오류가 던져지지 않습니다.")
+                .isEqualTo(INVALID_SESSION_ID);
     }
 }

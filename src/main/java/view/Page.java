@@ -12,11 +12,10 @@ import java.io.IOException;
 
 import static db.Database.findAll;
 import static db.Database.findUserById;
-import static db.SessionStorage.findAllSessionIds;
-import static db.SessionStorage.findUserIdBySessionId;
+import static db.SessionStorage.*;
 import static exception.ExceptionList.*;
 import static http.FilePath.*;
-import static utils.FileIOUtils.TEMPLATES_DIRECTORY;
+import static utils.FileUtils.TEMPLATES_DIRECTORY;
 
 public class Page {
 
@@ -47,10 +46,9 @@ public class Page {
 
     private String getProfilePage(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
-        if (sessionId.equals(""))
-            throw new SessionIdException(NO_SESSION_ID);
-        if (findAllSessionIds().stream().noneMatch(id -> id.equals(sessionId)))
-            throw new SessionIdException(NOT_EXIST_SESSION_ID);
+        if (!isSessionValid(sessionId)) {
+            throw new SessionIdException(INVALID_SESSION_ID);
+        }
         String userId = findUserIdBySessionId(sessionId);
         User user = findUserById(userId);
 
@@ -77,10 +75,9 @@ public class Page {
 
     private String getListPage(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
-        if (sessionId.equals(""))
-            throw new SessionIdException(NO_SESSION_ID);
-        if (findAllSessionIds().stream().noneMatch(id -> id.equals(sessionId)))
-            throw new SessionIdException(NOT_EXIST_SESSION_ID);
+        if (!isSessionValid(sessionId)) {
+            throw new SessionIdException(INVALID_SESSION_ID);
+        }
 
         StringBuilder userList = new StringBuilder("<tbody>\n");
         int i = 1;
@@ -130,10 +127,10 @@ public class Page {
             BufferedReader index = new BufferedReader(new FileReader(indexFile));
             while ((line = index.readLine()) != null) {
                 if (line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>") || line.contains("<li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>")) {
-                    if (isSessionIdValid(sessionId)) continue;
+                    if (isSessionValid(sessionId)) continue;
                 }
                 if (line.contains("<li><a href=\"user/logout.html\" role=\"button\">로그아웃</a></li>") || line.contains("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>")) {
-                    if (!isSessionIdValid(sessionId)) continue;
+                    if (!isSessionValid(sessionId)) continue;
                 }
                 indexBuilder.append(line);
             }
@@ -142,11 +139,5 @@ public class Page {
         }
 
         return indexBuilder.toString();
-    }
-
-    private boolean isSessionIdValid(String sessionId) {
-        if (sessionId.equals(""))
-            return false;
-        return findAllSessionIds().stream().anyMatch(id -> id.equals(sessionId));
     }
 }

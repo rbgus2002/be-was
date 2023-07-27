@@ -149,7 +149,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 세션 아이디로 로그아웃 시 NOT EXIST SESSION ID 예외를 던져야 한다")
+    @DisplayName("존재하지 않는 세션 아이디로 로그아웃 시 INVALID_SESSION_ID 예외를 던져야 한다")
     void notExistSessionIdException() {
         // Given
         String sessionId = "4bc504ae-a64f-4fba-a3df-4466c012915a";
@@ -161,8 +161,8 @@ class UserServiceTest {
 
         // Then
         softAssertions.assertThat(exception.getMessage())
-                .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
-                .isEqualTo(NOT_EXIST_SESSION_ID);
+                .as("적절한 오류가 던져지지 않습니다.")
+                .isEqualTo(INVALID_SESSION_ID);
     }
 
     @Test
