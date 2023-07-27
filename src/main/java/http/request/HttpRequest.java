@@ -35,7 +35,7 @@ public class HttpRequest {
     }
     public String getSessionId() {
         String requestCookie = httpHeaders.getRequestCookie();
-        if (requestCookie == null) {
+        if (requestCookie == null || requestCookie.equals("SID=")) {
             return null;
         }
         return Parser.parseCookie(requestCookie);

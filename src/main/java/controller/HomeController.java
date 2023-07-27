@@ -13,6 +13,9 @@ import static http.request.RequestMethod.GET;
 public class HomeController {
     @RequestMapping(method = GET, value = "/index.html")
     public ModelAndView showHome(HttpRequest httpRequest) {
+        if (httpRequest.getSessionId() == null) {
+            return new ModelAndView("/index");
+        }
         User user = SessionManager.getUser(httpRequest.getSessionId());
         if (user == null) {
             return new ModelAndView("/index");

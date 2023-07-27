@@ -6,6 +6,7 @@ import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,8 +61,7 @@ public class HttpHeaders {
         Map<String, String> responseHeaders = new HashMap<>();
         if (!requestUri.contains(".")) {
             responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
-        }
-        else {
+        } else {
             MIME mime = MIME.findMIME(requestUri);
             responseHeaders.put(CONTENT_TYPE, createStaticContentType(mime));
         }
@@ -80,6 +80,18 @@ public class HttpHeaders {
                     + "Expires=" + GMTStringConverter.convertToGMTString(cookie.getExpires()) + ";"
                     + " HttpOnly");
         }
+        return new HttpHeaders(responseHeaders);
+    }
+
+    public static HttpHeaders createRedirectLogoutHeaders(String viewPath, String sessionId) {
+        Map<String, String> responseHeaders = new HashMap<>();
+        responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
+        responseHeaders.put(CONTENT_LENGTH, "0");
+        responseHeaders.put(LOCATION, Parser.parseRedirectViewPath(viewPath));
+        responseHeaders.put(SET_COOKIE, "SID" + "=" + sessionId + ";"
+                + " Path=/;"
+                + "Expires=" + GMTStringConverter.convertToGMTString(LocalDateTime.now().minusMinutes(1)) + ";"
+                + " HttpOnly");
         return new HttpHeaders(responseHeaders);
     }
 

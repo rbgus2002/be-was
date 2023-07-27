@@ -39,6 +39,10 @@ public class FrontController {
 
         if (isRedirect(modelAndView.getViewPath())) {
             Cookie cookie = createCookie(modelAndView);
+            if (httpRequest.getRequestUri().equals("/user/logout")) {
+                String sessionId = httpRequest.getSessionId();
+                return HttpResponse.createLogoutRedirect(modelAndView.getViewPath(), sessionId);
+            }
             return HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
         }
 

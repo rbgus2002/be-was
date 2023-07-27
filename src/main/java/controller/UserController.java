@@ -25,7 +25,6 @@ public class UserController {
         String name = queryParams.get("name");
         String email = queryParams.get("email");
 
-        //TODO: 확장성을 고려했을 때 코드가 지저분해질 수 있다.
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(name) || StringUtils.isEmpty(email) ) {
             return new ModelAndView("redirect:/user/form.html");
@@ -65,6 +64,11 @@ public class UserController {
         Model model = new Model();
         model.addAttribute("user", user);
         return new ModelAndView("/list", model);
+    }
+
+    @RequestMapping(method = GET, value = "/user/logout")
+    public ModelAndView logout(HttpRequest httpRequest) {
+        return new ModelAndView("redirect:/index.html");
     }
 
     private boolean validateUser(String userId, String password) {

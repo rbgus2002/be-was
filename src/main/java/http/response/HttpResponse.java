@@ -25,6 +25,7 @@ public class HttpResponse {
         this.body = body;
         this.responseType = responseType;
     }
+
     public byte[] getBody() {
         return body;
     }
@@ -52,6 +53,16 @@ public class HttpResponse {
         return new HttpResponse(
                 HttpStatusLine.createRedirectStatusLine(),
                 HttpHeaders.createRedirectStatusHeaders(viewPath, cookie),
+                emptyBody,
+                REDIRECT
+        );
+    }
+
+    public static HttpResponse createLogoutRedirect(String viewPath, String sessionId) {
+        byte[] emptyBody = new byte[0];
+        return new HttpResponse(
+                HttpStatusLine.createRedirectStatusLine(),
+                HttpHeaders.createRedirectLogoutHeaders(viewPath, sessionId),
                 emptyBody,
                 REDIRECT
         );

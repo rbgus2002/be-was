@@ -6,7 +6,7 @@ public class Cookie {
     public static final String SESSIONID = "SID";
     private final String name;
     private final String value;
-    private final LocalDateTime expires;
+    private LocalDateTime expires;
 
     private Cookie(String value, LocalDateTime expires) {
         this.name = SESSIONID;
@@ -26,6 +26,10 @@ public class Cookie {
 
     public static Cookie create(String value, LocalDateTime expires) {
         return new Cookie(value, expires);
+    }
+
+    public void setExpiresToLogout() {
+        expires = LocalDateTime.now().minusMinutes(1);
     }
 
 }
