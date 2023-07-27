@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 
 public class Board {
 
-	private String name;
+	private String writer;
 	private LocalDateTime createdAt;
-	private User user;
-	private String text;
+	private String title;
+	private String contents;
 
-	public Board(String name, LocalDateTime createdAt, User user, String text) {
-		this.name = name;
-		this.createdAt = createdAt;
-		this.user = user;
-		this.text = text;
+	public Board(String writer, String title, String contents) {
+		this.writer = writer;
+		this.createdAt = LocalDateTime.now();
+		this.title = title;
+		this.contents = contents;
 	}
 }
