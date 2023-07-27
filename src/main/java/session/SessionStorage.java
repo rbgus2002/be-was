@@ -14,6 +14,13 @@ public class SessionStorage {
     }
 
     public static SessionValue getSessionValue(String sessionId) {
-        return sessionStorage.get(UUID.fromString(sessionId));
+        SessionValue sessionValue;
+        try{
+            sessionValue = sessionStorage.get(UUID.fromString(sessionId));
+        } catch(IllegalArgumentException e) {
+            return null;
+        }
+
+        return sessionValue;
     }
 }

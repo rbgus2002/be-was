@@ -1,4 +1,4 @@
-package Service;
+package service;
 
 import db.Database;
 import model.User;
@@ -39,7 +39,9 @@ public class UserService {
                 return null;
         }
         SessionValue sessionValue = SessionStorage.getSessionValue(sessionId);
-
+       if(sessionValue == null) {
+           return null;
+       }
         return Database.findUserById(sessionValue.getUserId());
     }
 

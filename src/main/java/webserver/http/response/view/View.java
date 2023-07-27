@@ -1,6 +1,6 @@
 package webserver.http.response.view;
 
-import Service.UserService;
+import service.UserService;
 import model.User;
 import webserver.util.Parser;
 import webserver.util.ViewResolver;

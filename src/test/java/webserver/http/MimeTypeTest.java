@@ -13,7 +13,7 @@ class MimeTypeTest {
 
 
     @Test
-    @DisplayName("맵이 잘 되는지?")
+    @DisplayName("맵에 mime타입이 전부 저장되어야 한다.")
     void do_right() throws NoSuchFieldException, IllegalAccessException {
         MimeType mimeType = MimeType.createHttpContentType();
         Class<MimeType> clazz = MimeType.class;

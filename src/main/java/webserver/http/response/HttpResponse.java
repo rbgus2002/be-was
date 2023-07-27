@@ -1,7 +1,7 @@
 package webserver.http.response;
 
 
-import Service.UserService;
+import service.UserService;
 import model.User;
 import webserver.http.response.view.View;
 

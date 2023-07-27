@@ -5,8 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
+import webserver.http.response.ResponseWriter;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.Socket;
 
 class DispatcherServletTest {
 
@@ -41,15 +45,24 @@ class DispatcherServletTest {
         sendRequest(url, "HTTP/1.1 404 Not Found");
     }
 
-    private void sendRequest(String url,String expected) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        HttpResponse httpResponse = new HttpResponse();
-        HttpRequest httpRequest = new HttpRequest(url, null);
-        dispatcherServlet.service(httpRequest, httpResponse);
-        String header = outputStream.toString().split("\r\n")[0];
+    private void sendRequest(String url, String expected) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+            HttpResponse httpResponse = new HttpResponse();
+            HttpRequest httpRequest = new HttpRequest(url, null);
+            dispatcherServlet.service(httpRequest, httpResponse);
+            ResponseWriter responseWriter = new ResponseWriter(dataOutputStream, httpResponse);
 
+            RequestHandler requestHandler = new RequestHandler(new Socket());
+            Class<RequestHandler> clazz = RequestHandler.class;
 
-        Assertions.assertEquals(expected, header);
+            Method method = clazz.getDeclaredMethod("sendResponse", String.class, ResponseWriter.class);
+            method.invoke(requestHandler, url, responseWriter);
+
+            Assertions.assertEquals(expected, outputStream.toString());
+        } catch(NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {}
+
 
     }
 

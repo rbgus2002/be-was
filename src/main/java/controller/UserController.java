@@ -1,6 +1,6 @@
 package controller;
 
-import Service.UserService;
+import service.UserService;
 import annotation.Controller;
 import annotation.RequestMapping;
 import model.User;
@@ -59,13 +59,6 @@ public class UserController {
             logger.debug("login ok");
         }
         logger.debug("login failed");
-    }
-
-    //todo logout 구현
-    @RequestMapping(path = "/user/logout")
-    public void logout(HttpRequest request, HttpResponse response) {
-
-        response.setToUrl(REDIRECT_HOME);
     }
 
 

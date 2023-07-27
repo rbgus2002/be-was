@@ -10,7 +10,7 @@ class ResponseMessageHeaderTest {
 
 
     @Test
-    @DisplayName("202 forward 헤더가 제대로 생성되는지?")
+    @DisplayName("202 forward 헤더가 형식에 맞게 생성되어야 한다.")
     void forward() {
         //given
         String expected = "HTTP/1.1 200 OK\r\n"
@@ -28,7 +28,7 @@ class ResponseMessageHeaderTest {
     }
 
     @Test
-    @DisplayName("302 Redirect 헤더가 제대로 생성되는지?")
+    @DisplayName("302 Redirect 헤더가 형식에 맞게 생성되어야 한다.")
     void redirect() {
         //given
         String url = "/";
@@ -46,7 +46,7 @@ class ResponseMessageHeaderTest {
     }
 
     @Test
-    @DisplayName("404 not found 헤더가 제대로 생성되는지?")
+    @DisplayName("404 not found 헤더가 형식에 맞게 생성되어야 한다.")
     void not_found() {
         //given
         String expected = "HTTP/1.1 404 Not Found\r\n";

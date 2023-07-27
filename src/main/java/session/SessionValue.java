@@ -14,7 +14,7 @@ public class SessionValue {
     }
 
     public String getUserId() {
-        if(!isExpired()) {
+        if(isExpired()) {
             return userId;
         }
         return null;
@@ -23,6 +23,6 @@ public class SessionValue {
     public boolean isExpired() {
         Instant now = Instant.now();
         Duration duration = Duration.between(expired, now);
-        return !duration.isNegative();
+        return duration.isNegative();
     }
 }
