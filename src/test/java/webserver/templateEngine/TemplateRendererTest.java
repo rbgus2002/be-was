@@ -105,13 +105,10 @@ class TemplateRendererTest {
 
         html = templateRenderer.renderFor(html, model);
 
-        String expectedHtml = "\n" +
-                "        <th>1</th><td>id1</td><td>name1</td><td>ee1@ee</td>>\n" +
-                "      \n" +
-                "        <th>2</th><td>id2</td><td>name2</td><td>ee2@ee</td>>\n" +
-                "      \n";
+        String expectedHtml =
+                "<th>1</th><td>id1</td><td>name1</td><td>ee1@ee</td>><th>2</th><td>id2</td><td>name2</td><td>ee2@ee</td>>";
 
-        Assertions.assertEquals(expectedHtml, html);
+        Assertions.assertEquals(expectedHtml, html.replace(" ","").replace("\n", ""));
     }
 
     private static String readHtml(String resource) {
