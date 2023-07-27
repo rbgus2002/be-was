@@ -1,9 +1,11 @@
 package webserver;
 
+import http.response.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import controller.FrontController;
 import http.request.HttpRequest;
+import utils.FileUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -29,8 +31,9 @@ public class RequestHandler implements Runnable {
              OutputStream out = connection.getOutputStream()) {
             DataOutputStream dos = new DataOutputStream(out);
             HttpRequest httpRequest = HttpRequest.create(in);
-            //TODO: dos를 FrontController로 넘기는 것보다는 응답 객체 받아서 아래에서 dos 따로 처리하기
-            FrontController.getInstance(httpRequest, dos).doDispatch();
+            HttpResponse httpResponse = FrontController.getInstance().doDispatch(httpRequest);
+            FileUtils fileUtils = new FileUtils(dos);
+            fileUtils.writeHttpResponse(httpResponse);
         } catch (IOException | InvocationTargetException | IllegalAccessException e) {
             logger.error(e.getMessage());
             //TODO: NoSuchMethodException은 Method를 만드는 곳에서 예외를 발생시킬 것
