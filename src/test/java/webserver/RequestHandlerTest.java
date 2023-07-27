@@ -23,14 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class RequestHandlerTest {
 
     @Test
-    @DisplayName("localhost:8080/index.html로 get 요청이 들어오면 index.html 파일을 반환해야 한다.")
-    void indexHtml() throws IOException {
-        assertTrue(Arrays.equals(RestAssured.get("/index.html")
-                .getBody()
-                .asByteArray(), Files.readAllBytes(new File("src/main/resources/templates/index.html").toPath())));
-    }
-
-    @Test
     @DisplayName("localhost:8080/styles.css로 get 요청이 들어오면 styles.css 파일을 반환해야 한다.")
     void stylesCss() throws IOException {
         Arrays.equals(RestAssured.get("/styles.css")

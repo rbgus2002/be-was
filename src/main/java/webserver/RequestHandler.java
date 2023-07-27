@@ -5,12 +5,7 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.StaticFIleUtils;
-import webserver.exception.BadRequestException;
-import webserver.exception.ConflictException;
-import webserver.exception.NotFoundException;
 import webserver.reponse.HttpResponse;
-import webserver.reponse.HttpResponseStatus;
 import webserver.request.HttpRequest;
 import webserver.request.HttpRequestParser;
 
@@ -28,7 +23,7 @@ public class RequestHandler implements Runnable {//함수형 인터페이스
                 connection.getPort());
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = HttpRequestParser.getRequest(in);
-            logger.debug("Request Header : \n{}", request.getHeader());
+            logger.debug("Request Header : \n{}", request.getHeaderString());
             logger.debug("Request Body : \n{}", request.getBody());
             HttpResponse response = new HttpResponse();
 
