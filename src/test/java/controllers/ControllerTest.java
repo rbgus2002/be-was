@@ -48,16 +48,20 @@ class ControllerTest {
 		@Test
 		@DisplayName("이미 데이터베이스에 존재하는 userId로 가입하려고 하면 회원가입 페이지로 리다이렉트되어야 한다")
 		void duplicateRegistration() {
+			// given
+			final String expectedPath = "redirect:/user/form.html";
 			final String userId = "testID";
 			final String password = "testPassword";
 			final String name = "testName";
 			final String email = "test@email.com";
-			final User existingUser = setUpUser(userId, password, name, email);
-			final String expectedPath = "redirect:/user/form.html";
-			HttpParameter httpParameter = newParameter("testID", "testPassword2", "testName2", "test2@email.com");
+			setUpUser(userId, password, name, email);
 
+			//when
+			HttpParameter httpParameter = newParameter("testID", "testPassword2", "testName2", "test2@email.com");
 			ModelView modelView = controller.createUser(new HttpRequest(httpParameter), new HttpResponse(),
 				ModelView.from(null));
+
+			//then
 			assertThat(modelView.getPath()).isEqualTo(expectedPath);
 		}
 
