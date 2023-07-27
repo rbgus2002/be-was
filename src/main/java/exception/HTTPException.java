@@ -22,7 +22,7 @@ public abstract class HTTPException extends RuntimeException {
     }
 
     public Response generateResponse() {
-        String errorMessage = this.getMessage();
+        String errorMessage = status.getStatusCode() + " " + status.getStatusMessage() + " : " + this.getMessage();
         byte[] body = errorMessage.getBytes();
 
         Map<String, String> headerMap = new HashMap<>();
