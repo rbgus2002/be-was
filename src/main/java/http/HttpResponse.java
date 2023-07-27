@@ -1,5 +1,6 @@
 package http;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +81,6 @@ public class HttpResponse {
     public void setSession(HttpSession session) {
         String sid = session.getSid();
         HttpSessionManager.setSession(sid, session);
-        headers.put("Set-Cookie", "sid=" + sid + "; Path=/");
+        headers.put("Set-Cookie", "sid=" + sid + "; Path=/;");
     }
 }

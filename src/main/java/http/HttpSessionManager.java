@@ -24,4 +24,8 @@ public class HttpSessionManager {
     public static boolean containsSid(String sid) {
         return sessionMap.containsKey(sid);
     }
+
+    public static void invalidate(String sid) {
+        sessionMap.remove(sid);
+    }
 }

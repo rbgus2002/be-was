@@ -88,7 +88,7 @@ public class HomeController implements HttpController {
             User user = (User) request.getSession().getAttribute("user");
             htmlBuilder.append("<li><p class=\"navbar-text\">" + user.getName() + "님 환영합니다.</p></li>");
             htmlBuilder.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
-            htmlBuilder.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
+            htmlBuilder.append("                <li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>\n");
             htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         } else {
             htmlBuilder.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
