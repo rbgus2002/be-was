@@ -52,16 +52,15 @@ public class Router {
             // 모든 로직에서 처리되지 않는 경우 404 Not Found 반환
             throw new NotFoundException();
         }
-        catch (HTTPException e) {
-            return e.generateResponse();
+        catch (HTTPException httpException) {
+            throw httpException;
         }
         catch (InvocationTargetException e) {
-            HTTPException httpException = (HTTPException) e.getTargetException();
-            return httpException.generateResponse();
+            throw (HTTPException) e.getTargetException();
         }
         catch (Exception e) {
             logger.error(Arrays.toString(e.getStackTrace()));
-            return new InternalServerErrorException().generateResponse();
+            throw new InternalServerErrorException();
         }
     }
 

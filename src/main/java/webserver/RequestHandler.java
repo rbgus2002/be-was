@@ -1,5 +1,6 @@
 package webserver;
 
+import exception.HTTPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import router.Router;
@@ -33,6 +34,14 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try(connection) {
+            handleRequest(connection);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void handleRequest(Socket connection) throws IOException {
+        try {
             // Request
             InputStream in = connection.getInputStream();
             Request request = new Request(in);
@@ -43,9 +52,10 @@ public class RequestHandler implements Runnable {
             // Send Response
             OutputStream out = connection.getOutputStream();
             response.sendResponse(out);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage());
+        }
+        catch (HTTPException e) {
+            OutputStream out = connection.getOutputStream();
+            e.generateResponse().sendResponse(out);
         }
     }
 }
