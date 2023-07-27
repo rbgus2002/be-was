@@ -10,7 +10,7 @@ import java.util.Map;
 public class ContentDatabase {
     private static Map<String, Content> contents = Maps.newHashMap();
 
-    public static void addUser(Content content) {
+    public static void addContent(Content content) {
         contents.put(content.getWriter(), content);
     }
 
