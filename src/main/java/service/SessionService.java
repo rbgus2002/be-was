@@ -45,6 +45,11 @@ public class SessionService {
         return session;
     }
 
+    public static void deleteSession(String sid) {
+        String userId = SessionService.getUserIdBySid(sid);
+        Database.deleteSession(userId);
+    }
+
     public static void clearSessionDatabase() {
         Database.deleteAllSession();
     }

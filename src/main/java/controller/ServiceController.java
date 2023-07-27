@@ -46,4 +46,12 @@ public class ServiceController extends Controller {
 
         return new Response(STATUS.SEE_OTHER, headerMap, null);
     }
+
+    @RequestMapping(value="/user/logout", method=Method.GET)
+    public void userLogout(Request request) {
+        String sid = request.getSid();
+        if(SessionService.isSessionValid(sid)) {
+            SessionService.deleteSession(sid);
+        }
+    }
 }

@@ -42,6 +42,9 @@ public class Database {
     public static Collection<Session> findAllSession() {
         return sessions.values();
     }
+    public static void deleteSession(String userId) {
+        sessions.remove(userId);
+    }
     public static void deleteAllSession() {
         sessions.clear();
     }
