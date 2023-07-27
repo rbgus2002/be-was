@@ -63,6 +63,9 @@ public class Parser {
     public static String parseCookie(String requestCookie) {
         return requestCookie.substring(4);
     }
+    public static String parseRequestCookie(String requestCookie) {
+        return requestCookie.substring(6);
+    }
 
     public static String parseRedirectViewPath(String viewPath) {
         return viewPath.substring(9);
