@@ -23,6 +23,7 @@ class IndexViewTest {
 	@BeforeEach
 	void beforeEach() {
 		Database.deleteUserAll();
+		Database.deleteBoardAll();
 	}
 
 	@Test

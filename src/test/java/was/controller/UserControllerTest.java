@@ -23,6 +23,7 @@ class UserControllerTest {
 	@BeforeEach
 	void beforeEach() {
 		Database.deleteUserAll();
+		Database.deleteBoardAll();
 	}
 
 	@Test

@@ -25,6 +25,7 @@ class ListViewTest {
 	@BeforeEach
 	void beforeEach() {
 		Database.deleteUserAll();
+		Database.deleteBoardAll();
 	}
 
 	@Test

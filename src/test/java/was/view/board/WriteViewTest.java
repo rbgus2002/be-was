@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import was.db.Database;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.utils.HttpStatus;
@@ -18,6 +20,12 @@ import was.webserver.utils.HttpStatus;
 class WriteViewTest {
 
 	private final WriteView writeView = new WriteView();
+
+	@BeforeEach
+	void beforeEach() {
+		Database.deleteUserAll();
+		Database.deleteBoardAll();
+	}
 
 	@Test
 	@DisplayName("로그인 하지 않으면 write가 아닌 로그인 페이지로 이동한다")
