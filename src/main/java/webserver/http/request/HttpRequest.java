@@ -4,11 +4,9 @@ import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.http.Constants.ContentType;
-import webserver.http.Constants.HeaderOption;
 import webserver.http.Constants.HttpMethod;
 import webserver.http.Constants.HttpVersion;
 import webserver.RequestHandler;
-import webserver.http.Cookie;
 import webserver.http.Header;
 
 import java.io.BufferedReader;
@@ -30,7 +28,6 @@ public class HttpRequest {
     private final RequestQuery requestQuery;
     private final Header header;
     private final RequestBody requestBody;
-    private Cookie cookie;
 
     private HttpRequest(String requestLine, String header, String body) {
 
@@ -44,6 +41,8 @@ public class HttpRequest {
         this.requestQuery = parseRequestQuery(pathAndQueries);
         this.header = Header.of(header);
         this.requestBody = parseRequestBody(body);
+
+        this.header.setCookie();
     }
 
     public static HttpRequest of(final InputStream in) throws IOException {
@@ -83,13 +82,6 @@ public class HttpRequest {
         return RequestBody.of(body);
     }
 
-    public void setCookie() {
-        String cookie = header.getElement(HeaderOption.COOKIE);
-        if(cookie != null) {
-            this.cookie = Cookie.of(cookie);
-        }
-    }
-
     public HttpMethod getHttpMethod() {
         return this.httpMethod;
     }
@@ -118,5 +110,9 @@ public class HttpRequest {
     public RequestBody getRequestBody() {
         if(requestBody == null) throw new MissingParameterException();
         return requestBody;
+    }
+
+    public String getHeaderOption(final String key) {
+        return header.getCookieOption(key);
     }
 }

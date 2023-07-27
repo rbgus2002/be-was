@@ -40,6 +40,10 @@ public class HttpResponse {
         header.addElement(key, value);
     }
 
+    public void addCookieOption(final String key, final String value) {
+        header.addCookieOption(key, value);
+    }
+
     public void setHttpVersion(final HttpVersion httpVersion) {
         this.httpVersion = httpVersion;
     }
