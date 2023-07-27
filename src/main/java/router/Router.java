@@ -4,6 +4,7 @@ import controller.DynamicFileController;
 import controller.ServiceController;
 import controller.StaticFileController;
 import exception.HTTPException;
+import exception.InternalServerErrorException;
 import exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +61,8 @@ public class Router {
         }
         catch (Exception e) {
             logger.error(Arrays.toString(e.getStackTrace()));
+            return new InternalServerErrorException().generateResponse();
         }
-
-        return null;
     }
 
     private static Response findMethodAndGenerateResponse(Object obj, Request request) throws InvocationTargetException, IllegalAccessException {
