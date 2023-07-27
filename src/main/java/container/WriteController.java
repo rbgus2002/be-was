@@ -23,6 +23,7 @@ public class WriteController implements Controller{
             Map<String, String> query = request.getQuery();
             logger.debug("query의 생성 ={}", query.toString());
             Content content = new Content(query.get("writer"), query.get("title"), query.get("contents"));
+            logger.debug("content의 시간 = {}", content.getLocalDate());
             ContentDatabase.addContent(content);
             return HOME_PATH.getPath();
         }

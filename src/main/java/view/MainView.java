@@ -115,7 +115,7 @@ public class MainView implements ViewBase{
             sb.append("                          </strong>\n");
             sb.append("                          <div class=\"auth-info\">\n");
             sb.append("                              <i class=\"icon-add-comment\"></i>\n");
-            sb.append("                              <span class=\"time\">2016-01-15 18:47</span>\n");
+            sb.append("                              <span class=\"time\">" + questionEntry.getValue().getLocalDate() + "</span>\n");
             sb.append("                              <a href=\"./user/profile.html\" class=\"author\">" + questionEntry.getValue().getWriter() + "</a>\n");
             sb.append("                          </div>\n");
             sb.append("                          <div class=\"reply\" title=\"댓글\">\n");
