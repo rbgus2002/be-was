@@ -1,6 +1,11 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = '0.8.5'
 }
 
 group 'codesquad'
