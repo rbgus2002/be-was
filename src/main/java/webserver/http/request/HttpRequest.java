@@ -77,15 +77,15 @@ public class HttpRequest {
         return startLine.getHttpMethod();
     }
 
-    public Map<String, String> getParamMap() {
-        return startLine.getParams();
-    }
-
     public Map<String, String> getHeadersMap() {
         return headers.getHeader();
     }
 
     public Map<String, String> getBodyMap() {
         return body.getBody();
+    }
+
+    public String getCookie() {
+        return headers.getParamValue("Cookie");
     }
 }

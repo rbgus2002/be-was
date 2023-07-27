@@ -7,8 +7,11 @@ import webserver.http.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +28,6 @@ public class HttpResponse {
     public static class HttpResponseBuilder {
         private final Map<String, String> header;
         private byte[] body;
-
         private HttpStatus status = HttpStatus.OK;
         private String path = "/index.html";
         private HttpMime mime = HttpMime.HTML;
@@ -58,6 +60,23 @@ public class HttpResponse {
 
         public HttpResponseBuilder setCookie(String sessionId, String path) {
             this.header.put("Set-Cookie", "sid=" + sessionId + "; Path=" + path);
+            return this;
+        }
+
+        public HttpResponseBuilder setAttribute(Map<String, String> attribute) throws IOException {
+            byte[] body = getBody(this.path, this.mime);
+
+            if (this.mime != HttpMime.HTML) {
+                this.body = body;
+                return this;
+            }
+
+            String bodyContent = new String(body);
+            for (String key : attribute.keySet()) {
+                bodyContent = bodyContent.replace(key, attribute.get(key));
+            }
+            this.body = bodyContent.getBytes();
+            this.header.put("Content-Length", String.valueOf(this.body.length));
             return this;
         }
 
