@@ -81,14 +81,15 @@ public class RequestHandler implements Runnable {
 
         // Body
         String body = "";
+        Map<String, String> bodyParameterMap = new HashMap<>();
         if(method == Method.PUT || method == Method.POST) {
             int contentLength = Integer.parseInt(headerMap.get(HEADER_CONTENT_LENGTH));
             char[] bodyCharacters = new char[contentLength];
             br.read(bodyCharacters);
 
             body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
+            bodyParameterMap = parseBodyParameter(body);
         }
-        Map<String, String> bodyParameterMap = parseBodyParameter(body);
 
         return new Request(method, version, targetUri, path, queryParameterMap, headerMap, sid, body, bodyParameterMap);
     }
