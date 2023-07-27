@@ -4,7 +4,9 @@ import annotation.RequestMapping;
 import db.QuestionRepository;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.HttpSession;
 import model.Question;
+import model.User;
 
 @RequestMapping(path = "/qna/form")
 public class QnaFormController implements HttpController {
@@ -24,7 +26,9 @@ public class QnaFormController implements HttpController {
     }
 
     private String doPost(HttpRequest request, HttpResponse response) {
-        Question question = Question.fromMap(request.getParams());
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        Question question = new Question(user.getUserId(), request.getParam("title"), request.getParam("contents"));
         QuestionRepository.addQuestion(question);
         return "redirect:/index.html";
     }

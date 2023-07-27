@@ -5,12 +5,16 @@ import db.QuestionRepository;
 import http.HttpRequest;
 import http.HttpResponse;
 import model.Question;
+import model.User;
 
 @RequestMapping(path = "/qna/show.html")
 public class QnaShowController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
+        if (!request.hasValidSession()) {
+            return "redirect:/user/login";
+        }
         response.setContentType("text/html");
         StringBuilder htmlBuilder = new StringBuilder();
         String index = request.getParam("index");
@@ -81,11 +85,17 @@ public class QnaShowController implements HttpController {
         htmlBuilder.append("        </div>\n");
         htmlBuilder.append("        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">\n");
         htmlBuilder.append("            <ul class=\"nav navbar-nav navbar-right\">\n");
-        htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
-        htmlBuilder.append("                <li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>\n");
-        htmlBuilder.append("                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>\n");
-        htmlBuilder.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
-        htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
+        if (request.hasValidSession()) {
+            User user = (User) request.getSession().getAttribute("user");
+            htmlBuilder.append("<li><p class=\"navbar-text\">" + user.getName() + "님 환영합니다.</p></li>");
+            htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
+            htmlBuilder.append("                <li><a href=\"../user/logout\" role=\"button\">로그아웃</a></li>\n");
+            htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
+        } else {
+            htmlBuilder.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
+            htmlBuilder.append("                <li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>\n");
+            htmlBuilder.append("                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>\n");
+        }
         htmlBuilder.append("            </ul>\n");
         htmlBuilder.append("        </div>\n");
         htmlBuilder.append("    </div>\n");
@@ -122,7 +132,7 @@ public class QnaShowController implements HttpController {
         htmlBuilder.append("                          <li>\n");
         htmlBuilder.append("                              <form class=\"form-delete\" action=\"/questions/423\" method=\"POST\">\n");
         htmlBuilder.append("                                  <input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n");
-        htmlBuilder.append("                                  <button class=\"link-delete-article\" type=\"submit\">삭제</button>\n");
+        htmlBuilder.append("                                  <a class=\"link-delete-article\" type=\"submit\">삭제</a>\n");
         htmlBuilder.append("                              </form>\n");
         htmlBuilder.append("                          </li>\n");
         htmlBuilder.append("                          <li>\n");
@@ -134,67 +144,9 @@ public class QnaShowController implements HttpController {
         htmlBuilder.append("\n");
         htmlBuilder.append("              <div class=\"qna-comment\">\n");
         htmlBuilder.append("                  <div class=\"qna-comment-slipp\">\n");
-        htmlBuilder.append("                      <p class=\"qna-comment-count\"><strong>2</strong>개의 의견</p>\n");
+        htmlBuilder.append("                      <p class=\"qna-comment-count\"><strong>0</strong>개의 의견</p>\n");
         htmlBuilder.append("                      <div class=\"qna-comment-slipp-articles\">\n");
         htmlBuilder.append("\n");
-        htmlBuilder.append("                          <article class=\"article\" id=\"answer-1405\">\n");
-        htmlBuilder.append("                              <div class=\"article-header\">\n");
-        htmlBuilder.append("                                  <div class=\"article-header-thumb\">\n");
-        htmlBuilder.append("                                      <img src=\"https://graph.facebook.com/v2.3/1324855987/picture\" class=\"article-author-thumb\" alt=\"\">\n");
-        htmlBuilder.append("                                  </div>\n");
-        htmlBuilder.append("                                  <div class=\"article-header-text\">\n");
-        htmlBuilder.append("                                      <a href=\"/users/1/자바지기\" class=\"article-author-name\">자바지기</a>\n");
-        htmlBuilder.append("                                      <a href=\"#answer-1434\" class=\"article-header-time\" title=\"퍼머링크\">\n");
-        htmlBuilder.append("                                          2016-01-12 14:06\n");
-        htmlBuilder.append("                                      </a>\n");
-        htmlBuilder.append("                                  </div>\n");
-        htmlBuilder.append("                              </div>\n");
-        htmlBuilder.append("                              <div class=\"article-doc comment-doc\">\n");
-        htmlBuilder.append("                                  <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>\n");
-        htmlBuilder.append("                              </div>\n");
-        htmlBuilder.append("                              <div class=\"article-utils\">\n");
-        htmlBuilder.append("                                  <ul class=\"article-utils-list\">\n");
-        htmlBuilder.append("                                      <li>\n");
-        htmlBuilder.append("                                          <a class=\"link-modify-article\" href=\"/questions/413/answers/1405/form\">수정</a>\n");
-        htmlBuilder.append("                                      </li>\n");
-        htmlBuilder.append("                                      <li>\n");
-        htmlBuilder.append("                                          <form class=\"delete-answer-form\" action=\"/questions/413/answers/1405\" method=\"POST\">\n");
-        htmlBuilder.append("                                              <input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n");
-        htmlBuilder.append("                                              <button type=\"submit\" class=\"delete-answer-button\">삭제</button>\n");
-        htmlBuilder.append("                                          </form>\n");
-        htmlBuilder.append("                                      </li>\n");
-        htmlBuilder.append("                                  </ul>\n");
-        htmlBuilder.append("                              </div>\n");
-        htmlBuilder.append("                          </article>\n");
-        htmlBuilder.append("                          <article class=\"article\" id=\"answer-1406\">\n");
-        htmlBuilder.append("                              <div class=\"article-header\">\n");
-        htmlBuilder.append("                                  <div class=\"article-header-thumb\">\n");
-        htmlBuilder.append("                                      <img src=\"https://graph.facebook.com/v2.3/1324855987/picture\" class=\"article-author-thumb\" alt=\"\">\n");
-        htmlBuilder.append("                                  </div>\n");
-        htmlBuilder.append("                                  <div class=\"article-header-text\">\n");
-        htmlBuilder.append("                                      <a href=\"/users/1/자바지기\" class=\"article-author-name\">자바지기</a>\n");
-        htmlBuilder.append("                                      <a href=\"#answer-1434\" class=\"article-header-time\" title=\"퍼머링크\">\n");
-        htmlBuilder.append("                                          2016-01-12 14:06\n");
-        htmlBuilder.append("                                      </a>\n");
-        htmlBuilder.append("                                  </div>\n");
-        htmlBuilder.append("                              </div>\n");
-        htmlBuilder.append("                              <div class=\"article-doc comment-doc\">\n");
-        htmlBuilder.append("                                  <p>이 글만으로는 원인 파악하기 힘들겠다. 소스 코드와 설정을 단순화해서 공유해 주면 같이 디버깅해줄 수도 있겠다.</p>\n");
-        htmlBuilder.append("                              </div>\n");
-        htmlBuilder.append("                              <div class=\"article-utils\">\n");
-        htmlBuilder.append("                                  <ul class=\"article-utils-list\">\n");
-        htmlBuilder.append("                                      <li>\n");
-        htmlBuilder.append("                                          <a class=\"link-modify-article\" href=\"/questions/413/answers/1405/form\">수정</a>\n");
-        htmlBuilder.append("                                      </li>\n");
-        htmlBuilder.append("                                      <li>\n");
-        htmlBuilder.append("                                          <form class=\"delete-answer-form\" action=\"/questions/413/answers/1405\" method=\"POST\">\n");
-        htmlBuilder.append("                                              <input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n");
-        htmlBuilder.append("                                              <button type=\"submit\" class=\"delete-answer-button\">삭제</button>\n");
-        htmlBuilder.append("                                          </form>\n");
-        htmlBuilder.append("                                      </li>\n");
-        htmlBuilder.append("                                  </ul>\n");
-        htmlBuilder.append("                              </div>\n");
-        htmlBuilder.append("                          </article>\n");
         htmlBuilder.append("                          <form class=\"answer-form\">\n");
         htmlBuilder.append("                              <div class=\"form-group\" style=\"padding:14px;\">\n");
         htmlBuilder.append("                                  <textarea class=\"form-control\" placeholder=\"Update your status\"></textarea>\n");
@@ -232,7 +184,7 @@ public class QnaShowController implements HttpController {
         htmlBuilder.append("\t\t\t<li>\n");
         htmlBuilder.append("\t\t\t\t<form class=\"delete-answer-form\" action=\"/api/questions/{3}/answers/{4}\" method=\"POST\">\n");
         htmlBuilder.append("\t\t\t\t\t<input type=\"hidden\" name=\"_method\" value=\"DELETE\">\n");
-        htmlBuilder.append("                     <button type=\"submit\" class=\"delete-answer-button\">삭제</button>\n");
+        htmlBuilder.append("                     <a type=\"submit\" class=\"delete-answer-button\">삭제</a>\n");
         htmlBuilder.append("\t\t\t\t</form>\n");
         htmlBuilder.append("\t\t\t</li>\n");
         htmlBuilder.append("\t\t</ul>\n");
