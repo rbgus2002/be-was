@@ -63,7 +63,7 @@ public class ErrorView implements View {
                 .appendCRLF("</head>")
                 .appendCRLF("<body>")
                 .appendCRLF("    <div class=\"container\">")
-                .append("        <h1>", "Error", "</h1>")
+                .appendCRLF("        <h1>", "Error", "</h1>")
                 .appendCRLF("        <p>Oops! This page doesn't have what you're looking for!</p>")
                 .appendCRLF("        <p>I'd recommend a different approach. <a href=\"/\">homepage</a>.</p>")
                 .appendCRLF("    </div>")
