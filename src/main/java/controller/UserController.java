@@ -84,4 +84,13 @@ public class UserController {
     private boolean validateUser(User user, String password) {
         return !(user == null || !user.getPassword().equals(password));
     }
+
+    @RequestMapping(path = "/user/list", method = HttpMethod.GET)
+    public String userList(HttpRequest request, HttpResponse response) {
+        if(request.getSession() == null) {
+            return "redirect:/index.html";
+        }
+
+        return "redirect:/user/list.html";
+    }
 }
