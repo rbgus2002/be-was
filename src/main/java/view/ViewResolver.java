@@ -56,6 +56,8 @@ public class ViewResolver {
                 body = ListView.changeToDynamic().getBytes();
             } else if (viewPath.equals("/user/profile.html") && findUser != null) {
                 body = ProfileView.changeToDynamic(findUser).getBytes();
+            } else if (viewPath.equals("/qna/show.html")) {
+                body = ContentView.changeToDynamic(Integer.parseInt(request.getQuery().get("index"))).getBytes();
             }
         } else {
             throw new IllegalArgumentException("잘못된 경로입니다.");

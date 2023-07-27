@@ -20,8 +20,6 @@ public class StaticController implements Controller{
                 return "redirect:/user/profile";
             case  "/qna/form.html":
                 return "redirect:/qna/form";
-            case "/qna/show.html":
-                return "redirect:/qna/show";
             default:
                 return url;
         }

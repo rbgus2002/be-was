@@ -1,6 +1,7 @@
 package webserver;
 
 import container.DispatcherServlet;
+import db.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import parser.ParserFactory;
@@ -28,7 +29,7 @@ public class RequestHandler implements Runnable {
             DataOutputStream dos = new DataOutputStream(out);
             String startLine = br.readLine();
             logger.debug("startLine = {}", startLine);
-
+            Database.initialize();
 
             HTTPServletRequest request = parserFactory.createParser(startLine.split(" ")[0]).getProperRequest(startLine, br);
             DispatcherServlet dispatcherServlet = getInstance();

@@ -24,7 +24,7 @@ public class WriteController implements Controller{
         if (request.getMethod().equals("POST")) {
             Map<String, String> query = request.getQuery();
             logger.debug("query의 생성 ={}", query.toString());
-            Content content = new Content(query.get("writer"), query.get("title"), query.get("text"));
+            Content content = new Content(query.get("writer"), query.get("title"), query.get("contents"));
             ContentDatabase.addContent(content);
             return HOME_PATH.getPath();
         }

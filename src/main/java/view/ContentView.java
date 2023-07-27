@@ -1,13 +1,20 @@
 package view;
 
+import container.ListController;
 import db.ContentDatabase;
 import model.Content;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContentView {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContentView.class);
     public static String changeToDynamic(int index){
         StringBuilder sb = new StringBuilder();
 
         Content findContent = ContentDatabase.findById(index);
+
+        logger.debug("findContent = {}", findContent.getContents());
 
         sb.append("<!DOCTYPE html>\n");
         sb.append("<html lang=\"kr\">\n");

@@ -13,6 +13,10 @@ public class Database {
         users.put(user.getUserId(), user);
     }
 
+    public static void initialize(){
+        users.put("dydwo0740", new User("dydwo0740", "dydwo", "이용재", "dydwo0740@naver.com"));
+    }
+
     public static User findUserById(String userId) {
         return users.get(userId);
     }
