@@ -12,6 +12,14 @@ public class QnaShowController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
+        if ("GET".equals(request.getMethod())) {
+            return doGet(request, response);
+        }
+        response.setMethodNotAllowed();
+        return "/error/405.html";
+    }
+
+    private static String doGet(HttpRequest request, HttpResponse response) {
         if (!request.hasValidSession()) {
             return "redirect:/user/login";
         }
@@ -19,6 +27,10 @@ public class QnaShowController implements HttpController {
         StringBuilder htmlBuilder = new StringBuilder();
         String index = request.getParam("index");
         Question question = QuestionRepository.findById(Integer.parseInt(index));
+        if (question == null) {
+            response.setNotFound();
+            return "/error/404.html";
+        }
 
         htmlBuilder.append("<!DOCTYPE html>\n");
         htmlBuilder.append("<html lang=\"kr\">\n");

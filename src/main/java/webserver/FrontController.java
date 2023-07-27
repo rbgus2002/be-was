@@ -50,6 +50,7 @@ public class FrontController {
         Path path = Paths.get("src/main/resources/static" + viewName);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
             response.setNotFound();
+            viewResolve("/error/404.html", response);
             return;
         }
         byte[] body = Files.readAllBytes(path);

@@ -9,6 +9,18 @@ import http.HttpSession;
 public class UserLogoutController implements HttpController {
     @Override
     public String process(HttpRequest request, HttpResponse response) {
+        if ("GET".equals(request.getMethod())) {
+            return doGet(request, response);
+        }
+        response.setMethodNotAllowed();
+        return "/error/405.html";
+    }
+
+    private static String doGet(HttpRequest request, HttpResponse response) {
+        if (!request.hasValidSession()) {
+            response.setBadRequest();
+            return "/error/400.html";
+        }
         response.setHeader("Set-Cookie", "sid=" + request.getSession().getSid() + "; Path=/" + "; Max-Age=0;");
         HttpSession session = request.getSession();
         session.invalidate();

@@ -11,6 +11,14 @@ public class UserListController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
+        if ("GET".equals(request.getMethod())) {
+            return doGet(request, response);
+        }
+        response.setMethodNotAllowed();
+        return "/error/405.html";
+    }
+
+    private static String doGet(HttpRequest request, HttpResponse response) {
         if (!request.hasValidSession()) {
             return "redirect:/user/login";
         }

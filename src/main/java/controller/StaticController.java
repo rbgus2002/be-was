@@ -7,6 +7,10 @@ public class StaticController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
-        return request.getUrl();
+        if ("GET".equals(request.getMethod())) {
+            return request.getUrl();
+        }
+        response.setMethodNotAllowed();
+        return "/error/405.html";
     }
 }

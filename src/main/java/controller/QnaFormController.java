@@ -12,16 +12,20 @@ import model.User;
 public class QnaFormController implements HttpController {
     @Override
     public String process(HttpRequest request, HttpResponse response) {
-        if (!request.hasValidSession()) {
-            return "redirect:/user/login";
+        if ("GET".equals(request.getMethod())) {
+            return doGet(request, response);
         }
         if ("POST".equals(request.getMethod())) {
             return doPost(request, response);
         }
-        return doGet(request, response);
+        response.setMethodNotAllowed();
+        return "/error/405.html";
     }
 
     private String doGet(HttpRequest request, HttpResponse response) {
+        if (!request.hasValidSession()) {
+            return "redirect:/user/login";
+        }
         return "/qna/form.html";
     }
 
