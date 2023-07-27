@@ -4,15 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import webapp.db.Database;
 import webapp.model.User;
 import webserver.resolver.utils.FileMapper;
 
 public class View {
 
-	private static final String NOT_LOGGED_IN_TAG = "<li>.+(로그인|회원가입).*<\\/li>";
+	private static final String NOT_LOGGED_IN_TAG = "<li>.+로그인.+\\n.+회원가입.+<\\/li>";
 	private static final String LOGGED_IN_TAG = "<li>.+(로그아웃|개인정보수정).*<\\/li>";
 	private static final String PRE_WELCOME_TAG = "<li><a href=\"user/profile\" role=\"button\">";
 	private static final String POST_WELCOME_TAG = " 님</a></li>";
+	private static final String USER_ROW_TAG = "<tr>\\n.+scope=\"row\".+\\n.*<\\/tr>";
 
 	private final String viewName;
 	private final User user;
@@ -43,9 +45,21 @@ public class View {
 		}
 
 		// list.html
+		if (viewName.equals("user/list")) {
+			StringBuilder sb = new StringBuilder();
+			for (User userInfo : Database.findAll()) {
+				sb.append("<tr>\n")
+					.append("<th scope=\"row\">1</th>")
+					.append("<td>").append(userInfo.getUserId()).append("</td>")
+					.append("<td>").append(userInfo.getName()).append("</td>")
+					.append("<td>").append(userInfo.getEmail()).append("</td>")
+					.append("<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n")
+					.append("</tr>");
+			}
+			content = content.replaceAll(USER_ROW_TAG, sb.toString());
+		}
 
-		// profile.html
-
+		// TODO: profile.html
 		return content.getBytes();
 	}
 }
