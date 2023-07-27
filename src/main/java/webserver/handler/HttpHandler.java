@@ -1,5 +1,7 @@
 package webserver.handler;
 
+import application.model.User;
+import db.Database;
 import webserver.controller.ApplicationControllerHandler;
 import webserver.request.HttpRequestMessage;
 import webserver.response.HttpMIME;
@@ -14,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static webserver.WebServer.logger;
@@ -58,12 +61,27 @@ public class HttpHandler {
                 for (String token : tokens) {
                     String[] keyValue = token.trim().split("=");
                     if (keyValue[0].equals("sid") && SessionStorage.hasSession(keyValue[1])) {
-                        matchedData.put("userId", SessionStorage.getSession(keyValue[1]));
+                        String userId = SessionStorage.getSession(keyValue[1]);
+                        matchedData.put("userId", userId);
                         matchedData.put("href", "/index.html");
+                        matchedData.put("username", Database.findUserById(userId).getName());
+                        matchedData.put("useremail", Database.findUserById(userId).getEmail());
                     }
                 }
             }
-            ViewData viewData = ViewData.of(httpRequestMessage.getPath(), matchedData, new ArrayList<>());
+            Map<String, List<List<String>>> lineByLineData = new HashMap<>();
+            // user db 넣기
+            List<List<String>> usersData = new ArrayList<>();
+            for (User user : Database.findAll()) {
+                List<String> userData = new ArrayList<>();
+                userData.add(user.getUserId());
+                userData.add(user.getName());
+                userData.add(user.getEmail());
+                usersData.add(userData);
+            }
+            lineByLineData.put("user", usersData);
+
+            ViewData viewData = ViewData.of(httpRequestMessage.getPath(), matchedData, lineByLineData);
             String body = ViewRender.createPage(viewData);
             httpResponseMessage.setBody(body);
             httpResponseMessage.setHeader("Content-Type", HttpMIME.findBy(httpRequestMessage.getExtension()).getType() + "; charset=UTF-8");
