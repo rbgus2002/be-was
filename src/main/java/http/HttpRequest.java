@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
-import static http.HttpMethod.GET;
 import static utils.StringUtils.decodeBody;
 
 public class HttpRequest {

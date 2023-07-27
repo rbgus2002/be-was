@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static http.Extension.HTML;
+import static http.FilePath.INDEX;
 
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
@@ -21,7 +22,7 @@ public class HttpResponse {
         private String version = "HTTP/1.1";
         private HttpStatus httpStatus = HttpStatus.OK;
         private String contentType = MIME.getMIME().get(HTML);
-        private String location = "/index.html";
+        private String location = INDEX;
         private String sessionId;
         private byte[] body;
 

@@ -40,7 +40,7 @@ public abstract class Controller {
             return loadFromPath(e.getHttpStatus(), e.getFilePath())
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (BadRequestException e) {
-            return loadFileFromString(HttpStatus.NOT_FOUND, view.getErrorView(e.getMessage()), ERROR)
+            return loadFromPath(HttpStatus.NOT_FOUND, ERROR)
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (Exception e) {
             return null;
