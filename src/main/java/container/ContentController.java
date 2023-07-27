@@ -2,12 +2,8 @@ package container;
 
 import annotation.RequestMapping;
 import db.SessionManager;
-import org.checkerframework.checker.units.qual.C;
-import util.PathList;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
-
-import static util.PathList.*;
 
 @RequestMapping(path = "/qna/show.html")
 public class ContentController implements Controller {

@@ -1,6 +1,5 @@
 package view;
 
-import container.ListController;
 import db.ContentDatabase;
 import model.Content;
 import org.slf4j.Logger;

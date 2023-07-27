@@ -6,14 +6,12 @@ import db.SessionManager;
 import model.Content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import parser.GetParser;
-import util.PathList;
 import webserver.HTTPServletRequest;
 import webserver.HTTPServletResponse;
 
 import java.util.Map;
 
-import static util.PathList.*;
+import static util.PathList.HOME_PATH;
 
 @RequestMapping(path = "/qna/form")
 public class WriteController implements Controller{
