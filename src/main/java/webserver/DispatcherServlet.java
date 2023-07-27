@@ -2,7 +2,6 @@ package webserver;
 
 import controller.Controller;
 import exception.NotSupportedContentTypeException;
-import http.HttpStatus;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,25 +32,17 @@ public class DispatcherServlet {
 
     public void doService(HttpRequest request, OutputStream out) throws Throwable {
         logger.debug("REQUEST START :: \n{}", request);
-        checkUserSession(request);
-        doDispatch(request, out);
+        doDispatch(request, out, request.getUserInSession());
     }
 
-    private void checkUserSession(HttpRequest request) {
-        User user = request.getUserInSession();
-        if(user != null){
-            logger.debug("세션 인증 성공! good >> {}", user);
-        }
-    }
-
-    public void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
+    public void doDispatch(HttpRequest request, OutputStream out, User user) throws Throwable {
         Method method = HandlerMapping.getMethodMapped(request);
-        HttpResponse response = handle(request, method);
+        HttpResponse response = handle(request, method, user);
         processDispatchResult(response, out);
         logger.debug("RESPONSE END :: \n{}", response);
     }
 
-    private HttpResponse handle(HttpRequest request, Method method) throws Throwable {
+    private HttpResponse handle(HttpRequest request, Method method, User user) throws Throwable {
         String path = request.getPath();
 
         HttpResponse response;
@@ -60,7 +51,7 @@ public class DispatcherServlet {
         } else {
             response = HttpResponse.init(path);
         }
-        processResources(response);
+        processResources(response, user);
         return response;
     }
 
@@ -80,11 +71,11 @@ public class DispatcherServlet {
         return response;
     }
 
-    private void processResources(HttpResponse response) throws IOException {
+    private void processResources(HttpResponse response, User user) throws IOException {
         try {
             ContentType type = ContentType.findBy(response.getFilePath());
             response.mapResourcePath(type);
-            response.doResponse();
+            response.doResponse(user);
         } catch (NotSupportedContentTypeException e) {
             logger.debug("NotSupportedContentTypeException >> {}", response);
             logger.error(e.getMessage());

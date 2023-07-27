@@ -37,6 +37,10 @@ public class HttpRequest {
         return Cookie.parse(cookieString);
     }
 
+    /**
+     * 세션에 쿠키 값으로 넘어온 sid가 존재하면 User 객체 반환,
+     * sid가 존재하지 않으면 null 객체 반환
+     */
     public User getUserInSession(){
         String sid = cookies.stream()
                 .filter(Cookie::isSid)

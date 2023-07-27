@@ -1,8 +1,10 @@
 package http;
 
 import exception.NotSupportedContentTypeException;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import view.MainPageOfLoginUser;
 import webserver.ContentType;
 
 import java.io.*;
@@ -16,9 +18,11 @@ import static webserver.ContentType.NONE;
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private static final String ROOT_PATH = "src/main/resources";
+    private static final String INDEX = "/index.html";
     private static final String NOT_SUPPORT_ERROR_PAGE = "src/main/resources/templates/not_support_error.html";
     private static final String NOT_FOUND_ERROR_PAGE = "src/main/resources/templates/not_found_error.html";
-    private static final String INDEX = "/index.html";
+    private static final String LOGIN_PAGE = "src/main/resources/templates/user/login.html";
+    private static final String USER_LIST_PAGE = "src/main/resources/templates/user/list.html";
     private static final String MAIN_PAGE = "src/main/resources/templates" + INDEX;
 
     private byte[] body;
@@ -56,8 +60,8 @@ public class HttpResponse {
         this.filePath = ROOT_PATH + type.getPath() + this.filePath;
     }
 
-    public void doResponse() throws IOException {
-        byte[] body = convertFilePathToBody();
+    public void doResponse(User user) throws IOException {
+        byte[] body = convertFilePathToBody(user);
         this.body = body;
     }
 
@@ -70,6 +74,26 @@ public class HttpResponse {
     private byte[] convertFilePathToBody() throws IOException {
         handlePathByHttpStatus();
         return Files.readAllBytes(new File(filePath).toPath());
+    }
+
+    private byte[] convertFilePathToBody(User user) throws IOException {
+        handlePathByHttpStatus();
+        if(isMainPage()){
+            MainPageOfLoginUser page = MainPageOfLoginUser.from(user);
+            return page.getByteArray();
+        }
+//        if(isUserListPage() && user == null){ // TODO : 별도의 분기 처리 말고 MainPageOfLoginUser에서 아예 링크를 login.html로 달아버리면 되지 않을까?
+//            filePath = LOGIN_PAGE;
+//        }
+        return Files.readAllBytes(new File(filePath).toPath());
+    }
+
+    private boolean isMainPage() {
+        return MAIN_PAGE.equals(filePath);
+    }
+
+    private boolean isUserListPage() {
+        return USER_LIST_PAGE.equals(filePath);
     }
 
     private void handlePathByHttpStatus() {
