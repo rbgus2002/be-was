@@ -7,6 +7,7 @@ import support.instance.DefaultInstanceManager;
 import support.web.exception.BadRequestException;
 import support.web.handler.ControllerMethodReturnValueHandlerComposite;
 import utils.ClassListener;
+import utils.InstanceNameConverter;
 import webserver.request.HttpRequest;
 import webserver.request.QueryParameter;
 import webserver.response.HttpResponse;
@@ -37,7 +38,7 @@ public class ControllerResolver {
                                 method -> {
                                     RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
                                     controllers.put(new HttpMethodAndPath(requestMapping.method(), controller.value() + requestMapping.value()),
-                                            new ControllerMethod(controllerClass, controllerClass.getName().replaceFirst(".*\\.", ""), method));
+                                            new ControllerMethod(controllerClass, InstanceNameConverter.convert(controllerClass.getName()), method));
                                 }
                         );
             }
