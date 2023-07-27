@@ -2,7 +2,10 @@ package http.response;
 
 import http.Cookie;
 import http.HttpHeaders;
+import model.User;
 import utils.Parser;
+import view.Index;
+import view.List;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,8 +57,20 @@ public class HttpResponse {
         );
     }
 
-    public static HttpResponse createDynamic(String viewPath) throws IOException {
-        byte[] body = Files.readAllBytes(new File(Parser.parsePath(viewPath)).toPath());
+    public static HttpResponse createDynamic(String viewPath, User user) throws IOException {
+        String renderingView = null;
+        if (viewPath.equals("/index")) {
+            Index index = Index.getInstance();
+            renderingView = index.getRenderingView(user);
+        }
+
+        else {
+            List list = List.getInstance();
+            renderingView = list.getRenderingView(user);
+        }
+
+        byte[] body = renderingView.getBytes();
+
         return new HttpResponse(
                 HttpStatusLine.createStaticStatusLine(),
                 HttpHeaders.createStaticStatusHeaders(body.length, viewPath),
