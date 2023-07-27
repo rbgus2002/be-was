@@ -16,7 +16,7 @@ import static webserver.http.HttpParser.*;
 import static model.User.PASSWORD;
 import static model.User.USERID;
 
-public class ServiceController {
+public class ServiceController extends Controller {
 
     @RequestMapping(value="/user/create", method=Method.POST)
     public Response userCreate(Request request) {
