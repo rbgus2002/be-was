@@ -39,6 +39,16 @@ Java Web Application Server 2023
 ### 기능 요구사항
 1. 동적인 HTML 구현
 
+## step 7
+### 기능 요구사항
+1. 게시글 CRUD 구현
+   - 게시글 보기
+   - 게시글 작성
+   - 게시글 수정
+   - 게시글 삭제
+2. 에러 핸들링 및 에러 페이지 구현
+   - 400, 401, 404, 405, 500 에러 상황 핸들링
+
 ## 기능 구현 커밋
 - [X] HTTP Request Message 출력
 - [X] /index.html 요청 시 응답
@@ -51,8 +61,10 @@ Java Web Application Server 2023
   - [X] 쿠키 구현
 - [X] 로그인 성공 및 실패 시 페이지 이동
 - [X] 동적 페이지 로딩 구현
-- [X] @Template 어노테이션 추가
+- [X] @RendererMapping 어노테이션 추가
 - [X] 동적 렌더링을 위한 클래스 구현
+- [X] 게시글 CRUD 구현
+- [X] 에러 핸들링
 
 ## Wiki page
 https://github.com/plusjob70/be-was/wiki
