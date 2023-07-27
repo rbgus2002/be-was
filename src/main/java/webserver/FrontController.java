@@ -1,10 +1,8 @@
 package webserver;
 
-import controller.HttpController;
+import controller.*;
 import http.HttpRequest;
 import http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import http.Utils;
 
 import java.io.DataOutputStream;
@@ -12,43 +10,50 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.Map;
 
-import static controller.HomeController.HOME_CONTROLLER;
-import static controller.JoinController.JOIN_CONTROLLER;
-import static controller.LoginController.LOGIN_CONTROLLER;
-
 public class FrontController {
-    private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
-    Map<String, HttpController> controllerMap = new HashMap<>();
+    private final Map<String, HttpController> controllerMap;
+    private final HttpController staticController;
 
-    public FrontController() {
-        controllerMap.put("/", HOME_CONTROLLER);
-        controllerMap.put("/user/create", JOIN_CONTROLLER);
-        controllerMap.put("/user/login", LOGIN_CONTROLLER);
+    public static FrontController getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final FrontController INSTANCE = new FrontController();
+    }
+
+    private FrontController() {
+        controllerMap = ControllerScanner.scan();
+        staticController = new StaticController();
     }
 
     public void service(DataOutputStream dos, HttpRequest request, HttpResponse response) throws IOException {
         String url = request.getUrl();
-        HttpController controller = controllerMap.get(url);
-        String viewName = url;
-        if (controller != null) {
-            viewName = controller.process(request, response);
-        }
+        HttpController controller = controllerMap.getOrDefault(url, staticController);
+        String viewName = controller.process(request, response);
         viewResolve(viewName, response);
         render(dos, response);
     }
 
     private void viewResolve(String viewName, HttpResponse response) throws IOException {
+        if (viewName == null) {
+            return;
+        }
         if (viewName.startsWith("redirect:")) {
             String url = viewName.substring("redirect:".length());
             response.setRedirect(url);
             return;
         }
-        Path path = Paths.get("src/main/resources/static" + viewName);
+        Path path = Paths.get("src/main/resources/templates" + viewName);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
-            path = Paths.get("src/main/resources/templates" + viewName);
+            path = Paths.get("src/main/resources/static" + viewName);
+            if (!Files.exists(path) || !Files.isRegularFile(path)) {
+                response.setMethod("404");
+                response.setStatusMessage("Not Found");
+                return;
+            }
         }
         byte[] body = Files.readAllBytes(path);
         String type = Utils.getMimeType(path);

@@ -31,9 +31,12 @@ public class HttpRequestParser {
         url = parseTarget(statusLineTokens[1], params);
         version = statusLineTokens[2];
         while ((input = br.readLine()) != null && !input.isEmpty()) {
+            logger.debug(input);
             parseHeader(input, headers);
         }
-        parseCookie(headers.get("Cookie"), cookies);
+        if (headers.get("Cookie") != null) {
+            parseCookie(headers.get("Cookie"), cookies);
+        }
         String contentLength = headers.get("Content-Length");
         if (contentLength != null) {
             int length = Integer.parseInt(contentLength);

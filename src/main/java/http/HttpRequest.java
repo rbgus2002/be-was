@@ -61,8 +61,19 @@ public class HttpRequest {
     public HttpSession getSession() {
         String sid = getCookie("sid");
         if (sid == null) {
-            sid = UUID.randomUUID().toString();
+            return null;
         }
-        return new HttpSession(sid);
+        if (HttpSessionManager.containsSid(sid)) {
+            return HttpSessionManager.getSession(sid);
+        }
+        return null;
+    }
+
+    public boolean hasValidSession() {
+        String sid = getCookie("sid");
+        if (sid == null) {
+            return false;
+        }
+        return HttpSessionManager.containsSid(sid);
     }
 }
