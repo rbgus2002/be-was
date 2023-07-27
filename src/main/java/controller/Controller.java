@@ -31,7 +31,7 @@ public abstract class Controller {
             if (uri.endsWith(INDEX) || uri.endsWith(PROFILE) || uri.endsWith(LIST)) {
                 return loadFileFromString(HttpStatus.OK, view.getDynamicView(httpRequest, uri), uri);
             }
-            if (uri.endsWith(FORM) && !isSessionValid(httpRequest.getSessionId())) {
+            if ((uri.endsWith(FORM) || uri.endsWith(SHOW)) && !isSessionValid(httpRequest.getSessionId())) {
                 uri = LOGIN;
             }
             return loadFromPath(HttpStatus.OK, uri)
