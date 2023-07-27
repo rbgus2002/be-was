@@ -1,6 +1,7 @@
 package webserver;
 
-import controller.*;
+import controller.HttpController;
+import controller.StaticController;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.Utils;
@@ -46,14 +47,10 @@ public class FrontController {
             response.setRedirect(url);
             return;
         }
-        Path path = Paths.get("src/main/resources/templates" + viewName);
+        Path path = Paths.get("src/main/resources/static" + viewName);
         if (!Files.exists(path) || !Files.isRegularFile(path)) {
-            path = Paths.get("src/main/resources/static" + viewName);
-            if (!Files.exists(path) || !Files.isRegularFile(path)) {
-                response.setMethod("404");
-                response.setStatusMessage("Not Found");
-                return;
-            }
+            response.setNotFound();
+            return;
         }
         byte[] body = Files.readAllBytes(path);
         String type = Utils.getMimeType(path);

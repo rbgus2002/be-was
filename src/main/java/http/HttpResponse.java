@@ -8,6 +8,7 @@ public class HttpResponse {
     public static final String OK = "200";
     public static final String FOUND = "302";
     public static final String NOT_FOUND = "404";
+    public static final String METHOD_NOT_ALLOWED = "405";
 
     public static final String OK_MESSAGE = "OK";
     public static final String FOUND_MESSAGE = "Found";
@@ -56,6 +57,16 @@ public class HttpResponse {
         setMethod(FOUND);
         setStatusMessage(FOUND_MESSAGE);
         setHeader("Location", url);
+    }
+
+    public void setNotFound() {
+        setMethod(NOT_FOUND);
+        setStatusMessage("Not Found");
+    }
+
+    public void setMethodNotAllowed() {
+        setMethod(METHOD_NOT_ALLOWED);
+        setStatusMessage("Method Not Allowed");
     }
 
     public String getMethod() {
