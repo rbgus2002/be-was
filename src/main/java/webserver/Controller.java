@@ -1,7 +1,7 @@
 package webserver;
 
 import annotation.RequestMapping;
-import annotation.TemplateMapping;
+import annotation.RendererMapping;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.wrapper.Queries;
@@ -10,7 +10,7 @@ import exception.UnauthorizedException;
 import service.PostService;
 import domain.User;
 import service.UserService;
-import view.template.*;
+import view.renderer.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,6 @@ import java.util.Optional;
 import static common.enums.RequestMethod.GET;
 import static common.enums.RequestMethod.POST;
 
-@annotation.Controller
 public class Controller {
 
     @RequestMapping(method = GET, path = "/")
@@ -26,7 +25,7 @@ public class Controller {
         return new ModelView("Hello world");
     }
 
-    @TemplateMapping(name = IndexTemplate.class)
+    @RendererMapping(name = IndexHtmlRenderer.class)
     @RequestMapping(method = GET, path = "/index.html")
     public ModelView index(HttpRequest request, HttpResponse response) {
         ModelView mv = new ModelView("/index.html");
@@ -38,7 +37,7 @@ public class Controller {
         return mv;
     }
 
-    @TemplateMapping(name = DynamicTemplate.class)
+    @RendererMapping(name = HtmlRenderer.class)
     @RequestMapping(method = GET, path = "/user/form.html")
     public ModelView userForm(HttpRequest request, HttpResponse response) {
         ModelView mv = new ModelView("/user/form.html");
@@ -46,7 +45,7 @@ public class Controller {
         return mv;
     }
 
-    @TemplateMapping(name = DynamicTemplate.class)
+    @RendererMapping(name = HtmlRenderer.class)
     @RequestMapping(method = GET, path = "/user/login.html")
     public ModelView userLoginPage(HttpRequest request, HttpResponse response) {
         ModelView mv = new ModelView("/user/login.html");
@@ -88,7 +87,7 @@ public class Controller {
         return new ModelView("redirect:/index.html");
     }
 
-    @TemplateMapping(name = DynamicTemplate.class)
+    @RendererMapping(name = HtmlRenderer.class)
     @RequestMapping(method = GET, path = "/user/login_failed.html")
     public ModelView userLoginFailed(HttpRequest request, HttpResponse response) {
         ModelView mv = new ModelView("/user/login_failed.html");
@@ -96,7 +95,7 @@ public class Controller {
         return mv;
     }
 
-    @TemplateMapping(name = UserListTemplate.class)
+    @RendererMapping(name = UserListRenderer.class)
     @RequestMapping(method = GET, path = "/user/list.html")
     public ModelView listUser(HttpRequest request, HttpResponse response) {
         User loginUser = UserSessionManager.getSession(request);
@@ -112,7 +111,13 @@ public class Controller {
         return new ModelView("redirect:/index.html");
     }
 
-    @TemplateMapping(name = DynamicTemplate.class)
+    @RequestMapping(method = GET,  path = "/user/logout")
+    public ModelView logout(HttpRequest request, HttpResponse response) {
+        UserSessionManager.destroySession(request);
+        return new ModelView("redirect:/index.html");
+    }
+
+    @RendererMapping(name = HtmlRenderer.class)
     @RequestMapping(method = GET, path = "/post/write.html")
     public ModelView postForm(HttpRequest request, HttpResponse response) {
         User loginUser = UserSessionManager.getSession(request);
@@ -137,7 +142,7 @@ public class Controller {
         return new ModelView("redirect:/index.html");
     }
 
-    @TemplateMapping(name = ShowPostTemplate.class)
+    @RendererMapping(name = ShowPostRenderer.class)
     @RequestMapping(method = GET, path = "/post/show.html")
     public ModelView showPost(HttpRequest request, HttpResponse response) {
         User loginUser = UserSessionManager.getSession(request);
@@ -158,7 +163,7 @@ public class Controller {
         return new ModelView("redirect:/user/login.html");
     }
 
-    @TemplateMapping(name = EditPostTemplate.class)
+    @RendererMapping(name = EditPostHtmlRenderer.class)
     @RequestMapping(method = GET, path = "/post/edit.html")
     public ModelView editPostForm(HttpRequest request, HttpResponse response) {
         User loginUser = validatedUser(request);
@@ -207,14 +212,9 @@ public class Controller {
         return new ModelView("redirect:/index.html");
     }
 
-    @RequestMapping(method = GET,  path = "/user/logout")
-    public ModelView logout(HttpRequest request, HttpResponse response) {
-        UserSessionManager.destroySession(request);
-        return new ModelView("redirect:/index.html");
-    }
-
     private void addUserToModelIfLogin(ModelView mv, HttpRequest request) {
         User user = UserSessionManager.getSession(request);
+
         if (user != null) {
             mv.addModelAttribute("user", user);
         }

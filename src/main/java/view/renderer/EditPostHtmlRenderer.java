@@ -1,10 +1,10 @@
-package view.template;
+package view.renderer;
 
 import domain.Post;
 
 import java.util.Map;
 
-public class EditPostTemplate extends DynamicTemplate {
+public class EditPostHtmlRenderer extends HtmlRenderer {
     private final String EDIT_POST_FORMAT =
             "<div class=\"form-group\">\n" +
             "   <label for=\"title\">제목</label>\n" +

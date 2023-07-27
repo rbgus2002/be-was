@@ -1,8 +1,8 @@
 package webserver;
 
 import annotation.RequestMapping;
-import annotation.TemplateMapping;
-import view.template.DynamicTemplate;
+import annotation.RendererMapping;
+import view.renderer.HtmlRenderer;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -10,17 +10,17 @@ import java.util.Map;
 
 import static webserver.ServerConfig.CONTROLLER_CLASS;
 
-public class TemplateMapper {
+public class RendererMapper {
 
-    private static final TemplateMapper INSTANCE = new TemplateMapper();
+    private static final RendererMapper INSTANCE = new RendererMapper();
 
-    private final Map<String, DynamicTemplate> map;
+    private final Map<String, HtmlRenderer> map;
 
-    private TemplateMapper() {
+    private RendererMapper() {
         map = new HashMap<>();
     }
 
-    public static TemplateMapper getInstance() {
+    public static RendererMapper getInstance() {
         return INSTANCE;
     }
 
@@ -28,23 +28,23 @@ public class TemplateMapper {
         Method[] methods = CONTROLLER_CLASS.getMethods();
 
         for (Method method : methods) {
-            if (method.isAnnotationPresent(TemplateMapping.class)) {
+            if (method.isAnnotationPresent(RendererMapping.class)) {
                 RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                TemplateMapping templateMapping = method.getAnnotation(TemplateMapping.class);
+                RendererMapping templateMapping = method.getAnnotation(RendererMapping.class);
 
                 if (requestMapping == null) continue;
 
-                Class<? extends DynamicTemplate> clazz = templateMapping.name();
+                Class<? extends HtmlRenderer> clazz = templateMapping.name();
 
                 String path = requestMapping.path();
-                DynamicTemplate dynamicRenderer = clazz.getDeclaredConstructor().newInstance();
+                HtmlRenderer dynamicRenderer = clazz.getDeclaredConstructor().newInstance();
 
                 map.put(path, dynamicRenderer);
             }
         }
     }
 
-    public DynamicTemplate getDynamicTemplate(String path) {
+    public HtmlRenderer getDynamicTemplate(String path) {
         return map.get(path);
     }
 

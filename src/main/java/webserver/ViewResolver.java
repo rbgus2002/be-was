@@ -14,7 +14,7 @@ public class ViewResolver {
             return new RedirectView(viewName);
         }
 
-        TemplateMapper templateMapper = TemplateMapper.getInstance();
+        RendererMapper templateMapper = RendererMapper.getInstance();
 
         // 동적 템플릿 적용이 필요한 HTML
         if (templateMapper.contains(viewName)) {

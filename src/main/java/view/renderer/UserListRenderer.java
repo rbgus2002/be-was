@@ -1,4 +1,4 @@
-package view.template;
+package view.renderer;
 
 import domain.User;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UserListTemplate extends DynamicTemplate {
+public class UserListRenderer extends HtmlRenderer {
 
     private final String USER_INFO_FORMAT =
             "<th scope=\"row\">%s</th>" +

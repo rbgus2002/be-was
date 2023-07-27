@@ -15,6 +15,7 @@ public class ControllerMapper {
     private static final ControllerMapper INSTANCE = new ControllerMapper();
     private final Map<String, Map<RequestMethod, Method>> map;
 
+
     private ControllerMapper() {
         map = new HashMap<>();
     }
@@ -64,4 +65,5 @@ public class ControllerMapper {
             }
         }
     }
+
 }

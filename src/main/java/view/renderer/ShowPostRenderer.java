@@ -1,10 +1,10 @@
-package view.template;
+package view.renderer;
 
 import domain.Post;
 
 import java.util.Map;
 
-public class ShowPostTemplate extends DynamicTemplate {
+public class ShowPostRenderer extends HtmlRenderer {
 
     private final String POST_INFO_FORMAT =
             "<header class=\"qna-header\">\n" +

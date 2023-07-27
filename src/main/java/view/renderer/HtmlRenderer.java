@@ -1,14 +1,15 @@
-package view.template;
+package view.renderer;
 
 import domain.User;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-public class DynamicTemplate {
+public class HtmlRenderer {
 
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm ");
     private final String DYNAMIC_TAG_FORMAT = "<dynamic id=\"%s\"></dynamic>";
+
     private final String USER_NAME_TAG_FORMAT = "<li><a>%s 로그인 됨</a></li>\n";
     private final String LOGIN_TAG = "<li><a href=\"/user/login.html\" role=\"button\">로그인</a></li>\n";
     private final String SIGNUP_TAG = "<li><a href=\"/user/form.html\" role=\"button\">회원가입</a></li>\n";

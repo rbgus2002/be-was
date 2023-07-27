@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
  * Dispatcher의 역할
  * <li>요청을 처리할 수 있는 컨트롤러를 찾는다.</li>
  * <li>처리할 수 있는 컨트롤러가 있으면 처리 후 ModelView를 반환 받는다.</li>
- * <li>ViewResolver를 통해서 반환 받은 ModelView의 viewName을 실제 물리적 경로로 변경하여 뷰를 반환 받는다..</li>
+ * <li>ViewResolver를 통해서 반환 받은 ModelView의 viewName을 실제 경로로 변경하여 뷰를 반환 받는다.</li>
  * <li>뷰를 렌더링 한다.</li>
  */
 public class Dispatcher {
@@ -33,8 +33,8 @@ public class Dispatcher {
             mv = (ModelView) controllerMethod.invoke(controller, request, response);
 
         } catch (Exception e) {
-            mv = controlException(e);
-
+            mv = handleException(e);
+            logger.debug(e.getMessage());
         }
 
         if (mv == null) {
@@ -45,7 +45,7 @@ public class Dispatcher {
         view.render(mv.getModel(), request, response);
     }
 
-    private ModelView controlException(Exception e) {
+    private ModelView handleException(Exception e) {
         if (e instanceof NotFoundException) {
             return new ModelView(NOT_FOUND_PAGE);
         }
@@ -58,6 +58,7 @@ public class Dispatcher {
         if (e instanceof UnauthorizedException) {
             return new ModelView(UNAUTHORIZED_PAGE);
         }
+
         return new ModelView(INTERNAL_SERVER_ERROR_PAGE);
     }
 

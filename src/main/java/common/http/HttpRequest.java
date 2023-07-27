@@ -33,19 +33,10 @@ public class HttpRequest {
     }
 
     public Queries getQueries() {
-        RequestMethod requestMethod = getRequestMethod();
+        Queries uriQueries = requestLine.getQueries().orElseGet(Queries::new);
+        Queries bodyQueries = requestBody.getQueries().orElseGet(Queries::new);
 
-        if (requestMethod.equals(RequestMethod.GET)) {
-            return requestLine.getQueries().orElseGet(Queries::new);
-        }
-
-        if (requestMethod.equals(RequestMethod.POST)) {
-
-
-            return requestBody.getQueries().orElseGet(Queries::new);
-        }
-
-        return new Queries();
+        return uriQueries.append(bodyQueries);
     }
 
     public Headers getHeaders() {

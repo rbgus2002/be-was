@@ -4,7 +4,7 @@ import common.enums.ContentType;
 import common.enums.ResponseCode;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
-import view.template.DynamicTemplate;
+import view.renderer.HtmlRenderer;
 import utils.FileUtils;
 
 import java.util.Map;
@@ -12,11 +12,11 @@ import java.util.Map;
 public class DynamicHtmlView implements View {
 
     private final String viewPath;
-    private final DynamicTemplate dynamicRenderer;
+    private final HtmlRenderer htmlRenderer;
 
-    public DynamicHtmlView(String viewPath, DynamicTemplate dynamicRenderer) {
+    public DynamicHtmlView(String viewPath, HtmlRenderer htmlRenderer) {
         this.viewPath = viewPath;
-        this.dynamicRenderer = dynamicRenderer;
+        this.htmlRenderer = htmlRenderer;
     }
 
     @Override
@@ -25,10 +25,10 @@ public class DynamicHtmlView implements View {
     }
 
     @Override
-    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) throws Exception {
+    public void render(Map<String, Object> model, HttpRequest request, HttpResponse response) {
         String html = FileUtils.readFileToString(viewPath);
-        html = dynamicRenderer.decorateHeaderBar(html, model);
-        html = dynamicRenderer.decorate(html, model);
+        html = htmlRenderer.decorateHeaderBar(html, model);
+        html = htmlRenderer.decorate(html, model);
 
         response.setUpDefaultResponse(ResponseCode.OK, getContentType(), html.getBytes());
     }
