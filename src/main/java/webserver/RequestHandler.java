@@ -35,10 +35,10 @@ public class RequestHandler implements Runnable {
         try(connection) {
             // Request
             InputStream in = connection.getInputStream();
-            Request request = parseRequest(in);
+            Request request = new Request(in);
 
             // Response
-            Response response = generateResponse(request);
+            Response response = Router.generateResponse(request);
 
             // Send Response
             OutputStream out = connection.getOutputStream();
@@ -47,55 +47,6 @@ public class RequestHandler implements Runnable {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-    }
-
-    public static Request parseRequest(InputStream in) throws IOException, IllegalArgumentException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-
-        // Status Line
-        String[] tokens = readSingleHTTPLine(br).split(" ");
-
-        Method method = Method.getMethodByName(tokens[0]);
-        String targetUri = tokens[1];
-        String path = tokens[1].split("\\?")[0];
-        String version = tokens[2].split("/")[1];
-
-        Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
-
-
-        // Headers
-        Map<String, String> headerMap = new HashMap<>();
-        String line = readSingleHTTPLine(br).replace(" ", "");
-        while(!line.equals("")) {
-            tokens = line.split(":");
-            headerMap.put(tokens[0], tokens[1]);
-            line = readSingleHTTPLine(br).replace(" ", "");
-        }
-        String sid = null;
-        if(headerMap.containsKey(HEADER_COOKIE)) {
-            sid = headerMap.get(HEADER_COOKIE).split("=")[1];
-            if(!isSessionValid(sid)) {
-                sid = null;
-            }
-        }
-
-        // Body
-        String body = "";
-        Map<String, String> bodyParameterMap = new HashMap<>();
-        if(method == Method.PUT || method == Method.POST) {
-            int contentLength = Integer.parseInt(headerMap.get(HEADER_CONTENT_LENGTH));
-            char[] bodyCharacters = new char[contentLength];
-            br.read(bodyCharacters);
-
-            body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
-            bodyParameterMap = parseBodyParameter(body);
-        }
-
-        return new Request(method, version, targetUri, path, queryParameterMap, headerMap, sid, body, bodyParameterMap);
-    }
-
-    public static Response generateResponse(Request request) {
-        return Router.generateResponse(request);
     }
 
     public static void sendResponse(Response response, OutputStream out) throws IOException {

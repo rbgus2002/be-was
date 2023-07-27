@@ -8,15 +8,13 @@ import webserver.http.model.Request.Method;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import static webserver.RequestHandler.parseRequest;
-
 public class HttpRequestTest {
     private String testDirectory = "./src/test/resources/";
 
     @Test
     public void request_GET() throws Exception {
         InputStream in = new FileInputStream(testDirectory + "Http_GET.txt");
-        Request request = parseRequest(in);
+        Request request = new Request(in);
 
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(request.getMethod()).isEqualTo(Method.GET);
@@ -28,7 +26,7 @@ public class HttpRequestTest {
     @Test
     public void request_POST() throws Exception {
         InputStream in = new FileInputStream(testDirectory + "Http_POST.txt");
-        Request request = parseRequest(in);
+        Request request = new Request(in);
 
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
@@ -41,7 +39,7 @@ public class HttpRequestTest {
     @Test
     public void request_POST2() throws Exception {
         InputStream in = new FileInputStream(testDirectory + "Http_POST2.txt");
-        Request request = parseRequest(in);
+        Request request = new Request(in);
 
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
