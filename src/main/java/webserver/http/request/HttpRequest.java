@@ -65,4 +65,8 @@ public class HttpRequest {
     public Map<String, String> getParams() {
         return this.body.getParams();
     }
+
+    public String getSid() {
+        return headers.getSid();
+    }
 }

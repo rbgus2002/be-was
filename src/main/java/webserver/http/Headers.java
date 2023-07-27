@@ -83,7 +83,7 @@ public class Headers {
         headers.put(SET_COOKIE, cookie.getValueForSetCookie());
     }
 
-    private String buildSetCookieValue(String sid, String path) {
-        return "sid=" + sid + "; " + "Path=" + path;
+    public String getSid() {
+        return cookie.getSid();
     }
 }
