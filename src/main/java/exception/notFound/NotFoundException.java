@@ -1,8 +1,9 @@
 package exception.notFound;
 
+import exception.CustomException;
 import webserver.Constants.HttpStatus;
 
-public abstract class NotFoundException extends RuntimeException {
+public abstract class NotFoundException extends CustomException {
 
     protected static final HttpStatus httpStatus = HttpStatus.NOT_FOUND;
 

@@ -1,43 +1,66 @@
 package webserver;
 
 import application.controller.WebController;
-import exception.notFound.NotFoundException;
-import exception.badRequest.MissingParameterException;
+import exception.CustomException;
+import exception.internalServerError.MethodAccessException;
+import exception.internalServerError.MethodInvocationException;
 import exception.notFound.InvalidResourcePathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import webserver.Constants.ContentType;
+import webserver.Constants.HeaderField;
+import webserver.response.HttpResponse;
 import webserver.view.view.View;
 import webserver.view.viewResolver.StaticViewResolver;
 import webserver.request.HttpRequest;
 
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 
 public class DispatcherServlet {
 
-    private final HttpRequest request;
+    private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    public DispatcherServlet(HttpRequest request) {
-        this.request = request;
+    public void dispatch(final HttpRequest request, final HttpResponse response, final DataOutputStream dos) {
+        try {
+            StaticViewResolver staticViewResolver = new StaticViewResolver();
+            Map<String, Object> model = null;
+
+            Optional<View> viewOpt = staticViewResolver.resolve(request.getFullPath());
+            if(viewOpt.isEmpty()) {
+                ModelAndView modelAndView = invokeControllerMethod(request, response);
+                model = modelAndView.getModel();
+                viewOpt = staticViewResolver.resolve(modelAndView.getViewName());
+            }
+
+            if(viewOpt.isEmpty()) throw new InvalidResourcePathException(request.getFullPath());
+
+            viewOpt.get().render(request, response, model, dos);
+        } catch (CustomException e) {
+            logger.debug(e.getMessage());
+            response.setHttpStatus(e.getHttpStatus());
+            response.addHeaderElement(HeaderField.contentType, ContentType.HTML.getDescription());
+            response.setBody(e.getHttpStatus().getDescription().getBytes(StandardCharsets.UTF_8));
+            response.sendResponse(dos);
+        }
     }
 
-    public void dispatch(final DataOutputStream dos) throws IOException, NotFoundException, MissingParameterException, InvocationTargetException, IllegalAccessException {
-        StaticViewResolver staticViewResolver = new StaticViewResolver();
-
-        Optional<View> viewOpt = staticViewResolver.resolve(request.getFullPath());
-        if(viewOpt.isPresent()) {
-            viewOpt.get().render(request.getVersion(), request.getContentType(), null, dos);
-            return;
-        }
-
+    private ModelAndView invokeControllerMethod(final HttpRequest request, final HttpResponse response) {
         ControllerMapper controllerMapper = new ControllerMapper();
         WebController controller = controllerMapper.getController(request);
 
         Method method = controllerMapper.getMethod(controller, request);
-        ModelAndView modelAndView = (ModelAndView) method.invoke(controller, request);
-        viewOpt = staticViewResolver.resolve(modelAndView.getViewName());
-        View view = viewOpt.orElseThrow(() -> new InvalidResourcePathException(request.getFullPath()));
-        view.render(request.getVersion(), request.getContentType(), modelAndView.getModel(), dos);
+
+        try {
+            return (ModelAndView) method.invoke(controller, request, response);
+        } catch (IllegalAccessException e) {
+            throw new MethodAccessException(method.getName());
+        } catch (InvocationTargetException e) {
+            throw new MethodInvocationException(method.getName());
+        }
     }
 }

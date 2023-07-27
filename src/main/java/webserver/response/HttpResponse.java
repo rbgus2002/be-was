@@ -1,8 +1,10 @@
 package webserver.response;
 
-import webserver.Constants.ContentType;
+import exception.internalServerError.HttpResponseSendException;
+import webserver.Constants.HeaderField;
 import webserver.Constants.HttpStatus;
 import webserver.Constants.HttpVersion;
+import webserver.Header;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,25 +15,17 @@ import static support.utils.StringUtils.*;
 
 public class HttpResponse {
 
-    private final HttpVersion httpVersion;
-    private final HttpStatus httpStatus;
-    private final ContentType contentType;
-    private final byte[] body;
+    private HttpVersion httpVersion;
+    private HttpStatus httpStatus;
+    private final Header header;
+    private byte[] body;
 
-    private HttpResponse(HttpVersion httpVersion, HttpStatus httpStatus, ContentType contentType, byte[] body) {
-        this.httpVersion = httpVersion;
-        this.httpStatus = httpStatus;
-        this.contentType = contentType;
-        this.body = body;
+    private HttpResponse(Header header) {
+        this.header = header;
     }
 
-    public static HttpResponse ofWithBodyData(HttpVersion httpVersion, HttpStatus httpStatus, ContentType contentType, byte[] body) {
-        return new HttpResponse(httpVersion, httpStatus, contentType, body);
-    }
-
-    public static HttpResponse ofWithStatusOnly(HttpVersion httpVersion, HttpStatus httpStatus) {
-        byte[] body = httpStatus.getDescription().getBytes();
-        return new HttpResponse(httpVersion, httpStatus, ContentType.HTML, body);
+    public static HttpResponse createEmpty() {
+        return new HttpResponse(Header.createEmpty());
     }
 
     private String getStatusLine() {
@@ -39,15 +33,34 @@ public class HttpResponse {
     }
 
     private String getHeader() {
-        return "Content-Type:" + SPACE + contentType.getDescription() + NEWLINE +
-                "Content-Length:" + SPACE + body.length + NEWLINE +
-                NEWLINE;
+        return header.toString();
     }
 
-    public void sendResponse(final DataOutputStream dos) throws IOException {
-        dos.writeBytes(getStatusLine() + getHeader());
-        dos.write(body, 0, body.length);
-        dos.flush();
+    public void addHeaderElement(final String key, final String value) {
+        header.addElement(key, value);
+    }
+
+    public void setHttpVersion(final HttpVersion httpVersion) {
+        this.httpVersion = httpVersion;
+    }
+
+    public void setHttpStatus(final HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    public void setBody(final byte[] body) {
+        this.body = body;
+        addHeaderElement(HeaderField.contentLength, String.valueOf(body.length));
+    }
+
+    public void sendResponse(final DataOutputStream dos) throws HttpResponseSendException {
+        try {
+            dos.writeBytes(getStatusLine() + getHeader());
+            dos.write(body, 0, body.length);
+            dos.flush();
+        } catch (IOException e) {
+            throw new HttpResponseSendException();
+        }
     }
 
     @Override
@@ -55,12 +68,12 @@ public class HttpResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         HttpResponse that = (HttpResponse) o;
-        return httpVersion == that.httpVersion && httpStatus == that.httpStatus && contentType == that.contentType && Arrays.equals(body, that.body);
+        return httpVersion == that.httpVersion && httpStatus == that.httpStatus && Objects.equals(header, that.header) && Arrays.equals(body, that.body);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(httpVersion, httpStatus, contentType);
+        int result = Objects.hash(httpVersion, httpStatus, header);
         result = 31 * result + Arrays.hashCode(body);
         return result;
     }

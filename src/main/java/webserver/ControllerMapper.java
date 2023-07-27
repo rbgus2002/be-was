@@ -19,13 +19,13 @@ public class ControllerMapper {
         controllers.put("/user", new UserController());
     }
 
-    public WebController getController(HttpRequest request) {
+    public WebController getController(final HttpRequest request) {
         WebController controller = controllers.get(request.getRootPath());
         if(controller == null) throw new InvalidControllerPathException(request.getRootPath());
         return controller;
     }
 
-    public Method getMethod(WebController controller, HttpRequest request) {
+    public Method getMethod(final WebController controller, final HttpRequest request) {
         for (Method method : controller.getClass().getDeclaredMethods()) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping annotation = method.getAnnotation(RequestMapping.class);

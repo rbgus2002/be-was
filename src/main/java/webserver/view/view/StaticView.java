@@ -1,8 +1,8 @@
 package webserver.view.view;
 
-import webserver.Constants.ContentType;
-import webserver.Constants.HttpVersion;
-import webserver.request.RequestPath;
+import exception.internalServerError.FileRenderException;
+import webserver.Constants.HeaderField;
+import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.Constants.HttpStatus;
 
@@ -14,19 +14,29 @@ import java.util.Map;
 
 public class StaticView implements View {
 
-    private String filePath;
+    private final String filePath;
 
     public StaticView(String filePath) {
         this.filePath = filePath;
     }
 
     @Override
-    public void render(final HttpVersion version, final ContentType contentType, final Map<String, Object> model, final DataOutputStream dos) throws IOException {
+    public void render(final HttpRequest request, final HttpResponse response, final Map<String, Object> model, final DataOutputStream dos) throws FileRenderException {
 
-        byte[] body = Files.readAllBytes(Paths.get(filePath));
+        try {
+            if(filePath.equals("redirect:")) {
+                response.sendResponse(dos);
+                return;
+            }
+            byte[] body = Files.readAllBytes(Paths.get(filePath));
 
-        HttpResponse httpResponse = HttpResponse.ofWithBodyData(version, HttpStatus.OK, contentType, body);
-        httpResponse.sendResponse(dos);
+            response.setHttpStatus(HttpStatus.OK);
+            response.addHeaderElement(HeaderField.contentType, request.getContentType().getDescription());
+            response.setBody(body);
+            response.sendResponse(dos);
+        } catch (IOException e) {
+            throw new FileRenderException(filePath);
+        }
     }
 }
 
