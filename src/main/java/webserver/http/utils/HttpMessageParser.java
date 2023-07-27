@@ -77,7 +77,7 @@ public class HttpMessageParser {
 			logger.debug(line);
 			String[] tokens = line.split(": ?", 2);
 			if (tokens.length == 2) {
-				headerFields.add(tokens[0], tokens[1]);
+				headerFields.setHeaderField(tokens[0], tokens[1]);
 			}
 			line = br.readLine();
 		}

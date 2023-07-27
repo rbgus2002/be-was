@@ -54,7 +54,7 @@ Java Web Application Server 2023
         - `ControllerResolver` : 그 외 요청이 들어오면, 해당 요청과 매핑되는 컨트롤러 메소드를 찾아 실행한다.
     4. 클라이언트에게 응답 메세지를 보내는 코드의 중복 제거
         - 응답 메세지 전송은 `HttpResponse`에서만 수행하도록 정리
-- [x] GET으로 회원가입
+- [x] GET으로 회원가입 기능 구현
     - GET 파라미터 파싱 (`URL` 객체에 저장)
     - 해당 요청을 처리하는 컨트롤러 메소드에 필요한 매개변수 주입
         - `ControllerResolver`에서 메소드를 호출할 때 `@RequestParam` 어노테이션이 붙은 매개변수에 필요한 값(파싱한 요청 파라미터 값)을 주입한다.
@@ -69,3 +69,19 @@ Java Web Application Server 2023
 
 - [x] 다양한 컨텐츠 타입 지원
     - 서버의 `/static`에 위치한 정적 리소스에 대한 요청 처리
+- [x] 리팩토링
+
+## step-4 POST로 회원 가입
+
+> **키워드**<br>
+> HTTP POST
+
+- [x] POST로 회원가입 기능 구현
+    1. Request Body 파싱
+        - 요구사항에 따르면 POST 요청은 `application/x-www-form-urlencoded` 형식으로 들어온다.
+        - 따라서 `URL`의 파라미터와 동일한 방식으로 파싱한 후 `HttpRequestBody` 객체에 저장하였다.
+    2. POST method 매핑
+        - `@RequestMapping`에 `method`와 `path`를 추가해 GET과 POST 요청을 구분하여 처리할 수 있도록 구현하였다.
+- [x] 회원가입 후 리다이렉트 (POST-Redirect-GET 패턴)
+    1. 응답 메세지 헤더에 `Location` 필드 추가
+    2. 응답 메세지 상태 코드 `303 See Other`로 설정

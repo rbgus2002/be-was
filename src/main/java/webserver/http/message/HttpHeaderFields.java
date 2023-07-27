@@ -8,12 +8,20 @@ public class HttpHeaderFields {
 
 	private final Map<String, String> headerFields = new HashMap<>();
 
-	public void add(String key, String value) {
+	public void setHeaderField(String key, String value) {
+		if (headerFields.get(key) != null) {
+			headerFields.replace(key, value);
+			return;
+		}
 		headerFields.put(key, value);
 	}
 
 	public String getValue(String key) {
 		return headerFields.get(key);
+	}
+
+	public void removeHeaderField(String key) {
+		headerFields.remove(key);
 	}
 
 	public Set<Map.Entry<String, String>> getAllFields() {

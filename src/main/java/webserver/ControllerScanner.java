@@ -75,6 +75,7 @@ public class ControllerScanner {
 			if (annotation == null) {
 				continue;
 			}
+			logger.debug(method.getName());
 			urlMapping.add(annotation.method(), annotation.path(), method);
 		}
 	}
