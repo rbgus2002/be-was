@@ -1,7 +1,7 @@
 package webserver;
 
 import org.junit.jupiter.api.BeforeEach;
-import webserver.http.Uri;
+import http.Uri;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

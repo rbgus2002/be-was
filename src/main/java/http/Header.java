@@ -1,10 +1,10 @@
-package webserver.http;
+package http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import static utils.StringUtils.appendNewLine;
@@ -40,6 +40,11 @@ public class Header {
 
     public int size(){
         return header.size();
+    }
+
+    public String getCookieString() {
+        String cookieString = header.get("Cookie");
+        return (cookieString != null) ? cookieString : "";
     }
 
     @Override

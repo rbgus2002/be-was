@@ -3,8 +3,8 @@ package webserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.HttpRequest;
-import webserver.http.Uri;
+import http.HttpRequest;
+import http.Uri;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

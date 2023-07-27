@@ -25,12 +25,12 @@ public class User {
         return name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     @Override
     public String toString() {
         return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+    }
+
+    public boolean checkPassword(String password){
+        return this.password.equals(password);
     }
 }

@@ -2,11 +2,11 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import http.HttpRequest;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -23,14 +23,12 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = HttpRequest.from(in);
-            HttpResponse response = HttpResponse.init();
 
-            DispatcherServlet dispatcherServlet = DispatcherServlet.init();
-            dispatcherServlet.doService(request, response, out);
-        } catch (IOException e){
-            logger.debug("readAllBytes ERROR");
-        }
-        catch (Throwable e) {
+            DispatcherServlet dispatcherServlet = DispatcherServlet.getInstance();
+            dispatcherServlet.doService(request, out);
+        } catch (IOException e) {
+            logger.error("readAllBytes ERROR");
+        } catch (Throwable e) {
             logger.error(e.getMessage());
         }
     }

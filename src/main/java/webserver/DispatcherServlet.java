@@ -2,20 +2,23 @@ package webserver;
 
 import controller.Controller;
 import exception.NotSupportedContentTypeException;
+import http.HttpStatus;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpRequest;
-import webserver.http.HttpResponse;
+import http.HttpRequest;
+import http.HttpResponse;
 
 import java.io.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
+import static http.HttpStatus.*;
 import static java.lang.invoke.MethodType.methodType;
-import static webserver.http.HttpStatus.*;
 
 public class DispatcherServlet {
     private static final Logger logger = LoggerFactory.getLogger(DispatcherServlet.class);
@@ -24,62 +27,77 @@ public class DispatcherServlet {
     private DispatcherServlet() {
     }
 
-    public static DispatcherServlet init() {
+    public static DispatcherServlet getInstance() {
         return servlet;
     }
 
-    public void doService(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
-        logger.debug("{}", request);
-
-        doDispatch(request, response, out);
+    public void doService(HttpRequest request, OutputStream out) throws Throwable {
+        logger.debug("REQUEST START :: \n{}", request);
+        checkUserSession(request);
+        doDispatch(request, out);
     }
 
-    public void doDispatch(HttpRequest request, HttpResponse response, OutputStream out) throws Throwable {
-        Method method = HandlerMapping.getMethodMapped(request);
-        handle(request, response, method);
-        processDispatchResult(request, response, out);
-    }
-
-    private void handle(HttpRequest request, HttpResponse response, Method method) throws Throwable {
-        String path = request.getPath();
-        if (hasRequestPathMapped(method)) {
-            path = executeRequest(request, method);
+    private void checkUserSession(HttpRequest request) {
+        User user = request.getUserInSession();
+        if(user != null){
+            logger.debug("세션 인증 성공! good >> {}", user);
         }
-        processResources(response, path);
+    }
+
+    public void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
+        Method method = HandlerMapping.getMethodMapped(request);
+        HttpResponse response = handle(request, method);
+        processDispatchResult(response, out);
+        logger.debug("RESPONSE END :: \n{}", response);
+    }
+
+    private HttpResponse handle(HttpRequest request, Method method) throws Throwable {
+        String path = request.getPath();
+
+        HttpResponse response;
+        if (hasRequestPathMapped(method)) {
+            response = executeRequest(request, method);
+        } else {
+            response = HttpResponse.init(path);
+        }
+        processResources(response);
+        return response;
     }
 
     private static boolean hasRequestPathMapped(Method method) {
         return method != null;
     }
 
-    private String executeRequest(HttpRequest request, Method method) throws Throwable {
+    private HttpResponse executeRequest(HttpRequest request, Method method) throws Throwable {
         MethodHandle methodHandle = getMethodHandle(method);
-        String path;
+        HttpResponse response;
         if (hasParameter(methodHandle.type())) {
             Map<String, String> map = (request.isGetMethod()) ? request.getQuery() : request.getBody();
-            path = (String) methodHandle.invoke(map);
+            response = (HttpResponse) methodHandle.invoke(map);
         } else {
-            path = (String) methodHandle.invoke();
+            response = (HttpResponse) methodHandle.invoke();
         }
-        return path;
+        return response;
     }
 
-    private void processResources(HttpResponse response, String filePath) throws IOException {
+    private void processResources(HttpResponse response) throws IOException {
         try {
-            ContentType type = ContentType.findBy(filePath);
-            filePath = type.mapResourceFolders(filePath);
-            response.setResults(filePath, OK);
+            ContentType type = ContentType.findBy(response.getFilePath());
+            response.mapResourcePath(type);
+            response.doResponse();
         } catch (NotSupportedContentTypeException e) {
-            response.setResults(null, BAD_REQUEST);
-            logger.debug(e.getMessage());
+            logger.debug("NotSupportedContentTypeException >> {}", response);
+            logger.error(e.getMessage());
+            response.doResponse(FOUND);
         } catch (IOException e) {
-            response.setResults(null, NOT_FOUND);
-            logger.debug(e.getMessage());
+            logger.debug("IOException (readAllBytes ERROR) >> {}", response);
+            logger.error(Arrays.toString(e.getStackTrace()));
+            response.doResponse(NOT_FOUND);
         }
     }
 
     private MethodHandle getMethodHandle(Method method) throws NoSuchMethodException, IllegalAccessException {
-        MethodType methodType = (hasParameter(method)) ? methodType(String.class, method.getParameterTypes()) : methodType(String.class);
+        MethodType methodType = (hasParameter(method)) ? methodType(HttpResponse.class, method.getParameterTypes()) : methodType(HttpResponse.class);
         return MethodHandles.lookup()
                 .findVirtual(Controller.class, method.getName(), methodType)
                 .bindTo(new Controller());
@@ -93,8 +111,7 @@ public class DispatcherServlet {
         return method.getParameterCount() != 0;
     }
 
-    private void processDispatchResult(HttpRequest request, HttpResponse response, OutputStream out) {
-        ContentType type = ContentType.findBy(request.getPath());
-        response.writeResponseToOutputStream(out, type);
+    private void processDispatchResult(HttpResponse response, OutputStream out) {
+        response.writeResponseToOutputStream(out);
     }
 }
