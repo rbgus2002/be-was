@@ -1,6 +1,7 @@
 package application.presentation;
 
 import application.common.StringUtils;
+import application.model.User;
 import application.service.UserService;
 import application.service.dto.LoginRequest;
 import application.service.dto.UserRequest;
@@ -8,6 +9,7 @@ import common.annotation.Controller;
 import common.annotation.HttpResponse;
 import common.annotation.RequestBody;
 import common.annotation.RequestMapping;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import webserver.http.Http.Method;
@@ -51,5 +53,25 @@ public class UserController {
 
         httpResponse.setSession(UUID.randomUUID().toString(), map.get("userId"));
         return "redirect:/index.html";
+    }
+
+    @RequestMapping(value = "/user/list.html", method = Method.GET)
+    public String list() {
+        List<User> users = userService.getAll();
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            result.append("<tr>");
+            result.append(
+                    String.format(
+                            "<th scope=\"row\">%s</th> <td>%s</td> <td>%s</td> <td>%s</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>",
+                            i + 1, user.getUserId(), user.getName(), user.getEmail())
+            );
+            result.append("</tr>");
+        }
+
+        return result.toString();
     }
 }
