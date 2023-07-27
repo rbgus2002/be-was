@@ -50,7 +50,7 @@ public class HttpParser {
         // ?를 기준으로 쿼리 스트링 분할
         String[] tokens = route.split("\\?");
         if(tokens.length < 2) {
-            return null;
+            return new HashMap<>();
         }
         String queryString = tokens[1];
 

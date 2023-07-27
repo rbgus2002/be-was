@@ -7,10 +7,8 @@ import webserver.http.model.Request.Method;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Map;
 
 import static webserver.RequestHandler.parseRequest;
-import static webserver.http.HttpParser.parseBodyParameter;
 
 public class HttpRequestTest {
     private String testDirectory = "./src/test/resources/";
@@ -24,7 +22,7 @@ public class HttpRequestTest {
         assertions.assertThat(request.getMethod()).isEqualTo(Method.GET);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
         assertions.assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
-        assertions.assertThat(request.getQueryParameter("userId")).isEqualTo("javajigi");
+        assertions.assertThat(request.getParameter("userId")).isEqualTo("javajigi");
         assertions.assertAll();
     }
     @Test
@@ -36,7 +34,7 @@ public class HttpRequestTest {
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
         assertions.assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
-        assertions.assertThat(request.getBodyParameter("userId")).isEqualTo("javajigi");
+        assertions.assertThat(request.getParameter("userId")).isEqualTo("javajigi");
         assertions.assertAll();
     }
 
@@ -49,8 +47,8 @@ public class HttpRequestTest {
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
         assertions.assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
-        assertions.assertThat(request.getQueryParameter("id")).isEqualTo("1");
-        assertions.assertThat(request.getBodyParameter("userId")).isEqualTo("javajigi");
+        assertions.assertThat(request.getParameter("id")).isEqualTo("1");
+        assertions.assertThat(request.getParameter("userId")).isEqualTo("javajigi");
         assertions.assertAll();
     }
 }

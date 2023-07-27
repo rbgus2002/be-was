@@ -87,4 +87,16 @@ public class Request {
     public String getBodyParameter(String key) {
         return bodyParameterMap.get(key);
     }
+
+    // queryParamter 혹은 bodyParameter에 해당 key가 존재하면 value를 반환합니다.(그렇지 않다면 null 반환)
+    public String getParameter(String key) {
+        if(queryParameterMap.containsKey(key)) {
+            return queryParameterMap.get(key);
+        }
+        if(bodyParameterMap.containsKey(key)) {
+            return bodyParameterMap.get(key);
+        }
+
+        return null;
+    }
 }
