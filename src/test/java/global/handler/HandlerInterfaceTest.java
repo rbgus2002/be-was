@@ -5,6 +5,7 @@ import global.constant.HttpMethod;
 import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.request.RequestLine;
+import global.util.SessionUtil;
 import model.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,8 +30,8 @@ class HandlerTest {
                 "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
                 "Cookie: sid=123456");
         RequestBody body = new RequestBody("\nuserId=non_existent_user&password=invalid_password");
-        Session session = new Session();
-        handler = new GetHandler(header, body, session);
+        SessionUtil sessionUtil = new SessionUtil();
+        handler = new GetHandler(header, body, sessionUtil);
     }
 
     @Test

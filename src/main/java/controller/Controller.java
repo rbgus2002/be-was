@@ -2,12 +2,15 @@ package controller;
 
 import annotations.GetMapping;
 import annotations.PostMapping;
+import controller.dto.UserResponse;
+import controller.mapper.UserMapper;
 import global.constant.Headers;
 import global.constant.StatusCode;
 import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.response.ResponseEntity;
 import global.util.SessionUtil;
+import model.db.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserService;
@@ -16,7 +19,9 @@ import webserver.WebServer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Controller {
     private final static UserService userService = new UserService();
@@ -37,6 +42,20 @@ public class Controller {
         return ResponseEntity
                 .statusCode(StatusCode.OK)
                 .responseBody(view.index(viewParameters))
+                .build();
+    }
+
+    @GetMapping(path = "/user/list.html")
+    public byte[] getUserList(RequestHeader header, RequestBody body, SessionUtil sessionUtil) throws IOException {
+        Map<String, Object> viewParameters = new HashMap<>();
+        List<UserResponse> userResponses = Database.findAll().stream().map(UserMapper::toResponse).collect(Collectors.toList());
+
+        viewParameters.put("view", "list");
+        viewParameters.put("users", userResponses);
+
+        return ResponseEntity
+                .statusCode(StatusCode.OK)
+                .responseBody(view.list(viewParameters))
                 .build();
     }
 
