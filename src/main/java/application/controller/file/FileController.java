@@ -6,6 +6,7 @@ import view.ModelAndView;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
+import webserver.utils.FileUtils;
 
 import java.io.IOException;
 
@@ -16,6 +17,8 @@ public class FileController implements Controller {
     public ModelAndView process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String sessionId = httpRequest.getSessionId();
         String filePath = httpRequest.getPath();
+
+        filePath = FileUtils.checkFilePath(filePath);
 
         ModelAndView modelAndView = new ModelAndView(filePath);
 
