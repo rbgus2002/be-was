@@ -58,12 +58,11 @@ public abstract class InstanceInitializer {
                 .filter(parameter -> parameter.isAnnotationPresent(AutoInject.class))
                 .map(parameter -> {
                             String name = parameter.getAnnotation(AutoInject.class).name();
-                            Object instance = getDefaultInstanceManager().getInstance(
-                                    "".equals(name) ? InstanceNameConverter.convert(parameter.getType().getName()) : name,
-                                    parameter.getType()
-                            );
-                            if (instance != null) {
+                            name = "".equals(name) ? InstanceNameConverter.convert(parameter.getType().getName()) : name;
+                            Object instance = getDefaultInstanceManager().getInstance(name, parameter.getType());
+                            if (instance == null) {
                                 addInstance(parameter.getType(), componentList);
+                                instance = getDefaultInstanceManager().getInstance(name, parameter.getType());
                             }
                             return instance;
                         }

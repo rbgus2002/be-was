@@ -16,10 +16,10 @@ public class ViewContainer {
                          @AutoInject IndexView indexView,
                          @AutoInject PostShowView postShowView,
                          @AutoInject UserListView userListView) {
-        viewContainer.add(new ErrorView());
-        viewContainer.add(new IndexView());
-        viewContainer.add(new PostShowView());
-        viewContainer.add(new UserListView());
+        viewContainer.add(errorView);
+        viewContainer.add(indexView);
+        viewContainer.add(postShowView);
+        viewContainer.add(userListView);
     }
 
     public View getViewByName(String name) {
