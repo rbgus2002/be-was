@@ -14,9 +14,19 @@ public class HTTPServletResponse {
 
     private final Map<String, String> headers = new HashMap<>();
     private byte[] body;
-    private String version;
+    private String version = "HTTP/1.1";
     private String statusCode = "OK";
     private String statusMessage = "200";
+
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     private final DataOutputStream dos;
 
@@ -59,11 +69,11 @@ public class HTTPServletResponse {
     }
 
     public String info() {
-        String line = "";
-        line += version + " " + statusCode + " " + statusMessage + "\r\n";
+        String line = version + " " + statusCode + " " + statusMessage + "\r\n";
         for (Map.Entry<String, String> header : headers.entrySet()) {
             line += (header.getKey() + " : " + header.getValue() + "\r\n");
         }
+        //append (StringBuilder)
         line += "\r\n";
         return line;
     }

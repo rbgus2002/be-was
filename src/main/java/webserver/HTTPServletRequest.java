@@ -22,6 +22,10 @@ public class HTTPServletRequest {
         logger.debug("method = {}, url = {}, version = {}", method, url, version);
     }
 
+    public String getMethod() {
+        return method;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -43,6 +47,17 @@ public class HTTPServletRequest {
     }
 
     public String getHeader(String key) {
-        return headers.containsKey(key) ? headers.get(key) : null;
+        return headers.getOrDefault(key, null);
+    }
+
+    @Override
+    public String toString() {
+        return "HTTPServletRequest{" +
+                "method='" + method + '\'' +
+                ", url='" + url + '\'' +
+                ", query=" + query +
+                ", version='" + version + '\'' +
+                ", headers=" + headers +
+                '}';
     }
 }
