@@ -15,9 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import annotations.AnnotationMap;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.statusline.StatusCode;
+import webserver.http.HttpRequest;
+import webserver.http.HttpResponse;
+import webserver.http.statusline.StatusCode;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -37,6 +37,8 @@ public class RequestHandler implements Runnable {
 
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+			// BufferedReader 파싱해 HttpRequest를 생성
 			HttpRequest httpRequest = new HttpRequest(reader);
 			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
 
@@ -52,33 +54,36 @@ public class RequestHandler implements Runnable {
 		ReflectiveOperationException,
 		IOException,
 		IllegalArgumentException {
-		String path = runController(httpRequest);
+		HttpResponse httpResponse = new HttpResponse();
+		String path = runController(httpRequest, httpResponse);
+
+		// 컨트롤러의 반환에 redirect:가 추가되어 있으면 리다이렉트 응답
 		if (path.contains(REDIRECT)) {
-			return redirectHttpResponse(httpRequest, path);
+			return redirectHttpResponse(httpResponse, path);
 		}
-		return getHttpResponse(httpRequest, path);
+
+		// 컨트롤러의 반환에 대한 파일 추가
+		return addFile(httpResponse, path);
 	}
 
-	private HttpResponse redirectHttpResponse(final HttpRequest httpRequest, final String path) {
-		HttpResponse httpResponse = new HttpResponse(httpRequest);
+	private HttpResponse redirectHttpResponse(final HttpResponse httpResponse, final String path) {
 		httpResponse.setRedirect(path.replace("redirect:", ""), StatusCode.FOUND);
 		return httpResponse;
 	}
 
-	private String runController(final HttpRequest httpRequest) throws
+	private String runController(final HttpRequest httpRequest, final HttpResponse httpResponse) throws
 		InvocationTargetException,
 		IllegalAccessException {
 		String path = httpRequest.getPath();
 		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest.getParameter());
+			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest, httpResponse);
 		}
 		return path;
 	}
 
-	private HttpResponse getHttpResponse(final HttpRequest httpRequest, final String path) throws
+	private HttpResponse addFile(final HttpResponse httpResponse, final String path) throws
 		IOException,
 		IllegalArgumentException {
-		HttpResponse httpResponse = new HttpResponse(httpRequest);
 		httpResponse.addFile(getValidPath(path));
 		logger.debug("{} added", path);
 		return httpResponse;

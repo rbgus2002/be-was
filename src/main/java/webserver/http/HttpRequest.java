@@ -1,17 +1,18 @@
-package http;
+package webserver.http;
 
-import static http.header.Header.*;
-import static http.statusline.ResponseLine.*;
+import static webserver.http.statusline.ResponseLine.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import http.header.Header;
-import http.statusline.HttpMethod;
-import http.statusline.HttpVersion;
+import webserver.http.header.Header;
+import webserver.http.statusline.HttpMethod;
+import webserver.http.statusline.HttpVersion;
+import webserver.http.header.HeaderConst;
 
 public class HttpRequest {
 	private static final int KEY = 0;
@@ -31,6 +32,10 @@ public class HttpRequest {
 		parseRequest();
 	}
 
+	public HttpRequest(HttpParameter httpParameter) {
+		this.httpParameter = httpParameter;
+	}
+
 	public boolean isGet() {
 		return method.equals(HttpMethod.GET);
 	}
@@ -46,12 +51,12 @@ public class HttpRequest {
 	}
 
 	private void parseHeader() throws IOException {
-		String line = HEADER_DELIMITER;
+		String line = HeaderConst.HEADER_DELIMITER;
 		String[] tokens;
 		while (!line.isBlank()) {
 			line = reader.readLine();
-			if (line.contains(HEADER_DELIMITER)) {
-				tokens = line.split(HEADER_DELIMITER);
+			if (line.contains(HeaderConst.HEADER_DELIMITER)) {
+				tokens = line.split(HeaderConst.HEADER_DELIMITER);
 				header.addHeader(tokens[KEY], tokens[VALUE]);
 			}
 		}
@@ -82,9 +87,13 @@ public class HttpRequest {
 		version = HttpVersion.versionOf(arguments[2]);
 	}
 
+	public String getCookieValue(final String cookieName) throws NoSuchElementException {
+		return header.getCookieValue(cookieName);
+	}
+
 	private void parseParameter(String path) {
 		for (String line : path.split("\\&")) {
-			if (line.contains("=")) {
+			if (line.contains("=") && !line.endsWith("=")) {
 				logger.debug(line);
 				String[] values = line.split("=");
 				httpParameter.put(values[KEY], values[VALUE]);
