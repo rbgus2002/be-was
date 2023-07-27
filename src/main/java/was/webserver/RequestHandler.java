@@ -7,7 +7,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import was.controller.FrontController;
+import was.controller.ClassManager;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.request.HttpWasRequest;
 
@@ -15,11 +15,11 @@ public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
-    private FrontController frontController;
+    private ClassManager classManager;
 
-    public RequestHandler(Socket connectionSocket, FrontController frontController) {
+    public RequestHandler(Socket connectionSocket, ClassManager classManager) {
         this.connection = connectionSocket;
-        this.frontController = frontController;
+        this.classManager = classManager;
     }
 
     public void run() {
@@ -30,7 +30,7 @@ public class RequestHandler implements Runnable {
             final HttpWasRequest httpWasRequest = new HttpWasRequest(in);
             final HttpWasResponse httpWasResponse = new HttpWasResponse(out);
 
-            final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse, frontController);
+            final WasHandler wasHandler = new WasHandler(httpWasRequest, httpWasResponse, classManager);
             wasHandler.service();
             httpWasResponse.doResponse();
         } catch (Exception e) {

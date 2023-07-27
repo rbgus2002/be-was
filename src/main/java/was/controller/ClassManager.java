@@ -11,11 +11,11 @@ import org.reflections.Reflections;
 
 import was.webserver.annotation.Component;
 
-public class FrontController {
+public class ClassManager {
 
 	private static final Map<String, Object> instances = new HashMap<>();
 
-	public FrontController() throws ReflectiveOperationException {
+	public ClassManager() throws ReflectiveOperationException {
 		initializeInstances();
 	}
 
