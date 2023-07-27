@@ -193,11 +193,8 @@ public class Controller {
 	}
 
 	private void logoutSession(final HttpRequest httpRequest) {
-		try {
-			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
-				Session.getInstance().removeSession(httpRequest.getCookieValue(SessionConst.sessionId));
-			}
-		} catch (Exception e) {
+		if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
+			Session.getInstance().removeSession(httpRequest.getCookieValue(SessionConst.sessionId));
 		}
 	}
 

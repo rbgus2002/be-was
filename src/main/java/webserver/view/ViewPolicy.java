@@ -70,7 +70,6 @@ public class ViewPolicy {
 			}
 			result.append(newLine);
 		}
-
 		return result.toString();
 	}
 }

@@ -27,15 +27,8 @@ public class Article {
 		return writer;
 	}
 
-	public void setWriter(final String writer) {
-		this.writer = writer;
-	}
-
 	public String getContents() {
 		return contents;
 	}
 
-	public void setContents(final String contents) {
-		this.contents = contents;
-	}
 }

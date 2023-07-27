@@ -25,11 +25,9 @@ import webserver.view.ViewResolver;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-	private final String REDIRECT = "redirect:";
+	private static final String REDIRECT = "redirect:";
 	private static final String TEMPLATES_PATH = "src/main/resources/templates/";
 	private static final String STATIC_PATH = "src/main/resources/static";
-	private static final String ERROR_PAGE = "error.html";
-
 	private final Socket connection;
 
 	public RequestHandler(Socket connectionSocket) {

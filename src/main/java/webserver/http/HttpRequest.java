@@ -6,9 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import webserver.http.header.Header;
 import webserver.http.statusline.HttpMethod;
 import webserver.http.statusline.HttpVersion;
@@ -17,7 +14,6 @@ import webserver.http.header.HeaderConst;
 public class HttpRequest {
 	private static final int KEY = 0;
 	private static final int VALUE = 1;
-	private Logger logger = LoggerFactory.getLogger(HttpRequest.class);
 	private BufferedReader reader;
 	private HttpMethod method;
 	private String path;
@@ -85,7 +81,6 @@ public class HttpRequest {
 	private void parseParameter(String path) {
 		for (String line : path.split("\\&")) {
 			if (line.contains("=") && !line.endsWith("=")) {
-				logger.debug(line);
 				String[] values = line.split("=");
 				httpParameter.put(values[KEY], values[VALUE]);
 			}
@@ -98,10 +93,6 @@ public class HttpRequest {
 
 	public String getPath() {
 		return path;
-	}
-
-	public HttpVersion getVersion() {
-		return version;
 	}
 
 	public String getBody() {
