@@ -22,4 +22,8 @@ public class SessionStorage {
     public static void clear() {
         sessionMap = Maps.newConcurrentMap();
     }
+
+    public static boolean hasSession(String key) {
+        return sessionMap.containsKey(key);
+    }
 }

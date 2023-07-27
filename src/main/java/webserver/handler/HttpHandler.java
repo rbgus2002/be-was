@@ -57,7 +57,7 @@ public class HttpHandler {
                 String[] tokens = httpRequestMessage.getHeader("Cookie").split(";");
                 for (String token : tokens) {
                     String[] keyValue = token.trim().split("=");
-                    if (keyValue[0].equals("sid")) {
+                    if (keyValue[0].equals("sid") && SessionStorage.hasSession(keyValue[1])) {
                         matchedData.put("userId", SessionStorage.getSession(keyValue[1]));
                         matchedData.put("href", "/index.html");
                     }
