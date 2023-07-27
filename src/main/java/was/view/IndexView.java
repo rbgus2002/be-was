@@ -20,11 +20,101 @@ public class IndexView {
 
 	@RequestMapping(method = HttpMethod.GET, path = "/index")
 	public void index(HttpWasRequest request, HttpWasResponse response) {
+		StringBuilder sb = new StringBuilder();
+		createHeader(sb,request);
+		printBoard(sb);
+		createFooter(sb);
+
+		response.setHttpStatus(HttpStatus.OK);
+		response.setBody(sb.toString(), HttpMimeType.HTML);
+	}
+
+	private void createFooter(final StringBuilder sb) {
+		sb.append("          </ul>\r\n")
+			.append("          <div class=\"row\">\r\n")
+			.append("              <div class=\"col-md-3\"></div>\r\n")
+			.append("              <div class=\"col-md-6 text-center\">\r\n")
+			.append("                  <ul class=\"pagination center-block\" style=\"display:inline-block;\">\r\n")
+			.append("                      <li><a href=\"#\">«</a></li>\r\n")
+			.append("                      <li><a href=\"#\">1</a></li>\r\n")
+			.append("                      <li><a href=\"#\">2</a></li>\r\n")
+			.append("                      <li><a href=\"#\">3</a></li>\r\n")
+			.append("                      <li><a href=\"#\">4</a></li>\r\n")
+			.append("                      <li><a href=\"#\">5</a></li>\r\n")
+			.append("                      <li><a href=\"#\">»</a></li>\r\n")
+			.append("                </ul>\r\n")
+			.append("              </div>\r\n")
+			.append("              <div class=\"col-md-3 qna-write\">\r\n")
+			.append(
+				"                  <a href=\"./write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\r\n")
+			.append("              </div>\r\n")
+			.append("          </div>\r\n")
+			.append("        </div>\r\n")
+			.append("    </div>\r\n")
+			.append("</div>\r\n")
+			.append("\r\n")
+			.append("<!-- script references -->\r\n")
+			.append("<script src=\"js/jquery-2.2.0.min.js\"></script>\r\n")
+			.append("<script src=\"js/bootstrap.min.js\"></script>\r\n")
+			.append("<script src=\"js/scripts.js\"></script>\r\n")
+			.append("\t</body>\r\n")
+			.append("</html>");
+	}
+
+	private void printBoard(final StringBuilder sb) {
+		final List<Board> boards = Database.findBoardAllOrderByAsc();
+		for (int index = 0; index < boards.size(); index++) {
+			Board board = boards.get(index);
+			sb.append("              <li>\r\n")
+				.append("                  <div class=\"wrap\">\r\n")
+				.append("                      <div class=\"main\">\r\n")
+				.append("                          <strong class=\"subject\">\r\n")
+				.append("                              <a href=\"/board/")
+				.append(index + 1)
+				.append("\">")
+				.append(board.getTitle())
+				.append("</a>\r\n")
+				.append("                          </strong>\r\n")
+				.append("                          <div class=\"auth-info\">\r\n")
+				.append("                              <i class=\"icon-add-comment\"></i>\r\n")
+				.append("                              <span class=\"time\">")
+				.append(board.getCreatedAtToString())
+				.append("</span>\r\n")
+				.append("                              <a href=\"./user/profile.html\" class=\"author\">")
+				.append(board.getWriter())
+				.append("</a>\r\n")
+				.append("                          </div>\r\n")
+				.append("                          <div class=\"reply\" title=\"댓글\">\r\n")
+				.append("                              <i class=\"icon-reply\"></i>\r\n")
+				.append("                              <span class=\"point\">")
+				.append(index + 1)
+				.append("</span>\r\n")
+				.append("                          </div>\r\n")
+				.append("                      </div>\r\n")
+				.append("                  </div>\r\n")
+				.append("              </li>\r\n");
+		}
+	}
+
+	private void createdLoginView(final String sessionId, final StringBuilder sb) {
 		final HttpSession httpSession = HttpSession.getInstance();
-		final String sessionId = request.getSessionId();
 
 		final boolean isValidSessionId = httpSession.verifySession(sessionId);
-		StringBuilder sb = new StringBuilder();
+		if (!isValidSessionId) {
+			sb.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\r\n")
+				.append("                <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>\r\n");
+		} else {
+			final SessionData sessionData = httpSession.getSessionData(sessionId);
+			final String userId = sessionData.getUserId();
+			final User findUser = Database.findUserById(userId);
+			sb.append("                <li><a role=\"button\">")
+				.append(findUser.getName())
+				.append("</a></li>\r\n")
+				.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\r\n");
+		}
+	}
+
+	private void createHeader(final StringBuilder sb, final HttpWasRequest request) {
 		sb.append("<!DOCTYPE html>\r\n")
 			.append("<html lang=\"kr\">\r\n")
 			.append("\t<head>\r\n")
@@ -101,19 +191,8 @@ public class IndexView {
 			.append("        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">\r\n")
 			.append("            <ul class=\"nav navbar-nav navbar-right\">\r\n");
 
-		if (!isValidSessionId) {
-			sb.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\r\n")
-				.append("                <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>\r\n");
-		} else {
-			final SessionData sessionData = httpSession.getSessionData(sessionId);
-			final String userId = sessionData.getUserId();
-			final User findUser = Database.findUserById(userId);
-			sb.append("                <li><a role=\"button\">")
-				.append(findUser.getName())
-				.append("</a></li>\r\n")
-				.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\r\n");
-		}
-
+		createdLoginView(request.getSessionId(), sb);
+		
 		sb.append("                <li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>\r\n")
 			.append("                <!--\r\n")
 			.append(
@@ -132,71 +211,5 @@ public class IndexView {
 			.append("   <div class=\"col-md-12 col-sm-12 col-lg-10 col-lg-offset-1\">\r\n")
 			.append("      <div class=\"panel panel-default qna-list\">\r\n")
 			.append("          <ul class=\"list\">\r\n");
-
-		final List<Board> boards = Database.findBoardAllOrderByAsc();
-		for (int index = 0; index < boards.size(); index++) {
-			Board board = boards.get(index);
-			sb.append("              <li>\r\n")
-				.append("                  <div class=\"wrap\">\r\n")
-				.append("                      <div class=\"main\">\r\n")
-				.append("                          <strong class=\"subject\">\r\n")
-				.append("                              <a href=\"/board/")
-				.append(index + 1)
-				.append("\">")
-				.append(board.getTitle())
-				.append("</a>\r\n")
-				.append("                          </strong>\r\n")
-				.append("                          <div class=\"auth-info\">\r\n")
-				.append("                              <i class=\"icon-add-comment\"></i>\r\n")
-				.append("                              <span class=\"time\">")
-				.append(board.getCreatedAtToString())
-				.append("</span>\r\n")
-				.append("                              <a href=\"./user/profile.html\" class=\"author\">")
-				.append(board.getWriter())
-				.append("</a>\r\n")
-				.append("                          </div>\r\n")
-				.append("                          <div class=\"reply\" title=\"댓글\">\r\n")
-				.append("                              <i class=\"icon-reply\"></i>\r\n")
-				.append("                              <span class=\"point\">")
-				.append(index + 1)
-				.append("</span>\r\n")
-				.append("                          </div>\r\n")
-				.append("                      </div>\r\n")
-				.append("                  </div>\r\n")
-				.append("              </li>\r\n");
-		}
-
-		sb.append("          </ul>\r\n")
-			.append("          <div class=\"row\">\r\n")
-			.append("              <div class=\"col-md-3\"></div>\r\n")
-			.append("              <div class=\"col-md-6 text-center\">\r\n")
-			.append("                  <ul class=\"pagination center-block\" style=\"display:inline-block;\">\r\n")
-			.append("                      <li><a href=\"#\">«</a></li>\r\n")
-			.append("                      <li><a href=\"#\">1</a></li>\r\n")
-			.append("                      <li><a href=\"#\">2</a></li>\r\n")
-			.append("                      <li><a href=\"#\">3</a></li>\r\n")
-			.append("                      <li><a href=\"#\">4</a></li>\r\n")
-			.append("                      <li><a href=\"#\">5</a></li>\r\n")
-			.append("                      <li><a href=\"#\">»</a></li>\r\n")
-			.append("                </ul>\r\n")
-			.append("              </div>\r\n")
-			.append("              <div class=\"col-md-3 qna-write\">\r\n")
-			.append(
-				"                  <a href=\"./write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\r\n")
-			.append("              </div>\r\n")
-			.append("          </div>\r\n")
-			.append("        </div>\r\n")
-			.append("    </div>\r\n")
-			.append("</div>\r\n")
-			.append("\r\n")
-			.append("<!-- script references -->\r\n")
-			.append("<script src=\"js/jquery-2.2.0.min.js\"></script>\r\n")
-			.append("<script src=\"js/bootstrap.min.js\"></script>\r\n")
-			.append("<script src=\"js/scripts.js\"></script>\r\n")
-			.append("\t</body>\r\n")
-			.append("</html>");
-
-		response.setHttpStatus(HttpStatus.OK);
-		response.setBody(sb.toString(), HttpMimeType.HTML);
 	}
 }
