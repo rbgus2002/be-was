@@ -69,12 +69,12 @@ public class HTTPServletResponse {
     }
 
     public String info() {
-        String line = version + " " + statusCode + " " + statusMessage + "\r\n";
+        StringBuilder line = new StringBuilder(version + " " + statusCode + " " + statusMessage + " \r\n");
         for (Map.Entry<String, String> header : headers.entrySet()) {
-            line += (header.getKey() + " : " + header.getValue() + "\r\n");
+            line.append(header.getKey() + " : " + header.getValue() + " \r\n");
         }
         //append (StringBuilder)
-        line += "\r\n";
-        return line;
+        line.append("\r\n");
+        return line.toString();
     }
 }
