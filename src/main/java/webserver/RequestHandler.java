@@ -62,6 +62,7 @@ public class RequestHandler implements Runnable {
 
         Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
 
+
         // Headers
         Map<String, String> headerMap = new HashMap<>();
         String line = readSingleHTTPLine(br).replace(" ", "");
@@ -87,8 +88,9 @@ public class RequestHandler implements Runnable {
 
             body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
         }
+        Map<String, String> bodyParameterMap = parseBodyParameter(body);
 
-        return new Request(method, version, targetUri, path, queryParameterMap, headerMap, sid, body);
+        return new Request(method, version, targetUri, path, queryParameterMap, headerMap, sid, body, bodyParameterMap);
     }
 
     public static Response generateResponse(Request request) {

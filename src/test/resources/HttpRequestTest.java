@@ -36,8 +36,7 @@ public class HttpRequestTest {
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
         assertions.assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
-        Map<String, String> parameterMap = parseBodyParameter(request.getBody());
-        assertions.assertThat(parameterMap.get("userId")).isEqualTo("javajigi");
+        assertions.assertThat(request.getBodyParameter("userId")).isEqualTo("javajigi");
         assertions.assertAll();
     }
 }

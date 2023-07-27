@@ -24,10 +24,11 @@ public class Request {
     private final Map<String, String> headerMap;
     private final String sid;
     private final String body;
+    private final Map<String, String> bodyParameterMap;
 
     public Request(Method method, String version, String targetUri, String path,
                    Map<String, String> queryParameterMap, Map<String, String> headerMap,
-                   String sid, String body) {
+                   String sid, String body, Map<String, String> bodyParameterMap) {
         this.method = method;
         this.version = version;
         this.targetUri = targetUri;
@@ -36,6 +37,7 @@ public class Request {
         this.headerMap = headerMap;
         this.sid = sid;
         this.body = body;
+        this.bodyParameterMap = bodyParameterMap;
     }
 
     public Method getMethod() {
@@ -78,4 +80,11 @@ public class Request {
         return body;
     }
 
+    public Map<String, String> getBodyParameterMap() {
+        return bodyParameterMap;
+    }
+
+    public String getBodyParameter(String key) {
+        return bodyParameterMap.get(key);
+    }
 }
