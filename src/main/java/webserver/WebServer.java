@@ -45,17 +45,17 @@ public class WebServer {
         PostService.addPost(
                 "침착맨",
                 "추천 웹툰: 이말년 서유기",
-                ""
+                "이말년 서유기는 정말 재밌습니다!"
         );
         PostService.addPost(
                 "예언자",
                 "내일 MS가 블리자드를 합병할 것입니다!",
-                ""
+                "진짜에요!"
         );
         PostService.addPost(
                 "호눅스",
                 "안녕하세요~ 크롱입니다.",
-                ""
+                "반가워요!"
         );
     }
 }
