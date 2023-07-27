@@ -6,12 +6,13 @@
 - [X] 사용자가 로그인 상태 유지
 - [X] view html 생성
 - [X] 사용자 목록 출력
+- [X] 테스트 커버리지 80% 이상 달성
 
 ## 학습 정리
 
 - Throwable과 throws Exception의 차이점은?
-  Throwable은 Java에서 모든 예외와 오류의 최상위 클래스이다. throws Exception은 메서드 선언부에 사용되는 예약어로, 해당 메서드가 해당 예외를 호출한 측으로 던지는 것을 나타낸다.
--
+Throwable은 Java에서 모든 예외와 오류의 최상위 클래스이다. throws Exception은 메서드 선언부에 사용되는 예약어로, 해당 메서드가 해당 예외를 호출한 측으로 던지는 것을 나타낸다.
+
 
 ## 고민
 

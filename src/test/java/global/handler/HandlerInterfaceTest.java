@@ -45,7 +45,7 @@ class HandlerTest {
     @DisplayName("컨트롤러 메서드 실행한다.")
     void testStartController() throws Exception {
         //given
-        String requestLine = "GET / HTTP/1.1";
+        String requestLine = "GET /index.html HTTP/1.1";
         RequestLine requestLineObject = new RequestLine(requestLine);
         Controller controller = new Controller();
 

@@ -48,7 +48,7 @@ public class GetHandlerTest {
     @Test
     public void testStartControllerWithMatchingMapping() throws Exception {
         //given
-        RequestLine requestLine = new RequestLine("GET / HTTP/1.1 ");
+        RequestLine requestLine = new RequestLine("GET /index.html HTTP/1.1 ");
 
         //when
         byte[] result = getHandler.startController(requestLine, controller);
