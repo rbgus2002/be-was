@@ -15,8 +15,8 @@ import java.nio.charset.StandardCharsets;
 
 import static util.StringUtils.*;
 
-public class Parser {
-    private static final Logger logger = LoggerFactory.getLogger(Parser.class);
+public class RequestInputParser {
+    private static final Logger logger = LoggerFactory.getLogger(RequestInputParser.class);
     private static final int METHOD_INDEX = 0;
     private static final int URI_INDEX = 1;
     private static final int PROTOCOL_INDEX = 2;

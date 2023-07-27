@@ -5,7 +5,7 @@ import model.HttpRequest;
 import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.Parser;
+import util.RequestInputParser;
 
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            HttpRequest httpRequest = Parser.getHttpRequest(in);
+            HttpRequest httpRequest = RequestInputParser.getHttpRequest(in);
 
             FrontController frontController = new FrontController(httpRequest);
             HttpResponse httpResponse = frontController.response();

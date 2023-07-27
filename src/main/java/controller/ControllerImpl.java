@@ -2,13 +2,16 @@ package controller;
 
 import controller.annotation.GetMapping;
 import controller.annotation.PostMapping;
+import db.Database;
 import dto.LoginRequestDto;
 import dto.UserFormRequestDto;
+import dto.UserResponseDto;
 import model.HttpRequest;
 import model.HttpResponse;
 import model.User;
 import model.enums.HttpStatusCode;
 import model.enums.Mime;
+import service.DynamicHtml;
 import service.FileService;
 import service.UserService;
 import session.Authorization;
@@ -37,16 +40,25 @@ public class ControllerImpl implements Controller {
 
     @GetMapping(path = "/index.html")
     public HttpResponse getIndexHtml(HttpRequest httpRequest) throws IOException {
-        return getHttpResponse(httpRequest.getUri());
+        String sessionId = httpRequest.getSessionIdInCookie();
+        Optional<HttpSession> session = Authorization.getSession(sessionId);
+
+        UserResponseDto userData = null;
+        if (session.isPresent()) userData = session.get().getUserData();
+
+        byte[] content = new DynamicHtml().index(userData);
+        return getHttpResponse(httpRequest.getUri(), content);
     }
 
     @GetMapping(path = "/user/list.html")
     public HttpResponse authorizeUserList(HttpRequest httpRequest) throws IOException {
-        Optional<HttpSession> session = Authorization.getSession(httpRequest);
+        String sessionId = httpRequest.getSessionIdInCookie();
+        Optional<HttpSession> session = Authorization.getSession(sessionId);
         if (session.isEmpty()) {
             return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
         }
-        return getHttpResponse(httpRequest.getUri());
+        byte[] contents = new DynamicHtml().userList(Map.of("users", Database.findAll()));
+        return getHttpResponse(httpRequest.getUri(), contents);
     }
 
     @PostMapping(path = "/user/login")
@@ -68,9 +80,16 @@ public class ControllerImpl implements Controller {
         return createRedirectResponse(HttpStatusCode.MOVED_PERMANENTLY, INDEX_HTML_URI);
     }
 
-    private HttpResponse getHttpResponse(String path) throws IOException {
+    @GetMapping
+    public HttpResponse getHttpResponse(HttpRequest httpRequest) throws IOException {
+        String path = httpRequest.getUri();
         Mime extension = Mime.getValueOf(path);
         byte[] fileContents = fileService.openFile(path, extension);
         return createHttpResponse(HttpStatusCode.OK, fileContents, extension);
+    }
+
+    private HttpResponse getHttpResponse(String path, byte[] body) throws IOException {
+        Mime extension = Mime.getValueOf(path);
+        return createHttpResponse(HttpStatusCode.OK, body, extension);
     }
 }

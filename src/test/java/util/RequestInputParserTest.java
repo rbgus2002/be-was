@@ -6,11 +6,13 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ParserTest {
+class RequestInputParserTest {
     private String requestSample =
             "GET /index.html HTTP/1.1\n" +
                     "Host: localhost:8080\n" +
@@ -32,7 +34,7 @@ class ParserTest {
     void returnHttpRequest() throws IOException {
         InputStream in = new ByteArrayInputStream(requestSample.getBytes());
 
-        HttpRequest result = Parser.getHttpRequest(in);
+        HttpRequest result = RequestInputParser.getHttpRequest(in);
 
         SoftAssertions softAssertions = new SoftAssertions();
         softAssertions.assertThat(result.getProtocol()).isEqualTo("HTTP/1.1");
@@ -46,7 +48,7 @@ class ParserTest {
     void httpRequestWithBody() throws IOException {
         InputStream in = new ByteArrayInputStream(requestSampleWithBody.getBytes());
 
-        HttpRequest result = Parser.getHttpRequest(in);
+        HttpRequest result = RequestInputParser.getHttpRequest(in);
 
         assertEquals(result.getProtocol(), "HTTP/1.1");
         assertEquals(result.getUri(), "/user/create");

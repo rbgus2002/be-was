@@ -1,6 +1,8 @@
 package session;
 
-import java.time.LocalDateTime;
+import dto.UserResponseDto;
+import model.User;
+
 import java.util.List;
 
 public class HttpSession {
@@ -13,7 +15,16 @@ public class HttpSession {
         lastAccessTime = System.currentTimeMillis();
     }
 
-    public boolean isExpired() {
+    public UserResponseDto getUserData() {
+        for (var content : contents) {
+            if (content.getClass().equals(User.class)) {
+                return UserResponseDto.of((User) content);
+            }
+        }
+        return null;
+    }
+
+    private boolean isExpired() {
         return lastAccessTime + EXPIRE_HOUR < System.currentTimeMillis();
     }
 }
