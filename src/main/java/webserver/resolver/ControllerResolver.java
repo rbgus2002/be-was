@@ -51,37 +51,37 @@ public class ControllerResolver {
 			return (HttpResponse)method.invoke(controller);
 		}
 
-		List<String> args = resolveArguments(request, parameters);
-		if (args.isEmpty() || args.contains(null)) {
-			return HttpResponse.builder()
-				.status(HttpStatus.BAD_REQUEST)
-				.build();
+		List<Object> args = resolveArguments(request, parameters);
+		// 파라미터 주입 실패 여부 확인
+		for (int i = 0; i < parameters.length; i++) {
+			// User는 null일 수 있음
+			if (!parameters[i].getType().equals(User.class) && args.get(i) == null) {
+				return HttpResponse.builder()
+					.status(HttpStatus.BAD_REQUEST)
+					.build();
+			}
 		}
 		return (HttpResponse)method.invoke(controller, args.toArray());
 	}
 
-	private List<String> resolveArguments(HttpRequest request, Parameter[] parameters) {
-		if (request.isMethodGet()) {
-			return getRequestParams(request, parameters);
-		}
-		if (request.isMethodPost()) {
-			return getRequestBody(request, parameters);
-		}
-		return Collections.emptyList();
-	}
-
-	private List<String> getRequestParams(HttpRequest request, Parameter[] parameters) {
+	private List<Object> resolveArguments(HttpRequest request, Parameter[] parameters) {
 		return Arrays.stream(parameters)
-			.map(parameter -> parameter.getAnnotation(RequestParam.class))
-			.map(requestParam -> request.getUrlParamValue(requestParam.name()))
-			.collect(Collectors.toList());
-	}
-
-	private List<String> getRequestBody(HttpRequest request, Parameter[] parameters) {
-		return Arrays.stream(parameters)
-			.map(parameter -> parameter.getAnnotation(RequestBody.class))
-			.map(requestBody -> request.getBodyValue(requestBody.name()))
-			.collect(Collectors.toList());
+			.map(parameter -> {
+				if (request.isMethodGet() && parameter.isAnnotationPresent(RequestParam.class)) {
+					RequestParam annotation = parameter.getAnnotation(RequestParam.class);
+					return request.getUrlParamValue(annotation.name());
+				}
+				if (request.isMethodPost() && parameter.isAnnotationPresent(RequestBody.class)) {
+					RequestBody annotation = parameter.getAnnotation(RequestBody.class);
+					return request.getBodyValue(annotation.name());
+				}
+				UUID sessionId = request.getSessionId();
+				if (sessionId != null
+					&& parameter.getType().equals(User.class)) {
+					return SessionStorage.findUserBySessionId(sessionId);
+				}
+				return null;
+			}).collect(Collectors.toList());
 	}
 
 }
