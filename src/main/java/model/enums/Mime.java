@@ -1,6 +1,6 @@
 package model.enums;
 
-public enum MIME {
+public enum Mime {
     HTML("text/html"),
     CSS("text/css"),
     JS("text/js"),
@@ -17,7 +17,7 @@ public enum MIME {
 
     private final String contentType;
 
-    MIME(String contentType) {
+    Mime(String contentType) {
         this.contentType = contentType;
     }
 

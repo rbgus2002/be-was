@@ -1,7 +1,8 @@
 package model;
 
 import com.google.common.net.HttpHeaders;
-import model.enums.Method;
+import model.enums.HttpMethod;
+import model.enums.Mime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class HttpRequest {
     public static final String SID = "sid";
     private final RequestUri requestUri;
     private final String protocol;
-    private final Method method;
+    private final HttpMethod httpMethod;
     private final HttpHeader httpHeader;
     private final String body;
 
@@ -35,17 +36,21 @@ public class HttpRequest {
         String cookie = httpHeader.get(HttpHeaders.COOKIE);
         if (cookie == null) return NO_CONTENT;
 
-
         int indexOfSid = cookie.indexOf(SID);
         if (indexOfSid == -1) return NO_CONTENT;
 
         return cookie.substring(indexOfSid + OFFSET, indexOfSid + OFFSET + UUID_LENGTH);
     }
 
+    public Mime getMimeType() {
+        return requestUri.getMimeType();
+    }
+
+
     public static class Builder {
         private RequestUri requestUri;
         private String protocol;
-        private Method method;
+        private HttpMethod httpMethod;
         private HttpHeader httpHeader;
         private String body;
 
@@ -62,8 +67,8 @@ public class HttpRequest {
             return this;
         }
 
-        public Builder method(Method method) {
-            this.method = method;
+        public Builder method(HttpMethod httpMethod) {
+            this.httpMethod = httpMethod;
             return this;
         }
 
@@ -84,22 +89,26 @@ public class HttpRequest {
 
     public HttpRequest(Builder builder) {
         requestUri = builder.requestUri;
-        method = builder.method;
+        httpMethod = builder.httpMethod;
         protocol = builder.protocol;
         httpHeader = builder.httpHeader;
         body = builder.body;
     }
 
-    public boolean match(Method method, String uri) {
-        return this.method == method && this.requestUri.match(uri);
+    public boolean match(HttpMethod httpMethod, String uri) {
+        return this.httpMethod == httpMethod && this.requestUri.match(uri);
     }
 
-    public boolean match(Method method) {
-        return this.method == method;
+    public boolean match(HttpMethod httpMethod) {
+        return this.httpMethod == httpMethod;
     }
 
     public String getProtocol() {
         return this.protocol;
+    }
+
+    public HttpMethod getMethod() {
+        return this.httpMethod;
     }
 
     public boolean isUriStaticFile() {

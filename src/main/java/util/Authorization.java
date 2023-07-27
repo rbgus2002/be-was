@@ -18,6 +18,8 @@ public class Authorization {
     public static Set<String> NEEDED_AUTHORIZATION = Set.of(
             USER_LIST_URI
     );
+    
+    private Authorization() {}
 
     public static Optional<User> getSession(HttpRequest request) {
         String sidInCookie = request.getSessionIdInCookie();

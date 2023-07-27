@@ -1,5 +1,6 @@
 package webserver;
 
+import controller.FrontController;
 import controller.RestController;
 import model.HttpRequest;
 import model.HttpResponse;
@@ -9,12 +10,11 @@ import util.Parser;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
     private final RestController restController;
 
     public RequestHandler(Socket connectionSocket, RestController restController) {
@@ -29,7 +29,8 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = Parser.getHttpRequest(in);
 
-            HttpResponse httpResponse = restController.route(httpRequest);
+            FrontController frontController = new FrontController(httpRequest);
+            HttpResponse httpResponse = frontController.response();
             String responseHeader = httpResponse.getHttpHeaderFormat();
 //            logger.debug("Response Header : {}", responseHeader);
 

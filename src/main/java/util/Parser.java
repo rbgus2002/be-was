@@ -3,7 +3,7 @@ package util;
 import model.HttpHeader;
 import model.HttpRequest;
 import model.RequestUri;
-import model.enums.Method;
+import model.enums.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class Parser {
         return new HttpRequest.Builder()
                 .requestUri(requestUri)
                 .httpHeader(header)
-                .method(Method.valueOf(tokens[METHOD_INDEX]))
+                .method(HttpMethod.valueOf(tokens[METHOD_INDEX]))
                 .protocol(tokens[PROTOCOL_INDEX])
                 .body(body)
                 .build();

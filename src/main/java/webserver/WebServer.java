@@ -11,6 +11,8 @@ import java.util.concurrent.Executors;
 
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
+    
+    private WebServer() {}
 
     public static void on(int port) {
         RestController restController = new RestController();

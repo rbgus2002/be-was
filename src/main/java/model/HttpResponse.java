@@ -12,16 +12,15 @@ public class HttpResponse {
     private final HttpHeader httpHeader;
     private final byte[] body;
 
-    private HttpResponse(String protocol, HttpStatusCode statusCode, HttpHeader header, byte[] body) {
-        this.protocol = protocol;
+    private HttpResponse(HttpStatusCode statusCode, HttpHeader header, byte[] body) {
+        this.protocol = "HTTP/1.1";
         this.statusCode = statusCode;
         this.httpHeader = header;
         this.body = body;
     }
 
-    public static HttpResponse of(HttpRequest httpRequest, HttpStatusCode statusCode, HttpHeader header, byte[] body) {
+    public static HttpResponse of(HttpStatusCode statusCode, HttpHeader header, byte[] body) {
         return new HttpResponse(
-                httpRequest.getProtocol(),
                 statusCode,
                 header,
                 body

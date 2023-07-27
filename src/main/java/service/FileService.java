@@ -1,6 +1,6 @@
 package service;
 
-import model.enums.MIME;
+import model.enums.Mime;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +11,7 @@ import static constant.SourcePath.RESOURCE_STATIC_RELATIVE_PATH;
 import static constant.SourcePath.RESOURCE_TEMPLATE_RELATIVE_PATH;
 
 public class FileService {
-    public byte[] openFile(String path, MIME extension) throws IOException {
+    public byte[] openFile(String path, Mime extension) throws IOException {
         if (extension.isHTML()) {
             return openTemplate(path);
         }

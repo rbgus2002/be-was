@@ -2,10 +2,9 @@ package mapper;
 
 import com.google.common.net.HttpHeaders;
 import model.HttpHeader;
-import model.HttpRequest;
 import model.HttpResponse;
 import model.enums.HttpStatusCode;
-import model.enums.MIME;
+import model.enums.Mime;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,25 +18,25 @@ public class ResponseMapper {
     public static final int KEY_INDEX = 0;
     public static final int VALUE_INDEX = 1;
 
-    public static HttpResponse createNoBodyHttpResponse(HttpRequest request, HttpStatusCode statusCode) {
-        return createHttpResponse(request, statusCode, NO_CONTENT.getBytes(), MIME.DEFAULT);
+    public static HttpResponse createNoBodyHttpResponse(HttpStatusCode statusCode) {
+        return createHttpResponse(statusCode, NO_CONTENT.getBytes(), Mime.DEFAULT);
     }
 
-    public static HttpResponse createHttpResponse(HttpRequest request, HttpStatusCode statusCode, byte[] body, MIME extension) {
+    public static HttpResponse createHttpResponse(HttpStatusCode statusCode, byte[] body, Mime extension) {
         int lengthOfBody = body.length;
 
         HttpHeader httpHeader = createHeader(
                 List.of(HttpHeaders.CONTENT_TYPE, extension.getContentType()),
                 List.of(HttpHeaders.CONTENT_LENGTH, String.valueOf(lengthOfBody))
         );
-        return HttpResponse.of(request, statusCode, httpHeader, body);
+        return HttpResponse.of(statusCode, httpHeader, body);
     }
 
-    public static HttpResponse createRedirectResponse(HttpRequest request, HttpStatusCode statusCode, String redirectPath) {
+    public static HttpResponse createRedirectResponse(HttpStatusCode statusCode, String redirectPath) {
         HttpHeader httpHeader = createHeader(
                 List.of(HttpHeaders.LOCATION, redirectPath)
         );
-        return HttpResponse.of(request, statusCode, httpHeader, NO_CONTENT.getBytes());
+        return HttpResponse.of(statusCode, httpHeader, NO_CONTENT.getBytes());
     }
 
     @SafeVarargs
@@ -51,11 +50,11 @@ public class ResponseMapper {
         return HttpHeader.of(header);
     }
 
-    public static HttpResponse createNotFoundResponse(HttpRequest httpRequest) {
-        return createHttpResponse(httpRequest, HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND.getBytes(), MIME.DEFAULT);
+    public static HttpResponse createNotFoundResponse() {
+        return createHttpResponse(HttpStatusCode.NOT_FOUND, PAGE_NOT_FOUND.getBytes(), Mime.DEFAULT);
     }
 
-    public static HttpResponse createBadRequestResponse(HttpRequest httpRequest) {
-        return createHttpResponse(httpRequest, HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST.getBytes(), MIME.DEFAULT);
+    public static HttpResponse createBadRequestResponse() {
+        return createHttpResponse(HttpStatusCode.BAD_REQUEST, PAGE_BAD_REQUEST.getBytes(), Mime.DEFAULT);
     }
 }

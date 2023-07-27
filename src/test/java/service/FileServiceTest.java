@@ -1,6 +1,6 @@
 package service;
 
-import model.enums.MIME;
+import model.enums.Mime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class FileServiceTest {
     void findFile() {
 
         assertDoesNotThrow(() -> {
-            byte[] fileContent = fileService.openFile(INDEX_HTML, MIME.HTML);
+            byte[] fileContent = fileService.openFile(INDEX_HTML, Mime.HTML);
         });
     }
 
@@ -35,7 +35,7 @@ class FileServiceTest {
         String basicIndexPath = "/somewhere.html";
 
         assertThrows(NoSuchFileException.class, () -> {
-            byte[] fileContent = fileService.openFile(basicIndexPath, MIME.CSS);
+            byte[] fileContent = fileService.openFile(basicIndexPath, Mime.CSS);
         });
     }
 }
