@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static exception.ExceptionList.NOT_EXIST_SESSION_ID;
 import static exception.ExceptionList.NO_SESSION_ID;
-import static http.HttpMethod.POST;
+import static http.HttpMethod.GET;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PageTest {
@@ -37,7 +37,7 @@ class PageTest {
         String uri = "/user/profile.html";
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", "Idea-b0842ea5=7bc847be-5914-47b7-be63-da8616787eb6; SID=");
-        HttpRequest httpRequest = new HttpRequest.RequestBuilder(POST, uri, "HTTP/1.1")
+        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, uri, "HTTP/1.1")
                 .setHeader(headers)
                 .build();
 
@@ -59,7 +59,7 @@ class PageTest {
         String uri = "/user/profile.html";
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", "Idea-b0842ea5=7bc847be-5914-47b7-be63-da8616787eb6; SID=4bc504ae-a64f-4fba-a3df-4466c012915a");
-        HttpRequest httpRequest = new HttpRequest.RequestBuilder(POST, uri, "HTTP/1.1")
+        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, uri, "HTTP/1.1")
                 .setHeader(headers)
                 .build();
 
@@ -81,7 +81,7 @@ class PageTest {
         String uri = "/user/list.html";
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", "Idea-b0842ea5=7bc847be-5914-47b7-be63-da8616787eb6; SID=");
-        HttpRequest httpRequest = new HttpRequest.RequestBuilder(POST, uri, "HTTP/1.1")
+        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, uri, "HTTP/1.1")
                 .setHeader(headers)
                 .build();
 
@@ -103,7 +103,7 @@ class PageTest {
         String uri = "/user/list.html";
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", "Idea-b0842ea5=7bc847be-5914-47b7-be63-da8616787eb6; SID=4bc504ae-a64f-4fba-a3df-4466c012915a");
-        HttpRequest httpRequest = new HttpRequest.RequestBuilder(POST, uri, "HTTP/1.1")
+        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, uri, "HTTP/1.1")
                 .setHeader(headers)
                 .build();
 
