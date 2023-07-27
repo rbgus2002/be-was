@@ -48,10 +48,15 @@ public class ServiceController extends Controller {
     }
 
     @RequestMapping(value="/user/logout", method=Method.GET)
-    public void userLogout(Request request) {
+    public Response userLogout(Request request) {
         String sid = request.getSid();
         if(SessionService.isSessionValid(sid)) {
             SessionService.deleteSession(sid);
         }
+
+        Map<String, String> headerMap = new HashMap<>();
+        headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
+        headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + " " + "; max-age = 0");
+        return new Response(STATUS.SEE_OTHER, headerMap, null);
     }
 }
