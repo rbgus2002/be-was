@@ -24,10 +24,7 @@ public class ServiceController extends Controller {
 
         UserService.userSignUp(bodyParameterMap);
 
-        Map<String, String> headerMap = new HashMap<>();
-        headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-
-        return new Response(STATUS.SEE_OTHER, headerMap, null);
+        return generate303Response(INDEX_URL);
     }
 
     @RequestMapping(value="/user/login", method=Method.POST)
@@ -38,9 +35,7 @@ public class ServiceController extends Controller {
 
         // ID/PW 검증
         if(!UserService.validateUser(userId, password)) {
-            Map<String, String> headerMap = new HashMap<>();
-            headerMap.put(HEADER_REDIRECT_LOCATION, "/user/login_failed.html");
-            return new Response(STATUS.SEE_OTHER, headerMap, null);
+            return generate303Response("/user/login_failed.html");
         }
 
         // Session ID 추가
