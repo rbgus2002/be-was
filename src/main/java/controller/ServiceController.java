@@ -56,7 +56,7 @@ public class ServiceController extends Controller {
 
         Map<String, String> headerMap = new HashMap<>();
         headerMap.put(HEADER_REDIRECT_LOCATION, INDEX_URL);
-        headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + " " + "; max-age = 0");
+        headerMap.put(HEADER_SET_COOKIE, HEADER_SESSION_ID + "clear" + HEADER_COOKIE_RESET);
         return new Response(STATUS.SEE_OTHER, headerMap, null);
     }
 }

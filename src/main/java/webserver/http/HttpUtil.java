@@ -75,5 +75,6 @@ public class HttpUtil {
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
     public static final String HEADER_SESSION_ID = "sid=";
     public static final String HEADER_COOKIE_PATH = "; Path=/";
+    public static final String HEADER_COOKIE_RESET = "; max-age = 0";
     public static final String INDEX_URL = "/index.html";
 }
