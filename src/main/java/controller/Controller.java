@@ -8,6 +8,7 @@ import http.HttpStatus;
 import http.MIME;
 import view.Page;
 
+import static db.SessionStorage.isSessionValid;
 import static exception.ExceptionList.INVALID_URI;
 import static http.Extension.HTML;
 import static http.FilePath.*;
@@ -34,6 +35,9 @@ public abstract class Controller {
             }
             if (uri.endsWith(INDEX) || uri.endsWith(PROFILE) || uri.endsWith(LIST)) {
                 return loadFileFromString(HttpStatus.OK, page.getDynamicPage(httpRequest, uri), uri);
+            }
+            if (uri.endsWith(FORM) && !isSessionValid(httpRequest.getSessionId())) {
+                uri = LOGIN;
             }
             return loadFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));

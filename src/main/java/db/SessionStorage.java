@@ -30,6 +30,10 @@ public class SessionStorage {
         return sessionIds.get(sessionId);
     }
 
+    public static boolean isSessionValid(String sessionId) {
+        return findAllSessionIds().stream().anyMatch(id -> id.equals(sessionId));
+    }
+
     public static void clearSessionIds() {
         sessionIds.clear();
     }
