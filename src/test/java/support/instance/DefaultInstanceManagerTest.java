@@ -17,7 +17,7 @@ class DefaultInstanceManagerTest {
 
     @BeforeEach
     void setUp() {
-        defaultInstanceManager = DefaultInstanceManager.getInstanceMagager();
+        defaultInstanceManager = DefaultInstanceManager.getInstanceManager();
         defaultInstanceManager.clear();
     }
 

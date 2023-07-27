@@ -95,7 +95,7 @@ public abstract class ViewResolver {
     }
 
     public static HttpEntity buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, IOException {
-        ViewContainer viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewContainer.class);
+        ViewContainer viewFactory = DefaultInstanceManager.getInstanceManager().getInstance(ViewContainer.class);
         String path = modelAndView.getViewName();
         View view = viewFactory.getViewByName(path);
 

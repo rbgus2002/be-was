@@ -25,7 +25,7 @@ public class ControllerMethod {
     }
 
     public Object invoke(Object... args) throws IllegalAccessException, InvocationTargetException {
-        Object instance = DefaultInstanceManager.getInstanceMagager().getInstance(controllerClass);
+        Object instance = DefaultInstanceManager.getInstanceManager().getInstance(controllerClass);
         return method.invoke(instance, args);
     }
 

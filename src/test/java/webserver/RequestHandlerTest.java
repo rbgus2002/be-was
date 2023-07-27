@@ -62,12 +62,12 @@ class RequestHandlerTest {
 
     @BeforeAll
     static void prepare() {
-        DefaultInstanceManager.getInstanceMagager().clear();
-        DefaultInstanceManager.getInstanceMagager().addInstance(UserController.class);
-        DefaultInstanceManager.getInstanceMagager().addInstance(ViewContainer.class);
-        DefaultInstanceManager.getInstanceMagager().addInstance(ErrorView.class);
-        DefaultInstanceManager.getInstanceMagager().addInstance(HttpHandler.class);
-        DefaultInstanceManager.getInstanceMagager().addInstance(ControllerMethodReturnValueHandlerComposite.class);
+        DefaultInstanceManager.getInstanceManager().clear();
+        DefaultInstanceManager.getInstanceManager().addInstance(UserController.class);
+        DefaultInstanceManager.getInstanceManager().addInstance(ViewContainer.class);
+        DefaultInstanceManager.getInstanceManager().addInstance(ErrorView.class);
+        DefaultInstanceManager.getInstanceManager().addInstance(HttpHandler.class);
+        DefaultInstanceManager.getInstanceManager().addInstance(ControllerMethodReturnValueHandlerComposite.class);
     }
 
     @BeforeEach

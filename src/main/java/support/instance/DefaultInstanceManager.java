@@ -16,7 +16,7 @@ public class DefaultInstanceManager implements InstanceManager {
     private DefaultInstanceManager() {
     }
 
-    public static DefaultInstanceManager getInstanceMagager() {
+    public static DefaultInstanceManager getInstanceManager() {
         return INSTANCE;
     }
 

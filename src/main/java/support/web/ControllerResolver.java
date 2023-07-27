@@ -46,7 +46,7 @@ public class ControllerResolver {
 
     private ControllerMethodReturnValueHandlerComposite getHandlers() {
         if (handlers == null) {
-            handlers = DefaultInstanceManager.getInstanceMagager().getInstance(ControllerMethodReturnValueHandlerComposite.class);
+            handlers = DefaultInstanceManager.getInstanceManager().getInstance(ControllerMethodReturnValueHandlerComposite.class);
         }
         return handlers;
     }

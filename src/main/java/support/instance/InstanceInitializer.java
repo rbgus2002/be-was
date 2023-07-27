@@ -22,7 +22,7 @@ public abstract class InstanceInitializer {
 
         visited.clear();
 
-        DefaultInstanceManager manageObjectFactory = DefaultInstanceManager.getInstanceMagager();
+        DefaultInstanceManager manageObjectFactory = DefaultInstanceManager.getInstanceManager();
 
         filteredClasses.forEach(manageObjectFactory::addInstance);
     }
