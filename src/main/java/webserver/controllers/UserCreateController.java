@@ -43,15 +43,14 @@ public class UserCreateController implements Controller {
         User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
-        String path = "http://".concat(request.getHeader("Host").concat("/index.html"));
+        String path = "/index.html";
         if (!addUser(user)) {
-            path = "http://".concat(request.getHeader("Host").concat("/user/create_failed.html"));
+            path = "/user/create_failed.html";
         }
 
         return builder.version(request.version())
                 .status(FOUND)
-                .contentType(HTML)
-                .setHeader("Location", path)
+                .redirect(path)
                 .build();
     }
 

@@ -11,7 +11,6 @@ public interface Controller {
         HttpResponse.Builder builder = HttpResponse.newBuilder();
         return builder.version(request.version())
                 .status(status)
-                .body(status.getBody().getBytes())
                 .build();
     }
 
