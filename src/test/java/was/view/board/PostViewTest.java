@@ -71,4 +71,28 @@ class PostViewTest {
 		// then
 		Assertions.assertThat(outputStream.toString()).contains(HttpStatus.NOT_FOUND.getName());
 	}
+
+	@Test
+	@DisplayName("post에 index를 명시하지 않으면 404를 반환한다")
+	void postMustHavaIndex() throws IOException {
+		// given
+		final User user = new User("chan", "1234", "chan", "chan@naver.com");
+		final HttpSession httpSession = HttpSession.getInstance();
+		final String sessionID = httpSession.createSession(user.getUserId());
+
+		String input = "GET /post HTTP/1.1\r\n"
+			+ "Cookie: SID="+sessionID+"\r\n"
+			+ "\r\n";
+		InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+		final HttpWasRequest httpWasRequest = new HttpWasRequest(inputStream);
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
+
+		// when
+		postView.post(httpWasRequest, httpWasResponse);
+		httpWasResponse.doResponse();
+
+		// then
+		Assertions.assertThat(outputStream.toString()).contains(HttpStatus.NOT_FOUND.getName());
+	}
 }
