@@ -1,8 +1,6 @@
 package support.web;
 
 import support.instance.DefaultInstanceManager;
-import support.web.exception.HttpException;
-import support.web.exception.ServerErrorException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,14 +24,9 @@ public class ControllerMethod {
         return method.getReturnType();
     }
 
-    public Object invoke(Object... args) throws IllegalAccessException, HttpException {
+    public Object invoke(Object... args) throws IllegalAccessException, InvocationTargetException {
         Object instance = DefaultInstanceManager.getInstanceMagager().getInstance(controllerClass);
-        try {
-            return method.invoke(instance, args);
-        } catch (InvocationTargetException e) {
-            Throwable throwable = e.getTargetException();
-            throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();
-        }
+        return method.invoke(instance, args);
     }
 
 }

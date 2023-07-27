@@ -1,7 +1,6 @@
 package webserver;
 
 import support.web.exception.NotFoundException;
-import support.web.exception.ServerErrorException;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,29 +21,21 @@ public class WebPageReader {
 
     }
 
-    public static byte[] readByPath(String url) throws NotFoundException, ServerErrorException {
+    public static byte[] readByPath(String url) throws NotFoundException, IOException {
         for (String path : WEB_PATH) {
             File file = new File(path + url);
             if (file.exists() && file.isFile()) {
-                try {
-                    return Files.readAllBytes(file.toPath());
-                } catch (IOException e) {
-                    throw new ServerErrorException();
-                }
+                return Files.readAllBytes(file.toPath());
             }
         }
         throw new NotFoundException();
     }
 
-    public static List<String> readStringLineByPath(String url) throws NotFoundException, ServerErrorException {
+    public static List<String> readStringLineByPath(String url) throws NotFoundException, IOException {
         for (String path : WEB_PATH) {
             File file = new File(path + url);
             if (file.exists() && file.isFile()) {
-                try {
-                    return Files.readAllLines(file.toPath());
-                } catch (IOException e) {
-                    throw new ServerErrorException();
-                }
+                return Files.readAllLines(file.toPath());
             }
         }
         throw new NotFoundException();

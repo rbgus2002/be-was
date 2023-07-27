@@ -1,11 +1,4 @@
 package support.web.exception;
 
-import webserver.response.HttpStatus;
-
-public class NotFoundException extends HttpException {
-
-    public NotFoundException() {
-        super(HttpStatus.NOT_FOUND);
-    }
-
+public class NotFoundException extends Exception {
 }

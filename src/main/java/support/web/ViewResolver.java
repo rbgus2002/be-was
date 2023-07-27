@@ -3,9 +3,8 @@ package support.web;
 import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.web.exception.NotFoundException;
-import support.web.exception.ServerErrorException;
 import support.instance.DefaultInstanceManager;
+import support.web.exception.NotFoundException;
 import support.web.view.ErrorView;
 import support.web.view.View;
 import support.web.view.ViewFactory;
@@ -15,6 +14,7 @@ import webserver.response.HttpResponse;
 import webserver.response.MIME;
 import webserver.response.strategy.OK;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -93,7 +93,7 @@ public abstract class ViewResolver {
         return START_TAG + " " + command + " " + argument + " " + END_TAG;
     }
 
-    public static void buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, ServerErrorException {
+    public static void buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, IOException {
         ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
         String path = modelAndView.getViewName();
         View view = viewFactory.getViewByName(path);
@@ -105,7 +105,7 @@ public abstract class ViewResolver {
         }
     }
 
-    private static void buildStaticView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, ServerErrorException {
+    private static void buildStaticView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, IOException {
         List<String> body = readStringLineByPath(path);
         String extension = path.substring(path.lastIndexOf("."));
         if (".html".equals(extension)) {

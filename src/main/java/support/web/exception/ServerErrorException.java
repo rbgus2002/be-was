@@ -1,15 +1,13 @@
 package support.web.exception;
 
-import webserver.response.HttpStatus;
-
-public class ServerErrorException extends HttpException {
+public class ServerErrorException extends Exception {
 
     public ServerErrorException() {
         this(null);
     }
 
     public ServerErrorException(final String message) {
-        super(message, HttpStatus.SERVER_ERROR);
+        super(message);
     }
 
 }

@@ -4,13 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import support.annotation.Container;
 import support.web.*;
-import support.web.exception.HttpException;
 import support.web.exception.NotFoundException;
-import support.web.exception.ServerErrorException;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 @Container
@@ -32,19 +31,15 @@ public class HttpHandler {
             if (httpEntity.getHeader() != null) {
                 response.appendHeader(httpEntity.getHeader());
             }
-        } catch (HttpException e) {
-            logger.debug(e.getMessage());
-            response.setStatus(e.getHttpStatus());
         } catch (Exception e) {
             logger.debug(e.getClass().getName());
             logger.debug(Arrays.toString(e.getStackTrace()));
             logger.debug(e.getMessage());
-            throw new RuntimeException(e);
+            response.setStatus(HttpStatus.SERVER_ERROR);
         }
-
     }
 
-    private HttpEntity doGetOrOther(HttpRequest request, HttpResponse response, String path) throws ServerErrorException {
+    private HttpEntity doGetOrOther(HttpRequest request, HttpResponse response, String path) throws IOException {
         if (request.getRequestMethod() == HttpMethod.GET) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName(path);
@@ -53,7 +48,7 @@ public class HttpHandler {
         return buildErrorResponse(request, response);
     }
 
-    private HttpEntity callViewResolver(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws ServerErrorException {
+    private HttpEntity callViewResolver(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws IOException {
         try {
             ViewResolver.buildView(request, response, modelAndView);
             return new HttpEntity(HttpStatus.OK);
