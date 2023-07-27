@@ -1,6 +1,5 @@
 package view;
 
-import annotation.RequestMapping;
 import annotation.View;
 import db.SessionManager;
 import model.User;
@@ -9,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
