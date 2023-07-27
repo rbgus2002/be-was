@@ -42,7 +42,14 @@ public class FrontController {
             return HttpResponse.createRedirect(modelAndView.getViewPath(), cookie);
         }
 
-        return HttpResponse.createDynamic(modelAndView.getViewPath());
+        Optional<Model> optionalModel = modelAndView.getModel();
+        if (optionalModel.isPresent()) {
+            Model model = optionalModel.get();
+            User user = (User) model.getValue("user");
+            return HttpResponse.createDynamic(modelAndView.getViewPath(), user);
+        } else {
+            return HttpResponse.createDynamic(modelAndView.getViewPath(), null);
+        }
     }
 
 
