@@ -1,6 +1,6 @@
 package was.controller;
 
-import was.controller.annotation.Controller;
+import was.webserver.annotation.Controller;
 import was.controller.annotation.RequestMapping;
 import was.db.Database;
 import was.model.User;

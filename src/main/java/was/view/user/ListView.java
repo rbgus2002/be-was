@@ -2,7 +2,7 @@ package was.view.user;
 
 import java.util.Collection;
 
-import was.controller.annotation.Controller;
+import was.webserver.annotation.Controller;
 import was.controller.annotation.RequestMapping;
 import was.db.Database;
 import was.model.User;

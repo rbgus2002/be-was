@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
-import was.controller.annotation.Controller;
+import was.webserver.annotation.Component;
 
 public class FrontController {
 
@@ -21,10 +21,12 @@ public class FrontController {
 
 	private void initializeInstances() throws ReflectiveOperationException {
 		final Reflections reflections = new Reflections("was");
-		final Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Controller.class);
+		final Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Component.class);
 		for (Class<?> aClass : classes) {
-			final Constructor<?> constructor = aClass.getDeclaredConstructor();
-			instances.put(aClass.getName(), constructor.newInstance());
+			if (!aClass.isAnnotation()) {
+				final Constructor<?> constructor = aClass.getDeclaredConstructor();
+				instances.put(aClass.getName(), constructor.newInstance());
+			}
 		}
 	}
 
