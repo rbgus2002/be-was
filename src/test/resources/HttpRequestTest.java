@@ -39,4 +39,18 @@ public class HttpRequestTest {
         assertions.assertThat(request.getBodyParameter("userId")).isEqualTo("javajigi");
         assertions.assertAll();
     }
+
+    @Test
+    public void request_POST2() throws Exception {
+        InputStream in = new FileInputStream(testDirectory + "Http_POST2.txt");
+        Request request = parseRequest(in);
+
+        SoftAssertions assertions = new SoftAssertions();
+        assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
+        assertions.assertThat(request.getPath()).isEqualTo("/user/create");
+        assertions.assertThat(request.getHeader("Connection")).isEqualTo("keep-alive");
+        assertions.assertThat(request.getQueryParameter("id")).isEqualTo("1");
+        assertions.assertThat(request.getBodyParameter("userId")).isEqualTo("javajigi");
+        assertions.assertAll();
+    }
 }
