@@ -8,6 +8,8 @@ import webserver.annotation.RequestMapping;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
+import webserver.session.Session;
+import webserver.session.SessionStorage;
 
 @Controller
 public class UserController {
@@ -36,6 +38,7 @@ public class UserController {
 				.build();
 		}
 		// 세션 생성
+		Session session = SessionStorage.createSession(userId);
 		// 쿠키 저장
 		return HttpResponse.builder()
 			.status(HttpStatus.SEE_OTHER)
