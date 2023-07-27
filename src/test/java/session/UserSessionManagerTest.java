@@ -20,8 +20,8 @@ class UserSessionManagerTest {
         User user = new User(userId, password, name, email);
 
         //when
-        Cookie cookie = UserSessionManager.addUser(user);
-        User expectUser = UserSessionManager.getUser(cookie.getValue());
+        String sessionId = SessionManager.addSession(user);
+        User expectUser = SessionManager.getUser(sessionId);
 
         //then
         assertSoftly(softAssertions -> {
