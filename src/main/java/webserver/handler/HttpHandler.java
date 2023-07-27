@@ -5,10 +5,16 @@ import webserver.request.HttpRequestMessage;
 import webserver.response.HttpMIME;
 import webserver.response.HttpResponseMessage;
 import webserver.response.HttpStatus;
+import webserver.session.SessionStorage;
+import webserver.view.ViewData;
+import webserver.view.ViewRender;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static webserver.WebServer.logger;
 
@@ -22,6 +28,10 @@ public class HttpHandler {
     }
 
     public void handling() {
+        if (isHtmlResourceRequest()) {
+            handlingHtmlResource();
+            return;
+        }
         if (isResourceRequest()) {
             handlingResource();
             return;
@@ -31,6 +41,37 @@ public class HttpHandler {
 
     private boolean isResourceRequest() {
         return httpRequestMessage.getExtension() != null;
+    }
+
+    private boolean isHtmlResourceRequest() {
+        return httpRequestMessage.getExtension() != null && httpRequestMessage.getExtension().equals(".html");
+    }
+
+    private void handlingHtmlResource() {
+        try {
+            logger.debug(httpRequestMessage.getPath());
+            httpResponseMessage.setStatusLine(HttpStatus.OK);
+            // todo 리팩토링 필요 : 쿠키를 받아 렌더링 하는 로직.
+            Map<String, String> matchedData = new HashMap<>();
+            if (httpRequestMessage.hasHeader("Cookie")) {
+                String[] tokens = httpRequestMessage.getHeader("Cookie").split(";");
+                for (String token : tokens) {
+                    String[] keyValue = token.trim().split("=");
+                    if (keyValue[0].equals("sid")) {
+                        matchedData.put("userId", SessionStorage.getSession(keyValue[1]));
+                        matchedData.put("href", "/index.html");
+                    }
+                }
+            }
+            ViewData viewData = ViewData.of(httpRequestMessage.getPath(), matchedData, new ArrayList<>());
+            String body = ViewRender.createPage(viewData);
+            httpResponseMessage.setBody(body);
+            httpResponseMessage.setHeader("Content-Type", HttpMIME.findBy(httpRequestMessage.getExtension()).getType() + "; charset=UTF-8");
+        } catch (IOException e) {
+            httpResponseMessage.setStatusLine(HttpStatus.NOT_FOUND);
+            httpResponseMessage.setBody("");
+            logger.error("요청 파일 경로에 파일이 존재하지 않습니다. {}", e.getLocalizedMessage());
+        }
     }
 
     private void handlingResource() {

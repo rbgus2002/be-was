@@ -14,6 +14,6 @@ class ViewRenderTest {
         Map<String, String> matchedData = new HashMap<>();
         matchedData.put("userId", "meme");
         matchedData.put("href", "#");
-        Assertions.assertEquals("<li><a href=\"#\" role=\"button\">meme</a></li>", ViewRender.render(html, matchedData));
+        Assertions.assertEquals("<li><a href=\"#\" role=\"button\">meme</a></li>", ViewRender.renderWord(html, matchedData));
     }
 }

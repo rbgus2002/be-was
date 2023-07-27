@@ -13,10 +13,10 @@ public class ViewRender {
 
     public static String createPage(ViewData viewData) throws IOException {
         String body = Files.readString(Paths.get(viewData.getPath()));
-        return render(body, viewData.getMatchedData());
+        return renderWord(body, viewData.getMatchedData());
     }
 
-    public static String render(String body, Map<String, String> matchedData) {
+    public static String renderWord(String body, Map<String, String> matchedData) {
         Matcher matcher = REND_PATTERN.matcher(body);
         StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
