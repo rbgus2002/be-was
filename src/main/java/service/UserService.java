@@ -5,7 +5,6 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.SessionManager;
-import webserver.http.response.HttpResponse;
 
 import java.util.Map;
 
@@ -31,10 +30,9 @@ public class UserService {
         return user != null && user.getPassword().equals(password);
     }
 
-    public void signIn(HttpResponse response, String userId) {
+    public String signIn(String userId) {
         User user = Database.findUserById(userId);
         sessionManager.createSession(user);
-        String sessionId = sessionManager.getSessionId(user);
-        response.setCookie(sessionId, "/");
+        return sessionManager.getSessionId(user);
     }
 }

@@ -3,7 +3,6 @@ package controller;
 import controller.annotaion.GetMapping;
 import controller.annotaion.PostMapping;
 import service.UserService;
-import webserver.http.HttpMime;
 import webserver.http.HttpStatus;
 import webserver.http.request.HttpRequest;
 import webserver.http.response.HttpResponse;
@@ -17,7 +16,12 @@ public class Controller {
 
     @GetMapping(path = "/")
     public HttpResponse home() throws IOException {
-        return HttpResponse.redirect("/index.html");
+        return new HttpResponse
+                .HttpResponseBuilder()
+                .status(HttpStatus.FOUND)
+                .addHeaderParam("Location", "/index.html")
+                .path("/index.html")
+                .build();
     }
 
     @PostMapping(path = "/user/create")
@@ -25,7 +29,12 @@ public class Controller {
         Map<String, String> body = request.getBodyMap();
         userService.registerUser(body);
 
-        return HttpResponse.redirect("/index.html");
+        return new HttpResponse
+                .HttpResponseBuilder()
+                .status(HttpStatus.FOUND)
+                .path("/index.html")
+                .addHeaderParam("Location", "/index.html")
+                .build();
     }
 
     @PostMapping(path = "/user/login")
@@ -36,11 +45,21 @@ public class Controller {
         String password = body.get("password");
 
         if (!userService.existUser(userId, password)) {
-            return HttpResponse.redirect("/user/login_failed.html");
+            return new HttpResponse
+                    .HttpResponseBuilder()
+                    .status(HttpStatus.FOUND)
+                    .path("/user/login_failed.html")
+                    .addHeaderParam("Location", "/user/login_failed.html")
+                    .build();
         }
 
-        HttpResponse response = new HttpResponse(HttpStatus.FOUND, "/index.html", HttpMime.HTML);
-        userService.signIn(response, userId);
-        return response;
+        String sessionId = userService.signIn(userId);
+        return new HttpResponse
+                .HttpResponseBuilder()
+                .status(HttpStatus.FOUND)
+                .path("/index.html")
+                .setCookie(sessionId, "/")
+                .addHeaderParam("Location", "/index.html")
+                .build();
     }
 }

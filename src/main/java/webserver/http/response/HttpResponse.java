@@ -5,12 +5,9 @@ import org.slf4j.LoggerFactory;
 import webserver.http.HttpMime;
 import webserver.http.HttpStatus;
 
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,87 +18,115 @@ public class HttpResponse {
     private static final String HTML_PATH = "src/main/resources/templates";
     private static final String STATIC_PATH = "src/main/resources/static";
     private static final String NEW_LINE = "\r\n";
-    private final HttpStatus status;
-    private final String path;
-    private final HttpMime mime;
+    private final HttpStatus statusLine;
     private final Map<String, String> header;
     private final byte[] body;
 
-    public HttpResponse(HttpStatus status, String path, HttpMime mime) throws IOException {
-        this.status = status;
-        this.path = path;
-        this.mime = mime;
-        this.body = getBody(path, mime);
-        this.header = setHeader();
-    }
+    public static class HttpResponseBuilder {
+        private final Map<String, String> header;
+        private byte[] body;
 
-    private byte[] getBody(String path, HttpMime mime) throws IOException {
-        byte[] body;
+        private HttpStatus status = HttpStatus.OK;
+        private String path = "/index.html";
+        private HttpMime mime = HttpMime.HTML;
 
-        if (mime.getExtension().equals("html")) {
-            body = Files.readAllBytes(new File(HTML_PATH + path).toPath());
-        } else {
-            body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
+        public HttpResponseBuilder() throws IOException {
+            this.header = new HashMap<>();
+            header.put("Content-Type", getContentType() + ";charset=utf-8\r\n");
+            header.put("Content-Length", "0");
+
+            this.body = new byte[0];
         }
 
-        return body;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    private String getContentType() {
-        String contentType = mime.getContentType();
-        logger.debug("content type: {}", contentType);
-        return contentType;
-    }
-
-    public void response(OutputStream out) throws IOException {
-        DataOutputStream dos = new DataOutputStream(out);
-        dos.writeBytes(setStatusLine());
-        dos.writeBytes(getHeader());
-        responseBody(dos, body);
-    }
-
-    public static HttpResponse redirect(String path) throws IOException {
-        HttpResponse response = new HttpResponse(HttpStatus.FOUND, path, HttpMime.HTML);
-        response.header.put("Location", path);
-        return response;
-    }
-
-    private String setStatusLine() {
-        return "HTTP/1.1 " + this.status.getStatusCode() + " " + this.status.getStatus() + " " + NEW_LINE;
-    }
-
-    private Map<String, String> setHeader() {
-        Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", getContentType() + ";charset=utf-8\r\n");
-        header.put("Content-Length", String.valueOf(this.body.length));
-        return header;
-    }
-
-    public void setCookie(String sessionId, String path) {
-        this.header.put("Set-Cookie", "sid=" + sessionId + "; Path=" + path);
-    }
-
-    private String getHeader() {
-        StringBuilder header = new StringBuilder();
-        for (String key : this.header.keySet()) {
-            header.append(key).append(": ").append(this.header.get(key)).append(" ").append(NEW_LINE);
+        public HttpResponseBuilder status(HttpStatus status) {
+            this.status = status;
+            return this;
         }
-        header.append(NEW_LINE);
 
-        return header.toString();
+        public HttpResponseBuilder path(String path) throws IOException {
+            this.path = path;
+            this.body = getBody(path, getMime(path));
+            this.header.put("Content-Length", String.valueOf(this.body.length));
+            return this;
+        }
+
+        public HttpResponseBuilder mime(HttpMime mime) {
+            this.mime = mime;
+            this.header.put("Content-Type", mime.getContentType());
+            return this;
+        }
+
+        public HttpResponseBuilder setCookie(String sessionId, String path) {
+            this.header.put("Set-Cookie", "sid=" + sessionId + "; Path=" + path);
+            return this;
+        }
+
+        public HttpResponseBuilder addHeaderParam(String key, String value) {
+            this.header.put(key, value);
+            return this;
+        }
+
+        private String getContentType() {
+            String contentType = mime.getContentType();
+            logger.debug("content type: {}", contentType);
+            return contentType;
+        }
+
+        private HttpMime getMime(String uri) {
+            int extensionIndex = uri.lastIndexOf(".") + 1;
+            String extension = uri.substring(extensionIndex);
+            return Arrays.stream(HttpMime.values())
+                    .filter(mime -> mime.getExtension().equals(extension))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        private byte[] getBody(String path, HttpMime mime) throws IOException {
+            byte[] body;
+
+            if (mime.getExtension().equals("html")) {
+                body = Files.readAllBytes(new File(HTML_PATH + path).toPath());
+            } else {
+                body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
+            }
+
+            return body;
+        }
+
+        public HttpResponse build() {
+            return new HttpResponse(this);
+        }
     }
 
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-            header.put("Content-Length", String.valueOf(body.length));
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+    private HttpResponse(HttpResponseBuilder builder) {
+        this.statusLine = builder.status;
+        this.header = builder.header;
+        this.body = builder.body;
+    }
+
+    private String setStatusLine(HttpStatus status) {
+        return "HTTP/1.1 " + status.getStatusCode() + " " + status.getStatus() + " " + NEW_LINE;
+    }
+
+    private String setHeader(Map<String, String> headers) {
+        StringBuilder headerString = new StringBuilder();
+        for (String key : headers.keySet()) {
+            headerString.append(key).append(": ").append(headers.get(key)).append(" ").append(NEW_LINE);
         }
+        headerString.append(NEW_LINE);
+
+        return headerString.toString();
+    }
+
+    public byte[] response() {
+        byte[] statusBuffer =  setStatusLine(this.statusLine).getBytes();
+        byte[] headerBuffer =  setHeader(this.header).getBytes();
+
+        byte[] responseBuffer = new byte[statusBuffer.length + headerBuffer.length + this.body.length];
+        System.arraycopy(statusBuffer, 0, responseBuffer, 0, statusBuffer.length);
+        System.arraycopy(headerBuffer, 0, responseBuffer, statusBuffer.length, headerBuffer.length);
+        System.arraycopy(this.body, 0, responseBuffer, statusBuffer.length + headerBuffer.length, this.body.length);
+
+        return responseBuffer;
     }
 }
