@@ -37,6 +37,18 @@ public class View {
         }
     }
 
+    public String getErrorView(String errorMessage) {
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<title>Error Page</title>" +
+                "</head>" +
+                "<body>" +
+                "<h1>Error: " + errorMessage + "</h1>" +
+                "</body>" +
+                "</html>";
+    }
+
     private String getProfileView(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
         if (!isSessionValid(sessionId)) {

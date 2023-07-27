@@ -8,5 +8,6 @@ public class FilePath {
     public static final String LIST = "/user/list.html";
     public static final String FORM = "/qna/form.html";
     public static final String SHOW = "/qna/show.html";
+    public static final String NOT_FOUND_ERROR = "/404.html";
     public static final String ERROR = "/error.html";
 }
