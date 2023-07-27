@@ -31,10 +31,12 @@ public class ArticleSaveController implements Controller {
                     httpRequest.getParameter("contents"));
 
             articleService.add(articleSaveDto);
-
             httpResponse.sendRedirect(Location.INDEX_PAGE);
         } catch (UnauthorizedException e) {
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED);
+            ModelAndView modelAndView = new ModelAndView(Location.ERROR_PAGE);
+            modelAndView.addAttribute("errorMessage", "401 UNAUTHORIZED");
+            return modelAndView;
         }
 
         return null;

@@ -29,11 +29,17 @@ public class UserSaveController implements Controller {
             userService.add(userSaveDto);
 
             httpResponse.sendRedirect(Location.INDEX_PAGE);
+            return null;
         } catch (BadRequestException e) {
             httpResponse.setStatus(HttpStatus.BAD_REQUEST);
+            ModelAndView modelAndView = new ModelAndView(Location.ERROR_PAGE);
+            modelAndView.addAttribute("errorMessage", "400 BAD REQUEST");
+            return modelAndView;
         } catch (ConflictException e) {
             httpResponse.setStatus(HttpStatus.CONFLICT);
+            ModelAndView modelAndView = new ModelAndView(Location.ERROR_PAGE);
+            modelAndView.addAttribute("errorMessage", "409 CONFLICT");
+            return modelAndView;
         }
-        return null;
     }
 }

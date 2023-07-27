@@ -17,7 +17,7 @@ public class Model {
     }
 
     public Object getAttribute(String name) {
-        return attributes.get(name);
+        return attributes.getOrDefault(name, "");
     }
 
     public Set<String> getAttributeNames() {
