@@ -4,7 +4,7 @@ import annotation.RequestMapping;
 import http.HttpRequest;
 import http.HttpResponse;
 
-@RequestMapping(path = "/user/form")
+@RequestMapping(values = {"/user/form", "/user/form.html"})
 public class UserFormController implements HttpController {
 
     @Override

@@ -9,7 +9,7 @@ import model.User;
 
 import java.util.*;
 
-@RequestMapping(path = "/index.html")
+@RequestMapping(values = {"/", "/index.html"})
 public class HomeController implements HttpController {
 
     @Override

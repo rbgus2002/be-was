@@ -6,7 +6,7 @@ import http.HttpRequest;
 import http.HttpResponse;
 import model.User;
 
-@RequestMapping(path = "/user/list")
+@RequestMapping(values = {"/user/list", "/user/list.html"})
 public class UserListController implements HttpController {
 
     @Override

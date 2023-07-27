@@ -5,7 +5,7 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpSession;
 
-@RequestMapping(path = "/user/logout")
+@RequestMapping(values = {"/user/logout"})
 public class UserLogoutController implements HttpController {
     @Override
     public String process(HttpRequest request, HttpResponse response) {

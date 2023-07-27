@@ -36,7 +36,10 @@ public class ControllerScanner {
 
                             if (clazz.isAnnotationPresent(RequestMapping.class)) {
                                 RequestMapping annotation = clazz.getAnnotation(RequestMapping.class);
-                                annotatedClasses.put(annotation.path(), (HttpController) clazz.getDeclaredConstructor().newInstance());
+                                String[] values = annotation.values();
+                                for (String value : values) {
+                                    annotatedClasses.put(value, (HttpController) clazz.getDeclaredConstructor().newInstance());
+                                }
                             }
                         }
                     }

@@ -7,7 +7,7 @@ import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
-@RequestMapping(path = "/user/login")
+@RequestMapping(values = {"/user/login", "/user/login.html"})
 public class UserLoginController implements HttpController {
 
     @Override

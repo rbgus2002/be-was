@@ -5,10 +5,8 @@ import db.UserRepository;
 import http.HttpRequest;
 import http.HttpResponse;
 import model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@RequestMapping(path = "/user/create")
+@RequestMapping(values = {"/user/create"})
 public class UserJoinController implements HttpController {
 
     @Override

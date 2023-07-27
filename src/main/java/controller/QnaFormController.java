@@ -8,7 +8,7 @@ import http.HttpSession;
 import model.Question;
 import model.User;
 
-@RequestMapping(path = "/qna/form")
+@RequestMapping(values = {"/qna/form", "/qna/form.html"})
 public class QnaFormController implements HttpController {
     @Override
     public String process(HttpRequest request, HttpResponse response) {

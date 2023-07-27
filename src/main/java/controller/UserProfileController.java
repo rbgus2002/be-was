@@ -6,7 +6,7 @@ import http.HttpResponse;
 import http.HttpSession;
 import model.User;
 
-@RequestMapping(path = "/user/profile")
+@RequestMapping(values = {"/user/profile", "/user/profile.html"})
 public class UserProfileController implements HttpController {
 
     @Override
@@ -83,7 +83,7 @@ public class UserProfileController implements HttpController {
         htmlBuilder.append("        </div>\n");
         htmlBuilder.append("        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">\n");
         htmlBuilder.append("            <ul class=\"nav navbar-nav navbar-right\">\n");
-        htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>>\n");
+        htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
         htmlBuilder.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
         htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         htmlBuilder.append("            </ul>\n");

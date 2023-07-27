@@ -7,7 +7,7 @@ import http.HttpResponse;
 import model.Question;
 import model.User;
 
-@RequestMapping(path = "/qna/show.html")
+@RequestMapping(values = {"/qna/show", "/qna/show.html"})
 public class QnaShowController implements HttpController {
 
     @Override
