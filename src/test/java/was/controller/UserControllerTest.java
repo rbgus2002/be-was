@@ -76,4 +76,28 @@ class UserControllerTest {
 		assertThat(outputStream.toString()).contains("SID");
 	}
 
+	@Test
+	@DisplayName("로그아웃을 하면 쿠키가 만료되어야한다")
+	void expiredCookieDoLogout() throws IOException {
+		// given
+		final User user = new User("chan", "1234", "chan", "c@naver.com");
+		Database.addUser(user);
+
+		String input = "GET /logout HTTP/1.1\r\n"
+			+ "Cookie: SID=12345\r\n"
+			+ "\r\n";
+
+		InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+		final HttpWasRequest httpWasRequest = new HttpWasRequest(inputStream);
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		final HttpWasResponse httpWasResponse = new HttpWasResponse(outputStream);
+
+		// when
+		userController.logout(httpWasRequest, httpWasResponse);
+		httpWasResponse.doResponse();
+
+		// then
+		assertThat(outputStream.toString()).contains("Max-Age=0");
+	}
+
 }
