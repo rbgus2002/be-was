@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import util.Parser;
 import webserver.FrontController;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class UserController {
     }
 
     public static UserController getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new UserController();
         }
         return instance;
@@ -59,7 +60,7 @@ public class UserController {
         if (validateUser(user, password)) {
             // Set-Cookie
             String sessionId = UUID.randomUUID().toString();
-            response.setCookie(sessionId);
+            response.setCookie("sid=" + sessionId + "; Path=/");
 
             HttpSession session = new HttpSession(sessionId);
             SessionDatabase.addSession(sessionId, session);
@@ -69,6 +70,15 @@ public class UserController {
 
         // login 실패시 /user/index_failed.html 로 이동
         return "redirect:/user/login_failed.html";
+    }
+
+    @RequestMapping(path = "/user/logout", method = HttpMethod.POST)
+    public String logout(HttpRequest request, HttpResponse response) {
+        String cookie = request.getCookie();
+        StringBuilder cookieBuilder = new StringBuilder(cookie);
+        cookieBuilder.append("Expires=Thu, 01 Jan 1970 00:00:00 GMT" + "; Path=/");
+        response.setCookie(cookieBuilder.toString());
+        return "redirect:/index.html";
     }
 
     private boolean validateUser(User user, String password) {
