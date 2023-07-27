@@ -65,20 +65,20 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="../index.html">Posts</a></li>
-                {
+                {{
                     user :: <li><a >[name]</a></li>,
                     default :: <li><a href="/user/login.html" role="button">로그인</a></li>
-                }
+                }}
 
-                {
+                {{
                     user :: ,
                     default :: <li><a href="/user/form.html" role="button">회원가입</a></li>
-                }
+                }}
 
-                {
+                {{
                     user :: <li><a href="#" role="button">로그아웃</a></li><li><a href="#" role="button">개인정보수정</a></li>,
                     default ::
-                }
+                }}
             </ul>
         </div>
     </div>
@@ -94,10 +94,10 @@
                 </tr>
               </thead>
               <tbody>
-              {
+              {{
                 list-users :: <td>[userId]</td> <td>[name]</td> <td>[email]</td><td><a href="#" class="btn btn-success" role="button">수정</a></td>,
                 default ::
-              }
+              }}
               </tbody>
           </table>
         </div>

@@ -25,7 +25,6 @@ import webserver.myframework.session.SessionManagerImpl;
 import webserver.myframework.view.ViewResolverImpl;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -105,7 +104,6 @@ class DispatcherServletTest {
                     dispatcherServlet.handleRequest(httpRequest, httpResponse);
 
                     //then
-                    System.out.println(new String(httpResponse.getBody(), StandardCharsets.UTF_8));
                     assertThat(httpResponse.getBody())
                             .isEqualTo(Files.readAllBytes(Path.of(RESOURCE_URI + "/templates/user/login.html")));
                 }
