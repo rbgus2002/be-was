@@ -1,39 +1,38 @@
 package webserver.http;
 
-import webserver.http.enums.ContentType;
+import com.google.common.collect.Maps;
 import webserver.http.enums.HttpResponseStatus;
 
-import java.util.Set;
-
-import static webserver.http.enums.ContentType.PLAIN;
+import java.util.Map;
 
 public class HttpResponse {
     private String version;
     private int statusCode;
-    private String statusText;
-    private ContentType contentType;
-    private HttpHeaders headers;
-    private byte[] body;
+    private String fileName;
+    private String sessionId;
+    private String redirect;
+    private Map<String, String> attributes;
 
-    private HttpResponse(String version, HttpResponseStatus status,
-                         ContentType contentType, HttpHeaders headers, byte[] body) {
+    private HttpResponse(String version, HttpResponseStatus status, String fileName,
+                         String redirect, String sessionId, Map<String, String> attributes) {
         this.version = version;
         this.statusCode = status.getStatusCode();
-        this.statusText = status.getStatusText();
-        this.contentType = contentType;
-        this.headers = headers;
-        this.body = body;
+        this.fileName = fileName;
+        this.sessionId = sessionId;
+        this.redirect = redirect;
+        this.attributes = attributes;
     }
 
     public static class Builder {
         private String version;
         private HttpResponseStatus status;
-        private ContentType contentType = PLAIN;
-        private HttpHeaders headers;
-        private byte[] body = new byte[0];
+        private String fileName;
+        private String sessionId;
+        private String redirect;
+        private Map<String, String> attributes;
 
         public Builder() {
-            this.headers = new HttpHeaders();
+            this.attributes = Maps.newHashMap();
         }
 
         public HttpResponse.Builder version(String version) {
@@ -46,23 +45,28 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse.Builder contentType(ContentType contentType) {
-            this.contentType = contentType;
+        public HttpResponse.Builder fileName(String fileName) {
+            this.fileName = fileName;
             return this;
         }
 
-        public HttpResponse.Builder body(byte[] body) {
-            this.body = body;
+        public HttpResponse.Builder sessionId(String sessionId) {
+            this.sessionId = sessionId;
             return this;
         }
 
-        public HttpResponse.Builder setHeader(String header, String value) {
-            this.headers.setHeader(header, value);
+        public HttpResponse.Builder redirect(String redirect) {
+            this.redirect = redirect;
+            return this;
+        }
+
+        public HttpResponse.Builder setAttribute(String key, String value) {
+            this.attributes.put(key, value);
             return this;
         }
 
         public HttpResponse build() {
-            return new HttpResponse(version, status, contentType, headers, body);
+            return new HttpResponse(version, status, fileName, sessionId, redirect, attributes);
         }
 
     }
@@ -79,24 +83,20 @@ public class HttpResponse {
         return this.statusCode;
     }
 
-    public String statusText() {
-        return this.statusText;
+    public String fileName() {
+        return this.fileName;
     }
 
-    public ContentType contentType() {
-        return this.contentType;
+    public String sessionId() {
+        return this.sessionId;
     }
 
-    public Set<String> headers() {
-        return headers.headers();
+    public String redirect() {
+        return this.redirect;
     }
 
-    public String getHeader(String header) {
-        return headers.getHeader(header);
-    }
-
-    public byte[] body() {
-        return this.body;
+    public Map<String, String> attributes() {
+        return this.attributes;
     }
 
 }
