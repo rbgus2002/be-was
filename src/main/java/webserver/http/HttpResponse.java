@@ -57,6 +57,7 @@ public class HttpResponse {
 
         public HttpResponse.Builder redirect(String redirect) {
             this.redirect = redirect;
+            this.fileName = redirect;
             return this;
         }
 
