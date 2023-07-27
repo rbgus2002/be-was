@@ -14,6 +14,7 @@ import webserver.http.model.Response;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -53,8 +54,12 @@ public class Router {
         catch (HTTPException e) {
             return e.generateResponse();
         }
+        catch (InvocationTargetException e) {
+            HTTPException httpException = (HTTPException) e.getTargetException();
+            return httpException.generateResponse();
+        }
         catch (Exception e) {
-            logger.error(e.getStackTrace().toString());
+            logger.error(Arrays.toString(e.getStackTrace()));
         }
 
         return null;
