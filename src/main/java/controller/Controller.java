@@ -9,12 +9,10 @@ import http.MIME;
 import view.Page;
 
 import static db.SessionStorage.isSessionValid;
-import static exception.ExceptionList.INVALID_URI;
 import static http.Extension.HTML;
 import static http.FilePath.*;
 import static http.HttpMethod.POST;
-import static http.MIME.getExtension;
-import static utils.FileIOUtils.*;
+import static utils.FileUtils.*;
 
 public abstract class Controller {
     private final Page page = new Page();
@@ -30,9 +28,6 @@ public abstract class Controller {
             }
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
-            if (getExtension().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
-                throw new BadRequestException(INVALID_URI);
-            }
             if (uri.endsWith(INDEX) || uri.endsWith(PROFILE) || uri.endsWith(LIST)) {
                 return loadFileFromString(HttpStatus.OK, page.getDynamicPage(httpRequest, uri), uri);
             }

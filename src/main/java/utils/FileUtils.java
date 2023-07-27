@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 import static exception.ExceptionList.INVALID_URI;
 
-public class FileIOUtils {
+public class FileUtils {
     public static final String STATIC_DIRECTORY = "src/main/resources/static";
     public static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
 
