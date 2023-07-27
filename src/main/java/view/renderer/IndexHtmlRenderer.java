@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IndexHtmlRenderer extends HtmlRenderer {
+
     private final String POST_TITLE_TAG_FORMAT = "<strong class=\"subject\"><a href=\"/post/show.html?postId=%s\">%s</a></strong>";
     private final String POST_TIME_TAG_FORMAT = "<span class=\"time\">%s</span>";
     private final String POST_AUTHOR_TAG_FORMAT = "<a href=\"/user/profile.html\" class=\"author\">%s</a>";
