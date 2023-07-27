@@ -14,7 +14,10 @@ public class SessionValue {
     }
 
     public String getUserId() {
-        return userId;
+        if(!isExpired()) {
+            return userId;
+        }
+        return null;
     }
 
     public boolean isExpired() {

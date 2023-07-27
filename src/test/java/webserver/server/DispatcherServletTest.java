@@ -43,10 +43,9 @@ class DispatcherServletTest {
 
     private void sendRequest(String url,String expected) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         HttpResponse httpResponse = new HttpResponse();
         HttpRequest httpRequest = new HttpRequest(url, null);
-        dispatcherServlet.service(httpRequest, httpResponse, dataOutputStream);
+        dispatcherServlet.service(httpRequest, httpResponse);
         String header = outputStream.toString().split("\r\n")[0];
 
 

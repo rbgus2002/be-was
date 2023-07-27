@@ -6,13 +6,13 @@ import webserver.util.Parser;
 import webserver.util.ViewResolver;
 
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class View {
     private final byte[] body;
 
     public View(String url, User user) {
         byte[] byteBody = ViewResolver.getContent(url, Parser.getUrlExtension(url));
+
         if(url.contains("redirect")) {
             body = null;
             return;
@@ -34,20 +34,25 @@ public class View {
             stringBody = stringBody.replaceAll("::not_login", "-->");
             stringBody = stringBody.replaceAll("login::", "");
             stringBody = stringBody.replaceAll("::login", "");
-            Collection<User> users = userService.findAll();
-            AtomicInteger i = new AtomicInteger(1);
-            users.forEach(u -> {
-                stringBuilder.append("<tr>");
-                stringBuilder.append("<th scope=\"row\">").append(i).append("</th> ");
-                stringBuilder.append("<td>").append(u.getUserId()).append("</td> ");
-                stringBuilder.append("<td>").append(u.getName()).append("</td> ");
-                stringBuilder.append("<td>").append(u.getEmail()).append("</td> ");
-                stringBuilder.append("<td> <a href=\"#\" class=\"btn btn-success\" role=\"button\"> 수정 </td>");
-                stringBuilder.append("\n</tr>");
-                i.getAndIncrement();
-            });
+            if(stringBody.contains("for::")) {
+                Collection<User> users = userService.findAll();
+                int i = 1;
+                String subString = stringBody.substring(stringBody.indexOf("for::"), stringBody.indexOf("::for"));
+                for (User u : users) {
+                    String repeatPart = subString;
+                    repeatPart = repeatPart.replace(":i:", i + "");
+                    repeatPart = repeatPart.replace(":model.userId:", u.getUserId());
+                    repeatPart = repeatPart.replace(":model.name:", u.getName());
+                    repeatPart = repeatPart.replace(":model.email:", u.getEmail());
 
-            stringBody = stringBody.replaceAll(":model:", stringBuilder.toString());
+                    stringBuilder.append(repeatPart);
+                    i++;
+                }
+                System.out.println(stringBuilder);
+                stringBody = stringBody.replace(subString, stringBuilder.toString());
+                stringBody = stringBody.replaceAll("for::", "");
+                stringBody = stringBody.replaceAll("::for", "");
+            }
             return stringBody;
         }
         stringBody = stringBody.replaceAll("not_login::", "");

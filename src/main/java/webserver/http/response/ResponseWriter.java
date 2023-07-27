@@ -64,7 +64,7 @@ public class ResponseWriter {
     }
 
     private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, View view) throws IOException {
-        logger.debug("ContentType : " + contentType + ", ResponeMessageHeader" + view.getLength());
+        logger.debug("ContentType : " + contentType + ", ResponseMessageHeader : " + view.getLength());
         writeHeader(responseMessageHeader.response200Header(contentType, httpResponse.getCookie()));
         writeBody(view);
     }
@@ -74,8 +74,8 @@ public class ResponseWriter {
     }
 
 
-    private void writeBody(View body) throws IOException {
-        dos.write(body.readBody(), 0, body.getLength());
+    private void writeBody(View view) throws IOException {
+        dos.write(view.readBody(), 0, view.getLength());
     }
 
 

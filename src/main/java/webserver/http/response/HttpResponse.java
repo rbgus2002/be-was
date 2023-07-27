@@ -21,7 +21,6 @@ public class HttpResponse {
     }
 
     public HttpResponse(String cookie) {
-
         this.responseMessageHeader = new ResponseMessageHeader();
         view = null;
         this.cookie = cookie;
@@ -40,23 +39,29 @@ public class HttpResponse {
     }
 
     public void setBody(String toUrl) {
-        view = new View(toUrl,getLoginUser());
+        try {
+            view = new View(toUrl, getLoginUser());
+        } catch(NullPointerException e) {
+            System.out.println("toUrl : " + toUrl);
+            System.out.println("Login : " + getLoginUser());
+            System.out.println("error : " + e.getMessage());
+    }
     }
 
     private User getLoginUser() {
         UserService userService = UserService.of();
+
         if(cookie == null || !cookie.contains("sid=")) {
             return null;
         }
         String sId = cookie.split("sid=")[1].split(";")[0];
+
         return userService.getUser(sId);
     }
 
     public View getBody() {
         return view;
     }
-
-
     public void setCookie(String cookie) {
         this.cookie = cookie;
     }

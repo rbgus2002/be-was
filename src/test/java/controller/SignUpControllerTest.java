@@ -19,15 +19,13 @@ import java.util.concurrent.Executors;
 class SignUpControllerTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SignUpControllerTest.class);
-
-    SignUpController signupController = new SignUpController();
+    UserController userController = new UserController();
 
     @Test
     @DisplayName("멀티 쓰레드 시 잘 작동하는 지??")
     void multi() throws InterruptedException {
         // given
         final int THREADS = 100;
-        signupController = new SignUpController();
         ExecutorService service = Executors.newFixedThreadPool(THREADS);
         CountDownLatch latch = new CountDownLatch(THREADS);
 
@@ -40,7 +38,7 @@ class SignUpControllerTest {
                     HttpRequest httpRequest = new HttpRequest("GET /user/create?userId="
                             + finalThread + "&password=sss&name=sss"
                             + finalThread + "&email=sss%40naver.com HTTP/1.1", null);
-                    signupController.signUp(httpRequest, new HttpResponse());
+                    userController.signUp(httpRequest, new HttpResponse());
                 } catch(Exception e) {
                     logger.error(e.getMessage());
                 } finally {

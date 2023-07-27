@@ -3,9 +3,9 @@ package Service;
 import db.Database;
 import model.User;
 import session.SessionStorage;
+import session.SessionValue;
 
 import java.util.Collection;
-import java.util.UUID;
 
 public class UserService {
 
@@ -30,16 +30,17 @@ public class UserService {
     }
 
     private boolean isLogin(String sessionId) {
-        String userId = SessionStorage.getUserId(UUID.fromString(sessionId));
-        return userId != null;
+        SessionValue sessionValue = SessionStorage.getSessionValue(sessionId);
+        return sessionValue != null;
     }
 
-    public User getUser(String sId) {
-        if(!isLogin(sId)) {
-            return null;
+    public User getUser(String sessionId) {
+        if (!isLogin(sessionId)) {
+                return null;
         }
-        String userId = SessionStorage.getUserId(UUID.fromString(sId));
-        return Database.findUserById(userId);
+        SessionValue sessionValue = SessionStorage.getSessionValue(sessionId);
+
+        return Database.findUserById(sessionValue.getUserId());
     }
 
     public Collection<User> findAll() {

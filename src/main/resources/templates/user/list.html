@@ -90,7 +90,17 @@
               </thead>
               login::
               <tbody>
-              :model:
+              for::
+              <tr>
+                  <th scope="row">:i:</th>
+                  <td>:model.userId:</td>
+                  <td>:model.name:</td>
+                  <td>:model.email:</td>
+                  <td>
+                      <a href="#" class="btn btn-success" role="button"> 수정 </a>
+                  </td>
+              </tr>
+              ::for
               </tbody>
               ::login
           </table>

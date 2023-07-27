@@ -13,15 +13,7 @@ public class SessionStorage {
         return sessionId.toString();
     }
 
-    //todo getSession해서 책임 분리
-    public static String getUserId(UUID sessionId) {
-        SessionValue sessionValue = sessionStorage.get(sessionId);
-        if(sessionValue == null) {
-            return null;
-        }
-        if(sessionValue.isExpired()) {
-            return null;
-        }
-        return sessionValue.getUserId();
+    public static SessionValue getSessionValue(String sessionId) {
+        return sessionStorage.get(UUID.fromString(sessionId));
     }
 }

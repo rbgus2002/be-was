@@ -1,22 +1,18 @@
 package webserver.server;
 
-
-
 import java.lang.reflect.Method;
 
 public class ControllerConfig {
-    //todo Object들고 있음 되겠네
-    private final Class<?> clazz;
+    private final Object object;
     private final Method method;
 
-    public ControllerConfig(Class<?> clazz, Method method)  {
-        this.clazz = clazz;
+
+    public ControllerConfig(Object object, Method method) {
+        this.object = object;
         this.method = method;
     }
-
-
-    public Class<?> getClazz() {
-        return clazz;
+    public Object getObject() {
+        return object;
     }
 
     public Method getMethod() {

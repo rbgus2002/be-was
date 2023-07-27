@@ -29,7 +29,7 @@ public class AnnotationProcessor {
                 if(clazz.isAnnotationPresent(Controller.class)) {
                     getRequestMappingMethod(clazz, annotationMap);
                 }
-            } catch (ClassNotFoundException exception) {
+            } catch (Exception exception) {
                 logger.error(exception.getMessage());
             }
         }
@@ -53,11 +53,11 @@ public class AnnotationProcessor {
         return result;
     }
 
-    private static void getRequestMappingMethod(Class clazz, HashMap<String, ControllerConfig> annotationMap) {
+    private static void getRequestMappingMethod(Class<?> clazz, HashMap<String, ControllerConfig> annotationMap) throws Exception {
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
-                annotationMap.put(method.getAnnotation(RequestMapping.class).path(), new ControllerConfig(clazz,method));
+                annotationMap.put(method.getAnnotation(RequestMapping.class).path(), new ControllerConfig(clazz.getConstructor().newInstance(), method));
             }
         }
     }
