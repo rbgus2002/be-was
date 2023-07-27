@@ -12,13 +12,13 @@ public class Article {
     private String title;
     private String contents;
 
-    public Article(String userId, String username, String title, String contents, LocalDate createDate) {
+    public Article(String userId, String username, String title, String contents) {
         this.articleId = articleIndex++;
         this.userId = userId;
         this.username = username;
         this.title = title;
         this.contents = contents;
-        this.createDate = createDate;
+        this.createDate = LocalDate.now();
     }
 
     public int getArticleId() {

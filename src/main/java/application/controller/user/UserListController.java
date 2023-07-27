@@ -1,9 +1,9 @@
 package application.controller.user;
 
-import db.SessionDatabase;
-import db.UserDatabase;
-import model.User;
 import application.controller.Controller;
+import application.dto.user.UserListDto;
+import application.service.SessionService;
+import application.service.UserService;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
@@ -12,12 +12,13 @@ import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
 import webserver.utils.Location;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 
 public class UserListController implements Controller {
+    private final UserService userService = UserService.getInstance();
+    private final SessionService sessionService = SessionService.getInstance();
+
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         if (isLoginStatus(httpRequest)) {
@@ -29,7 +30,7 @@ public class UserListController implements Controller {
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
         String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
-        return SessionDatabase.verifySessionId(sessionId);
+        return sessionService.verifySessionId(sessionId);
     }
 
     private void respondWithUserList(HttpResponse httpResponse) throws IOException {
@@ -42,40 +43,26 @@ public class UserListController implements Controller {
     }
 
     private String createUserListHtml() throws IOException {
-        BufferedReader templateHtmlReader = getTemplateHtmlReader();
+        String templateHtml = FileUtils.readFileAsString(Location.USER_LIST_PAGE);
+        return templateHtml.replace("${userList}", getUserListHtml());
+    }
+
+    private String getUserListHtml() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        while (templateHtmlReader.ready()) {
-            addHtmlLine(templateHtmlReader.readLine(), stringBuilder);
-        }
-        return stringBuilder.toString();
-    }
+        List<UserListDto> userList = userService.getList();
 
-    private BufferedReader getTemplateHtmlReader() throws IOException {
-        byte[] htmlBytes = FileUtils.readFileBytes("/user/list.html");
-        return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(htmlBytes)));
-    }
-
-    private void addHtmlLine(String line, StringBuilder stringBuilder) {
-        stringBuilder.append(line).append("\r\n");
-        if (line.contains("<tbody>")) {
-            appendUserList(stringBuilder);
-        }
-    }
-
-    private void appendUserList(StringBuilder stringBuilder) {
-        User[] users = UserDatabase.findAll().toArray(new User[0]);
-
-        for (int index = 0; index < users.length; index++) {
+        for (int index = 0; index < userList.size(); index++) {
             stringBuilder.append("                <tr>\r\n")
                     .append("                    ")
                     .append("<th scope=\"row\">").append(index + 1).append("</th> ")
-                    .append("<td>").append(users[index].getUserId()).append("</td> ")
-                    .append("<td>").append(users[index].getName()).append("</td> ")
-                    .append("<td>").append(users[index].getEmail()).append("</td>")
+                    .append("<td>").append(userList.get(index).getUserId()).append("</td> ")
+                    .append("<td>").append(userList.get(index).getName()).append("</td> ")
+                    .append("<td>").append(userList.get(index).getEmail()).append("</td>")
                     .append("<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\r\n")
                     .append("                </tr>\r\n");
         }
 
+        return stringBuilder.toString();
     }
 }

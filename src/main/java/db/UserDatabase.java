@@ -12,7 +12,7 @@ public class UserDatabase {
         users.put(user.getUserId(), user);
     }
 
-    public static User findUserById(String userId) {
+    public static User findById(String userId) {
         return users.get(userId);
     }
 
@@ -22,5 +22,9 @@ public class UserDatabase {
 
     public static Collection<User> findAll() {
         return users.values();
+    }
+
+    public static boolean checkUserIdExists(String userId) {
+        return users.containsKey(userId);
     }
 }

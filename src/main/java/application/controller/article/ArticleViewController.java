@@ -1,14 +1,12 @@
 package application.controller.article;
 
-import db.ArticleDatabase;
-import model.Article;
 import application.controller.Controller;
-import webserver.http.HttpParameters;
+import application.dto.article.ArticleViewDto;
+import application.service.ArticleService;
+import application.service.SessionService;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import db.SessionDatabase;
-import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
 import webserver.utils.Location;
@@ -16,24 +14,25 @@ import webserver.utils.Location;
 import java.io.IOException;
 
 public class ArticleViewController implements Controller {
+    private final ArticleService articleService = ArticleService.getInstance();
+    private final SessionService sessionService = SessionService.getInstance();
+
     @Override
     public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
+        String sessionId = httpRequest.getSessionId();
 
-        if (isLoginStatus(sessionId)) {
+        if (sessionService.verifySessionId(sessionId)) {
             setHttpResponseWithArticleViewHtml(httpRequest, httpResponse);
             return;
         }
         httpResponse.sendRedirect(Location.LOGIN_PAGE);
     }
 
-    private boolean isLoginStatus(String sessionId) {
-        return SessionDatabase.verifySessionId(sessionId);
-    }
-
     private void setHttpResponseWithArticleViewHtml(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        Article article = findArticle(httpRequest);
-        String articleViewHtml = createArticleViewHtml(article);
+        int articleId = Integer.parseInt(httpRequest.getParameter("articleId"));
+        ArticleViewDto articleViewDto = articleService.getViewDto(articleId);
+
+        String articleViewHtml = createArticleViewHtml(articleViewDto);
         setHttpResponseWithHtml(httpResponse, articleViewHtml);
     }
 
@@ -44,24 +43,13 @@ public class ArticleViewController implements Controller {
         httpResponse.setBody(html.getBytes());
     }
 
-    private Article findArticle(HttpRequest httpRequest) {
-        HttpParameters requestParameters = httpRequest.getParameters();
-        int articleId = Integer.parseInt(requestParameters.get("articleId"));
-        return ArticleDatabase.findByArticleId(articleId);
-    }
-
-    private String createArticleViewHtml(Article article) throws IOException {
-        String templateHtml = getTemplateHtml();
+    private String createArticleViewHtml(ArticleViewDto dto) throws IOException {
+        String templateHtml = FileUtils.readFileAsString(Location.ARTICLE_VIEW_PAGE);
 
         return templateHtml
-                .replace("${title}", article.getTitle())
-                .replace("${username}", article.getUsername())
-                .replace("${createDate}", article.getCreateDate().toString())
-                .replace("${contents}", article.getContents());
-    }
-
-    private String getTemplateHtml() throws IOException {
-        byte[] bytes = FileUtils.readFileBytes("/article/show.html");
-        return new String(bytes);
+                .replace("${title}", dto.getTitle())
+                .replace("${username}", dto.getUsername())
+                .replace("${createDate}", dto.getCreateDate())
+                .replace("${contents}", dto.getContents());
     }
 }

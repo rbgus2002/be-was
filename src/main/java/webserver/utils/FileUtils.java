@@ -13,6 +13,13 @@ public final class FileUtils {
     private FileUtils() {
     }
 
+    public static String readFileAsString(String path) throws IOException {
+        if (FileUtils.isStaticFile(path)) {
+            return new String(Files.readAllBytes(Paths.get(STATIC_DIRECTORY + path)));
+        }
+        return new String(Files.readAllBytes(Paths.get(TEMPLATES_DIRECTORY + path)));
+    }
+
     public static byte[] readFileBytes(String path) throws IOException {
         if (FileUtils.isStaticFile(path)) {
             return Files.readAllBytes(Paths.get(STATIC_DIRECTORY + path));

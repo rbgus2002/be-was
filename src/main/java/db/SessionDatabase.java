@@ -15,7 +15,7 @@ public final class SessionDatabase {
         return session.getSessionId();
     }
 
-    public static boolean verifySessionId(String sessionId) {
+    public static boolean contains(String sessionId) {
         return sessions.containsKey(sessionId);
     }
 

@@ -44,7 +44,7 @@ class UserSaveControllerTest {
 
         //when
         userSaveController.process(httpRequest, httpResponse);
-        User user = UserDatabase.findUserById("javajigi");
+        User user = UserDatabase.findById("javajigi");
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();

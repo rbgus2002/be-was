@@ -1,13 +1,13 @@
 package application.controller.index;
 
 import application.controller.Controller;
-import db.ArticleDatabase;
-import db.UserDatabase;
-import model.Article;
+import application.dto.article.ArticleListDto;
+import application.service.ArticleService;
+import application.service.SessionService;
+import application.service.UserService;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import db.SessionDatabase;
 import webserver.utils.CookieConstants;
 import webserver.utils.FileUtils;
 import webserver.utils.HttpField;
@@ -16,6 +16,10 @@ import webserver.utils.Location;
 import java.io.IOException;
 
 public class IndexPageController implements Controller {
+    private final ArticleService articleService = ArticleService.getInstance();
+    private final SessionService sessionService = SessionService.getInstance();
+    private final UserService userService = UserService.getInstance();
+
     private static final String articleInfoTemplateHtml = "<tr>\n"
             + "<td>${createDate}</td>\n"
             + "<td>${username}</td>\n"
@@ -55,8 +59,8 @@ public class IndexPageController implements Controller {
     private String appendArticleListHtmlInto(String html) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (Article article : ArticleDatabase.findAll()) {
-            appendArticleInfoHtml(stringBuilder, article);
+        for (ArticleListDto dto : articleService.getList()) {
+            appendArticleInfoHtml(stringBuilder, dto);
         }
 
         String articleListHtml = stringBuilder.toString();
@@ -64,12 +68,12 @@ public class IndexPageController implements Controller {
         return html.replace("${articleList}", articleListHtml);
     }
 
-    private void appendArticleInfoHtml(StringBuilder stringBuilder, Article article) {
+    private void appendArticleInfoHtml(StringBuilder stringBuilder, ArticleListDto dto) {
         String articleInfoHtml = articleInfoTemplateHtml
-                .replace("${createDate}", article.getCreateDate().toString())
-                .replace("${username}", article.getUsername())
-                .replace("${articleId}", String.valueOf(article.getArticleId()))
-                .replace("${title}", article.getTitle());
+                .replace("${createDate}", dto.getCreateDate().toString())
+                .replace("${username}", dto.getUsername())
+                .replace("${articleId}", String.valueOf(dto.getArticleId()))
+                .replace("${title}", dto.getTitle());
 
         stringBuilder.append(articleInfoHtml);
     }
@@ -81,13 +85,13 @@ public class IndexPageController implements Controller {
 
     private boolean isLoginStatus(HttpRequest httpRequest) {
         String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
-        return SessionDatabase.verifySessionId(sessionId);
+        return sessionService.verifySessionId(sessionId);
     }
 
     private String getUsername(HttpRequest httpRequest) {
         String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
-        String userId = SessionDatabase.findUserIdBySessionId(sessionId);
-        return UserDatabase.findUserById(userId).getName();
+        String userId = sessionService.findUserId(sessionId);
+        return userService.findNameById(userId);
     }
 
     private void setHttpResponseWithIndexPageHtml(HttpResponse httpResponse, String html) {

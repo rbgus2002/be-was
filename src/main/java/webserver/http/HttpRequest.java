@@ -1,5 +1,6 @@
 package webserver.http;
 
+import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
 
 import java.io.BufferedReader;
@@ -124,12 +125,16 @@ public class HttpRequest {
         return httpHeaders.get(field);
     }
 
-    public HttpParameters getParameters() {
-        return httpParameters;
+    public String getParameter(String name) {
+        return httpParameters.get(name);
     }
 
     public String getCookie(String name) {
         return cookie.get(name);
+    }
+
+    public String getSessionId() {
+        return cookie.get(CookieConstants.SESSION_ID);
     }
 
     public String getBody() {

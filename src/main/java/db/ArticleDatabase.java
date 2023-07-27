@@ -14,7 +14,7 @@ public class ArticleDatabase {
         articles.put(article.getArticleId(), article);
     }
 
-    public static Article findByArticleId(int articleId) {
+    public static Article findById(int articleId) {
         return articles.get(articleId);
     }
 
