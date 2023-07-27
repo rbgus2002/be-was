@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
 import static http.FilePath.INDEX;
-import static utils.FileIOUtils.loadFromPath;
+import static utils.FileUtils.loadFromPath;
 
 public class BoardController extends Controller {
 
