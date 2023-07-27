@@ -14,7 +14,7 @@ import static utils.StringUtils.NEW_LINE;
 import static webserver.request.HttpRequestParser.parseRequest;
 
 @DisplayName("요청 메시지 클래스 테스트")
-class HttpRequestMessageTest {
+class CookiesMessageTest {
     @Test
     @DisplayName("body가 없는 Get 응답 메시지 객체가 생성한다.")
     void createWithoutBody() throws Exception {

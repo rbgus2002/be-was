@@ -1,5 +1,6 @@
 package webserver.handler;
 
+import webserver.controller.ApplicationControllerHandler;
 import webserver.request.HttpRequestMessage;
 import webserver.response.HttpMIME;
 import webserver.response.HttpResponseMessage;
@@ -10,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static webserver.WebServer.logger;
-import static webserver.controller.ApplicationControllerHandler.executeMethod;
 
 public class HttpHandler {
     private final HttpRequestMessage httpRequestMessage;
@@ -48,22 +48,23 @@ public class HttpHandler {
     }
 
     private void handlingController() {
+        ApplicationControllerHandler applicationHandler = ApplicationControllerHandler.of(httpRequestMessage, httpResponseMessage);
         try {
             // 결과값 반환
-            Object returnValue = executeMethod(httpRequestMessage);
+            Object returnValue = applicationHandler.executeMethod();
             httpResponseMessage.setStatusLine(HttpStatus.CREATED);
 
-            if (returnValue == null) {
+            if (!hasReturnValue(returnValue)) {
+                httpResponseMessage.setStatusLine(HttpStatus.OK);
                 return;
             }
             // String을 받은 상황
-            if (returnValue.getClass().equals(String.class)) {
+            if (isSameClass(returnValue, String.class)) {
                 String resultStringValue = String.valueOf(returnValue);
 
                 // 리다이렉트를 처리해야 하는 상황
                 if (resultStringValue.startsWith("redirect:")) {
                     String redirectPath = resultStringValue.substring(resultStringValue.indexOf(":") + 1);
-                    logger.debug(redirectPath);
                     httpResponseMessage.setStatusLine(HttpStatus.FOUND);
                     httpResponseMessage.setHeader("Location", redirectPath);
                     logger.debug(httpResponseMessage.toString());
@@ -76,5 +77,13 @@ public class HttpHandler {
             httpResponseMessage.setBody("");
             logger.error("올바르지 않은 수행 요청입니다.");
         }
+    }
+
+    private static boolean isSameClass(Object returnValue, Class<?> clazz) {
+        return returnValue.getClass().equals(clazz);
+    }
+
+    private static boolean hasReturnValue(Object returnValue) {
+        return returnValue != null;
     }
 }

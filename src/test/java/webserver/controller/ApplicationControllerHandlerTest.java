@@ -5,11 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.exception.BadRequestException;
 import webserver.request.HttpRequestMessage;
+import webserver.response.HttpResponseMessage;
 
 import java.io.ByteArrayInputStream;
 
 import static utils.StringUtils.NEW_LINE;
-import static webserver.controller.ApplicationControllerHandler.executeMethod;
 import static webserver.request.HttpRequestParser.parseRequest;
 
 @DisplayName("사용자 컨트롤러 핸들러 테스트")
@@ -32,6 +32,7 @@ class ApplicationControllerHandlerTest {
                 "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
         HttpRequestMessage httpRequestMessage = parseRequest(new ByteArrayInputStream(message.getBytes()));
 
-        executeMethod(httpRequestMessage);
+        ApplicationControllerHandler applicationControllerHandler = ApplicationControllerHandler.of(httpRequestMessage, new HttpResponseMessage());
+        applicationControllerHandler.executeMethod();
     }
 }
