@@ -67,8 +67,8 @@ public class UserController {
 				.build();
 
 			response.addCookie(cookie);
-			response.setHttpStatus(HttpStatus.FOUND);
-			response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
 		}
+		response.setHttpStatus(HttpStatus.FOUND);
+		response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
 	}
 }
