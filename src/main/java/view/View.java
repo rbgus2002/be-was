@@ -171,6 +171,10 @@ public class View {
     }
 
     private String getShowView(HttpRequest httpRequest) {
+        if (!isSessionValid(httpRequest.getSessionId())) {
+            throw new SessionIdException(INVALID_SESSION_ID);
+        }
+
         for (String key : httpRequest.getQueryString().keySet())
             System.out.println("keykey : " + key);
         String boardIndex = httpRequest.getQueryString().get("index");
