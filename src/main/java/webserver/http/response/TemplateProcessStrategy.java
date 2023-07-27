@@ -26,6 +26,7 @@ public class TemplateProcessStrategy implements ContentProcessStrategy {
     private static final String CLASS_EXTENSION = ".class";
     private static final String ROOT = "/templates/";
     private static final String TEMPLATE_REPLACE_TEXT = "@Yunsik:replace";
+    private static final String REDIRECT_PREFIX = "redirect:";
 
     @Override
     public HttpResponse process(final HttpRequest httpRequest) {
@@ -106,6 +107,11 @@ public class TemplateProcessStrategy implements ContentProcessStrategy {
         if (method.isPresent()) {
             Object targetClass = method.get().getDeclaringClass().getDeclaredConstructor().newInstance();
             Object invoke = invokeMethod(method.get(), targetClass, httpRequest, httpResponse);
+            if (isRedirect(invoke)) {
+                String redirectUrl = ((String) invoke).substring(REDIRECT_PREFIX.length());
+                httpResponse.found(redirectUrl);
+                return;
+            }
             String resource_text = new String(resource);
             if (invoke != null && invoke.getClass().equals(String.class)) {
                 if (resource_text.contains(TEMPLATE_REPLACE_TEXT)) {
@@ -139,8 +145,15 @@ public class TemplateProcessStrategy implements ContentProcessStrategy {
         Object[] result = new Object[parameters.length];
         setRequestBody(httpRequest, parameters, result);
         setQueryParam(httpRequest, parameters, result);
+        setHttpRequest(httpRequest, parameters, result);
         setHttpResponse(httpResponse, parameters, result);
         return result;
+    }
+
+    private void setHttpRequest(final HttpRequest httpRequest, final Parameter[] parameters, final Object[] result) {
+        IntStream.range(0, parameters.length)
+                .filter(i -> parameters[i].isAnnotationPresent(common.annotation.HttpRequest.class))
+                .forEach(i -> result[i] = httpRequest);
     }
 
     private void setHttpResponse(final HttpResponse httpResponse, final Parameter[] parameters, final Object[] result) {
@@ -166,6 +179,10 @@ public class TemplateProcessStrategy implements ContentProcessStrategy {
         IntStream.range(0, parameters.length)
                 .filter(i -> parameters[i].isAnnotationPresent(RequestBody.class))
                 .forEach(i -> result[i] = httpRequest.getBody());
+    }
+
+    private boolean isRedirect(final Object invoke) {
+        return invoke.getClass().equals(String.class) && ((String) invoke).startsWith(REDIRECT_PREFIX);
     }
 
     @Override
