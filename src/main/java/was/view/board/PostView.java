@@ -147,7 +147,7 @@ public class PostView {
 				"                            <div class=\"article-author-name\">" + board.getWriter() + "</div>\r\n")
 			.append(
 				"                            <div class=\"article-header-time\">\r\n")
-			.append("                                " + board.getCreatedAt() + "\r\n")
+			.append("                                " + board.getCreatedAtToString() + "\r\n")
 			.append("                                <i class=\"icon-link\"></i>\r\n")
 			.append("                            </div>\r\n")
 			.append("                        </div>\r\n")

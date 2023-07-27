@@ -63,7 +63,7 @@ public class IndexView {
 
 	private void printBoard(final StringBuilder sb) {
 		final List<Board> boards = Database.findBoardAllOrderByAsc();
-		for (int index = 0; index < boards.size(); index++) {
+		for (int index = boards.size() - 1; index >= 0; index--) {
 			Board board = boards.get(index);
 			sb.append("              <li>\r\n")
 				.append("                  <div class=\"wrap\">\r\n")
