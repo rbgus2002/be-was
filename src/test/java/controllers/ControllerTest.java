@@ -10,12 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import db.Database;
+import db.UserDatabase;
 import webserver.http.HttpParameter;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import model.User;
-import webserver.view.Model;
 import webserver.view.ModelView;
 
 class ControllerTest {
@@ -33,7 +32,7 @@ class ControllerTest {
 
 		@BeforeEach
 		void clearDatabase() {
-			Database.dropAll();
+			UserDatabase.dropAll();
 		}
 
 		@Test
@@ -59,28 +58,28 @@ class ControllerTest {
 			SoftAssertions softAssertions = new SoftAssertions();
 			softAssertions.assertThatThrownBy(() -> {
 				controller.createUser(new HttpRequest(httpParameter), new HttpResponse(), ModelView.from(null));
-			}).isInstanceOf(Exception.class).hasMessage(Database.USERID_ALREADY_EXISTS_MESSAGE);
+			}).isInstanceOf(Exception.class).hasMessage(UserDatabase.USERID_ALREADY_EXISTS_MESSAGE);
 
-			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword())
+			softAssertions.assertThat(UserDatabase.findUserById(existingUser.getUserId()).getPassword())
 				.isEqualTo(existingUser.getPassword());
-			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getName())
+			softAssertions.assertThat(UserDatabase.findUserById(existingUser.getUserId()).getName())
 				.isEqualTo(existingUser.getName());
-			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getEmail())
+			softAssertions.assertThat(UserDatabase.findUserById(existingUser.getUserId()).getEmail())
 				.isEqualTo(existingUser.getEmail());
-			softAssertions.assertThat(Database.findAll().size()).isEqualTo(1);
+			softAssertions.assertThat(UserDatabase.findAll().size()).isEqualTo(1);
 
 			softAssertions.assertAll();
 		}
 
 		private User setUpUser(final String userId, final String password, final String name, final String email) {
 			final User existingUser = new User(userId, password, name, email);
-			Database.addUser(existingUser);
+			UserDatabase.addUser(existingUser);
 			return existingUser;
 		}
 
 		private void verifyRegister(final HttpParameter httpParameter) {
 			SoftAssertions softAssertions = new SoftAssertions();
-			final User databaseUser = Database.findUserById(httpParameter.getParameter("userId"));
+			final User databaseUser = UserDatabase.findUserById(httpParameter.getParameter("userId"));
 
 			softAssertions.assertThat(databaseUser).isNotNull();
 			softAssertions.assertThat(databaseUser.getUserId()).isEqualTo(httpParameter.getParameter("userId"));

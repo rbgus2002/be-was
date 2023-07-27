@@ -1,13 +1,13 @@
 package service;
 
-import db.Database;
+import db.UserDatabase;
 import webserver.session.Session;
 
 public class LoginService {
 
 	public static boolean login(String userId, String password) {
 		try {
-			Database.verifyUser(userId, password);
+			UserDatabase.verifyUser(userId, password);
 			return true;
 		} catch (IllegalArgumentException e) {
 			return false;

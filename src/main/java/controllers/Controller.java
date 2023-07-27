@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import annotations.GetMapping;
 import annotations.PostMapping;
-import db.Database;
+import db.UserDatabase;
 import service.LoginService;
 import webserver.http.HttpParameter;
 import webserver.http.HttpRequest;
@@ -44,6 +44,15 @@ public class Controller {
 		return modelView.setPath("redirect:/user/login.html");
 	}
 
+	@PostMapping(path = "/qna/form")
+	public ModelView submitArticleForm(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		String writer = httpRequest.getParameter().getParameter("writer");
+		String title = httpRequest.getParameter().getParameter("title");
+		String contents = httpRequest.getParameter().getParameter("contents");
+
+		return modelView.setPath("redirect:/");
+	}
+
 	@GetMapping(path = "/qna/show.html")
 	public ModelView getQna(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		modelView = reflectLogin(httpRequest, modelView);
@@ -64,14 +73,15 @@ public class Controller {
 		IllegalArgumentException {
 		modelView = reflectLogin(httpRequest, modelView);
 		try {
-			Database.addUser(parameterToUser(httpRequest.getParameter()));
+			UserDatabase.addUser(parameterToUser(httpRequest.getParameter()));
 		} catch (IllegalArgumentException e) {
 			// 회원가입 실패
 			logger.debug(e.getMessage());
 			return modelView.setPath("redirect:/user/form.html");
 		}
 		// 회원가입 성공
-		httpResponse.addCookie(SessionConst.sessionId, Session.getInstance().createSession(httpRequest.getParameter().getParameter("userId")));
+		httpResponse.addCookie(SessionConst.sessionId,
+			Session.getInstance().createSession(httpRequest.getParameter().getParameter("userId")));
 
 		return modelView.setPath("redirect:/");
 	}
@@ -108,7 +118,7 @@ public class Controller {
 		if (isLoggedIn(modelView)) {
 			List<Map<String, String>> userStats = new ArrayList<>();
 			Map<String, String> userStat;
-			for (User user : Database.getUserList()) {
+			for (User user : UserDatabase.getUserList()) {
 				userStat = new HashMap<>();
 				userStat.put("userId", user.getUserId());
 				userStat.put("name", user.getName());
@@ -137,7 +147,7 @@ public class Controller {
 			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
 				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
 				// 인증 성공
-				modelView.addAttribute("name", Database.findUserById(userId).getName());
+				modelView.addAttribute("name", UserDatabase.findUserById(userId).getName());
 				modelView.addAttribute("login", "true");
 			}
 		} catch (Exception e) {
