@@ -38,7 +38,10 @@ public class Controller {
 	@GetMapping(path = "/qna/form.html")
 	public ModelView qnaFormPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		modelView = reflectLogin(httpRequest, modelView);
-		return modelView.setPath("qna/form.html");
+		if (isLoggedIn(modelView)) {
+			return modelView.setPath("qna/form.html");
+		}
+		return modelView.setPath("redirect:/user/login.html");
 	}
 
 	@GetMapping(path = "/qna/show.html")
