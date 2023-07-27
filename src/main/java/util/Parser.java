@@ -125,9 +125,8 @@ public class Parser {
 
     public static Map<String, String> parseCookies(String cookie) {
         Map<String, String> cookies = new HashMap<>();
-        StringTokenizer tokenizer = new StringTokenizer(cookie, "; ");
-        while (tokenizer.hasMoreTokens()) {
-            String query = tokenizer.nextToken();
+        String[] tokens = cookie.split("; ");
+        for(String query : tokens) {
             int equalIndex = query.indexOf("=");
 
             String key = query.substring(0, equalIndex);
