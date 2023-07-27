@@ -17,6 +17,7 @@ import webserver.http.message.HttpStatus;
 import webserver.mapping.ControllerMapping;
 import webserver.mapping.UrlMapping;
 import webserver.session.SessionStorage;
+import webserver.view.View;
 
 public class ControllerResolver {
 
@@ -38,9 +39,10 @@ public class ControllerResolver {
 		if (method.isAnnotationPresent(Authenticated.class)) {
 			UUID sessionId = request.getSessionId();
 			if (sessionId == null || SessionStorage.findUserBySessionId(sessionId) == null) {
+				View loginView = View.of("user/login");
 				return HttpResponse.builder()
 					.status(HttpStatus.UNAUTHORIZED)
-					.view("/user/login")
+					.view(loginView)
 					.build();
 			}
 		}

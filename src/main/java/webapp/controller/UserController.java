@@ -11,6 +11,7 @@ import webserver.http.message.HttpStatus;
 import webserver.session.Cookie;
 import webserver.session.Session;
 import webserver.session.SessionStorage;
+import webserver.view.View;
 
 @Controller
 public class UserController {
@@ -24,7 +25,7 @@ public class UserController {
 		Database.addUser(user);
 		return HttpResponse.builder()
 			.status(HttpStatus.SEE_OTHER)
-			.redirection("/index")
+			.redirection("/user/login")
 			.build();
 	}
 
@@ -33,9 +34,10 @@ public class UserController {
 		@RequestBody(name = "password") String password) {
 		User user = Database.findUserById(userId);
 		if (user == null || !Database.verifyPassword(user, password)) {
+			View loginFailedView = View.of("user/login_failed");
 			return HttpResponse.builder()
 				.status(HttpStatus.UNAUTHORIZED)
-				.view("/user/login_failed")
+				.view(loginFailedView)
 				.build();
 		}
 		// 세션 생성
