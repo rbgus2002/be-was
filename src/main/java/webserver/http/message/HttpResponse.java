@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import webserver.resolver.utils.FileMapper;
+import webserver.session.Cookie;
 
 public class HttpResponse {
 
@@ -109,6 +110,11 @@ public class HttpResponse {
 				resetBody();
 			}
 			return headerField(LOCATION, targetUrl);
+		}
+
+		public HttpResponseBuilder setCookie(Cookie cookie) {
+			headerField("Set-Cookie", cookie.toCookieString());
+			return this;
 		}
 
 		public HttpResponse build() {

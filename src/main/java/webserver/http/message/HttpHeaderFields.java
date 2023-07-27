@@ -9,10 +9,6 @@ public class HttpHeaderFields {
 	private final Map<String, String> headerFields = new HashMap<>();
 
 	public void setHeaderField(String key, String value) {
-		if (headerFields.get(key) != null) {
-			headerFields.replace(key, value);
-			return;
-		}
 		headerFields.put(key, value);
 	}
 
