@@ -149,18 +149,18 @@ public class View {
                 if (line.contains("<ul class=\"list\">")) {
                     listFlag = false;
                 }
+                if (line.contains("user-name")) {
+                    if (isSessionValid(sessionId)) {
+                        indexBuilder.append("<li id=\"user-name\"><br/>").append(findUserIdBySessionId(sessionId)).append("&nbsp;님</li>");
+                    }
+                    continue;
+                }
                 if (listFlag) {
                     indexBuilder.append(line);
                 }
                 if (line.contains("<!-- list finish -->")) {
                     listFlag = true;
                     indexBuilder.append(boardList);
-                }
-                if (line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>") || line.contains("<li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>")) {
-                    if (isSessionValid(sessionId)) continue;
-                }
-                if (line.contains("<li><a href=\"user/logout.html\" role=\"button\">로그아웃</a></li>") || line.contains("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>")) {
-                    if (!isSessionValid(sessionId)) continue;
                 }
             }
         } catch (IOException e) {
