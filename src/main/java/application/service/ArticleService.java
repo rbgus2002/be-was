@@ -4,7 +4,7 @@ import application.dto.article.ArticleListDto;
 import application.dto.article.ArticleSaveDto;
 import application.dto.article.ArticleViewDto;
 import db.ArticleDatabase;
-import model.Article;
+import application.model.Article;
 
 import java.util.ArrayList;
 import java.util.List;

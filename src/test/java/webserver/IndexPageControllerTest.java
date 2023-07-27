@@ -1,7 +1,7 @@
 package webserver;
 
 import db.UserDatabase;
-import model.User;
+import application.model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

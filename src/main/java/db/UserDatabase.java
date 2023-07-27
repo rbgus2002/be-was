@@ -1,6 +1,6 @@
 package db;
 
-import model.User;
+import application.model.User;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;

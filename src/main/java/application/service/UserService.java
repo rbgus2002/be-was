@@ -4,7 +4,7 @@ import application.dto.user.UserListDto;
 import application.dto.user.UserLoginDto;
 import application.dto.user.UserSaveDto;
 import db.UserDatabase;
-import model.User;
+import application.model.User;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.ConflictException;
 import webserver.exceptions.LoginFailException;

@@ -1,6 +1,6 @@
 package db;
 
-import model.Article;
+import application.model.Article;
 
 import java.util.ArrayList;
 import java.util.Collections;

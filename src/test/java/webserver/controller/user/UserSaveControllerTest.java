@@ -2,7 +2,7 @@ package webserver.controller.user;
 
 import application.controller.user.UserSaveController;
 import db.UserDatabase;
-import model.User;
+import application.model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
