@@ -1,5 +1,8 @@
 package webserver.http;
 
+import exception.BadRequestException;
+import exception.InternalServerErrorException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -8,8 +11,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpParser {
-    public static String readSingleHTTPLine(BufferedReader br) throws IOException, NullPointerException {
-        return URLDecoder.decode(br.readLine(), StandardCharsets.UTF_8);
+    public static String readSingleHTTPLine(BufferedReader br) {
+        String line;
+
+        try {
+            line = br.readLine();
+        }
+        catch (IOException e) {
+            throw new InternalServerErrorException();
+        }
+
+        return URLDecoder.decode(line, StandardCharsets.UTF_8);
     }
 
     public static Map<String, String> parseParameterMap(String string) {
@@ -18,8 +30,13 @@ public class HttpParser {
         // Map에 key-value 저장
         Map<String, String> parameterMap = new HashMap<>();
         for(String parameter: parameterList) {
-            parameterMap.put(parameter.split("=")[0],
-                    parameter.split("=")[1]);
+            try {
+                parameterMap.put(parameter.split("=")[0],
+                        parameter.split("=")[1]);
+            }
+            catch (Exception e) {
+                throw new BadRequestException();
+            }
         }
 
         return parameterMap;

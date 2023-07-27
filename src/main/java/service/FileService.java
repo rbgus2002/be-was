@@ -1,5 +1,7 @@
 package service;
 
+import exception.InternalServerErrorException;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +13,7 @@ public class FileService {
             return Files.readAllBytes(new File(route).toPath());
         }
         catch (IOException e) {
-            return null;
+            throw new InternalServerErrorException();
         }
     }
 }

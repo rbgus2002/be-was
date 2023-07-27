@@ -17,7 +17,7 @@ public class UserService {
         return Database.findAllUser();
     }
 
-    public static void userSignUp(Map<String, String> parameterMap) throws NullPointerException {
+    public static void userSignUp(Map<String, String> parameterMap) {
         // 이미 존재하는 User인지 확인
         User user = Database.findUserById(parameterMap.get(USERID));
         if(user != null) {
