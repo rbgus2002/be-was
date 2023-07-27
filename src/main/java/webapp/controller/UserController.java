@@ -8,6 +8,7 @@ import webserver.annotation.RequestMapping;
 import webserver.http.message.HttpMethod;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
+import webserver.session.Cookie;
 import webserver.session.Session;
 import webserver.session.SessionStorage;
 
@@ -39,10 +40,11 @@ public class UserController {
 		}
 		// 세션 생성
 		Session session = SessionStorage.createSession(userId);
+		Cookie cookie = Cookie.of(Session.SID, session.getSessionId(), Session.MAX_AGE);
 		// 쿠키 저장
 		return HttpResponse.builder()
 			.status(HttpStatus.SEE_OTHER)
-			.setSessionCookie(session)
+			.setCookie(cookie)
 			.redirection("/index")
 			.build();
 	}

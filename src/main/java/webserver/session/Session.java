@@ -4,12 +4,13 @@ import java.util.UUID;
 
 public class Session {
 
+	public static final String SID = "sid";
 	public static final Integer MAX_AGE = 7200;
-	private final UUID sid;
+	private final UUID sessionId;
 	private final String userId;
 
-	private Session(UUID sid, String userId) {
-		this.sid = sid;
+	private Session(UUID sessionId, String userId) {
+		this.sessionId = sessionId;
 		this.userId = userId;
 	}
 
@@ -17,8 +18,8 @@ public class Session {
 		return new Session(UUID.randomUUID(), userId);
 	}
 
-	public UUID getSid() {
-		return sid;
+	public String getSessionId() {
+		return sessionId.toString();
 	}
 
 	public String getUserId() {

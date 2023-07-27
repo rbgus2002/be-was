@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import webserver.resolver.utils.FileMapper;
-import webserver.session.Session;
+import webserver.session.Cookie;
 
 public class HttpResponse {
 
@@ -112,16 +112,8 @@ public class HttpResponse {
 			return headerField(LOCATION, targetUrl);
 		}
 
-		public HttpResponseBuilder setCookie(String cookie) {
-			headerField("Set-Cookie", cookie);
-			return this;
-		}
-
-		public HttpResponseBuilder setSessionCookie(Session session) {
-			String sessionCookie = "sid=" + session.getSid()
-				+ "; Max-Age=" + Session.MAX_AGE
-				+ "; Path=/";
-			setCookie(sessionCookie);
+		public HttpResponseBuilder setCookie(Cookie cookie) {
+			headerField("Set-Cookie", cookie.toCookieString());
 			return this;
 		}
 
