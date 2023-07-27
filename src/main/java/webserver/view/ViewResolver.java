@@ -7,7 +7,9 @@ import java.util.regex.Pattern;
 import annotations.DeclaredViewPolicies;
 
 public class ViewResolver {
-	public static byte[] resolve(byte[] body, ModelView modelView) throws InvocationTargetException, IllegalAccessException {
+	public static byte[] resolve(byte[] body, ModelView modelView) throws
+		InvocationTargetException,
+		IllegalAccessException {
 		String stringBody = new String(body);
 		for (String regex : DeclaredViewPolicies.getViewPoliciesRegex()) {
 			Pattern pattern = Pattern.compile(regex);

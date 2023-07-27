@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import annotations.GetMapping;
 import annotations.PostMapping;
+import db.ArticleDatabase;
 import db.UserDatabase;
+import model.Article;
 import service.LoginService;
 import webserver.http.HttpParameter;
 import webserver.http.HttpRequest;
@@ -25,13 +27,25 @@ public class Controller {
 
 	@GetMapping(path = "/")
 	public ModelView getMainIndex(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
-		return modelView.setPath("index.html");
+		return modelView.setPath("redirect:index.html");
 	}
 
 	@GetMapping(path = "/index.html")
 	public ModelView getIndex(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		modelView = reflectLogin(httpRequest, modelView);
+		List<Article> articles = ArticleDatabase.getArticles();
+		if (!articles.isEmpty()) {
+			List<Map<String, String>> articleStats = new ArrayList<>();
+			Map<String, String> articleStat;
+			for (Article article : articles) {
+				articleStat = new HashMap<>();
+				articleStat.put("title", article.getTitle());
+				articleStat.put("writer", article.getWriter());
+				articleStat.put("content", article.getContents());
+				articleStats.add(articleStat);
+			}
+			modelView.addAttribute("articles", articleStats);
+		}
 		return modelView.setPath("index.html");
 	}
 
@@ -45,12 +59,17 @@ public class Controller {
 	}
 
 	@PostMapping(path = "/qna/form")
-	public ModelView submitArticleForm(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		String writer = httpRequest.getParameter().getParameter("writer");
-		String title = httpRequest.getParameter().getParameter("title");
-		String contents = httpRequest.getParameter().getParameter("contents");
-
-		return modelView.setPath("redirect:/");
+	public ModelView submitArticleForm(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) throws
+		IllegalArgumentException {
+		try {
+			String title = httpRequest.getParameter().getParameter("title");
+			String writer = httpRequest.getParameter().getParameter("writer");
+			String contents = httpRequest.getParameter().getParameter("contents");
+			ArticleDatabase.addArticle(Article.of(title, writer, contents));
+			return modelView.setPath("redirect:/");
+		} catch (Exception e) {
+			throw new IllegalArgumentException("게시물 등록이 실패했습니다.");
+		}
 	}
 
 	@GetMapping(path = "/qna/show.html")

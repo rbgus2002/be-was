@@ -47,7 +47,7 @@ public class ViewPolicy {
 		return (String)modelView.getAttribute(variableName);
 	}
 
-	@annotations.ViewPolicy(regex = "<tr repeat=\".*\">(.|\\s)*?<\\/tr>")
+	@annotations.ViewPolicy(regex = "<(\\w+) repeat=\\\".*\\\">*(.|\\s)*?<\\/\\1>")
 	public String repeatForAttributes(String line, ModelView modelView) {
 		Pattern pattern = Pattern.compile("repeat=\"(.*?)\"");
 		Matcher matcher = pattern.matcher(line);
@@ -55,6 +55,10 @@ public class ViewPolicy {
 		while (matcher.find()) {
 			attributeName = matcher.group(1);
 		}
+		if (!modelView.containsAttribute(attributeName)) {
+			return "";
+		}
+
 		List<Map<String, String>> attributes = (List<Map<String, String>>)modelView.getAttribute(attributeName);
 
 		StringBuilder result = new StringBuilder();
