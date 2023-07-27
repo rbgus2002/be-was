@@ -113,7 +113,7 @@ public class HttpResponse {
 		}
 
 		public HttpResponseBuilder setCookie(Cookie cookie) {
-			headerField("Set-Cookie", cookie.toCookieString());
+			headerField("Set-Cookie", cookie.toCookieFieldValue());
 			return this;
 		}
 
