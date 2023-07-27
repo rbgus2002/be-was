@@ -14,8 +14,12 @@ public class HttpMethodAndPath {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         HttpMethodAndPath that = (HttpMethodAndPath) o;
         return httpMethod == that.httpMethod && Objects.equal(path, that.path);
     }
