@@ -9,15 +9,12 @@ import webserver.http.HttpResponse;
 import webserver.http.Session;
 import webserver.http.enums.ContentType;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import static service.SessionService.getSession;
-import static webserver.http.Cookie.isValidCookie;
 import static webserver.http.enums.ContentType.HTML;
-import static webserver.http.enums.ContentType.getContentTypeByExtension;
+import static webserver.http.enums.ContentType.getContentTypeOfFile;
 import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
 import static webserver.http.enums.HttpResponseStatus.OK;
 
@@ -27,30 +24,20 @@ public class StaticFileController implements Controller {
 
     @RequestMethod(method = "GET")
     public HttpResponse handleGet(HttpRequest request) {
-        String extension = request.uri().getExtension();
-        ContentType contentType = getContentTypeByExtension(extension);
-        String path = getPathString(request, contentType);
+        String fileName = request.uri().getPath();
+        ContentType contentType = getContentTypeOfFile(fileName);
+        String filePath = getPathString(fileName, contentType);
+
+        if (!Files.exists(Paths.get(filePath)))
+            return createErrorResponse(request, NOT_FOUND);
 
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
-        byte[] body;
-        try {
-            body = Files.readAllBytes(Paths.get(path));
-        } catch (IOException e) {
-            return createErrorResponse(request, NOT_FOUND);
-        }
-
-        String fileContent = new String(body);
-
-        if (isValidCookie(request.cookie()) && contentType == HTML)
-            body = reviseContentWithUserInfo(request, fileContent);
-
-        builder.version(request.version())
+        return builder.version(request.version())
                 .status(OK)
-                .contentType(contentType)
-                .body(body);
-
-        return builder.build();
+                .fileName(filePath)
+                // todo: 동적 HTML을 위한 attribute 설정
+                .build();
     }
 
     private byte[] reviseContentWithUserInfo(HttpRequest request, String fileContent) {
@@ -65,9 +52,7 @@ public class StaticFileController implements Controller {
                 .getBytes();
     }
 
-    private String getPathString(HttpRequest request, ContentType contentType) {
-        String fileName = request.uri().getPath();
-
+    private String getPathString(String fileName, ContentType contentType) {
         if (contentType == HTML) {
             return "src/main/resources/templates".concat(fileName);
         }
