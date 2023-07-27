@@ -109,6 +109,9 @@ public class HttpRequest {
     }
 
     public HttpSession getSession() {
+        if(this.headers.get("Cookie") == null) {
+            return null;
+        }
         Map<String, String> cookies = parseCookies(this.headers.get("Cookie"));
         String sessionId = cookies.get("sid");
         return SessionDatabase.getSession(sessionId);
