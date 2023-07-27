@@ -14,6 +14,7 @@ public class HttpRequest {
     private final BufferedReader bufferedReader;
 
     private String method;
+    private String path;
     private final HttpHeaders httpHeaders;
     private final HttpParameters httpParameters;
     private final Cookie cookie;
@@ -50,8 +51,7 @@ public class HttpRequest {
 
     private void parsePath() {
         String URI = httpHeaders.get(HttpField.URI);
-        String path = URI.split("\\?")[0];
-        httpHeaders.put(HttpField.PATH, path);
+        path = URI.split("\\?")[0];
     }
 
     private void parseUrlEncodedParameters() {
@@ -143,5 +143,9 @@ public class HttpRequest {
 
     public String getMethod() {
         return method;
+    }
+
+    public String getPath() {
+        return path;
     }
 }
