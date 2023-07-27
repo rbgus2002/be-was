@@ -3,6 +3,7 @@ package view;
 import exception.BadRequestException;
 import exception.SessionIdException;
 import http.HttpRequest;
+import model.Board;
 import model.User;
 
 import java.io.BufferedReader;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import static db.BoardDatabase.findAllBoards;
 import static db.Database.findAll;
 import static db.Database.findUserById;
 import static db.SessionStorage.*;
