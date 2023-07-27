@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import was.controller.UserController;
 import was.db.Database;
 import was.model.User;
 import was.webserver.request.HttpWasRequest;
@@ -23,7 +22,7 @@ class UserControllerTest {
 	private UserController userController = new UserController();
 	@BeforeEach
 	void beforeEach() {
-		Database.deleteAll();
+		Database.deleteUserAll();
 	}
 
 	@Test

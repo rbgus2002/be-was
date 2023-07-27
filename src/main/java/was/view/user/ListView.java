@@ -33,7 +33,7 @@ public class ListView {
 		final String sessionUserId = sessionData.getUserId();
 		final User findUser = Database.findUserById(sessionUserId);
 
-		final Collection<User> users = Database.findAll();
+		final Collection<User> users = Database.findUserAll();
 
 		StringBuilder sb = new StringBuilder();
 

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import was.db.Database;
 import was.model.User;
-import was.view.user.ListView;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.session.HttpSession;
@@ -25,7 +24,7 @@ class ListViewTest {
 
 	@BeforeEach
 	void beforeEach() {
-		Database.deleteAll();
+		Database.deleteUserAll();
 	}
 
 	@Test

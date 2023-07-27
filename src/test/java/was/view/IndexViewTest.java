@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import was.db.Database;
 import was.model.User;
-import was.view.IndexView;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.session.HttpSession;
@@ -23,7 +22,7 @@ class IndexViewTest {
 
 	@BeforeEach
 	void beforeEach() {
-		Database.deleteAll();
+		Database.deleteUserAll();
 	}
 
 	@Test
