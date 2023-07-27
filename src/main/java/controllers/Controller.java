@@ -157,8 +157,11 @@ public class Controller {
 	}
 
 	private User parameterToUser(HttpParameter httpParameter) {
-		return new User(httpParameter.getParameter("userId"), httpParameter.getParameter("password"),
-			httpParameter.getParameter("name"), httpParameter.getParameter("email"));
+		String userId = httpParameter.getParameter("userId");
+		String password = httpParameter.getParameter("password");
+		String name = httpParameter.getParameter("name");
+		String email = httpParameter.getParameter("email");
+		return User.of(userId, password, name, email);
 	}
 
 	private ModelView reflectLogin(HttpRequest httpRequest, ModelView modelView) {

@@ -72,7 +72,7 @@ class ControllerTest {
 		}
 
 		private User setUpUser(final String userId, final String password, final String name, final String email) {
-			final User existingUser = new User(userId, password, name, email);
+			final User existingUser = User.of(userId, password, name, email);
 			UserDatabase.addUser(existingUser);
 			return existingUser;
 		}

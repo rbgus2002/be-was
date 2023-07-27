@@ -22,7 +22,7 @@ class SessionTest {
 	@Test
 	@DisplayName("User 정보로 새로운 세션을 만들 수 있어야 한다")
 	void createNewSession() {
-		User user = new User("testId", "testPw", "testName", "test@email.com");
+		User user = User.of("testId", "testPw", "testName", "test@email.com");
 
 		String sessionId = session.createSession(user.getUserId());
 
@@ -42,7 +42,7 @@ class SessionTest {
 	@Test
 	@DisplayName("추가된 세션을 삭제할 수 있어야 한다")
 	void removeSession() {
-		User user = new User("testId", "testPw", "testName", "test@email.com");
+		User user = User.of("testId", "testPw", "testName", "test@email.com");
 		String sessionId = session.createSession(user.getUserId());
 
 		session.removeSession(sessionId);
