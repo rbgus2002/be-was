@@ -45,4 +45,8 @@ public class HttpSession {
 	public SessionData getSessionData(String key) {
 		return attributes.get(key);
 	}
+
+	public void expiredSession(String sessionId) {
+		attributes.remove(sessionId);
+	}
 }

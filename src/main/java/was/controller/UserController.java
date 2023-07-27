@@ -53,4 +53,20 @@ public class UserController {
 		response.setHttpStatus(HttpStatus.FOUND);
 		response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
 	}
+
+	@RequestMapping(method = HttpMethod.GET, path = "/logout")
+	public void logout(HttpWasRequest request, HttpWasResponse response) {
+		final String sessionId = request.getSessionId();
+		HttpSession httpSession = HttpSession.getInstance();
+
+		httpSession.expiredSession(sessionId);
+
+		final Cookie cookie = new Cookie.Builder(HttpSession.SESSION_ID, "")
+			.maxAge(0L)
+			.build();
+
+		response.addCookie(cookie);
+		response.setHttpStatus(HttpStatus.FOUND);
+		response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
+	}
 }

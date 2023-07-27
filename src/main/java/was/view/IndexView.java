@@ -200,7 +200,7 @@ public class IndexView {
 			.append(
 				"                <li><a href=\"#registerModal\" role=\"button\" data-toggle=\"modal\">회원가입</a></li>\r\n")
 			.append("                -->\r\n")
-			.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\r\n")
+			.append("                <li><a href=\"/logout\" role=\"button\">로그아웃</a></li>\r\n")
 			.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\r\n")
 			.append("            </ul>\r\n")
 			.append("        </div>\r\n")
