@@ -9,8 +9,6 @@ import webserver.http.HttpResponse;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
 import static webserver.http.enums.HttpResponseStatus.OK;
@@ -32,17 +30,16 @@ class StaticFileControllerTest {
 
         HttpResponse response = staticFileController.handleGet(testRequest);
 
-        String template_path = System.getProperty("user.dir") + "/src/main/resources/templates/" + fileName;
+        String template_path = "src/main/resources/templates/" + fileName;
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(OK)
                 .version("HTTP/1.1")
-                .body(Files.readAllBytes(Paths.get(template_path)))
+                .fileName(template_path)
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        softly.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
+        softly.assertThat(response.fileName()).isEqualTo(actual.fileName());
     }
 
     @ParameterizedTest
@@ -61,13 +58,10 @@ class StaticFileControllerTest {
         HttpResponse actual = HttpResponse.newBuilder()
                 .version("HTTP/1.1")
                 .status(NOT_FOUND)
-                .body("요청하신 파일을 찾을 수 없습니다.".getBytes())
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        softly.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
     }
 
     @ParameterizedTest
@@ -83,17 +77,16 @@ class StaticFileControllerTest {
 
         HttpResponse response = staticFileController.handleGet(testRequest);
 
-        String template_path = System.getProperty("user.dir") + "/src/main/resources/static/" + fileName;
+        String template_path = "src/main/resources/static/" + fileName;
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(OK)
                 .version("HTTP/1.1")
-                .body(Files.readAllBytes(Paths.get(template_path)))
+                .fileName(template_path)
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        softly.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
+        softly.assertThat(response.fileName()).isEqualTo(actual.fileName());
     }
 
     @ParameterizedTest
@@ -112,12 +105,9 @@ class StaticFileControllerTest {
         HttpResponse actual = HttpResponse.newBuilder()
                 .version("HTTP/1.1")
                 .status(NOT_FOUND)
-                .body("요청하신 파일을 찾을 수 없습니다.".getBytes())
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        softly.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
     }
 }

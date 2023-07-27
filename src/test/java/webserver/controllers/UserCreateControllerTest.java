@@ -42,19 +42,16 @@ class UserCreateControllerTest {
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(FOUND)
                 .version("HTTP/1.1")
-                .contentType(HTML)
-                .setHeader("Location", "http://localhost:8080/index.html")
+                .redirect("/index.html")
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        softly.assertThat(response.getHeader("Location")).isEqualTo(actual.getHeader("Location"));
-        softly.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
+        softly.assertThat(response.redirect()).isEqualTo(actual.redirect());
     }
 
     @Test
-    @DisplayName("중복된 userId로 create 요청이 들어올 경우 두번째 요청은 form.html을 반환")
+    @DisplayName("중복된 userId로 create 요청이 들어올 경우 두번째 요청은 created_failed.html을 반환")
     void handleUserCreateRequestWithSameUserId() throws IOException, InvocationTargetException, IllegalAccessException {
         HttpRequest.Builder builder = HttpRequest.newBuilder();
         HttpRequest testRequest = builder
@@ -72,15 +69,12 @@ class UserCreateControllerTest {
         HttpResponse actual = HttpResponse.newBuilder()
                 .status(FOUND)
                 .version("HTTP/1.1")
-                .contentType(HTML)
-                .setHeader("Location", "http://localhost:8080/user/form.html")
+                .redirect("/create_failed.html")
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
-        softly.assertThat(response.getHeader("Location")).isEqualTo(actual.getHeader("Location"));
-        softly.assertThat(response.body()).isEqualTo(actual.body());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
+        softly.assertThat(response.redirect()).isEqualTo(actual.redirect());
     }
 
     @ParameterizedTest
@@ -108,8 +102,7 @@ class UserCreateControllerTest {
                 .build();
 
         softly.assertThat(response.version()).isEqualTo(actual.version());
-        softly.assertThat(response.statusCode()).isEqualTo(actual.statusCode());
-        softly.assertThat(response.statusText()).isEqualTo(actual.statusText());
+        softly.assertThat(response.status()).isEqualTo(actual.status());
     }
 
 }
