@@ -34,13 +34,9 @@ public class LoginHandler implements Handler {
     @Override
     public HttpResponse handle(HttpRequest request, Session session) {
         try {
-            Map<String, String> body = getBody(request);
-            String loginUserId = body.get("userId");
-            String loginPassword = body.get("password");
-            User loginUser = userService.login(loginUserId, loginPassword);
+            User loginUser = getLoginUser(request);
             HttpResponse response = HttpResponse.redirect(LOGIN_SUCCESS);
-            session.setUser(loginUser);
-            response.setCookie(session.getId(), "/");
+            setCookie(session, loginUser, response);
             return response;
         } catch (NullPointerException e) {
             logger.warn("bad request : {}", e.getMessage());
@@ -49,6 +45,19 @@ public class LoginHandler implements Handler {
             logger.warn("login Fail : {}", e.getMessage());
             return responseFail();
         }
+    }
+
+    private static void setCookie(Session session, User loginUser, HttpResponse response) {
+        session.setUser(loginUser);
+        response.setCookie(session.getId(), "/");
+    }
+
+    private User getLoginUser(HttpRequest request) {
+        Map<String, String> body = getBody(request);
+        String loginUserId = body.get("userId");
+        String loginPassword = body.get("password");
+        User loginUser = userService.login(loginUserId, loginPassword);
+        return loginUser;
     }
 
     private HttpResponse responseFail() {

@@ -6,7 +6,6 @@ import webserver.http.message.Mime;
 import webserver.model.Model;
 import webserver.session.Session;
 import webserver.template.TemplateRenderer;
-import webserver.utils.ExtensionSeparator;
 import webserver.utils.FileUtils;
 
 public class LoginPageHandler implements Handler{
@@ -14,19 +13,31 @@ public class LoginPageHandler implements Handler{
 
     @Override
     public HttpResponse handle(HttpRequest request, Session session) {
-        String path = request.getURL().getPath();
-        byte[] file = FileUtils.readFileFromTemplate(path);
-
-        Model model = new Model();
-        model.setAttribute("loginStatus", "false");
         if (session.isValid()) {
             return HttpResponse.redirect("/index.html");
         }
 
-        String html = templateRenderer.render(new String(file), model);
+        Model model = makeModel();
+        String html = renderHtml(request, model);
 
-        String ext = ExtensionSeparator.separateExtension(path);
-        Mime mime = Mime.findByExt(ext);
-        return HttpResponse.okWithFile(html.getBytes(), mime);
+        return HttpResponse.okWithFile(html.getBytes(), Mime.HTML);
+    }
+
+    private String renderHtml(HttpRequest request, Model model) {
+        String html = getRequestHtml(request);
+        html = templateRenderer.render(html, model);
+        return html;
+    }
+
+    private static String getRequestHtml(HttpRequest request) {
+        String path = request.getURL().getPath();
+        byte[] file = FileUtils.readFileFromTemplate(path);
+        return new String(file);
+    }
+
+    private static Model makeModel() {
+        Model model = new Model();
+        model.setAttribute("loginStatus", "false");
+        return model;
     }
 }

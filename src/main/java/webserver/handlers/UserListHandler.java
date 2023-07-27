@@ -30,17 +30,10 @@ public class UserListHandler implements Handler {
             if (!session.isValid()) {
                 return HttpResponse.redirect("/user/login.html");
             }
-            Collection<User> users = userService.findAll();
-            List<Map<String, String>> userInfos = getUserInfos(users);
+            List<Map<String, String>> userInfos = getUserInfos();
 
-            Model model = new Model();
-            model.setAttribute("userName", session.getUser().getName());
-            model.setAttribute("user", userInfos);
-            model.setAttribute("loginStatus", "true");
-
-            String path = request.getURL().getPath();
-            byte[] file = FileUtils.readFileFromTemplate(path);
-            String html = templateRenderer.render(new String(file), model);
+            Model model = makeModel(userInfos, session);
+            String html = renderHtml(request, model);
 
             return HttpResponse.okWithFile(html.getBytes(), Mime.HTML);
         } catch (NullPointerException e) {
@@ -49,7 +42,23 @@ public class UserListHandler implements Handler {
         }
     }
 
-    private List<Map<String, String>> getUserInfos(Collection<User> users) {
+    private String renderHtml(HttpRequest request, Model model) {
+        String path = request.getURL().getPath();
+        byte[] file = FileUtils.readFileFromTemplate(path);
+        String html = templateRenderer.render(new String(file), model);
+        return html;
+    }
+
+    private Model makeModel(List<Map<String, String>> userInfos, Session session) {
+        Model model = new Model();
+        model.setAttribute("userName", session.getUser().getName());
+        model.setAttribute("user", userInfos);
+        model.setAttribute("loginStatus", "true");
+        return model;
+    }
+
+    private List<Map<String, String>> getUserInfos() {
+        Collection<User> users = userService.findAll();
         List<Map<String, String>> userInfos = new ArrayList<>();
         for (User user : users) {
             Map<String, String> userInfo = new HashMap<>();
