@@ -1,9 +1,12 @@
 package was.view;
 
-import was.webserver.annotation.Controller;
+import java.util.List;
+
 import was.controller.annotation.RequestMapping;
 import was.db.Database;
+import was.model.Board;
 import was.model.User;
+import was.webserver.annotation.Controller;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.session.HttpSession;
@@ -128,46 +131,42 @@ public class IndexView {
 			.append("<div class=\"container\" id=\"main\">\r\n")
 			.append("   <div class=\"col-md-12 col-sm-12 col-lg-10 col-lg-offset-1\">\r\n")
 			.append("      <div class=\"panel panel-default qna-list\">\r\n")
-			.append("          <ul class=\"list\">\r\n")
-			.append("              <li>\r\n")
-			.append("                  <div class=\"wrap\">\r\n")
-			.append("                      <div class=\"main\">\r\n")
-			.append("                          <strong class=\"subject\">\r\n")
-			.append(
-				"                              <a href=\"./qna/show.html\">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>\r\n")
-			.append("                          </strong>\r\n")
-			.append("                          <div class=\"auth-info\">\r\n")
-			.append("                              <i class=\"icon-add-comment\"></i>\r\n")
-			.append("                              <span class=\"time\">2016-01-15 18:47</span>\r\n")
-			.append("                              <a href=\"./user/profile.html\" class=\"author\">자바지기</a>\r\n")
-			.append("                          </div>\r\n")
-			.append("                          <div class=\"reply\" title=\"댓글\">\r\n")
-			.append("                              <i class=\"icon-reply\"></i>\r\n")
-			.append("                              <span class=\"point\">8</span>\r\n")
-			.append("                          </div>\r\n")
-			.append("                      </div>\r\n")
-			.append("                  </div>\r\n")
-			.append("              </li>\r\n")
-			.append("              <li>\r\n")
-			.append("                  <div class=\"wrap\">\r\n")
-			.append("                      <div class=\"main\">\r\n")
-			.append("                          <strong class=\"subject\">\r\n")
-			.append(
-				"                              <a href=\"./qna/show.html\">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>\r\n")
-			.append("                          </strong>\r\n")
-			.append("                          <div class=\"auth-info\">\r\n")
-			.append("                              <i class=\"icon-add-comment\"></i>\r\n")
-			.append("                              <span class=\"time\">2016-01-05 18:47</span>\r\n")
-			.append("                              <a href=\"./user/profile.html\" class=\"author\">김문수</a>\r\n")
-			.append("                          </div>\r\n")
-			.append("                          <div class=\"reply\" title=\"댓글\">\r\n")
-			.append("                              <i class=\"icon-reply\"></i>\r\n")
-			.append("                              <span class=\"point\">12</span>\r\n")
-			.append("                          </div>\r\n")
-			.append("                      </div>\r\n")
-			.append("                  </div>\r\n")
-			.append("              </li>\r\n")
-			.append("          </ul>\r\n")
+			.append("          <ul class=\"list\">\r\n");
+
+		final List<Board> boards = Database.findBoardAllOrderByAsc();
+		for (int index = 0; index < boards.size(); index++) {
+			Board board = boards.get(index);
+			sb.append("              <li>\r\n")
+				.append("                  <div class=\"wrap\">\r\n")
+				.append("                      <div class=\"main\">\r\n")
+				.append("                          <strong class=\"subject\">\r\n")
+				.append("                              <a href=\"/board/")
+				.append(index + 1)
+				.append("\">")
+				.append(board.getTitle())
+				.append("</a>\r\n")
+				.append("                          </strong>\r\n")
+				.append("                          <div class=\"auth-info\">\r\n")
+				.append("                              <i class=\"icon-add-comment\"></i>\r\n")
+				.append("                              <span class=\"time\">")
+				.append(board.getCreatedAtToString())
+				.append("</span>\r\n")
+				.append("                              <a href=\"./user/profile.html\" class=\"author\">")
+				.append(board.getWriter())
+				.append("</a>\r\n")
+				.append("                          </div>\r\n")
+				.append("                          <div class=\"reply\" title=\"댓글\">\r\n")
+				.append("                              <i class=\"icon-reply\"></i>\r\n")
+				.append("                              <span class=\"point\">")
+				.append(index + 1)
+				.append("</span>\r\n")
+				.append("                          </div>\r\n")
+				.append("                      </div>\r\n")
+				.append("                  </div>\r\n")
+				.append("              </li>\r\n");
+		}
+
+		sb.append("          </ul>\r\n")
 			.append("          <div class=\"row\">\r\n")
 			.append("              <div class=\"col-md-3\"></div>\r\n")
 			.append("              <div class=\"col-md-6 text-center\">\r\n")

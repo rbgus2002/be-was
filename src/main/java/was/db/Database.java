@@ -1,8 +1,11 @@
 package was.db;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.google.common.collect.Maps;
 
@@ -32,7 +35,9 @@ public class Database {
     }
     public static void deleteUserAll() {users.clear();}
 
-    public static int getBoardIndex() {
-        return boardIndex.get();
+    public static List<Board> findBoardAllOrderByAsc() {
+        return IntStream.range(1, boardIndex.get())
+            .mapToObj(boards::get)
+            .collect(Collectors.toList());
     }
 }
