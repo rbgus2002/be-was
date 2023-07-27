@@ -30,7 +30,7 @@ public class FileService {
         AUTH_PATH_MAP.put("/user/login_failed.html", UserLoginFailedHtmlService.class);
     }
 
-    public static byte[] getStaticResource(String path, User sessionUser) throws IOException, InstantiationException, IllegalAccessException {
+    public static byte[] getTargetResource(String path, User sessionUser) throws IOException, InstantiationException, IllegalAccessException {
         for (String rootPath : PATH_LIST) {
             File file = new File(rootPath + path);
             if (file.exists() && file.isFile()) {
@@ -44,7 +44,7 @@ public class FileService {
         throw new NoSuchFileException(path);
     }
 
-    public static byte[] getStaticResource(String path) throws IOException {
+    public static byte[] getTargetResource(String path) throws IOException {
         for (String rootPath : PATH_LIST) {
             File file = new File(rootPath + path);
             if (file.exists() && file.isFile()) {

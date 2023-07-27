@@ -2,7 +2,6 @@ package service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.FileService;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +18,7 @@ class FileServiceTest {
         byte[] expected = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
 
         // when
-        byte[] file = FileService.getStaticResource(path);
+        byte[] file = FileService.getTargetResource(path);
 
         // then
         assertArrayEquals(expected, file);
@@ -33,7 +32,7 @@ class FileServiceTest {
         byte[] expected = Files.readAllBytes(new File("src/main/resources/static" + path).toPath());
 
         // when
-        byte[] file = FileService.getStaticResource(path);
+        byte[] file = FileService.getTargetResource(path);
 
         // then
         assertArrayEquals(expected, file);
