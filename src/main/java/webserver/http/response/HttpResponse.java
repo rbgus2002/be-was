@@ -18,7 +18,7 @@ public class HttpResponse {
     private static final String HTML_PATH = "src/main/resources/templates";
     private static final String STATIC_PATH = "src/main/resources/static";
     private static final String NEW_LINE = "\r\n";
-    private final HttpStatus statusLine;
+    private final HttpStatus status;
     private final Map<String, String> header;
     private final byte[] body;
 
@@ -99,9 +99,13 @@ public class HttpResponse {
     }
 
     private HttpResponse(HttpResponseBuilder builder) {
-        this.statusLine = builder.status;
+        this.status = builder.status;
         this.header = builder.header;
         this.body = builder.body;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
     }
 
     private String setStatusLine(HttpStatus status) {
@@ -119,7 +123,7 @@ public class HttpResponse {
     }
 
     public byte[] response() {
-        byte[] statusBuffer =  setStatusLine(this.statusLine).getBytes();
+        byte[] statusBuffer =  setStatusLine(this.status).getBytes();
         byte[] headerBuffer =  setHeader(this.header).getBytes();
 
         byte[] responseBuffer = new byte[statusBuffer.length + headerBuffer.length + this.body.length];
