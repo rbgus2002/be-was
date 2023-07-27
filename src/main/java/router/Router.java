@@ -6,6 +6,7 @@ import controller.StaticFileController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
+import webserver.http.HttpUtil;
 import webserver.http.model.Request;
 import webserver.http.model.Response;
 
@@ -43,6 +44,9 @@ public class Router {
             if(response != null) {
                 return response;
             }
+
+            // 모든 로직에서 처리되지 않는 경우 404 Not Found 반환
+            return new Response(HttpUtil.STATUS.NOT_FOUND, null, null);
         }
         catch (Exception e) {
             logger.error(e.getStackTrace().toString());

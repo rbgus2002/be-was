@@ -88,14 +88,7 @@ public class RequestHandler implements Runnable {
     }
 
     private Response generateResponse(Request request) {
-        Response response;
-
-        response = Router.generateResponse(request);
-        if(response != null) {
-            return response;
-        }
-
-        return new Response(STATUS.NOT_FOUND, null, null);
+        return Router.generateResponse(request);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {
