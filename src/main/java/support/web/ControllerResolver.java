@@ -2,10 +2,7 @@ package support.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.annotation.Controller;
-import support.annotation.PathVariable;
-import support.annotation.RequestMapping;
-import support.annotation.RequestParam;
+import support.annotation.*;
 import support.instance.DefaultInstanceManager;
 import support.web.exception.BadRequestException;
 import support.web.handler.ControllerMethodReturnValueHandlerComposite;
@@ -21,13 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ControllerResolver {
+@Container
+public class ControllerResolver {
 
-    private static final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
-    private static ControllerMethodReturnValueHandlerComposite handlers;
+    private final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
+    private ControllerMethodReturnValueHandlerComposite handlers;
     private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
-    static {
+    public ControllerResolver() {
         List<Class<?>> controllerClasses = ClassListener.scanClass("controller");
 
         controllerClasses.forEach(controllerClass -> {
@@ -46,7 +44,7 @@ public abstract class ControllerResolver {
         });
     }
 
-    private static ControllerMethodReturnValueHandlerComposite getHandlers() {
+    private ControllerMethodReturnValueHandlerComposite getHandlers() {
         if (handlers == null) {
             handlers = DefaultInstanceManager.getInstanceMagager().getInstance(ControllerMethodReturnValueHandlerComposite.class);
         }
@@ -59,7 +57,7 @@ public abstract class ControllerResolver {
      * @return HttpEntity 클라이언트에 반환할 http response Status & header 값 <br/>
      * 만약 처리할 수 없는 경우 null을 반환한다.
      */
-    public static HttpEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
+    public HttpEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url));
         if (controllerMethodStruct == null) {
@@ -84,7 +82,7 @@ public abstract class ControllerResolver {
      *
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
-    private static Object[] transformQuery(HttpRequest request, HttpResponse response, Parameter[] parameters) throws BadRequestException {
+    private Object[] transformQuery(HttpRequest request, HttpResponse response, Parameter[] parameters) throws BadRequestException {
         QueryParameter body = request.getBody();
         QueryParameter query = request.getQuery();
 

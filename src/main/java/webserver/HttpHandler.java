@@ -16,12 +16,20 @@ import java.util.Arrays;
 public class HttpHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
+    private ControllerResolver controllerResolver;
+
+    public ControllerResolver getControllerResolver() {
+        if(controllerResolver == null) {
+            controllerResolver = new ControllerResolver();
+        }
+        return controllerResolver;
+    }
 
     public void doService(HttpRequest request, HttpResponse response) {
         String path = request.getRequestPath();
 
         try {
-            HttpEntity httpEntity = ControllerResolver.invoke(path, request, response);
+            HttpEntity httpEntity = getControllerResolver().invoke(path, request, response);
             if (httpEntity == null) {
                 httpEntity = doGetOrOther(request, response, path);
                 assert httpEntity != null;
