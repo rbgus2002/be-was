@@ -1,27 +1,30 @@
 package webserver.http.utils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileMapper {
 
-	private final List<String> resourceDirectoryPathList;
+	private static final List<String> RESOURCE_PATH_LIST = new ArrayList<>();
 
-	public FileMapper() {
-		resourceDirectoryPathList = new ArrayList<>();
-		resourceDirectoryPathList.add("src/main/resources/static");
-		resourceDirectoryPathList.add("src/main/resources/templates");
+	static {
+		RESOURCE_PATH_LIST.add("src/main/resources/static");
+		RESOURCE_PATH_LIST.add("src/main/resources/templates");
 	}
 
-	public File findFile(String path) {
+	private FileMapper() {
+	}
+
+	public static File findFile(String path) throws FileNotFoundException {
 		File file;
-		for (String resourceDirectoryPath : resourceDirectoryPathList) {
-			file = new File(resourceDirectoryPath + path);
+		for (String resourcePath : RESOURCE_PATH_LIST) {
+			file = new File(resourcePath + path);
 			if (file.exists() && file.isFile()) {
 				return file;
 			}
 		}
-		return null;
+		throw new FileNotFoundException();
 	}
 }

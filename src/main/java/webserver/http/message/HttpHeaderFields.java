@@ -6,17 +6,21 @@ import java.util.Set;
 
 public class HttpHeaderFields {
 
-	private final Map<String, String> headerFields;
+	private final Map<String, String> headerFields = new HashMap<>();
 
-	public HttpHeaderFields() {
-		headerFields = new HashMap<>();
-	}
-
-	public void addHeaderField(String key, String value) {
+	public void add(String key, String value) {
 		headerFields.put(key, value);
 	}
 
-	public Set<Map.Entry<String, String>> getEntrySet() {
+	public String getValue(String key) {
+		return headerFields.get(key);
+	}
+
+	public Set<Map.Entry<String, String>> getAllFields() {
 		return headerFields.entrySet();
+	}
+
+	public String getContentLength() {
+		return getValue("Content-Length");
 	}
 }
