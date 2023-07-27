@@ -8,12 +8,12 @@ import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
 import support.instance.DefaultInstanceManager;
 import support.web.exception.BadRequestException;
-import support.web.exception.NotSupportedException;
 import support.web.handler.ControllerMethodReturnValueHandlerComposite;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.QueryParameter;
 import webserver.response.HttpResponse;
+import webserver.response.HttpStatus;
 
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
@@ -55,25 +55,28 @@ public abstract class ControllerResolver {
 
     /**
      * {@link Controller}의 {@link RequestMapping}된 메소드를 실행한다.
+     *
+     * @return HttpEntity 클라이언트에 반환할 http response Status & header 값 <br/>
+     * 만약 처리할 수 없는 경우 null을 반환한다.
      */
     public static HttpEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
         // 요청 url에 해당하는 controller method를 찾는다.
-        ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
+        ControllerMethod controllerMethodStruct = controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url));
+        if (controllerMethodStruct == null) {
+            return null;
+        }
 
         // 헤더 처리
-        Object[] args = transformQuery(request, response, controllerMethodStruct.getParameters());
+        Object[] args;
+        try {
+            args = transformQuery(request, response, controllerMethodStruct.getParameters());
+        } catch (BadRequestException e) {
+            return new HttpEntity(HttpStatus.BAD_REQUEST);
+        }
 
         // 메소드 실행
-        return getHandlers().handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
-    }
-
-    private static ControllerMethod findControllerMethodStruct(String url, HttpRequest request) throws NotSupportedException {
-        ControllerMethod controllerMethodStruct = controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url));
-
-        if (controllerMethodStruct == null) {
-            throw new NotSupportedException();
-        }
-        return controllerMethodStruct;
+        HttpEntity httpEntity = getHandlers().handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
+        return httpEntity != null ? httpEntity : new HttpEntity(HttpStatus.OK);
     }
 
     /**
