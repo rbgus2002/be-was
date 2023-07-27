@@ -103,7 +103,7 @@ class WebServerTest {
     @Test
     void displayLoginUserName() {
         // given
-        회원가입("javajigi", "password", "박재성", "javajigi@slip.net");
+        회원가입("javajigi", "password", "park", "javajigi@slip.net");
 
         Cookie cookie = RestAssured.given().log().all()
                 .when()
@@ -127,7 +127,7 @@ class WebServerTest {
                 .extract();
 
         // then
-        Assertions.assertThat(response.body().asString()).contains("javajigi");
+        Assertions.assertThat(response.body().asString()).contains("park");
     }
 
     @DisplayName("사용자가 로그인 상태가 아닐 경우 /index.html에서 [로그인] 버튼을 표시해 준다.")
