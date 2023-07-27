@@ -1,6 +1,5 @@
 package service;
 
-import global.constant.Headers;
 import global.util.SessionUtil;
 import model.Session;
 import model.db.Database;
@@ -12,7 +11,6 @@ import java.util.Map;
 import static model.db.Database.findUserById;
 
 public class UserService {
-    private final static SessionUtil sessionUtil = new SessionUtil();
 
     public void register(Map<String, String> params) {
         final User user = new User(
@@ -32,8 +30,9 @@ public class UserService {
         }
     }
 
-    public String login(Map<String, String> headerParams, Map<String, String> bodyParams, Session session) {
+    public String login(Map<String, String> headerParams, Map<String, String> bodyParams, SessionUtil sessionUtil) {
         String userId = bodyParams.get(UserParam.ID);
+        Session session = new Session();
         session.setAttribute("userId", userId);
 
         String sid = sessionUtil.createSession();

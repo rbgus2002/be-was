@@ -7,7 +7,7 @@ import global.constant.HttpMethod;
 import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.request.RequestLine;
-import model.Session;
+import global.util.SessionUtil;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -18,12 +18,12 @@ public class GetHandler implements Handler {
     private final HttpMethod httpMethod = HttpMethod.GET;
     private final RequestHeader requestHeader;
     private final RequestBody requestBody;
-    private final Session session;
+    private final SessionUtil sessionUtil;
 
-    public GetHandler(RequestHeader requestHeader, RequestBody requestBody, Session session) {
+    public GetHandler(RequestHeader requestHeader, RequestBody requestBody, SessionUtil sessionUtil) {
         this.requestHeader = requestHeader;
         this.requestBody = requestBody;
-        this.session = session;
+        this.sessionUtil = sessionUtil;
     }
 
     public boolean matchHttpMethod(HttpMethod httpMethod) {
@@ -33,7 +33,7 @@ public class GetHandler implements Handler {
     public byte[] startController(RequestLine requestLine, Controller controller) throws Exception {
         for (Method method : Controller.class.getDeclaredMethods()) {
             if (isGetMapping(method, requestLine.getUri())) {
-                return (byte[]) method.invoke(controller, requestHeader, requestBody, session);
+                return (byte[]) method.invoke(controller, requestHeader, requestBody, sessionUtil);
             }
         }
 

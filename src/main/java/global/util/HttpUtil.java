@@ -5,7 +5,6 @@ import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.request.RequestLine;
 import global.request.RequestMapper;
-import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,14 +25,14 @@ public class HttpUtil {
     private final RequestLine requestLine;
     private final RequestHeader headers;
     private final RequestBody requestBody;
-    private final Session session;
+    private final SessionUtil sessionUtil;
 
     public HttpUtil(InputStream inputStream) throws IOException {
         this.reader = new BufferedReader(new InputStreamReader(inputStream));
         this.requestLine = new RequestLine(extractRequestLine());
         this.headers = new RequestHeader(extractHeaders());
         this.requestBody = new RequestBody(extractRequestBody());
-        this.session = new Session();
+        this.sessionUtil = new SessionUtil();
     }
 
     private String extractRequestLine() throws IOException {
@@ -67,7 +66,7 @@ public class HttpUtil {
     }
 
     public byte[] getResponse() throws IOException {
-        final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.headers, this.requestBody, this.session);
+        final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.headers, this.requestBody, this.sessionUtil);
         try {
             return mappingHandler.response();
         } catch (BadRequestException e) {

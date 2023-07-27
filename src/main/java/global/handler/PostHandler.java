@@ -8,7 +8,7 @@ import global.constant.HttpMethod;
 import global.request.RequestBody;
 import global.request.RequestHeader;
 import global.request.RequestLine;
-import model.Session;
+import global.util.SessionUtil;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -19,12 +19,12 @@ public class PostHandler implements Handler {
     private final HttpMethod httpMethod = HttpMethod.POST;
     private final RequestHeader requestHeader;
     private final RequestBody requestBody;
-    private final Session session;
+    private final SessionUtil sessionUtil;
 
-    public PostHandler(RequestHeader requestHeader, RequestBody requestBody, Session session) {
+    public PostHandler(RequestHeader requestHeader, RequestBody requestBody, SessionUtil sessionUtil) {
         this.requestHeader = requestHeader;
         this.requestBody = requestBody;
-        this.session =  session;
+        this.sessionUtil =  sessionUtil;
     }
 
     public boolean matchHttpMethod(HttpMethod httpMethod) {
@@ -34,7 +34,7 @@ public class PostHandler implements Handler {
     public byte[] startController(RequestLine requestLine, Controller controller) throws Exception {
         for (Method method : Controller.class.getDeclaredMethods()) {
             if (isPostMapping(method, requestLine.getUri())) {
-                return (byte[]) method.invoke(controller, requestHeader, requestBody, session);
+                return (byte[]) method.invoke(controller, requestHeader, requestBody, sessionUtil);
             }
         }
 

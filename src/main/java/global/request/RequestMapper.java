@@ -9,25 +9,24 @@ import global.handler.GetHandler;
 import global.handler.Handler;
 import global.handler.PostHandler;
 import global.response.ResponseEntity;
-import model.Session;
+import global.util.SessionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static global.constant.ContentType.existContentType;
 
 public class RequestMapper {
     private final RequestLine requestLine;
     private final RequestHeader requestHeader;
     private final RequestBody requestBody;
-    private final Session session;
+    private final SessionUtil sessionUtil;
     private final Controller controller;
 
-    public RequestMapper(RequestLine requestLine, RequestHeader requestHeader, RequestBody requestBody, Session session) {
+    public RequestMapper(RequestLine requestLine, RequestHeader requestHeader, RequestBody requestBody, SessionUtil sessionUtil) {
         this.requestLine = requestLine;
         this.requestBody = requestBody;
         this.requestHeader = requestHeader;
-        this.session = session;
+        this.sessionUtil = sessionUtil;
         this.controller = new Controller();
     }
 
@@ -47,8 +46,8 @@ public class RequestMapper {
 
     private Handler findHandler(HttpMethod httpMethod) {
         final List<Handler> handlers = new ArrayList<>();
-        handlers.add(new GetHandler(requestHeader, requestBody, session));
-        handlers.add(new PostHandler(requestHeader, requestBody, session));
+        handlers.add(new GetHandler(requestHeader, requestBody, sessionUtil));
+        handlers.add(new PostHandler(requestHeader, requestBody, sessionUtil));
 
         return handlers.stream()
                 .filter(handler -> handler.matchHttpMethod(httpMethod))
