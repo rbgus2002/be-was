@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
 
 import was.controller.ClassManager;
 import was.controller.annotation.RequestMapping;
+import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.utils.HttpMethod;
 import was.webserver.utils.HttpStatus;
-import was.webserver.request.HttpWasRequest;
-import was.webserver.utils.HttpMimeType;
 
 public class WasHandler {
 
@@ -33,13 +32,12 @@ public class WasHandler {
 			}
 			final String resourcePath = httpWasRequest.getResourcePath();
 			if (httpWasResponse.isExistResource(resourcePath)) {
-				httpWasResponse.responseResource(resourcePath);
+				httpWasResponse.responseResource(resourcePath, HttpStatus.OK);
 				return;
 			}
 			apiService(resourcePath);
 		} catch (InvocationTargetException | IllegalAccessException e) {
-			httpWasResponse.setHttpStatus(HttpStatus.BAD_REQUEST);
-			httpWasResponse.setBody(e.getCause().getMessage() , HttpMimeType.NOTING);
+			httpWasResponse.responseResource("/status/400.html", HttpStatus.BAD_REQUEST);
 			httpWasResponse.doResponse();
 		}
 		
@@ -49,8 +47,7 @@ public class WasHandler {
 		final List<Method> methods = getResourcePathMethod(resourcePath);
 
 		if (methods.isEmpty()) {
-			httpWasResponse.setHttpStatus(HttpStatus.NOT_FOUND);
-			httpWasResponse.setBody(HttpStatus.NOT_FOUND.getName(), HttpMimeType.PLAIN);
+			httpWasResponse.responseResource("/status/400.html", HttpStatus.BAD_REQUEST);
 			return;
 		}
 
@@ -61,8 +58,7 @@ public class WasHandler {
 			return;
 		}
 
-		httpWasResponse.setHttpStatus(HttpStatus.METHOD_NOT_ALLOWED);
-		httpWasResponse.setBody(HttpStatus.METHOD_NOT_ALLOWED.getName(), HttpMimeType.PLAIN);
+		httpWasResponse.responseResource("/status/405.html", HttpStatus.METHOD_NOT_ALLOWED);
 	}
 
 	private boolean responseDynamicFile() throws InvocationTargetException, IllegalAccessException {

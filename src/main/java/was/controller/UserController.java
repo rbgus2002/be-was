@@ -36,8 +36,7 @@ public class UserController {
 		final User findUser = Database.findUserById(userId);
 
 		if (findUser == null || !findUser.getPassword().equals(password)) {
-			response.responseResource("/user/login_failed.html");
-			response.setHttpStatus(HttpStatus.BAD_REQUEST);
+			response.responseResource("/user/login_failed.html", HttpStatus.BAD_REQUEST);
 			return;
 		}
 

@@ -32,18 +32,18 @@ public class HttpWasResponse {
 		httpFileHandler = new HttpFileHandler();
 	}
 
-	public void responseResource(String resourcePath) {
+	public void responseResource(String resourcePath, HttpStatus status) {
 		try {
 			Path path = httpFileHandler.getFilePath(resourcePath);
 			final byte[] files = Files.readAllBytes(path);
 			header.clearHeader();
-			httpStatus = HttpStatus.OK;
+			httpStatus = status;
 			header.addHeader(HttpHeader.CONTENT_TYPE, HttpMimeType.valueOfResourcePath(resourcePath).getCharsetUtf8());
+			header.addHeader(HttpHeader.CONTENT_LENGTH, String.valueOf(files.length));
 			this.body = files;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			setHttpStatus(HttpStatus.NOT_FOUND);
-			setBody(HttpStatus.NOT_FOUND.getName(), HttpMimeType.PLAIN);
+			responseResource("/status/404.html", HttpStatus.NOT_FOUND);
 		}
 	}
 

@@ -23,7 +23,7 @@ public class WriteView {
 			return;
 		}
 
-		response.responseResource("/write.html");
+		response.responseResource("/write.html", HttpStatus.OK);
 	}
 
 }
