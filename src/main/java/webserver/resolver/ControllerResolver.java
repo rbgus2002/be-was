@@ -3,10 +3,12 @@ package webserver.resolver;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import webapp.model.User;
+import webserver.annotation.Authenticated;
 import webserver.annotation.RequestBody;
 import webserver.annotation.RequestParam;
 import webserver.http.message.HttpRequest;
@@ -14,6 +16,7 @@ import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
 import webserver.mapping.ControllerMapping;
 import webserver.mapping.UrlMapping;
+import webserver.session.SessionStorage;
 
 public class ControllerResolver {
 
@@ -31,6 +34,17 @@ public class ControllerResolver {
 	}
 
 	private HttpResponse invoke(HttpRequest request, Method method) throws ReflectiveOperationException {
+		// 세션 기반 인증
+		if (method.isAnnotationPresent(Authenticated.class)) {
+			UUID sessionId = request.getSessionId();
+			if (sessionId == null || SessionStorage.findUserBySessionId(sessionId) == null) {
+				return HttpResponse.builder()
+					.status(HttpStatus.UNAUTHORIZED)
+					.view("/user/login")
+					.build();
+			}
+		}
+
 		Object controller = controllerMapping.getControllerByMethod(method);
 		Parameter[] parameters = method.getParameters();
 		if (parameters.length == 0) {
