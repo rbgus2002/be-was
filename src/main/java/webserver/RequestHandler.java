@@ -59,7 +59,7 @@ public class RequestHandler implements Runnable {
             }
 
             String body = "";
-            if (POST.equals(requestLine[0]) && headers.containsKey("Content-Length")) {
+            if (POST.equals(requestLine[0]) && !"0".equals(headers.get("Content-Length"))) {
                 int contentLength = Integer.parseInt(headers.get("Content-Length"));
                 char[] bodyChars = new char[contentLength];
                 br.read(bodyChars, 0, contentLength);

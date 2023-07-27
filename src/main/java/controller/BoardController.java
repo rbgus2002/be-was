@@ -3,12 +3,14 @@ package controller;
 import exception.BadRequestException;
 import http.HttpRequest;
 import http.HttpResponse;
+import http.HttpStatus;
 import service.BoardService;
 
 import java.util.Map;
 
-import static db.SessionStorage.findUserIdBySessionId;
 import static exception.ExceptionList.INVALID_URI;
+import static http.FilePath.INDEX;
+import static utils.FileIOUtils.loadFromPath;
 
 public class BoardController extends Controller {
 
@@ -34,12 +36,13 @@ public class BoardController extends Controller {
     public HttpResponse.ResponseBuilder doPost(HttpRequest httpRequest) {
         String uri = httpRequest.getUri();
         if (uri.equals("/qna/create")) {
-            return createQnA(httpRequest.getBody(), findUserIdBySessionId(httpRequest.getSessionId()));
+            return createQnA(httpRequest.getBody());
         }
         throw new BadRequestException(INVALID_URI);
     }
 
-    private HttpResponse.ResponseBuilder createQnA(Map<String, String> parameters, String userId) {
-        return null;
+    private HttpResponse.ResponseBuilder createQnA(Map<String, String> parameters) {
+        boardService.createBoard(parameters);
+        return loadFromPath(HttpStatus.FOUND, INDEX);
     }
 }
