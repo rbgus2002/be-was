@@ -31,6 +31,10 @@ public class UserService {
         return findUser.get().getPassword().equals(loginRequest.getPassword());
     }
 
+    public Optional<User> findBy(final String userId) {
+        return userRepository.findUserById(userId);
+    }
+
     public List<User> getAll() {
         return new ArrayList<>(userRepository.findAll());
     }
