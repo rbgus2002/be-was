@@ -134,7 +134,7 @@ public class ListView {
 			.append("                </tr>\r\n")
 			.append("              </thead>\r\n")
 			.append("              <tbody>\r\n");
-		int a = 3;
+		int a = 1;
 		for (User user : users) {
 			sb.append("                <tr>\r\n")
 				.append("                    <th scope=\"row\">")
