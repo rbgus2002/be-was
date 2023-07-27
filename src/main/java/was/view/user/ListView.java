@@ -133,16 +133,7 @@ public class ListView {
 			.append("                    <th>#</th> <th>사용자 아이디</th> <th>이름</th> <th>이메일</th><th></th>\r\n")
 			.append("                </tr>\r\n")
 			.append("              </thead>\r\n")
-			.append("              <tbody>\r\n")
-			.append("                <tr>\r\n")
-			.append(
-				"                    <th scope=\"row\">1</th> <td>javajigi</td> <td>자바지기</td> <td>javajigi@sample.net</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\r\n")
-			.append("                </tr>\r\n")
-			.append("                <tr>\r\n")
-			.append(
-				"                    <th scope=\"row\">2</th> <td>slipp</td> <td>슬립</td> <td>slipp@sample.net</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\r\n")
-			.append("                </tr>\r\n");
-
+			.append("              <tbody>\r\n");
 		int a = 3;
 		for (User user : users) {
 			sb.append("                <tr>\r\n")

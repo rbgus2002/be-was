@@ -183,7 +183,7 @@ public class IndexView {
 			.append("              </div>\r\n")
 			.append("              <div class=\"col-md-3 qna-write\">\r\n")
 			.append(
-				"                  <a href=\"./qna/form.html\" class=\"btn btn-primary pull-right\" role=\"button\">질문하기</a>\r\n")
+				"                  <a href=\"./write.html\" class=\"btn btn-primary pull-right\" role=\"button\">글쓰기</a>\r\n")
 			.append("              </div>\r\n")
 			.append("          </div>\r\n")
 			.append("        </div>\r\n")
