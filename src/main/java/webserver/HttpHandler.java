@@ -2,7 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.annotation.Container;
+import support.annotation.Component;
 import support.web.*;
 import support.web.exception.NotFoundException;
 import webserver.request.HttpRequest;
@@ -12,7 +12,7 @@ import webserver.response.HttpStatus;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Container
+@Component
 public class HttpHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);

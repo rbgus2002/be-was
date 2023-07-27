@@ -1,6 +1,6 @@
 package support.web.handler;
 
-import support.annotation.Container;
+import support.annotation.Component;
 import support.web.HttpEntity;
 import support.web.exception.ServerErrorException;
 import webserver.request.HttpRequest;
@@ -9,7 +9,7 @@ import webserver.response.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-@Container
+@Component
 public class ControllerMethodReturnValueHandlerComposite {
 
     private final List<ControllerMethodReturnValueHandler> returnValueHandlers = new ArrayList<>();

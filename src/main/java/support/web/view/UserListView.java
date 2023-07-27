@@ -2,7 +2,7 @@ package support.web.view;
 
 import db.Database;
 import model.Session;
-import support.annotation.Container;
+import support.annotation.Component;
 import support.web.Model;
 import utils.StringBuilderExpansion;
 import webserver.request.HttpRequest;
@@ -10,7 +10,7 @@ import webserver.response.HttpResponse;
 
 import java.util.List;
 
-@Container
+@Component
 public class UserListView implements View {
 
     @Override

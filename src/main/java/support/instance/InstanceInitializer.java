@@ -1,6 +1,6 @@
 package support.instance;
 
-import support.annotation.Container;
+import support.annotation.Component;
 import utils.ClassListener;
 
 import java.lang.annotation.Annotation;
@@ -18,7 +18,7 @@ public abstract class InstanceInitializer {
         Map<Class<?>, Integer> visited = new HashMap<>();
 
         List<Class<?>> filteredClasses = classes.stream()
-                .filter(clazz -> !clazz.isAnnotation() && hasAnnotation(clazz, Container.class, visited))
+                .filter(clazz -> !clazz.isAnnotation() && hasAnnotation(clazz, Component.class, visited))
                 .collect(Collectors.toUnmodifiableList());
 
         visited.clear();

@@ -1,12 +1,12 @@
 package support.web.view;
 
-import support.annotation.Container;
+import support.annotation.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Container
+@Component
 public class ViewContainer {
 
     private final List<View> viewContainer = new ArrayList<>();

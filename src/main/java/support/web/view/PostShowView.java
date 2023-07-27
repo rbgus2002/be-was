@@ -1,12 +1,12 @@
 package support.web.view;
 
-import support.annotation.Container;
+import support.annotation.Component;
 import support.web.Model;
 import utils.StringBuilderExpansion;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
-@Container
+@Component
 public class PostShowView implements View {
 
     @Override

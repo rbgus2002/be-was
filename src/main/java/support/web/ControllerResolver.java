@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Container
+@Component
 public class ControllerResolver {
 
     private final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
