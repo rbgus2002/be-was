@@ -42,6 +42,7 @@ public class UserController {
 		// 쿠키 저장
 		return HttpResponse.builder()
 			.status(HttpStatus.SEE_OTHER)
+			.setSessionCookie(session)
 			.redirection("/index")
 			.build();
 	}

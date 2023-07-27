@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import webserver.resolver.utils.FileMapper;
+import webserver.session.Session;
 
 public class HttpResponse {
 
@@ -109,6 +110,19 @@ public class HttpResponse {
 				resetBody();
 			}
 			return headerField(LOCATION, targetUrl);
+		}
+
+		public HttpResponseBuilder setCookie(String cookie) {
+			headerField("Set-Cookie", cookie);
+			return this;
+		}
+
+		public HttpResponseBuilder setSessionCookie(Session session) {
+			String sessionCookie = "sid=" + session.getSid()
+				+ "; Max-Age=" + Session.MAX_AGE
+				+ "; Path=/";
+			setCookie(sessionCookie);
+			return this;
 		}
 
 		public HttpResponse build() {
