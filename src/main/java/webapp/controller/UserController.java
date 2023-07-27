@@ -29,6 +29,14 @@ public class UserController {
 			.build();
 	}
 
+	@RequestMapping(method = HttpMethod.GET, path = "/user/login")
+	public HttpResponse loginPage() {
+		View loginView = View.of("user/login");
+		return HttpResponse.builder()
+			.view(loginView)
+			.build();
+	}
+
 	@RequestMapping(method = HttpMethod.POST, path = "/user/login")
 	public HttpResponse login(@RequestBody(name = "userId") String userId,
 		@RequestBody(name = "password") String password) {
