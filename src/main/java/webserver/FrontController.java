@@ -63,23 +63,16 @@ public class FrontController {
         }
 
         httpResponse.set200Header(viewName); // 헤더 설정
-
         // 로그인 확인
-        if (isLogin(httpRequest)) {
+        byte[] body;
+        if (isLogin(httpRequest) && viewName.equals("/index.html")) {
             // 동적페이지 생성
-            byte[] body;
-            if (viewName.equals("/index.html")) {
-                body = View.getIndex(httpRequest.getSession());
-                httpResponse.setBody(body);
-            } else {
-                body = Files.readAllBytes(new File(STATIC_PATH + viewName).toPath());
-                httpResponse.setBody(body);
-            }
+            body = View.getIndex(httpRequest.getSession());
+            httpResponse.setBody(body);
             return;
         }
 
         // 정적페이지 생성
-        byte[] body;
         if (httpRequest.getMime() == MIME.HTML) {
             body = Files.readAllBytes(new File(TEMPLATE_PATH + viewName).toPath());
         } else {
@@ -95,7 +88,6 @@ public class FrontController {
     private void render(HttpResponse httpResponse, DataOutputStream dos) throws IOException {
         HttpStatusCode statusCode = httpResponse.getStatusCode();
         Map<String, String> headers = httpResponse.getHeaders();
-        byte[] body = httpResponse.getBody();
 
         // 시작줄
         dos.writeBytes("HTTP/1.1 " + statusCode.getValue() + " " + statusCode.getDescription() + " \r\n");
@@ -107,7 +99,10 @@ public class FrontController {
         dos.writeBytes("\r\n");
 
         // 바디
-        dos.write(body, 0, body.length);
+        if (headers.containsKey("Content-Length")) {
+            byte[] body = httpResponse.getBody();
+            dos.write(body, 0, body.length);
+        }
         dos.flush();
     }
 }
