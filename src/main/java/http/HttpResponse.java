@@ -4,7 +4,7 @@ import exception.NotSupportedContentTypeException;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import view.MainPageOfLoginUser;
+import view.MainPageView;
 import webserver.ContentType;
 
 import java.io.*;
@@ -79,7 +79,7 @@ public class HttpResponse {
     private byte[] convertFilePathToBody(User user) throws IOException {
         handlePathByHttpStatus();
         if(isMainPage()){
-            MainPageOfLoginUser page = MainPageOfLoginUser.from(user);
+            MainPageView page = MainPageView.from(user);
             return page.getByteArray();
         }
 //        if(isUserListPage() && user == null){ // TODO : 별도의 분기 처리 말고 MainPageOfLoginUser에서 아예 링크를 login.html로 달아버리면 되지 않을까?

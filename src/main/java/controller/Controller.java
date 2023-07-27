@@ -42,4 +42,14 @@ public class Controller {
         logger.debug("SESSION COOKIE 생성 :: {}", response);
         return response;
     }
+
+    @GetMapping(value = "/user/logout")
+    public HttpResponse logout(Map<String, String> query){
+        logger.debug("query 확인 : {}",query);
+
+        String sid = query.get("sid");
+        SessionManager.remove(sid);
+        logger.debug("로그아웃 : {}", sid);
+        return HttpResponse.redirect();
+    }
 }

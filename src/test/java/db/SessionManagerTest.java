@@ -117,4 +117,19 @@ class SessionManagerTest {
         assertNull(userFetched);
         assertNull(SessionManager.fetchSession(sid));
     }
+
+    @Test
+    @DisplayName("세션을 삭제한다")
+    void removeSession(){
+        // given
+        User user = UserFactory.createUserFrom(getData());
+        String sid = SessionManager.createUserSession(user);
+
+        // when
+        SessionManager.remove(sid);
+        Session session = SessionManager.fetchSession(sid);
+
+        // then
+        assertNull(session);
+    }
 }

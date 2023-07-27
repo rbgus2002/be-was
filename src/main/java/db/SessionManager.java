@@ -53,4 +53,10 @@ public class SessionManager {
         }
         return (User) session.getValue("user");
     }
+
+    public static void remove(String sid) {
+        if(sid != null){
+            sessions.remove(sid);
+        }
+    }
 }

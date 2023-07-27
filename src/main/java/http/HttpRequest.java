@@ -34,7 +34,16 @@ public class HttpRequest {
 
     private List<Cookie> parseCookies() {
         String cookieString = header.getCookieString();
-        return Cookie.parse(cookieString);
+        List<Cookie> cookies = Cookie.parse(cookieString);
+        appendQuery(cookies);
+        return cookies;
+    }
+
+    private void appendQuery(List<Cookie> cookies) {
+        Map<String, String> query = requestLine.getUri().getQuery();
+        for(Cookie cookie : cookies){
+            query.put(cookie.getName(), cookie.getValue());
+        }
     }
 
     /**

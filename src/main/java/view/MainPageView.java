@@ -2,23 +2,23 @@ package view;
 
 import model.User;
 
-public class MainPageOfLoginUser {
+public class MainPageView {
     private StringBuilder htmlBuilder = new StringBuilder();
 
-    private MainPageOfLoginUser(User user) {
+    private MainPageView(User user) {
         htmlBuilder.setLength(0);
         if (user == null) {
             setHtmlBuilderInvalidUser();
-        }else{
+        } else {
             setHtmlBuilderValidUser(user);
         }
     }
 
-    public static MainPageOfLoginUser from(User user) {
-        return new MainPageOfLoginUser(user);
+    public static MainPageView from(User user) {
+        return new MainPageView(user);
     }
 
-    public byte[] getByteArray(){
+    public byte[] getByteArray() {
         return htmlBuilder.toString().getBytes();
     }
 
@@ -132,7 +132,7 @@ public class MainPageOfLoginUser {
                 .append("<ul class=\"nav navbar-nav navbar-right\">")
                 .append("<li><p class=\"navbar-text\">").append(user.getName()).append(" 님👀</p></li>")
                 .append("<li class=\"active\"><a href=\"index.html\">Posts</a></li>")
-                .append("<li><a href=\"#\" role=\"button\">로그아웃</a></li>")
+                .append("<li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>")
                 .append("<li><a href=\"#\" role=\"button\">개인정보수정</a></li></ul></div></div></div>")
                 .append("<div class=\"container\" id=\"main\"><div class=\"col-md-12 col-sm-12 col-lg-10 col-lg-offset-1\">")
                 .append("<div class=\"panel panel-default qna-list\"><ul class=\"list\"><li>")
