@@ -8,6 +8,7 @@ import java.util.Map;
 public class Header {
 
     private final Map<String, String> headers = new HashMap<>();
+    private static final String Location = "Location";
 
     private Map<String, String> getHeaders() {
         return headers;
@@ -25,6 +26,10 @@ public class Header {
         header.getHeaders()
                 .forEach(this::appendHeader);
         return this;
+    }
+
+    public Header setLocation(String value) {
+        return appendHeader(Location, value);
     }
 
     public String getValue(String key) {

@@ -1,7 +1,7 @@
 package support.web.handler;
 
 import support.web.ModelAndView;
-import support.web.ResponseEntity;
+import support.web.HttpEntity;
 import support.web.ViewResolver;
 import support.web.exception.NotFoundException;
 import webserver.request.HttpRequest;
@@ -16,13 +16,13 @@ public class ModelAndViewHandler implements ControllerMethodReturnValueHandler {
     }
 
     @Override
-    public ResponseEntity handleReturnValue(Object returnValue, HttpRequest request, HttpResponse response) throws Exception {
+    public HttpEntity handleReturnValue(Object returnValue, HttpRequest request, HttpResponse response) throws Exception {
         try {
             ViewResolver.buildView(request, response, (ModelAndView) returnValue);
-            return new ResponseEntity(HttpStatus.OK);
+            return null;
         } catch (NotFoundException e) {
             ViewResolver.buildErrorView(request, response);
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return new HttpEntity(HttpStatus.NOT_FOUND);
         }
     }
 

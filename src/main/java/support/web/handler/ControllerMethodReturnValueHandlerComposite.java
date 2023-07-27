@@ -1,6 +1,7 @@
 package support.web.handler;
 
-import support.web.ResponseEntity;
+import support.annotation.Container;
+import support.web.HttpEntity;
 import support.web.exception.ServerErrorException;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -8,11 +9,18 @@ import webserver.response.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+@Container
 public class ControllerMethodReturnValueHandlerComposite {
 
     private final List<ControllerMethodReturnValueHandler> returnValueHandlers = new ArrayList<>();
 
-    public ControllerMethodReturnValueHandlerComposite addHandler(ControllerMethodReturnValueHandler handler) {
+    public ControllerMethodReturnValueHandlerComposite() {
+        addHandler(new VoidHandler());
+        addHandler(new ModelAndViewHandler());
+        addHandler(new ResponseEntityHandler());
+    }
+
+    private ControllerMethodReturnValueHandlerComposite addHandler(ControllerMethodReturnValueHandler handler) {
         returnValueHandlers.add(handler);
         return this;
     }
@@ -24,7 +32,7 @@ public class ControllerMethodReturnValueHandlerComposite {
                 .orElseThrow(() -> new ServerErrorException("적절한 처리기가 없습니다."));
     }
 
-    public ResponseEntity handleReturnValue(Object returnValue, Class<?> returnType, HttpRequest request, HttpResponse response) throws Exception {
+    public HttpEntity handleReturnValue(Object returnValue, Class<?> returnType, HttpRequest request, HttpResponse response) throws Exception {
         ControllerMethodReturnValueHandler handler = getAppropriateHandler(returnType);
         return handler.handleReturnValue(returnValue, request, response);
     }

@@ -7,7 +7,6 @@ import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -37,15 +36,7 @@ public class RequestHandler implements Runnable {
             // 요청 수립
             HttpResponse response = new HttpResponse();
 
-
-            switch (request.getRequestMethod()) {
-                case GET:
-                    httpHandler.doGet(request, response);
-                    break;
-                case POST:
-                    httpHandler.doPost(request, response);
-                    break;
-            }
+            httpHandler.doService(request, response);
 
             String responseString = response.buildResponseHeader();
             logger.debug("Response... : \n{}", responseString);
@@ -55,7 +46,7 @@ public class RequestHandler implements Runnable {
                 dos.write(response.getBody(), 0, response.getBody().length);
             }
             dos.flush();
-        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }

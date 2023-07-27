@@ -6,11 +6,10 @@ import support.annotation.Controller;
 import support.annotation.PathVariable;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
+import support.instance.DefaultInstanceManager;
 import support.web.exception.BadRequestException;
 import support.web.exception.NotSupportedException;
 import support.web.handler.ControllerMethodReturnValueHandlerComposite;
-import support.web.handler.ModelAndViewHandler;
-import support.web.handler.VoidHandler;
 import utils.ClassListener;
 import webserver.request.HttpRequest;
 import webserver.request.QueryParameter;
@@ -25,7 +24,7 @@ import java.util.Map;
 public abstract class ControllerResolver {
 
     private static final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
-    private static final ControllerMethodReturnValueHandlerComposite handlers = new ControllerMethodReturnValueHandlerComposite();
+    private static ControllerMethodReturnValueHandlerComposite handlers;
     private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
     static {
@@ -45,15 +44,19 @@ public abstract class ControllerResolver {
                         );
             }
         });
+    }
 
-        handlers.addHandler(new VoidHandler());
-        handlers.addHandler(new ModelAndViewHandler());
+    private static ControllerMethodReturnValueHandlerComposite getHandlers() {
+        if (handlers == null) {
+            handlers = DefaultInstanceManager.getInstanceMagager().getInstance(ControllerMethodReturnValueHandlerComposite.class);
+        }
+        return handlers;
     }
 
     /**
      * {@link Controller}의 {@link RequestMapping}된 메소드를 실행한다.
      */
-    public static ResponseEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
+    public static HttpEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = findControllerMethodStruct(url, request);
 
@@ -61,7 +64,7 @@ public abstract class ControllerResolver {
         Object[] args = transformQuery(request, response, controllerMethodStruct.getParameters());
 
         // 메소드 실행
-        return handlers.handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
+        return getHandlers().handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
     }
 
     private static ControllerMethod findControllerMethodStruct(String url, HttpRequest request) throws NotSupportedException {

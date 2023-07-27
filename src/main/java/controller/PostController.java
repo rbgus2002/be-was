@@ -8,10 +8,12 @@ import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
-import support.web.exception.FoundException;
 import support.web.HttpMethod;
+import support.web.ResponseEntity;
 import utils.LoginUtils;
+import webserver.Header;
 import webserver.request.HttpRequest;
+import webserver.response.HttpStatus;
 
 @Controller(value = "/post")
 public class PostController {
@@ -19,22 +21,26 @@ public class PostController {
     private final Logger logger = LoggerFactory.getLogger(PostViewController.class);
 
     @RequestMapping(method = HttpMethod.POST, value = "/write")
-    public void write(@RequestParam("title") String title,
-                      @RequestParam("writer") String writer,
-                      @RequestParam("contents") String contents,
-                      HttpRequest request) throws FoundException {
+    public ResponseEntity<?> write(@RequestParam("title") String title,
+                                   @RequestParam("writer") String writer,
+                                   @RequestParam("contents") String contents,
+                                   HttpRequest request) {
         logger.debug("쓰기 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession == null) {
-            throw new FoundException("/user/login.html");
+            Header header = new Header();
+            header.setLocation("/user/login.html");
+            return new ResponseEntity<>(HttpStatus.FOUND, header);
         }
 
         Post post = new Post(title, writer, contents);
         Database.addPost(post.getId(), post);
 
-        logger.debug("게시글... 생성 됨... title: {} writer: {} contents: {} ", title, writer, contents);
-        throw new FoundException("/index");
+        logger.debug("게시글 생성! title: {} writer: {} contents: {} ", title, writer, contents);
+        Header header = new Header();
+        header.setLocation("/");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
 }

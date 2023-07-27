@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.PathVariable;
 import support.annotation.RequestMapping;
-import support.web.exception.FoundException;
 import support.web.HttpMethod;
 import support.web.ModelAndView;
+import support.web.ResponseEntity;
 import utils.LoginUtils;
+import webserver.Header;
 import webserver.request.HttpRequest;
+import webserver.response.HttpStatus;
 
 @Controller(value = "/post")
 public class PostViewController {
@@ -20,21 +22,23 @@ public class PostViewController {
     private final Logger logger = LoggerFactory.getLogger(PostViewController.class);
 
     @RequestMapping(method = HttpMethod.GET, value = "/form")
-    public ModelAndView form(HttpRequest request) throws FoundException {
+    public ResponseEntity<ModelAndView> form(HttpRequest request) {
         logger.debug("작성 폼 뷰 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession != null) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("/post/form.html");
-            return modelAndView;
+            return new ResponseEntity<>(HttpStatus.OK, modelAndView);
         }
 
-        throw new FoundException("/user/login.html");
+        Header header = new Header();
+        header.setLocation("/user/login.html");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/show")
-    public ModelAndView show(@PathVariable("id") String postId, HttpRequest request) throws FoundException {
+    public ResponseEntity<ModelAndView> show(@PathVariable("id") String postId, HttpRequest request) {
         logger.debug("게시글 세부 글 뷰 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
@@ -46,10 +50,13 @@ public class PostViewController {
             modelAndView.addAttribute("writer", post.getWriter());
             modelAndView.addAttribute("createDateTime", post.getCreateDateTime());
             modelAndView.addAttribute("content", post.getContents());
-            return modelAndView;
+            return new ResponseEntity<>(HttpStatus.OK, modelAndView);
         }
 
-        throw new FoundException("/user/login.html");
+
+        Header header = new Header();
+        header.setLocation("/user/login.html");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
 }

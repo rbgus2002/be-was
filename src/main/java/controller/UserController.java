@@ -8,13 +8,15 @@ import org.slf4j.LoggerFactory;
 import support.annotation.Controller;
 import support.annotation.RequestMapping;
 import support.annotation.RequestParam;
-import support.web.exception.FoundException;
 import support.web.HttpMethod;
 import support.web.ModelAndView;
+import support.web.ResponseEntity;
 import utils.LoginUtils;
 import webserver.Cookie;
+import webserver.Header;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
+import webserver.response.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -26,15 +28,17 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping(method = HttpMethod.POST, value = "/login")
-    public void login(@RequestParam("userId") String userId,
-                      @RequestParam("password") String password,
-                      HttpResponse response) throws FoundException {
+    public ResponseEntity<?> login(@RequestParam("userId") String userId,
+                                   @RequestParam("password") String password,
+                                   HttpResponse response) {
         logger.debug("유저 로그인 요청");
 
         User user = Database.findUserById(userId);
         if (user == null || !user.getPassword().equals(password)) {
             logger.debug("유저 없거나 비밀번호 불일치");
-            throw new FoundException("/user/login_failed.html");
+            Header header = new Header();
+            header.setLocation("/user/login_failed.html");
+            return new ResponseEntity<>(HttpStatus.FOUND, header);
         }
         logger.debug("유저 로그인 성공~");
 
@@ -50,38 +54,48 @@ public class UserController {
         Cookie cookie = cookieBuilder.build();
         response.appendHeader("Set-Cookie", cookie.buildCookie());
 
-        throw new FoundException("/index");
+
+        Header header = new Header();
+        header.setLocation("/");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
     @RequestMapping(method = HttpMethod.POST, value = "/create")
-    public void create(@RequestParam("userId") String userId,
-                       @RequestParam("password") String password,
-                       @RequestParam("name") String name,
-                       @RequestParam("email") String email) throws FoundException {
+    public ResponseEntity<?> create(@RequestParam("userId") String userId,
+                                    @RequestParam("password") String password,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("email") String email) {
 
         logger.debug("유저 생성 요청");
         User user = new User(userId, password, name, email);
         Database.addUser(user);
 
-        throw new FoundException("/index");
+        Header header = new Header();
+        header.setLocation("/");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/list")
-    public ModelAndView userList(HttpRequest request) throws FoundException {
+    public ResponseEntity<ModelAndView> userList(HttpRequest request) {
         logger.debug("리스트 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
         if (loginSession != null) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("/user/list");
-            return modelAndView;
+
+            Header header = new Header();
+            header.setLocation("/user/login.html");
+            return new ResponseEntity<>(HttpStatus.FOUND, header, modelAndView);
         }
 
-        throw new FoundException("/user/login.html");
+        Header header = new Header();
+        header.setLocation("/user/login.html");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
     @RequestMapping(method = HttpMethod.GET, value = "/logout")
-    public void logout(HttpRequest request, HttpResponse response) throws FoundException {
+    public ResponseEntity<?> logout(HttpRequest request, HttpResponse response) {
         logger.debug("로그 아웃 요청");
 
         Session loginSession = LoginUtils.getLoginSession(request);
@@ -99,7 +113,9 @@ public class UserController {
             response.appendHeader("Set-Cookie", cookie.buildCookie());
         }
 
-        throw new FoundException("/");
+        Header header = new Header();
+        header.setLocation("/");
+        return new ResponseEntity<>(HttpStatus.FOUND, header);
     }
 
 }
