@@ -27,13 +27,17 @@ public class Cookie {
         return new Cookie(options);
     }
 
-    public Cookie createEmpty() {
+    public static Cookie createEmpty() {
         Map<String, String> options = new HashMap<>();
         return new Cookie(options);
     }
 
     public void addElement(final String key, final String value) {
         options.put(key, value);
+    }
+
+    public String getElement(final String key) {
+        return options.get(key);
     }
 
     @Override
@@ -44,7 +48,6 @@ public class Cookie {
                 .map(entry -> SPACE + entry.getKey() + EQUAL + entry.getValue() + SEMICOLON)
                 .forEach(sb::append);
         sb.deleteCharAt(sb.length() - INDEX_ADJUSTMENT);
-        sb.append(NEWLINE);
         return sb.toString();
     }
 }

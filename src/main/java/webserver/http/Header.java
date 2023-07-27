@@ -1,5 +1,7 @@
 package webserver.http;
 
+import webserver.http.Constants.HeaderOption;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -8,6 +10,7 @@ import static support.utils.StringUtils.*;
 public class Header {
 
     private final HashMap<String, String> headers;
+    private Cookie cookie;
 
     private Header(HashMap<String, String> headers) {
         this.headers = headers;
@@ -25,6 +28,13 @@ public class Header {
         return new Header(headers);
     }
 
+    public void setCookie() {
+        String cookie = headers.get(HeaderOption.COOKIE);
+        if(cookie != null) {
+            this.cookie = Cookie.of(cookie);
+        }
+    }
+
     public static Header createEmpty() {
         HashMap<String, String> headers = new HashMap<>();
         return new Header(headers);
@@ -38,12 +48,23 @@ public class Header {
         return headers.get(key);
     }
 
+    public void addCookieOption(final String key, final String value) {
+        if(cookie == null) cookie = Cookie.createEmpty();
+        cookie.addElement(key, value);
+    }
+
+    public String getCookieOption(final String key) {
+        return cookie.getElement(key);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         headers.entrySet().stream()
                 .map(entry -> entry.getKey() + COLON + SPACE + entry.getValue() + NEWLINE)
                 .forEach(sb::append);
+        if(cookie != null) sb.append(cookie);
+        sb.append(NEWLINE);
         return sb.toString();
     }
 }
