@@ -47,11 +47,11 @@ Java Web Application Server 2023
 #### Web Server step-6
 - 동적인 HTML 구현
   - 로그인 상태O
-    - [ ] 사용자 이름 표시
-    - [ ] 사용자 목록 표시 (/user/list)
+    - [x] 사용자 이름 표시
+    - [x] 사용자 목록 표시 (/user/list)
   - 로그인 상태X
-    - [ ] 로그인 버튼 표시
-    - [ ] 사용자 목록 페이지 접근 시도 시 로그인 페이지로 이동
+    - [x] 로그인 버튼 표시
+    - [x] 사용자 목록 페이지 접근 시도 시 로그인 페이지로 이동
 
 ## To Study List
 #### Web Server step-1
@@ -69,3 +69,4 @@ Java Web Application Server 2023
 #### Web Server step-5
 - [x] 쿠키, 세션 간단하게 학습
 #### Web Server step-6
+-
