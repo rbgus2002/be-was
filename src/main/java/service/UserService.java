@@ -4,6 +4,7 @@ import db.UserRepository;
 import exception.UserServiceException;
 import model.User;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public class UserService {
@@ -38,5 +39,9 @@ public class UserService {
         if (optionalUser.isPresent()) {
             throw UserServiceException.duplicatedId();
         }
+    }
+
+    public Collection<User> findAll() {
+        return userRepository.findAll();
     }
 }

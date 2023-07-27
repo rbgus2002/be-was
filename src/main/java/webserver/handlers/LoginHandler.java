@@ -9,6 +9,8 @@ import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.Mime;
 import webserver.session.Session;
+import webserver.model.Model;
+import webserver.template.TemplateRenderer;
 import webserver.utils.FileUtils;
 
 import java.net.URLDecoder;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 public class LoginHandler implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(LoginHandler.class);
+    private static final TemplateRenderer templateRender = TemplateRenderer.getInstance();
     public static final String LOGIN_SUCCESS = "/index.html";
     public static final String AND = "&";
     public static final String EQUAL = "=";
@@ -31,12 +34,10 @@ public class LoginHandler implements Handler {
     @Override
     public HttpResponse handle(HttpRequest request, Session session) {
         try {
-            Map<String, String> body = getBody(request);
-            String loginUserId = body.get("userId");
-            String loginPassword = body.get("password");
-            User loginUser = userService.login(loginUserId, loginPassword);
-            session.setUser(loginUser);
-            return HttpResponse.redirect(LOGIN_SUCCESS);
+            User loginUser = getLoginUser(request);
+            HttpResponse response = HttpResponse.redirect(LOGIN_SUCCESS);
+            setCookie(session, loginUser, response);
+            return response;
         } catch (NullPointerException e) {
             logger.warn("bad request : {}", e.getMessage());
             return HttpResponse.badRequest();
@@ -46,10 +47,27 @@ public class LoginHandler implements Handler {
         }
     }
 
-    private HttpResponse responseFail(){
-        byte[] file = FileUtils.readFileFromTemplate(LOGIN_FAILED);
-        return HttpResponse.badRequestWithFile(file, Mime.HTML);
+    private static void setCookie(Session session, User loginUser, HttpResponse response) {
+        session.setUser(loginUser);
+        response.setCookie(session.getId(), "/");
     }
+
+    private User getLoginUser(HttpRequest request) {
+        Map<String, String> body = getBody(request);
+        String loginUserId = body.get("userId");
+        String loginPassword = body.get("password");
+        User loginUser = userService.login(loginUserId, loginPassword);
+        return loginUser;
+    }
+
+    private HttpResponse responseFail() {
+        Model model = new Model();
+        byte[] file = FileUtils.readFileFromTemplate(LOGIN_FAILED);
+        model.setAttribute("loginStatus", "false");
+        String html = templateRender.render(new String(file), model);
+        return HttpResponse.badRequestWithFile(html.getBytes(), Mime.HTML);
+    }
+
     private Map<String, String> getBody(HttpRequest request) {
         char[] messageBody = request.getBody();
         String body = makeString(messageBody);

@@ -34,9 +34,7 @@ public class UserJoinHandler implements Handler {
     @Override
     public HttpResponse handle(HttpRequest request, Session session) {
         try {
-            char[] messageBody = request.getBody();
-            String body = makeString(messageBody);
-            User user = mapToUserFrom(body);
+            User user = getUser(request);
             userService.join(user);
             return HttpResponse.redirect(REDIRECT_URL);
         } catch (IllegalArgumentException e) {
@@ -46,6 +44,12 @@ public class UserJoinHandler implements Handler {
             logger.warn("duplicate userId : {}", e.getMessage());
             return HttpResponse.badRequest();
         }
+    }
+
+    private User getUser(HttpRequest request) {
+        char[] messageBody = request.getBody();
+        String body = makeString(messageBody);
+        return mapToUserFrom(body);
     }
 
     private String makeString(char[] messageBody) {

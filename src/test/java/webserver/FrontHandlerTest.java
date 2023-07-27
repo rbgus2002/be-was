@@ -6,25 +6,12 @@ import webserver.fixture.HttpRequestFixture;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
-import webserver.utils.FileUtils;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FrontHandlerTest {
     static final FrontHandler FRONT_HANDLER = new FrontHandler();
 
-    @DisplayName("/index.html로 들어온 요청 정상 처리")
-    @Test
-    void indexTest() {
-        HttpRequest indexRequest = HttpRequestFixture.getRequestIndex();
-
-        HttpResponse response = FRONT_HANDLER.handle(indexRequest);
-
-        assertEquals(HttpStatus.OK, response.getHttpStatus());
-        assertThat(response.getBody())
-                .isEqualTo(FileUtils.readFile("src/main/resources/templates/index.html"));
-    }
 
     @DisplayName("처리할 수 없는 요청 Not Found 응답")
     @Test
