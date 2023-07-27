@@ -42,32 +42,10 @@ public class RequestHandler implements Runnable {
 
             // Send Response
             OutputStream out = connection.getOutputStream();
-            sendResponse(response, out);
+            response.sendResponse(out);
 
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-    }
-
-    public static void sendResponse(Response response, OutputStream out) throws IOException {
-        DataOutputStream dos = new DataOutputStream(out);
-
-        // StatusLine
-        STATUS status = response.getStatus();
-        dos.writeBytes(HEADER_HTTP + response.getVersion() + " " +
-                status.getStatusCode() + " " + status.getStatusMessage() + "\r\n");
-        // Headers
-        for (Map.Entry<String, String> entry : response.getHeaderMap().entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            dos.writeBytes(key + ": " + value + "\r\n");
-        }
-        dos.writeBytes("\r\n");
-        // Body
-        byte[] body = response.getBody();
-        if(body != null) {
-            dos.write(body, 0, body.length);
-        }
-        dos.flush();
     }
 }
