@@ -56,7 +56,7 @@ public class RequestHandler implements Runnable {
 		IllegalArgumentException {
 
 		HttpResponse httpResponse = new HttpResponse();
-		String path = path = httpRequest.getPath();
+		String path = httpRequest.getPath();
 		ModelView modelView = ModelView.from(path);
 
 		if (controllerExist(httpRequest)) {
@@ -100,8 +100,8 @@ public class RequestHandler implements Runnable {
 	private ModelView runController(final HttpRequest httpRequest, final HttpResponse httpResponse,
 		ModelView modelView) throws InvocationTargetException, IllegalAccessException {
 		if (DeclaredControllers.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			modelView = DeclaredControllers.runController(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest,
-				httpResponse, modelView);
+			modelView = DeclaredControllers.runController(httpRequest.getMethod(), httpRequest.getEndpoint(),
+				httpRequest, httpResponse, modelView);
 		}
 		return modelView;
 	}

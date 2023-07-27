@@ -36,14 +36,6 @@ public class HttpRequest {
 		this.httpParameter = httpParameter;
 	}
 
-	public boolean isGet() {
-		return method.equals(HttpMethod.GET);
-	}
-
-	public boolean isPost() {
-		return method.equals(HttpMethod.POST);
-	}
-
 	private void parseRequest() throws IOException {
 		parseStatusLine();
 		parseHeader();
@@ -79,10 +71,9 @@ public class HttpRequest {
 		endPoint = path;
 		if ((method == HttpMethod.GET) && path.contains("?")) {
 			String[] pathSplit = path.split("\\?");
-			String parameterLine = pathSplit[1].substring(0, pathSplit[1].indexOf("."));
 			path = pathSplit[0];
-			endPoint = path.substring(path.lastIndexOf("/"));
-			parseParameter(parameterLine);
+			endPoint = path.substring(path.indexOf("/"));
+			parseParameter(pathSplit[1]);
 		}
 		version = HttpVersion.versionOf(arguments[2]);
 	}

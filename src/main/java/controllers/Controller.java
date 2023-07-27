@@ -26,13 +26,13 @@ public class Controller {
 	private static Logger logger = LoggerFactory.getLogger(Controller.class);
 
 	@GetMapping(path = "/")
-	public ModelView getMainIndex(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+	public ModelView getMainIndex(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		return modelView.setPath("redirect:index.html");
 	}
 
 	@GetMapping(path = "/index.html")
-	public ModelView getIndex(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView getIndex(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		List<Article> articles = ArticleDatabase.getArticles();
 		if (!articles.isEmpty()) {
 			List<Map<String, String>> articleStats = new ArrayList<>();
@@ -50,8 +50,8 @@ public class Controller {
 	}
 
 	@GetMapping(path = "/qna/form.html")
-	public ModelView qnaFormPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView qnaFormPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		if (isLoggedIn(modelView)) {
 			return modelView.setPath("qna/form.html");
 		}
@@ -59,8 +59,8 @@ public class Controller {
 	}
 
 	@PostMapping(path = "/qna/form")
-	public ModelView submitArticleForm(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) throws
-		IllegalArgumentException {
+	public ModelView submitArticleForm(final HttpRequest httpRequest, HttpResponse httpResponse,
+		ModelView modelView) throws IllegalArgumentException {
 		try {
 			String title = httpRequest.getParameter().getParameter("title");
 			String writer = httpRequest.getParameter().getParameter("writer");
@@ -73,24 +73,29 @@ public class Controller {
 	}
 
 	@GetMapping(path = "/qna/show.html")
-	public ModelView getQna(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView showArticlePage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		if (isLoggedIn(modelView)) {
+			int index = Integer.parseInt(httpRequest.getParameter().getParameter("index"));
+			Article article = ArticleDatabase.getArticleAt(index - 1);
+			modelView.addAttribute("title", article.getTitle());
+			modelView.addAttribute("writer", article.getWriter());
+			modelView.addAttribute("contents", article.getContents());
 			return modelView.setPath("qna/show.html");
 		}
 		return modelView.setPath("redirect:/user/login.html");
 	}
 
 	@GetMapping(path = "/user/form.html")
-	public ModelView userFormPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView userFormPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		return modelView.setPath("user/form.html");
 	}
 
 	@PostMapping(path = "/user/create")
-	public ModelView createUser(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) throws
+	public ModelView createUser(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) throws
 		IllegalArgumentException {
-		modelView = reflectLogin(httpRequest, modelView);
+		reflectLogin(httpRequest, modelView);
 		try {
 			UserDatabase.addUser(parameterToUser(httpRequest.getParameter()));
 		} catch (IllegalArgumentException e) {
@@ -106,8 +111,8 @@ public class Controller {
 	}
 
 	@PostMapping(path = "/user/login")
-	public ModelView login(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView login(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		String userId = httpRequest.getParameter().getParameter("userId");
 		String password = httpRequest.getParameter().getParameter("password");
 		if (LoginService.login(userId, password)) {
@@ -120,20 +125,20 @@ public class Controller {
 	}
 
 	@GetMapping(path = "/user/login.html")
-	public ModelView loginPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView loginPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		return modelView.setPath("user/login.html");
 	}
 
 	@GetMapping(path = "/user/logout")
-	public ModelView logout(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+	public ModelView logout(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		logoutSession(httpRequest);
 		return modelView.setPath("redirect:/");
 	}
 
 	@GetMapping(path = "/user/list.html")
-	public ModelView listPage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView listPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		if (isLoggedIn(modelView)) {
 			List<Map<String, String>> userStats = new ArrayList<>();
 			Map<String, String> userStat;
@@ -151,12 +156,12 @@ public class Controller {
 	}
 
 	@GetMapping(path = "/user/profile.html")
-	public ModelView userProfilePage(HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		modelView = reflectLogin(httpRequest, modelView);
+	public ModelView userProfilePage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
 		return modelView.setPath("user/profile.html");
 	}
 
-	private User parameterToUser(HttpParameter httpParameter) {
+	private User parameterToUser(final HttpParameter httpParameter) {
 		String userId = httpParameter.getParameter("userId");
 		String password = httpParameter.getParameter("password");
 		String name = httpParameter.getParameter("name");
@@ -164,7 +169,7 @@ public class Controller {
 		return User.of(userId, password, name, email);
 	}
 
-	private ModelView reflectLogin(HttpRequest httpRequest, ModelView modelView) {
+	private ModelView reflectLogin(final HttpRequest httpRequest, ModelView modelView) {
 		try {
 			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
 				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
@@ -177,7 +182,7 @@ public class Controller {
 		return modelView;
 	}
 
-	private void logoutSession(HttpRequest httpRequest) {
+	private void logoutSession(final HttpRequest httpRequest) {
 		try {
 			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
 				Session.getInstance().removeSession(httpRequest.getCookieValue(SessionConst.sessionId));
@@ -186,7 +191,7 @@ public class Controller {
 		}
 	}
 
-	private boolean isLoggedIn(ModelView modelView) {
+	private boolean isLoggedIn(final ModelView modelView) {
 		return (modelView.containsAttribute("login")) && (modelView.getAttribute("login").equals("true"));
 	}
 

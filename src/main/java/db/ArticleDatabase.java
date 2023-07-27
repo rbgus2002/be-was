@@ -20,4 +20,11 @@ public class ArticleDatabase {
 	public static List<Article> getArticles() {
 		return Collections.unmodifiableList(articles);
 	}
+
+	public static Article getArticleAt(int index) {
+		if (index < articles.size()) {
+			return articles.get(index);
+		}
+		throw new IllegalArgumentException("존재하지 않는 Article을 조회할 수 없습니다.");
+	}
 }
