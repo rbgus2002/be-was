@@ -3,6 +3,8 @@ package router;
 import controller.DynamicFileController;
 import controller.ServiceController;
 import controller.StaticFileController;
+import exception.HTTPException;
+import exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.RequestHandler;
@@ -46,7 +48,10 @@ public class Router {
             }
 
             // 모든 로직에서 처리되지 않는 경우 404 Not Found 반환
-            return new Response(HttpUtil.STATUS.NOT_FOUND, null, null);
+            throw new NotFoundException();
+        }
+        catch (HTTPException e) {
+            return e.generateResponse();
         }
         catch (Exception e) {
             logger.error(e.getStackTrace().toString());
