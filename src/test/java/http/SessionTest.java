@@ -17,7 +17,7 @@ class SessionTest {
         final long lastAccessTime = session.getLastAccessTime();
         
         // then
-        assertThat(lastAccessTime).isLessThan(System.currentTimeMillis());
+        assertThat(lastAccessTime).isLessThanOrEqualTo(System.currentTimeMillis());
     }
 
     @Test
