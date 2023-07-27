@@ -3,10 +3,12 @@ package was.view.board;
 import was.controller.annotation.RequestMapping;
 import was.db.Database;
 import was.model.Board;
+import was.model.User;
 import was.webserver.annotation.View;
 import was.webserver.request.HttpWasRequest;
 import was.webserver.response.HttpWasResponse;
 import was.webserver.session.HttpSession;
+import was.webserver.session.SessionData;
 import was.webserver.utils.HttpHeader;
 import was.webserver.utils.HttpMethod;
 import was.webserver.utils.HttpMimeType;
@@ -38,7 +40,10 @@ public class PostView {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		createHeader(sb);
+		final SessionData sessionData = httpSession.getSessionData(sessionId);
+		final String userId = sessionData.getUserId();
+		final User user = Database.findUserById(userId);
+		createHeader(sb, user.getName());
 		createBoard(sb, board);
 		createFooter(sb);
 
@@ -46,7 +51,7 @@ public class PostView {
 		response.setBody(sb.toString(), HttpMimeType.HTML);
 	}
 
-	private void createHeader(StringBuilder sb) {
+	private void createHeader(StringBuilder sb, String userName) {
 		sb.append("<!DOCTYPE html>\r\n"
 			+ "<html lang=\"kr\">\r\n"
 			+ "<head>\r\n"
@@ -110,7 +115,7 @@ public class PostView {
 			+ "        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">\r\n"
 			+ "            <ul class=\"nav navbar-nav navbar-right\">\r\n"
 			+ "                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\r\n"
-			+ "                <li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>\r\n"
+			+ "                <li><a href=\"../user/login.html\" role=\"button\">"+userName+"</a></li>\r\n"
 			+ "                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>\r\n"
 			+ "                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\r\n"
 			+ "                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\r\n"
