@@ -1,5 +1,6 @@
 package http;
 
+import http.response.ResponseType;
 import utils.GMTStringConverter;
 import utils.Parser;
 
@@ -7,8 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static utils.StringUtils.NEW_LINE;
 
 public class HttpHeaders {
     public static final String CONTENT_LENGTH = "Content-Length";
@@ -42,13 +41,15 @@ public class HttpHeaders {
         return headers.get(LOCATION);
     }
 
-    public void show(StringBuilder sb) {
-        headers.forEach((key, value) -> {
-            sb.append(key);
-            sb.append(" : ");
-            sb.append(value);
-            sb.append(NEW_LINE);
-        });
+    public String writeHttpHeaders(ResponseType responseType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(CONTENT_LENGTH).append(": ").append(getContentLength()).append("\r\n");
+        sb.append(CONTENT_TYPE).append(": ").append(getContentType()).append("\r\n");
+        if (responseType == ResponseType.REDIRECT) {
+            sb.append(LOCATION).append(": ").append(getLocation()).append("\r\n");
+            sb.append(SET_COOKIE).append(": ").append(getResponseCookie()).append("\r\n");
+        }
+        return sb.toString();
     }
 
     public static HttpHeaders create(BufferedReader br) throws IOException {
