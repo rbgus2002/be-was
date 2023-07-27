@@ -47,6 +47,14 @@ Java Web Application Server 2023
     - [x] 세션 아이디에 해당하는 유저 정보에 접근 가능해야한다.
 - [x] 로그인 실패 시 user/login_failed.html로 리다이렉트
 
+### step6 - 동적인 HTML
+- [ ] 동적인 html 구현
+  - 로그인 상태인 경우 (Cookie 헤더에 있는 sid의 유저가 존재하는 경우?)
+    - [ ] /index.html에서 사용자 이름을 표시
+    - [ ] /user/list에서 사용자 목록 출력
+  - 로그인 상태가 아닌 경우
+    - [ ] /index.html에서 '로그인' 버튼을 표시
+    - [ ] /user/list 페이지 접근시 로그인 페이지(login.html)로 리다이렉트
 
 ---
 ## 학습할 내용
