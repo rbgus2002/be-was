@@ -1,5 +1,6 @@
 package view;
 
+import annotation.View;
 import db.Database;
 import model.User;
 
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import static util.PathList.TEMPLATE_PATH;
-
+@View(path = "/user/list.htm")
 public class ListView {
     public static String changeToDynamic() throws IOException {
         Collection<User> all = Database.findAll();
