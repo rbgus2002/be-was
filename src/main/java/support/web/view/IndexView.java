@@ -22,6 +22,8 @@ public class IndexView implements View {
 
     @Override
     public String render(HttpRequest request, HttpResponse response, Model model) {
+        Session loginSession = LoginUtils.getLoginSession(request);
+
         StringBuilderExpansion stringBuilder = new StringBuilderExpansion();
         stringBuilder
                 .appendCRLF("<!DOCTYPE html>")
@@ -87,22 +89,10 @@ public class IndexView implements View {
                 .appendCRLF("        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">")
                 .appendCRLF("            <ul class=\"nav navbar-nav navbar-right\">");
 
-        Session loginSession = LoginUtils.getLoginSession(request);
-        if (loginSession != null) {
-            stringBuilder.append("                <li><a>", loginSession.getUser().getName(), "</a></li>");
-        }
         stringBuilder
                 .appendCRLF("                <li class=\"active\"><a href=\"index\">Posts</a></li>");
-        if (loginSession == null) {
-            stringBuilder.appendCRLF("                <li><a href=\"user/login.html\" role=\"button\">로그인</a></li>");
-        }
-        stringBuilder
-                .appendCRLF("                <li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>")
-                .appendCRLF("                <!--")
-                .appendCRLF("                <li><a href=\"#loginModal\" role=\"button\" data-toggle=\"modal\">로그인</a></li>")
-                .appendCRLF("                <li><a href=\"#registerModal\" role=\"button\" data-toggle=\"modal\">회원가입</a></li>")
-                .appendCRLF("                -->")
-                .appendCRLF("                <li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>")
+
+        ViewHelper.dynamicLoginMenu(loginSession, stringBuilder)
                 .appendCRLF("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>")
                 .appendCRLF("            </ul>")
                 .appendCRLF("        </div>")

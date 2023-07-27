@@ -1,7 +1,9 @@
 package support.web.view;
 
+import model.Session;
 import support.annotation.Component;
 import support.web.Model;
+import utils.LoginUtils;
 import utils.StringBuilderExpansion;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -16,6 +18,8 @@ public class PostShowView implements View {
 
     @Override
     public String render(HttpRequest request, HttpResponse response, Model model) {
+        Session loginSession = LoginUtils.getLoginSession(request);
+
         StringBuilderExpansion stringBuilder = new StringBuilderExpansion();
         stringBuilder
                 .appendCRLF("<!DOCTYPE html>")
@@ -83,10 +87,9 @@ public class PostShowView implements View {
                 .appendCRLF("        </div>")
                 .appendCRLF("        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">")
                 .appendCRLF("            <ul class=\"nav navbar-nav navbar-right\">")
-                .appendCRLF("                <li class=\"active\"><a href=\"../index\">Posts</a></li>")
-                .appendCRLF("                <li><a href=\"../user/login.html\" role=\"button\">로그인</a></li>")
-                .appendCRLF("                <li><a href=\"../user/form.html\" role=\"button\">회원가입</a></li>")
-                .appendCRLF("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>")
+                .appendCRLF("                <li class=\"active\"><a href=\"../index\">Posts</a></li>");
+
+        ViewHelper.dynamicLoginMenu(loginSession, stringBuilder)
                 .appendCRLF("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>")
                 .appendCRLF("            </ul>")
                 .appendCRLF("        </div>")
