@@ -78,7 +78,7 @@ public class HttpRequest {
     }
 
     private Map<String, String> parseBody(String body) {
-        if (method.equals(GET))
+        if (method.equals(GET) || body.equals(""))
             return null;
         String[] params = body.split("&");
         Map<String, String> information = new HashMap<>();
