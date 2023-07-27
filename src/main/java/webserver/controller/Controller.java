@@ -45,6 +45,13 @@ public class Controller {
         return HttpResponse.redirectResponse(request.getVersion(), "/user/login_failed.html");
     }
 
+    @RequestMapping(method = HttpMethod.GET, path = "/user/logout")
+    public HttpResponse logout(HttpRequest request) {
+        Session.removeSession(request.getSid());
+        return HttpResponse.redirectResponse(request.getVersion(), "/index.html");
+    }
+
+
     @RequestMapping(method = HttpMethod.GET, path = "/user/list.html")
     public HttpResponse userList(HttpRequest request) {
         Object sessionUser = Session.get(request.getSid());
