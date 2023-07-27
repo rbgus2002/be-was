@@ -69,7 +69,7 @@ public class IndexView {
 				.append("                  <div class=\"wrap\">\r\n")
 				.append("                      <div class=\"main\">\r\n")
 				.append("                          <strong class=\"subject\">\r\n")
-				.append("                              <a href=\"/board/")
+				.append("                              <a href=\"/post?index=")
 				.append(index + 1)
 				.append("\">")
 				.append(board.getTitle())

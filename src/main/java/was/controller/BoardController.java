@@ -13,7 +13,7 @@ import was.webserver.utils.HttpStatus;
 @Controller
 public class BoardController {
 
-	@RequestMapping(method = HttpMethod.POST, path = "/post")
+	@RequestMapping(method = HttpMethod.POST, path = "/board")
 	public void writeBoard(HttpWasRequest request, HttpWasResponse response) {
 		final String writer = request.getParameter("writer");
 		final String title = request.getParameter("title");
@@ -25,4 +25,5 @@ public class BoardController {
 		response.setHttpStatus(HttpStatus.FOUND);
 		response.addHeader(HttpHeader.LOCATION, "http://localhost:8080/index.html");
 	}
+
 }
