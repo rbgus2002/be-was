@@ -44,7 +44,7 @@ public class ViewPolicy {
 		if (modelView.getAttribute(variableName) == null) {
 			return "";
 		}
-		return (String)modelView.getAttribute(variableName);
+		return String.valueOf(modelView.getAttribute(variableName));
 	}
 
 	@annotations.ViewPolicy(regex = "<(\\w+) repeat=\\\".*\\\">*(.|\\s)*?<\\/\\1>")

@@ -18,6 +18,7 @@ import webserver.http.HttpParameter;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import model.User;
+import webserver.http.statusline.StatusCode;
 import webserver.session.Session;
 import webserver.session.SessionConst;
 import webserver.view.ModelView;
@@ -159,6 +160,15 @@ public class Controller {
 	public ModelView userProfilePage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
 		reflectLogin(httpRequest, modelView);
 		return modelView.setPath("user/profile.html");
+	}
+
+	@GetMapping(path = "/error.html")
+	public ModelView showErrorPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		httpResponse.setStatus(StatusCode.NOT_FOUND);
+		modelView.addAttribute("statusCode", StatusCode.NOT_FOUND.code);
+		modelView.addAttribute("statusMessage", StatusCode.NOT_FOUND.message);
+		modelView.addAttribute("errorMessage", "페이지를 찾을 수 없습니다.");
+		return modelView.setPath("error.html");
 	}
 
 	private User parameterToUser(final HttpParameter httpParameter) {
