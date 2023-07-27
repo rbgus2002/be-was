@@ -31,6 +31,7 @@ public class Header {
     public void setCookie() {
         String cookie = headers.get(HeaderOption.COOKIE);
         if(cookie != null) {
+            headers.remove(HeaderOption.COOKIE);
             this.cookie = Cookie.of(cookie);
         }
     }
