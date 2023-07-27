@@ -1,6 +1,6 @@
 package service;
 
-import db.Database;
+import db.Users;
 import model.User;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static db.Database.findUserById;
+import static db.Users.findUserById;
 
 public class UserService {
     private static ConcurrentMap<String, Lock> locks = new ConcurrentHashMap<>();
@@ -25,7 +25,7 @@ public class UserService {
             return false;
         }
 
-        Database.addUser(user);
+        Users.addUser(user);
 
         lock.unlock();
         return true;

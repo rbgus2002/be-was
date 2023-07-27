@@ -10,6 +10,9 @@ import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import static webserver.utils.StringUtils.getKeyString;
+import static webserver.utils.StringUtils.getValueString;
+
 public class HttpRequestParser {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestParser.class);
 
@@ -43,10 +46,11 @@ public class HttpRequestParser {
     }
 
     private static void parseHeaders(HttpRequest.Builder builder, BufferedReader bufferedReader) throws IOException {
-        String oneLine = bufferedReader.readLine();
-        while (oneLine.length() != 0) {
-            builder.setHeader(oneLine);
-            oneLine = bufferedReader.readLine();
+        String headerString = bufferedReader.readLine();
+        while (headerString.length() != 0) {
+            int splitIndex = headerString.indexOf(":");
+            builder.setHeader(getKeyString(headerString, splitIndex), getValueString(headerString, splitIndex));
+            headerString = bufferedReader.readLine();
         }
     }
 
