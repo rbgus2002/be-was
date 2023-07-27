@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import webserver.http.response.HttpResponse;
 import webserver.http.response.ResponseHandler;
+import webserver.http.response.ContentProcessStrategy;
 
 public class RequestHandler implements Runnable {
     private final Socket connection;
@@ -17,7 +18,8 @@ public class RequestHandler implements Runnable {
     public void run() {
         try (InputStream inputStream = connection.getInputStream(); OutputStream outputStream = connection.getOutputStream()) {
             HttpRequest httpRequest = HttpRequest.from(inputStream);
-            HttpResponse httpResponse = HttpResponse.from(httpRequest);
+            ContentProcessStrategy contentProcessStrategy = httpRequest.getMIME().getStrategy();
+            HttpResponse httpResponse = contentProcessStrategy.process(httpRequest);
             ResponseHandler.response(httpResponse, outputStream);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
