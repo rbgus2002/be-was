@@ -2,6 +2,8 @@ package webserver.resolver;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -71,11 +73,13 @@ public class ControllerResolver {
 			.map(parameter -> {
 				if (request.isMethodGet() && parameter.isAnnotationPresent(RequestParam.class)) {
 					RequestParam annotation = parameter.getAnnotation(RequestParam.class);
-					return request.getUrlParamValue(annotation.name());
+					String paramValue = request.getUrlParamValue(annotation.name());
+					return URLDecoder.decode(paramValue, StandardCharsets.UTF_8);
 				}
 				if (request.isMethodPost() && parameter.isAnnotationPresent(RequestBody.class)) {
 					RequestBody annotation = parameter.getAnnotation(RequestBody.class);
-					return request.getBodyValue(annotation.name());
+					String bodyValue = request.getBodyValue(annotation.name());
+					return URLDecoder.decode(bodyValue, StandardCharsets.UTF_8);
 				}
 				UUID sessionId = request.getSessionId();
 				if (sessionId != null
