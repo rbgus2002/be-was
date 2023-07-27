@@ -6,7 +6,7 @@ import webserver.controllers.annotations.RequestMethod;
 import webserver.controllers.annotations.RequestPath;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.Session;
+import model.Session;
 
 import static service.SessionService.getSession;
 import static service.SessionService.removeSession;

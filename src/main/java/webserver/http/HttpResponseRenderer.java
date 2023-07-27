@@ -24,7 +24,6 @@ public class HttpResponseRenderer {
 
     public void responseRender(DataOutputStream dos, HttpResponse response) {
         try {
-            // todo: static file controller에서 파일 있는지 여부만 확인해주기
             responseStatusLine(dos, response);
             responseHeader(dos, response);
             responseBody(dos, response);

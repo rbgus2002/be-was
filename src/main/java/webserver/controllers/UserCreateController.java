@@ -14,7 +14,6 @@ import java.util.Set;
 
 import static service.UserService.addUser;
 import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
-import static webserver.http.enums.HttpResponseStatus.FOUND;
 
 @RequestPath(path = "/user/create")
 public class UserCreateController implements Controller {
@@ -37,8 +36,6 @@ public class UserCreateController implements Controller {
             return createErrorResponse(request, BAD_REQUEST);
         }
 
-        HttpResponse.Builder builder = HttpResponse.newBuilder();
-
         User user = new User(parameters.get("userId"), parameters.get("password"), parameters.get("name"), parameters.get("email"));
         logger.info("User info: userId: {}, password: {}, name: {}, email: {}", user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 
@@ -47,10 +44,7 @@ public class UserCreateController implements Controller {
             path = "/user/create_failed.html";
         }
 
-        return builder.version(request.version())
-                .status(FOUND)
-                .redirect(path)
-                .build();
+        return createFoundResponse(request, path);
     }
 
     private boolean verifyParameter(Map<String, String> parameters) {
@@ -58,10 +52,6 @@ public class UserCreateController implements Controller {
         if (!parameters.keySet().equals(essentialField)) {
             return false;
         }
-        for (String field : essentialField) {
-            if ("".equals(parameters.get(field)))
-                return false;
-        }
-        return true;
+        return !parameters.containsValue("");
     }
 }

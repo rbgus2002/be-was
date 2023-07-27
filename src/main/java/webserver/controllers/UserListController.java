@@ -1,5 +1,6 @@
 package webserver.controllers;
 
+import model.Session;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +8,6 @@ import webserver.controllers.annotations.RequestMethod;
 import webserver.controllers.annotations.RequestPath;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.Session;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +15,6 @@ import java.util.Map;
 import static db.Users.findAll;
 import static service.SessionService.getSession;
 import static webserver.http.Cookie.isValidCookie;
-import static webserver.http.enums.HttpResponseStatus.FOUND;
-import static webserver.http.enums.HttpResponseStatus.OK;
 
 @RequestPath(path = "/user/list.html")
 public class UserListController implements Controller {
@@ -24,14 +22,8 @@ public class UserListController implements Controller {
 
     @RequestMethod(method = "GET")
     public HttpResponse handleGet(HttpRequest request) {
-        HttpResponse.Builder builder = HttpResponse.newBuilder();
-
         if (!isValidCookie(request.cookie())) {
-            return builder
-                    .version(request.version())
-                    .status(FOUND)
-                    .redirect("/user/login.html")
-                    .build();
+            return createFoundResponse(request, "/user/login.html");
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -42,16 +34,12 @@ public class UserListController implements Controller {
         }
 
         Map<String, String> attributes = new HashMap<>();
+        String filePath = "src/main/resources/templates/user/list.html";
         Session userSession = getSession(request.cookie().getSessionId());
 
         attributes.put("${user}", "<li style=\"pointer-events: none;\" ><a>" + userSession.getUser().getName() + " 님</a></li>");
         attributes.put("${userList}", stringBuilder.toString());
 
-
-        return builder.version(request.version())
-                .status(OK)
-                .fileName("src/main/resources/templates/user/list.html")
-                .setAttribute(attributes)
-                .build();
+        return createOkResponse(request, filePath, attributes);
     }
 }

@@ -1,6 +1,6 @@
 package db;
 
-import webserver.http.Session;
+import model.Session;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -22,6 +22,6 @@ public class Sessions {
 
     public static void removeSession(Session session) {
         if(hasSession(session.getSessionId()))
-            sessions.remove(session.getSessionId(), session);
+            sessions.remove(session.getSessionId());
     }
 }

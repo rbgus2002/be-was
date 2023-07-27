@@ -1,7 +1,7 @@
 package service;
 
 import db.Sessions;
-import webserver.http.Session;
+import model.Session;
 
 public class SessionService {
     public static void addSession(Session session) {

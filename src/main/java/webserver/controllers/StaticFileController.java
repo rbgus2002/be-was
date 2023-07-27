@@ -1,12 +1,12 @@
 package webserver.controllers;
 
+import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controllers.annotations.RequestMethod;
 import webserver.controllers.annotations.RequestPath;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.Session;
 import webserver.http.enums.ContentType;
 
 import java.nio.file.Files;
@@ -19,7 +19,6 @@ import static webserver.http.Cookie.isValidCookie;
 import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.ContentType.getContentTypeOfFile;
 import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
-import static webserver.http.enums.HttpResponseStatus.OK;
 
 @RequestPath(path = "/")
 public class StaticFileController implements Controller {
@@ -39,21 +38,16 @@ public class StaticFileController implements Controller {
         if (!Files.exists(Paths.get(filePath)))
             return createErrorResponse(request, NOT_FOUND);
 
-        HttpResponse.Builder builder = HttpResponse.newBuilder();
+        Map<String, String> attributes = setRequestAttribute(request);
 
-        Map<String, String> attributes = setRequestAttribute(request, builder);
-
-        return builder.version(request.version())
-                .status(OK)
-                .fileName(filePath)
-                .setAttribute(attributes)
-                .build();
+        return createOkResponse(request, filePath, attributes);
     }
 
-    private Map<String, String> setRequestAttribute(HttpRequest request, HttpResponse.Builder builder) {
+    private Map<String, String> setRequestAttribute(HttpRequest request) {
         if (!isValidCookie(request.cookie())) {
             return requestAttribute;
         }
+
         Session session = getSession(request.cookie().getSessionId());
         Map<String, String> userAttribute = new HashMap<>();
 
