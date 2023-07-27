@@ -7,13 +7,13 @@ public class Content {
     private LocalDate localDate;
     private String writer;
     private String title;
-    private String text;
+    private String contents;
 
-    public Content(String writer, String title, String text) {
+    public Content(String writer, String title, String contents) {
         localDate = LocalDate.now();
         this.writer = writer;
         this.title = title;
-        this.text = text;
+        this.contents = contents;
     }
 
     public String getWriter() {
@@ -24,8 +24,8 @@ public class Content {
         return title;
     }
 
-    public String getText() {
-        return text;
+    public String getContents() {
+        return contents;
     }
 
     public LocalDate getLocalDate() {

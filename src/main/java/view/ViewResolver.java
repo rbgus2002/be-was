@@ -50,8 +50,8 @@ public class ViewResolver {
             }
             body = Files.readAllBytes(file.toPath());
             logger.debug("viewPath = {}, findUser = {}", viewPath, findUser);
-            if (viewPath.equals("/index.html") && findUser != null) {
-                body = MainView.changeToDynamic(findUser).getBytes();
+            if (viewPath.equals("/index.html")) {
+                body = MainView.changeToDynamic(request).getBytes();
             } else if (viewPath.equals("/user/list.html")) {
                 body = ListView.changeToDynamic().getBytes();
             } else if (viewPath.equals("/user/profile.html") && findUser != null) {

@@ -2,15 +2,13 @@ package view;
 
 import db.Database;
 import model.User;
-import util.PathList;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 
-import static util.PathList.*;
+import static util.PathList.TEMPLATE_PATH;
 
 public class ListView {
     public static String changeToDynamic() throws IOException {

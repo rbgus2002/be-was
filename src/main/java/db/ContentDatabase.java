@@ -6,19 +6,23 @@ import model.User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class ContentDatabase {
-    private static Map<String, Content> contents = Maps.newHashMap();
+    private static Map<Integer, Content> contents = Maps.newHashMap();
 
-    public static void addContent(Content content) {
-        contents.put(content.getWriter(), content);
+    private static int index = 1;
+
+
+    public static synchronized void addContent(Content content) {
+       contents.put(index++, content);
     }
 
     public static Content findUserById(String writer) {
         return contents.get(writer);
     }
 
-    public static Collection<Content> findAll() {
-        return contents.values();
+    public static Set<Map.Entry<Integer, Content>> findAllWithId() {
+        return contents.entrySet();
     }
 }

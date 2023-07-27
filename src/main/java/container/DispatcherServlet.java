@@ -29,7 +29,11 @@ public class DispatcherServlet {
         String viewPath;
         Controller controller = map.getOrDefault(url, new StaticController());
         viewPath = controller.process(request, response);
+
         ViewResolver view = new ViewResolver(viewPath, response, request);
+        if (viewPath == null) {
+            view.render();
+        }
         view.service();
         view.render();
     }
