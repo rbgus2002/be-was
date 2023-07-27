@@ -14,6 +14,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SessionManagerTest {
+    private Map<String, String> getData(){
+        Map<String, String> data = new HashMap<>();
+        data.put("userId", "rbgus2002");
+        data.put("password", "0000");
+        data.put("name", "최규현");
+        data.put("email", "rbgus2002@naver.com");
+        return data;
+    }
+
     @Test
     @DisplayName("세션이 정상적으로 만들어지는지 확인한다")
     void createSession(){
@@ -23,9 +32,9 @@ class SessionManagerTest {
         // then
         assertNotNull(sid);
     }
-    
     @Nested
     class fetchSession{
+
         @Test
         @DisplayName("세션이 존재하면 가져온다")
         void success(){
@@ -38,7 +47,7 @@ class SessionManagerTest {
             // then
             assertNotNull(session);
         }
-        
+
         @Test
         @DisplayName("세션이 존재하지 않으면 null 값을 가져온다")
         void fetchNullIfNotExist(){
@@ -48,7 +57,6 @@ class SessionManagerTest {
             // then
             assertNull(session);
         }
-        
         @Test
         @DisplayName("세션을 가져오면 접근 시간을 현재 시간으로 수정한다")
         void SessionUpdateLastAccessTime(){
@@ -64,8 +72,9 @@ class SessionManagerTest {
             // then
             assertThat(lastAccessTime).isLessThanOrEqualTo(fetchedLastAccessTime);
         }
+
     }
-    
+
     @Test
     @DisplayName("세션에 sid에 해당하는 User가 존재하면 fetch 해온다")
     void fetchUser(){
@@ -75,17 +84,37 @@ class SessionManagerTest {
 
         // when
         User fetchedUser = SessionManager.fetchUser(sid);
-        
+
         // then
         assertEquals(user, fetchedUser);
     }
 
-    private Map<String, String> getData(){
-        Map<String, String> data = new HashMap<>();
-        data.put("userId", "rbgus2002");
-        data.put("password", "0000");
-        data.put("name", "최규현");
-        data.put("email", "rbgus2002@naver.com");
-        return data;
+    @Test
+    @DisplayName("세션에 sid에 해당하는 User가 존재하지 않으면 null 값을 반환한다")
+    void returnNullIfUserNotExist(){
+        // given
+        String sid = "invalidSid";
+
+        // when
+        User fetchedUser = SessionManager.fetchUser(sid);
+        
+        // then
+        assertNull(fetchedUser);
+    }
+
+    @Test
+    @DisplayName("30분의 세션 유효기간이 지난 User를 fetch 해오는 경우 세션에서 삭제한다")
+    void returnNullIfInvalidExpiration(){
+        // given
+        User user = UserFactory.createUserFrom(getData());
+        String sid = SessionManager.createUserSession(user);
+
+        // when
+        SessionManager.fetchSession(sid).updateLastAccessTimeToZero();
+        User userFetched = SessionManager.fetchUser(sid);
+
+        // then
+        assertNull(userFetched);
+        assertNull(SessionManager.fetchSession(sid));
     }
 }

@@ -25,24 +25,32 @@ public class SessionManager {
         return sid;
     }
 
+    private static String generateSessionId() {
+        return UUID.randomUUID().toString();
+    }
+
     public static Session fetchSession(String sid) {
         Session session = sessions.get(sid);
-        if (session != null) {
-            session.updateLastAccessTime();
-        }
+        processExpiration(sid, session);
         return session;
+    }
+
+    private static void processExpiration(String sid, Session session){
+        if(session != null){
+            if(session.validateExpiration()){
+                session.updateLastAccessTime();
+            }else{
+                sessions.remove(sid);
+            }
+        }
     }
 
     public static User fetchUser(String sid) {
         Session session = sessions.get(sid);
-        if (session == null) {
+        processExpiration(sid, session);
+        if(sessions.get(sid) == null){
             return null;
         }
-        session.updateLastAccessTime();
         return (User) session.getValue("user");
-    }
-
-    private static String generateSessionId() {
-        return UUID.randomUUID().toString();
     }
 }
