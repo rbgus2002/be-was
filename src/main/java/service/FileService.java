@@ -28,6 +28,7 @@ public class FileService {
         AUTH_PATH_MAP.put("/user/list.html", UserListHtmlService.class);
         AUTH_PATH_MAP.put("/user/login.html", UserLoginHtmlService.class);
         AUTH_PATH_MAP.put("/user/login_failed.html", UserLoginFailedHtmlService.class);
+        AUTH_PATH_MAP.put("/user/profile.html", UserProfileHtmlService.class);
     }
 
     public static byte[] getTargetResource(String path, User sessionUser) throws IOException, InstantiationException, IllegalAccessException {

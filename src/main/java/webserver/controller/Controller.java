@@ -54,17 +54,26 @@ public class Controller {
 
     @RequestMapping(method = HttpMethod.GET, path = "/user/list.html")
     public HttpResponse userList(HttpRequest request) {
+        return getResourceOrLogin(request);
+    }
+
+    @RequestMapping(method = HttpMethod.GET, path = "/user/profile.html")
+    public HttpResponse userProfile(HttpRequest request) {
+        return getResourceOrLogin(request);
+    }
+
+    private HttpResponse getResourceOrLogin(HttpRequest request) {
         Object sessionUser = Session.get(request.getSid());
         if (sessionUser == null) {
             return HttpResponse.redirectResponse(request.getVersion(), "/user/login.html");
         }
-        return getStaticResource(request);
+        return getTargetResource(request);
     }
 
-    public HttpResponse getStaticResource(HttpRequest request) {
+    public HttpResponse getTargetResource(HttpRequest request) {
         try {
             Object sessionUser = Session.get(request.getSid());
-            byte[] content = FileService.getStaticResource(request.getPath(), (User) sessionUser);
+            byte[] content = FileService.getTargetResource(request.getPath(), (User) sessionUser);
             ResponseBody body = ResponseBody.from(content, request.getMime());
             return HttpResponse.of(request.getVersion(), HttpStatusCode.OK, body);
         } catch (NoSuchFileException exception) {
