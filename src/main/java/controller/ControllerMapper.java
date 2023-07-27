@@ -47,7 +47,7 @@ public class ControllerMapper {
     }
 
     private static List<Class<?>> getHandlers() throws IOException, ClassNotFoundException {
-        return findAllControllerClasses("webserver.controller");
+        return findAllControllerClasses("controller");
     }
 
     private static List<Class<?>> findAllControllerClasses(String packageName) throws IOException, ClassNotFoundException {
