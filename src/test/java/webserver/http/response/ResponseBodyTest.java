@@ -7,14 +7,14 @@ import webserver.http.MIME;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BodyTest {
+public class ResponseBodyTest {
     @Test
     @DisplayName("content length가 0인, 빈 body를 리턴한다.")
     void emptyBody() {
         // given
 
         // when
-        Body emptyBody = Body.emptyBody();
+        ResponseBody emptyBody = ResponseBody.emptyBody();
 
         // then
         assertAll(() -> {
@@ -32,7 +32,7 @@ public class BodyTest {
         MIME mime = MIME.TXT;
 
         // when
-        Body body = Body.from(content, mime);
+        ResponseBody body = ResponseBody.from(content, mime);
 
         // then
         assertAll(() -> {

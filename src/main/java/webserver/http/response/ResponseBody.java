@@ -5,22 +5,22 @@ import webserver.http.MIME;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Body {
+public class ResponseBody {
     private byte[] content;
     private MIME mime;
-    private static final Body emptyBody = new Body(new byte[0], MIME.HTML);
+    private static final ResponseBody emptyBody = new ResponseBody(new byte[0], MIME.HTML);
 
-    private Body(byte[] content, MIME mime) {
+    private ResponseBody(byte[] content, MIME mime) {
         this.content = content;
         this.mime = mime;
     }
 
-    public static Body emptyBody() {
+    public static ResponseBody emptyBody() {
         return emptyBody;
     }
 
-    public static Body from(byte[] body, MIME mime) {
-        return new Body(body, mime);
+    public static ResponseBody from(byte[] body, MIME mime) {
+        return new ResponseBody(body, mime);
     }
 
     public int getLength() {
