@@ -1,5 +1,6 @@
 package support.web.handler;
 
+import support.annotation.Component;
 import support.web.ModelAndView;
 import support.web.HttpEntity;
 import support.web.ViewResolver;
@@ -8,6 +9,7 @@ import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 import webserver.response.HttpStatus;
 
+@Component
 public class ModelAndViewHandler implements ControllerMethodReturnValueHandler {
 
     @Override

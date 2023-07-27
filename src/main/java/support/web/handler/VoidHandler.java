@@ -1,9 +1,11 @@
 package support.web.handler;
 
+import support.annotation.Component;
 import support.web.HttpEntity;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
+@Component
 public class VoidHandler implements ControllerMethodReturnValueHandler {
 
 

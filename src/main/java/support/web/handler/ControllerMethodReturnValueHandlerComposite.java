@@ -1,5 +1,6 @@
 package support.web.handler;
 
+import support.annotation.AutoInject;
 import support.annotation.Component;
 import support.web.HttpEntity;
 import support.web.exception.ServerErrorException;
@@ -14,10 +15,12 @@ public class ControllerMethodReturnValueHandlerComposite {
 
     private final List<ControllerMethodReturnValueHandler> returnValueHandlers = new ArrayList<>();
 
-    public ControllerMethodReturnValueHandlerComposite() {
-        addHandler(new VoidHandler());
-        addHandler(new ModelAndViewHandler());
-        addHandler(new ResponseEntityHandler());
+    public ControllerMethodReturnValueHandlerComposite(@AutoInject VoidHandler voidHandler,
+                                                       @AutoInject ModelAndViewHandler modelAndViewHandler,
+                                                       @AutoInject ResponseEntityHandler responseEntityHandler) {
+        addHandler(voidHandler);
+        addHandler(modelAndViewHandler);
+        addHandler(responseEntityHandler);
     }
 
     private ControllerMethodReturnValueHandlerComposite addHandler(ControllerMethodReturnValueHandler handler) {

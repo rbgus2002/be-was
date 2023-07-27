@@ -1,11 +1,13 @@
 package support.web.handler;
 
+import support.annotation.Component;
 import support.instance.DefaultInstanceManager;
 import support.web.HttpEntity;
 import support.web.ResponseEntity;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
+@Component
 public class ResponseEntityHandler implements ControllerMethodReturnValueHandler {
 
 
