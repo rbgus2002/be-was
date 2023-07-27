@@ -6,16 +6,16 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public class SessionDatabase {
+public class SessionStorage {
 
     private static Map<String, String> sessionIds = Maps.newConcurrentMap();
 
-    public static void addSessionId(String userId, String sessionId) {
-        sessionIds.put(userId, sessionId);
+    public static void addSessionId(String sessionId, String userId) {
+        sessionIds.put(sessionId, userId);
     }
 
-    public static void deleteSessionId(String userId) {
-        sessionIds.remove(userId);
+    public static void deleteSessionId(String sessionId) {
+        sessionIds.remove(sessionId);
     }
 
     public static String createSessionId() {
@@ -23,7 +23,11 @@ public class SessionDatabase {
     }
 
     public static Collection<String> findAllSessionIds() {
-        return sessionIds.values();
+        return sessionIds.keySet();
+    }
+
+    public static String findUserIdBySessionId(String sessionId) {
+        return sessionIds.get(sessionId);
     }
 
     public static void clearSessionIds() {

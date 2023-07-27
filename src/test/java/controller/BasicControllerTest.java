@@ -8,6 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static http.HttpMethod.GET;
 import static http.HttpStatus.NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +36,11 @@ class BasicControllerTest {
     @DisplayName("존재하지 않는 리소스에 대한 요청 시 NOT_FOUND 404 상태를 반환해야 한다")
     void badRequestNoFile() {
         // Given
-        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, "/no_index.html", "HTTP/1.1").build();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Cookie", "Idea-b0842ea5=7bc847be-5914-47b7-be63-da8616787eb6; SID=");
+        HttpRequest httpRequest = new HttpRequest.RequestBuilder(GET, "/no_index.html", "HTTP/1.1")
+                .setHeader(headers)
+                .build();
 
         // When
         HttpResponse httpResponse = basicController.loadFileByRequest(httpRequest).build();

@@ -1,5 +1,6 @@
 package utils;
 
+import exception.BadRequestException;
 import http.HttpResponse;
 import http.HttpStatus;
 
@@ -10,41 +11,45 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static exception.ExceptionList.INVALID_URI;
+
 public class FileIOUtils {
-    public static final String STATIC_RESOURCES = "src/main/resources/static";
-    public static final String TEMPLATES_RESOURCES = "src/main/resources/templates";
+    public static final String STATIC_DIRECTORY = "src/main/resources/static";
+    public static final String TEMPLATES_DIRECTORY = "src/main/resources/templates";
 
-    public static HttpResponse.ResponseBuilder loadStaticFromPath(HttpStatus httpStatus, String uri) {
-        return loadFromPath(STATIC_RESOURCES, httpStatus, uri);
-    }
-
-    public static HttpResponse.ResponseBuilder loadTemplatesFromPath(HttpStatus httpStatus, String uri) {
-        return loadFromPath(TEMPLATES_RESOURCES, httpStatus, uri);
-    }
-
-    private static HttpResponse.ResponseBuilder loadFromPath(String resourcePath, HttpStatus httpStatus, String uri) {
-        Path path = Paths.get(resourcePath + uri);
+    public static HttpResponse.ResponseBuilder loadFromPath(HttpStatus httpStatus, String uri) {
+        if (!isFileExist(uri))
+            throw new BadRequestException(INVALID_URI);
+        String filePath = isTemplateFile(uri) ? TEMPLATES_DIRECTORY + uri : STATIC_DIRECTORY + uri;
         try {
-            if (Files.exists(path)) {
-                return new HttpResponse.ResponseBuilder()
-                        .setStatus(httpStatus)
-                        .setLocation(uri)
-                        .setBody(Files.readAllBytes(new File(resourcePath + uri).toPath()));
-            }
             return new HttpResponse.ResponseBuilder()
-                    .setStatus(HttpStatus.NOT_FOUND)
-                    .setLocation("/wrong_access.html")
-                    .setBody(Files.readAllBytes(new File(resourcePath + "/wrong_access.html").toPath()));
+                    .setStatus(httpStatus)
+                    .setLocation(uri)
+                    .setBody(Files.readAllBytes(new File(filePath).toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static HttpResponse.ResponseBuilder loadErrorFromPath(HttpStatus httpStatus, String html) {
+    public static HttpResponse.ResponseBuilder loadFileFromString(HttpStatus httpStatus, String html, String location) {
         return new HttpResponse.ResponseBuilder()
                 .setStatus(httpStatus)
-                .setLocation("/error.html")
+                .setLocation(location)
                 .setBody(html.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static boolean isFileExist(String uri) {
+        return isTemplateFile(uri) || isStaticFile(uri);
+    }
+
+    private static boolean isTemplateFile(String uri) {
+        Path path = Paths.get(TEMPLATES_DIRECTORY + uri);
+        return Files.exists(path) && !Files.isDirectory(path);
+    }
+
+    private static boolean isStaticFile(String uri) {
+        Path path = Paths.get(STATIC_DIRECTORY + uri);
+        return Files.exists(path) && !Files.isDirectory(path);
     }
 
 }

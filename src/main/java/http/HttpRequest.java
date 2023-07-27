@@ -7,6 +7,7 @@ public class HttpRequest {
     private String uri;
     private String version;
     private Map<String, String> headers;
+    private String sessionId;
     private String body = "";
 
     public static class RequestBuilder {
@@ -44,7 +45,15 @@ public class HttpRequest {
         this.uri = builder.uri;
         this.version = builder.version;
         this.headers = builder.headers;
+        this.sessionId = parseSessionId();
         this.body = builder.body;
+    }
+
+    private String parseSessionId() {
+        String[] sid = headers.get("Cookie").split("SID=");
+        if (sid.length != 2)
+            return "";
+        return sid[sid.length - 1];
     }
 
     public String getMethod() {
@@ -53,6 +62,14 @@ public class HttpRequest {
 
     public String getUri() {
         return this.uri;
+    }
+
+    public Map<String, String> getHeaders() {
+        return this.headers;
+    }
+
+    public String getSessionId() {
+        return this.sessionId;
     }
 
     public String getBody() {

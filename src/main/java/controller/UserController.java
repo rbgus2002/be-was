@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
-import static exception.ExceptionList.NOT_ENOUGH_USER_INFORMATION;
 import static http.FilePath.INDEX;
-import static utils.FileIOUtils.*;
+import static utils.FileIOUtils.loadFromPath;
+import static utils.StringUtils.decodeBody;
 
 public class UserController extends Controller {
     private final UserService userService = new UserService();
@@ -38,8 +38,12 @@ public class UserController extends Controller {
         String uri = httpRequest.getUri();
         if (uri.equals("/user/create")) {
             return createUser(parseParams(httpRequest.getBody()));
-        } else if (uri.equals("/user/login")) {
+        }
+        if (uri.equals("/user/login")) {
             return loginUser(parseParams(httpRequest.getBody()));
+        }
+        if (uri.equals("/user/logout")) {
+            return logoutUser(httpRequest.getSessionId());
         }
         throw new BadRequestException(INVALID_URI);
     }
@@ -50,21 +54,27 @@ public class UserController extends Controller {
         for (String param : params) {
             String[] info = param.split("=");
             if (info.length != 2)
-                throw new BadRequestException(NOT_ENOUGH_USER_INFORMATION);
-            information.put(info[0], info[1]);
+                throw new BadRequestException(INVALID_URI);
+            information.put(info[0], decodeBody(info[1]));
         }
         return information;
     }
 
     private HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {
         userService.createUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX);
+        return loadFromPath(HttpStatus.FOUND, INDEX);
     }
 
     private HttpResponse.ResponseBuilder loginUser(Map<String, String> parameters) {
         String sessionId = userService.loginUser(parameters);
-        return loadTemplatesFromPath(HttpStatus.FOUND, INDEX)
+        return loadFromPath(HttpStatus.FOUND, INDEX)
                 .setSessionId(sessionId);
+    }
+
+    private HttpResponse.ResponseBuilder logoutUser(String sessionId) {
+        userService.logoutUser(sessionId);
+        return loadFromPath(HttpStatus.FOUND, INDEX)
+                .setSessionId("");
     }
 
 }

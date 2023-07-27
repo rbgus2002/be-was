@@ -1,7 +1,9 @@
 package service;
 
 import db.Database;
-import db.SessionDatabase;
+import db.SessionStorage;
+import exception.NotExistUserException;
+import exception.SessionIdException;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
 
@@ -9,9 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static db.Database.clear;
-import static db.SessionDatabase.clearSessionIds;
-import static exception.ExceptionList.ALREADY_EXIST_USER;
-import static exception.ExceptionList.NOT_EXIST_USER;
+import static db.SessionStorage.*;
+import static exception.ExceptionList.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
@@ -111,7 +112,7 @@ class UserServiceTest {
         Map<String, String> loginInformation = new HashMap<>();
         loginInformation.put("userId", "honggildong");
         loginInformation.put("password", "0000");
-        Exception exception = assertThrows(Exception.class, () -> {
+        Exception exception = assertThrows(NotExistUserException.class, () -> {
             userService.loginUser(loginInformation);
         });
 
@@ -122,7 +123,7 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 시 세션 아이디를 랜덤으로 생성하여 SessionDatabase에 유저 아이디와 세션 아이디 쌍을 저장해야 한다")
+    @DisplayName("로그인 시 세션 아이디를 랜덤으로 생성하여 SessionStorage에 세션 아이디와 유저 아이디 쌍을 저장해야 한다")
     void putSessionIdWhenLogin() {
         // Given
         Map<String, String> user1 = new HashMap<>();
@@ -136,12 +137,57 @@ class UserServiceTest {
         Map<String, String> loginInformation = new HashMap<>();
         loginInformation.put("userId", "honggildong");
         loginInformation.put("password", "1234");
-        userService.loginUser(loginInformation);
+        String sessionId = userService.loginUser(loginInformation);
 
         // Then
-        softAssertions.assertThat(SessionDatabase.findAllSessionIds().size())
-                .as("Database의 크기가 1이 아닙니다.\n현재 값: %d", SessionDatabase.findAllSessionIds().size())
+        softAssertions.assertThat(SessionStorage.findAllSessionIds().size())
+                .as("Database의 크기가 1이 아닙니다.\n현재 값: %d", SessionStorage.findAllSessionIds().size())
                 .isEqualTo(1);
+        softAssertions.assertThat(findUserIdBySessionId(sessionId))
+                .as("userId가 'honggildong'이 아닙니다.\n현재 값: %s", findUserIdBySessionId(sessionId))
+                .isEqualTo("honggildong");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 세션 아이디로 로그아웃 시 NOT EXIST SESSION ID 예외를 던져야 한다")
+    void notExistSessionIdException() {
+        // Given
+        String sessionId = "4bc504ae-a64f-4fba-a3df-4466c012915a";
+
+        // When
+        Exception exception = assertThrows(SessionIdException.class, () -> {
+            userService.logoutUser(sessionId);
+        });
+
+        // Then
+        softAssertions.assertThat(exception.getMessage())
+                .as("적절한 오류가 던져지지 않습니다.\n현재 값: %s", exception.getMessage())
+                .isEqualTo(NOT_EXIST_SESSION_ID);
+    }
+
+    @Test
+    @DisplayName("로그아웃 시 세션 아이디를 삭제해야 한다")
+    void deleteSessionIdWhenLogout() {
+        // Given
+        Map<String, String> user1 = new HashMap<>();
+        user1.put("userId", "honggildong");
+        user1.put("password", "1234");
+        user1.put("name", "홍길동");
+        user1.put("email", "hgd@gmail.com");
+        userService.createUser(user1);
+
+        Map<String, String> loginInformation = new HashMap<>();
+        loginInformation.put("userId", "honggildong");
+        loginInformation.put("password", "1234");
+        String sessionId = userService.loginUser(loginInformation);
+
+        // When
+        userService.logoutUser(sessionId);
+
+        // Then
+        softAssertions.assertThat(findAllSessionIds().size())
+                .as("세션 아이디가 삭제되지 않았습니다.\n현재 값: %s", findAllSessionIds().size())
+                .isEqualTo(0);
     }
 
 }

@@ -1,18 +1,19 @@
 package controller;
 
 import exception.BadRequestException;
+import exception.CustomException;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
 import http.MIME;
 import view.Page;
 
-import static exception.ExceptionList.NOT_EXIST_USER;
+import static exception.ExceptionList.INVALID_URI;
 import static http.Extension.HTML;
+import static http.FilePath.*;
 import static http.HttpMethod.POST;
+import static http.MIME.getExtension;
 import static utils.FileIOUtils.*;
-import static http.FilePath.LOGIN_FAILED;
-import static http.FilePath.WRONG_ACCESS;
 
 public abstract class Controller {
     private final Page page = new Page();
@@ -28,20 +29,19 @@ public abstract class Controller {
             }
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
-            if (MIME.getMIME().entrySet().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
-                return loadTemplatesFromPath(HttpStatus.NOT_FOUND, WRONG_ACCESS);
+            if (getExtension().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
+                throw new BadRequestException(INVALID_URI);
             }
-            if (extension.equals(HTML)) {
-                return loadTemplatesFromPath(HttpStatus.OK, uri)
-                        .setContentType(MIME.getMIME().get(HTML));
+            if (uri.endsWith(INDEX) || uri.endsWith(PROFILE) || uri.endsWith(LIST)) {
+                return loadFileFromString(HttpStatus.OK, page.getDynamicPage(httpRequest, uri), uri);
             }
-            return loadStaticFromPath(HttpStatus.OK, uri)
+            return loadFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
+        } catch (CustomException e) {
+            return loadFromPath(e.getHttpStatus(), e.getFilePath())
+                    .setContentType(MIME.getMIME().get(HTML));
         } catch (BadRequestException e) {
-            if (e.getMessage().equals(NOT_EXIST_USER))
-                return loadTemplatesFromPath(HttpStatus.UNAUTHORIZED, LOGIN_FAILED);
-            String errorPage = page.getErrorPage(e.getMessage());
-            return loadErrorFromPath(HttpStatus.NOT_FOUND, errorPage)
+            return loadFileFromString(HttpStatus.NOT_FOUND, page.getErrorPage(e.getMessage()), ERROR)
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (Exception e) {
             return null;
