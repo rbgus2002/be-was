@@ -40,4 +40,8 @@ public class Database {
             .mapToObj(boards::get)
             .collect(Collectors.toList());
     }
+
+    public static void deleteBoardAll() {
+        boards.clear();
+    }
 }
