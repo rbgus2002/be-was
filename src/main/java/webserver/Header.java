@@ -9,6 +9,8 @@ public class Header {
 
     private final Map<String, String> headers = new HashMap<>();
     private static final String Location = "Location";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String CONTENT_LENGTH = "Content-Length";
 
     private Map<String, String> getHeaders() {
         return headers;
@@ -30,6 +32,14 @@ public class Header {
 
     public Header setLocation(String value) {
         return appendHeader(Location, value);
+    }
+
+    public Header setContentType(String value) {
+        return appendHeader(CONTENT_TYPE, value);
+    }
+
+    public Header setContentLength(String value) {
+        return appendHeader(CONTENT_LENGTH, value);
     }
 
     public String getValue(String key) {

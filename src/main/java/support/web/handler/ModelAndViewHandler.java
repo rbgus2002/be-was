@@ -18,8 +18,7 @@ public class ModelAndViewHandler implements ControllerMethodReturnValueHandler {
     @Override
     public HttpEntity handleReturnValue(Object returnValue, HttpRequest request, HttpResponse response) throws Exception {
         try {
-            ViewResolver.buildView(request, response, (ModelAndView) returnValue);
-            return null;
+            return ViewResolver.buildView(request, response, (ModelAndView) returnValue);
         } catch (NotFoundException e) {
             ViewResolver.buildErrorView(request, response);
             return new HttpEntity(HttpStatus.NOT_FOUND);

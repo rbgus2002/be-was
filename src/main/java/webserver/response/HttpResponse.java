@@ -2,7 +2,6 @@ package webserver.response;
 
 import utils.StringUtils;
 import webserver.Header;
-import webserver.response.strategy.ResponseHeaderStrategy;
 
 public class HttpResponse {
 
@@ -41,10 +40,6 @@ public class HttpResponse {
 
     public void appendHeader(Header header) {
         this.header.appendHeader(header);
-    }
-
-    public void buildHeader(ResponseHeaderStrategy message) {
-        message.buildHeader(header);
     }
 
     public void setBody(byte[] body) {

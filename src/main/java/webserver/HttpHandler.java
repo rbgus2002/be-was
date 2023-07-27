@@ -50,8 +50,7 @@ public class HttpHandler {
 
     private HttpEntity callViewResolver(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws IOException {
         try {
-            ViewResolver.buildView(request, response, modelAndView);
-            return new HttpEntity(HttpStatus.OK);
+            return ViewResolver.buildView(request, response, modelAndView);
         } catch (NotFoundException e) {
             return buildErrorResponse(request, response);
         }

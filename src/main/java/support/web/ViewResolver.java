@@ -9,10 +9,11 @@ import support.web.view.ErrorView;
 import support.web.view.View;
 import support.web.view.ViewContainer;
 import utils.LoginUtils;
+import webserver.Header;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
+import webserver.response.HttpStatus;
 import webserver.response.MIME;
-import webserver.response.strategy.OK;
 
 import java.io.IOException;
 import java.util.List;
@@ -93,19 +94,19 @@ public abstract class ViewResolver {
         return START_TAG + " " + command + " " + argument + " " + END_TAG;
     }
 
-    public static void buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, IOException {
+    public static HttpEntity buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, IOException {
         ViewContainer viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewContainer.class);
         String path = modelAndView.getViewName();
         View view = viewFactory.getViewByName(path);
 
         if (view != null) {
-            ViewResolver.buildView(request, response, view, modelAndView.getModel());
+            return ViewResolver.buildView(request, response, view, modelAndView.getModel());
         } else {
-            ViewResolver.buildStaticView(request, response, path);
+            return ViewResolver.buildStaticView(request, response, path);
         }
     }
 
-    private static void buildStaticView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, IOException {
+    private static HttpEntity buildStaticView(HttpRequest request, HttpResponse response, String path) throws NotFoundException, IOException {
         List<String> body = readStringLineByPath(path);
         String extension = path.substring(path.lastIndexOf("."));
         if (".html".equals(extension)) {
@@ -115,13 +116,21 @@ public abstract class ViewResolver {
         body.forEach(stringBuilder::append);
         byte[] bodyBytes = stringBuilder.toString().getBytes();
         response.setBody(bodyBytes);
-        response.buildHeader(new OK(MIME.getContentType(extension), bodyBytes.length));
+
+        Header header = new Header();
+        header.setContentType(MIME.getContentType(extension))
+                .setContentLength(String.valueOf(bodyBytes.length));
+        return new HttpEntity(HttpStatus.OK, header);
     }
 
-    public static void buildView(HttpRequest request, HttpResponse response, View view, Model model) {
+    public static HttpEntity buildView(HttpRequest request, HttpResponse response, View view, Model model) {
         byte[] bodyBytes = view.render(request, response, model).getBytes();
         response.setBody(bodyBytes);
-        response.buildHeader(new OK(MIME.getContentType(".html"), bodyBytes.length));
+
+        Header header = new Header();
+        header.setContentType(MIME.getContentType(".html"))
+                .setContentLength(String.valueOf(bodyBytes.length));
+        return new HttpEntity(HttpStatus.OK, header);
     }
 
     public static void buildErrorView(HttpRequest request, HttpResponse response) {
