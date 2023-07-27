@@ -22,9 +22,13 @@ public class HttpRequestTest {
 
     @Test
     public void request_GET() throws Exception {
+        // Given
         InputStream in = new FileInputStream(testDirectory + "Http_GET.txt");
+
+        // When
         Request request = new Request(in);
 
+        // Then
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(request.getMethod()).isEqualTo(Method.GET);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
@@ -35,9 +39,13 @@ public class HttpRequestTest {
 
     @Test
     public void request_POST() throws Exception {
+        // Given
         InputStream in = new FileInputStream(testDirectory + "Http_POST.txt");
+
+        // When
         Request request = new Request(in);
 
+        // Then
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
@@ -48,9 +56,13 @@ public class HttpRequestTest {
 
     @Test
     public void request_POST2() throws Exception {
+        // Given
         InputStream in = new FileInputStream(testDirectory + "Http_POST2.txt");
+
+        // When
         Request request = new Request(in);
 
+        // Then
         SoftAssertions assertions = new SoftAssertions();
         assertions.assertThat(request.getMethod()).isEqualTo(Method.POST);
         assertions.assertThat(request.getPath()).isEqualTo("/user/create");
