@@ -3,7 +3,7 @@ package model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static db.BoardDatabase.findAllBoards;
+import static db.BoardDatabase.getBoardSize;
 
 public class Board {
     private Long index;
@@ -14,7 +14,7 @@ public class Board {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public Board(String writer, String title, String contents) {
-        this.index = (long) findAllBoards().size();
+        this.index = (long) getBoardSize();
         this.writer = writer;
         this.title = title;
         this.contents = contents;

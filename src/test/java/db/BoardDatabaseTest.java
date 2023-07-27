@@ -37,7 +37,7 @@ class BoardDatabaseTest {
         addBoard(board);
 
         // Then
-        softAssertions.assertThat(findAllBoards().size())
+        softAssertions.assertThat(getBoardSize())
                 .as("글 정보가 추가되지 않았습니다.")
                 .isEqualTo(1);
 
@@ -48,7 +48,7 @@ class BoardDatabaseTest {
         addBoard(board2);
 
         // Then
-        softAssertions.assertThat(findAllBoards().size())
+        softAssertions.assertThat(getBoardSize())
                 .as("글 정보가 추가되지 않았습니다.")
                 .isEqualTo(2);
     }
@@ -122,7 +122,7 @@ class BoardDatabaseTest {
         clearBoards();
 
         // Then
-        softAssertions.assertThat(findAllBoards().size())
+        softAssertions.assertThat(getBoardSize())
                 .as("Board Database가 초기화되지 않았습니다.")
                 .isEqualTo(0);
     }

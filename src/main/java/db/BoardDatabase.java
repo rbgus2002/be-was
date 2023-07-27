@@ -21,6 +21,10 @@ public class BoardDatabase {
         return boards.values();
     }
 
+    public static int getBoardSize() {
+        return boards.size();
+    }
+
     public static void clearBoards() {
         boards.clear();
     }

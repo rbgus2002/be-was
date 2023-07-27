@@ -48,7 +48,7 @@ class BoardControllerTest {
         boardController.loadFileByRequest(httpRequest);
 
         // Then
-        softAssertions.assertThat(findAllBoards().size())
+        softAssertions.assertThat(getBoardSize())
                 .as("Database의 크기가 1이 아닙니다.")
                 .isEqualTo(1);
         softAssertions.assertThat(findBoardById((long) 0).getTitle())

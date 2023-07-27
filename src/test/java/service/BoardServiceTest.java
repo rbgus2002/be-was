@@ -1,6 +1,5 @@
 package service;
 
-import model.Board;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ class BoardServiceTest {
         boardService.createBoard(board1);
 
         // Then
-        softAssertions.assertThat(findAllBoards().size())
+        softAssertions.assertThat(getBoardSize())
                 .as("Database의 크기가 1이 아닙니다.")
                 .isEqualTo(1);
         softAssertions.assertThat(findBoardById((long) 0).getTitle())
@@ -59,7 +58,7 @@ class BoardServiceTest {
         boardService.createBoard(board2);
 
         // Then
-        softAssertions.assertThat(findAllBoards().size())
+        softAssertions.assertThat(getBoardSize())
                 .as("Database의 크기가 2가 아닙니다.")
                 .isEqualTo(2);
         softAssertions.assertThat(findBoardById((long) 1).getWriter())
