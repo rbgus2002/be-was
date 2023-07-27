@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class HttpResponse {
     private String version;
-    private int statusCode;
+    private HttpResponseStatus status;
     private String fileName;
     private String sessionId;
     private String redirect;
@@ -16,7 +16,7 @@ public class HttpResponse {
     private HttpResponse(String version, HttpResponseStatus status, String fileName,
                          String redirect, String sessionId, Map<String, String> attributes) {
         this.version = version;
-        this.statusCode = status.getStatusCode();
+        this.status = status;
         this.fileName = fileName;
         this.sessionId = sessionId;
         this.redirect = redirect;
@@ -79,8 +79,8 @@ public class HttpResponse {
         return this.version;
     }
 
-    public int statusCode() {
-        return this.statusCode;
+    public HttpResponseStatus status() {
+        return this.status;
     }
 
     public String fileName() {

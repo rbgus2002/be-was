@@ -38,12 +38,18 @@ public enum ContentType {
         this.contentType = contentType;
     }
 
-    public String getTypeString() {
+    public String getMIMEString() {
+        if(this == HTML)
+            return contentType + ";charset=utf-8";
         return contentType;
     }
 
-    public static ContentType getContentTypeByExtension(String extension) {
-        if(extension == null) return contentTypeMap.get("default");
+    public static ContentType getContentTypeOfFile(String fileName) {
+        if ("".equals(fileName) || !fileName.contains("."))
+            return PLAIN;
+
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+
         return contentTypeMap.getOrDefault(extension, PLAIN);
     }
 }
