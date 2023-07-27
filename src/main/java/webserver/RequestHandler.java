@@ -64,7 +64,7 @@ public class RequestHandler implements Runnable {
         }
 
         HttpRequest httpRequest = requestHeaderBuilder.build();
-        int contentLength = parseIntOrDefault(httpRequest.getHeaderValue("Content-Length"), 0);
+        int contentLength = parseIntOrDefault(httpRequest.getHeaderValue(Header.CONTENT_LENGTH), 0);
 
 
         // body 읽기

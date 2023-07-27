@@ -8,9 +8,9 @@ import java.util.Map;
 public class Header {
 
     private final Map<String, String> headers = new HashMap<>();
-    private static final String Location = "Location";
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String CONTENT_LENGTH = "Content-Length";
+    public static final String Location = "Location";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String CONTENT_LENGTH = "Content-Length";
 
     private Map<String, String> getHeaders() {
         return headers;
