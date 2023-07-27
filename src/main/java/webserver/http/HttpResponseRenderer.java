@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static webserver.http.enums.ContentType.*;
+import static webserver.http.enums.ContentType.getContentTypeOfFile;
 import static webserver.utils.StringUtils.NEW_LINE;
 
 public class HttpResponseRenderer {
@@ -43,14 +43,14 @@ public class HttpResponseRenderer {
     }
 
     private void responseHeader(DataOutputStream dos, HttpResponse response) throws IOException {
-        if (!"".equals(response.sessionId())) {
-            String cookieHeader = String.format("Set-Cookie: sid=%s; Path=/", response.sessionId());
+        if (response.sessionId() != null) {
+            String cookieHeader = String.format("Set-Cookie: sid=%s; Path=/ %s", response.sessionId(), NEW_LINE);
             dos.writeBytes(cookieHeader);
 //            logger.debug(cookieHeader);
         }
 
-        if (!"".equals(response.redirect())) {
-            String locationHeader = String.format("Location: %s", response.redirect());
+        if (response.redirect() != null) {
+            String locationHeader = String.format("Location: %s %s", response.redirect(), NEW_LINE);
             dos.writeBytes(locationHeader);
 //            logger.debug(locationHeader);
         }
@@ -73,6 +73,7 @@ public class HttpResponseRenderer {
         dos.writeBytes(contentTypeHeader);
 //        logger.debug(contentTypeHeader);
         dos.writeBytes(contentLengthHeader);
+        dos.writeBytes(NEW_LINE);
 //        logger.debug(contentLengthHeader);
 
         dos.write(body, 0, body.length);

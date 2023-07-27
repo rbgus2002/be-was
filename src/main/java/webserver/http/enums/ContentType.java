@@ -39,7 +39,7 @@ public enum ContentType {
     }
 
     public String getMIMEString() {
-        if(this == HTML)
+        if (this == HTML)
             return contentType + ";charset=utf-8";
         return contentType;
     }
