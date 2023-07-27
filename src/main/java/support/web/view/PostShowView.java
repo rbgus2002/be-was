@@ -10,6 +10,11 @@ import webserver.response.HttpResponse;
 public class PostShowView implements View {
 
     @Override
+    public String getName() {
+        return "/post/show";
+    }
+
+    @Override
     public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilderExpansion stringBuilder = new StringBuilderExpansion();
         stringBuilder

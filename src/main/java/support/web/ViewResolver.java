@@ -7,7 +7,7 @@ import support.instance.DefaultInstanceManager;
 import support.web.exception.NotFoundException;
 import support.web.view.ErrorView;
 import support.web.view.View;
-import support.web.view.ViewFactory;
+import support.web.view.ViewContainer;
 import utils.LoginUtils;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
@@ -94,7 +94,7 @@ public abstract class ViewResolver {
     }
 
     public static void buildView(HttpRequest request, HttpResponse response, ModelAndView modelAndView) throws NotFoundException, IOException {
-        ViewFactory viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewFactory.class);
+        ViewContainer viewFactory = DefaultInstanceManager.getInstanceMagager().getInstance(ViewContainer.class);
         String path = modelAndView.getViewName();
         View view = viewFactory.getViewByName(path);
 

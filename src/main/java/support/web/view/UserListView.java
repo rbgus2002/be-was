@@ -13,6 +13,11 @@ import java.util.List;
 @Container
 public class UserListView implements View {
 
+    @Override
+    public String getName() {
+        return "/user/list";
+    }
+
     public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilderExpansion stringBuilder = new StringBuilderExpansion();
         stringBuilder

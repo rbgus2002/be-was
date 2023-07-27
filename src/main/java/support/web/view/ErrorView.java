@@ -8,6 +8,11 @@ import webserver.response.HttpResponse;
 public class ErrorView implements View {
 
     @Override
+    public String getName() {
+        return "/error";
+    }
+
+    @Override
     public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilderExpansion stringBuilder = new StringBuilderExpansion();
 

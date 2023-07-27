@@ -16,6 +16,11 @@ import java.util.List;
 public class IndexView implements View {
 
     @Override
+    public String getName() {
+        return "/index";
+    }
+
+    @Override
     public String render(HttpRequest request, HttpResponse response, Model model) {
         StringBuilderExpansion stringBuilder = new StringBuilderExpansion();
         stringBuilder

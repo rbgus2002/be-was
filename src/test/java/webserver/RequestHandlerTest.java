@@ -9,7 +9,7 @@ import support.instance.DefaultInstanceManager;
 import support.web.HttpMethod;
 import support.web.handler.ControllerMethodReturnValueHandlerComposite;
 import support.web.view.ErrorView;
-import support.web.view.ViewFactory;
+import support.web.view.ViewContainer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -64,7 +64,7 @@ class RequestHandlerTest {
     static void prepare() {
         DefaultInstanceManager.getInstanceMagager().clear();
         DefaultInstanceManager.getInstanceMagager().addInstance(UserController.class);
-        DefaultInstanceManager.getInstanceMagager().addInstance(ViewFactory.class);
+        DefaultInstanceManager.getInstanceMagager().addInstance(ViewContainer.class);
         DefaultInstanceManager.getInstanceMagager().addInstance(ErrorView.class);
         DefaultInstanceManager.getInstanceMagager().addInstance(HttpHandler.class);
         DefaultInstanceManager.getInstanceMagager().addInstance(ControllerMethodReturnValueHandlerComposite.class);
