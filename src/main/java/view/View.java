@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import static db.BoardDatabase.findAllBoards;
+import static db.BoardDatabase.findBoardById;
 import static db.Database.findAll;
 import static db.Database.findUserById;
 import static db.SessionStorage.*;
@@ -29,6 +30,8 @@ public class View {
                 return getListView(httpRequest);
             case PROFILE:
                 return getProfileView(httpRequest);
+            case SHOW:
+                return getShowView(httpRequest);
             default:
                 throw new BadRequestException(INVALID_URI);
         }
@@ -126,7 +129,7 @@ public class View {
         for (Board board : findAllBoards()) {
             boardList.append("<li>\n").append("<div class=\"wrap\">\n").append("<div class=\"main\">\n")
                     .append("<strong class=\"subject\">")
-                    .append("<a href=\"./qna/show.html\">").append(board.getTitle()).append("</a>")
+                    .append("<a href=\"./qna/show.html?index=").append(board.getIndex()).append("\">").append(board.getTitle()).append("</a>")
                     .append("</strong>\n").append("<div class=\"auth-info\">\n").append("<i class=\"icon-add-comment\"></i>\n")
                     .append("<span class=\"time\">").append(board.getTime()).append("&nbsp;</span>")
                     .append("<a href=\"./user/profile.html\" class=\"author\">").append(board.getWriter()).append("</a>")
@@ -165,5 +168,39 @@ public class View {
         }
 
         return indexBuilder.toString();
+    }
+
+    private String getShowView(HttpRequest httpRequest) {
+        for (String key : httpRequest.getQueryString().keySet())
+            System.out.println("keykey : " + key);
+        String boardIndex = httpRequest.getQueryString().get("index");
+        Board board = findBoardById(Long.valueOf(boardIndex));
+
+        StringBuilder boardDetail = new StringBuilder();
+        File showFile = new File(TEMPLATES_DIRECTORY + SHOW);
+        String line;
+        try {
+            BufferedReader index = new BufferedReader(new FileReader(showFile));
+            while ((line = index.readLine()) != null) {
+                if (line.contains("qna-title")) {
+                    boardDetail.append("<h2 class=\"qna-title\">").append(board.getTitle()).append("</h2>");
+                }
+                else if (line.contains("kimmunsu")) {
+                    boardDetail.append("<a href=\"/users/92/kimmunsu\" class=\"article-author-name\">").append(board.getWriter()).append("</a>");
+                }
+                else if (line.contains("board-time")) {
+                    boardDetail.append("<a href=\"/questions/413\" class=\"article-header-time\" title=\"퍼머링크\" id=\"board-time\">").append(board.getTime());
+                }
+                else if (line.contains("board-contents")) {
+                    boardDetail.append("<p id=\"board-contents\">").append(board.getContents()).append("</p>\n");
+                }
+                else boardDetail.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return boardDetail.toString();
+
     }
 }

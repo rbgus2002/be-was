@@ -26,14 +26,14 @@ public abstract class Controller {
             if (uri.contains("?")) {
                 return doGet(httpRequest);
             }
-            String[] uris = uri.split("\\.");
-            String extension = uris[uris.length - 1];
-            if (uri.endsWith(INDEX) || uri.endsWith(PROFILE) || uri.endsWith(LIST)) {
-                return loadFileFromString(HttpStatus.OK, view.getDynamicView(httpRequest, uri), uri);
-            }
-            if ((uri.endsWith(FORM) || uri.endsWith(SHOW)) && !isSessionValid(httpRequest.getSessionId())) {
+            if (uri.equals(FORM) && !isSessionValid(httpRequest.getSessionId())) {
                 uri = LOGIN;
             }
+            if (uri.equals(INDEX) || uri.equals(PROFILE) || uri.equals(LIST) || uri.equals(SHOW)) {
+                return loadFileFromString(HttpStatus.OK, view.getDynamicView(httpRequest, uri), uri);
+            }
+            String[] uris = uri.split("\\.");
+            String extension = uris[uris.length - 1];
             return loadFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (CustomException e) {
