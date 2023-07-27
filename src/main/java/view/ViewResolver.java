@@ -42,19 +42,14 @@ public class ViewResolver {
         if ((file = new File(STATIC_PATH.getPath() + viewPath)).exists()) {
             body = Files.readAllBytes(file.toPath());
         } else if ((file = new File(TEMPLATE_PATH.getPath() + viewPath)).exists()) {
-            User findUser = null;
-            try {
-                findUser = SessionManager.getSession(request);
-            } catch (IllegalArgumentException e) {
-                logger.debug(e.getMessage());
-            }
+            User findUser = SessionManager.getSession(request);
             body = Files.readAllBytes(file.toPath());
             logger.debug("viewPath = {}, findUser = {}", viewPath, findUser);
             if (viewPath.equals("/index.html")) {
                 body = MainView.changeToDynamic(request).getBytes();
             } else if (viewPath.equals("/user/list.html")) {
                 body = ListView.changeToDynamic().getBytes();
-            } else if (viewPath.equals("/user/profile.html") && findUser != null) {
+            } else if (viewPath.equals("/user/profile.html")) {
                 body = ProfileView.changeToDynamic(findUser).getBytes();
             } else if (viewPath.equals("/qna/show.html")) {
                 body = ContentView.changeToDynamic(Integer.parseInt(request.getQuery().get("index"))).getBytes();

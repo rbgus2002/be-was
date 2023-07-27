@@ -15,7 +15,7 @@ public class MainView {
 
     public static String changeToDynamic(HTTPServletRequest request){
         StringBuilder sb = new StringBuilder();
-
+        logger.debug("session의 삭제 = {}", SessionManager.getSession(request));
         sb.append("<!DOCTYPE html>\n");
         sb.append("<html lang=\"kr\">\n");
         sb.append("\t<head>\n");
@@ -86,7 +86,7 @@ public class MainView {
             User findUser = SessionManager.getSession(request);
             sb.append("<li><p class=\"navbar-text\">" + findUser.getName() + "님 환영합니다.</p></li>");
             sb.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
-            sb.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
+            sb.append("                <li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>\n");
             sb.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         } else {
             sb.append("                <li class=\"active\"><a href=\"index.html\">Posts</a></li>\n");
