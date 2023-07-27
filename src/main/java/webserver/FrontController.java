@@ -65,11 +65,17 @@ public class FrontController {
         httpResponse.set200Header(viewName); // 헤더 설정
         // 로그인 확인
         byte[] body;
-        if (isLogin(httpRequest) && viewName.equals("/index.html")) {
+        if (isLogin(httpRequest)) {
             // 동적페이지 생성
-            body = View.getIndex(httpRequest.getSession());
-            httpResponse.setBody(body);
-            return;
+            if (viewName.equals("/index.html")) {
+                body = View.getIndex(httpRequest.getSession());
+                httpResponse.setBody(body);
+                return;
+            } else if (viewName.equals("/user/list.html")) {
+                body = View.getUserList();
+                httpResponse.setBody(body);
+                return;
+            }
         }
 
         // 정적페이지 생성
