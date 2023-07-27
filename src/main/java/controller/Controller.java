@@ -45,8 +45,6 @@ public class Controller {
 
     @GetMapping(value = "/user/logout")
     public HttpResponse logout(Map<String, String> query){
-        logger.debug("query 확인 : {}",query);
-
         String sid = query.get("sid");
         SessionManager.remove(sid);
         logger.debug("로그아웃 : {}", sid);
