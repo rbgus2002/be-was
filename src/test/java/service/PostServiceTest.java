@@ -23,14 +23,8 @@ class PostServiceTest {
     @Test
     @DisplayName("Post를 생성하면 DB에 저장된다.")
     public void addPost() {
-        // Given
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "jst0951");
-        parameterMap.put(POST_TITLE, "글");
-        parameterMap.put(POST_CONTENT, "글내용");
-
-        // When
-        Post post = PostService.addPost(parameterMap);
+        // Given, When
+        Post post = PostService.addPost("jst0951", "글", "글내용");
 
         // Then
         SoftAssertions assertions = new SoftAssertions();
@@ -44,11 +38,7 @@ class PostServiceTest {
     @DisplayName("postId로 Post를 찾을 수 있어야 한다.")
     public void getPostByPostId() {
         // Given
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "jst0951");
-        parameterMap.put(POST_TITLE, "글");
-        parameterMap.put(POST_CONTENT, "글내용");
-        Post savedPost = PostService.addPost(parameterMap);
+        Post savedPost = PostService.addPost("jst0951", "글", "글내용");
 
         // When
         Post foundPost = PostService.getPostByPostId(savedPost.getPostId());
@@ -61,21 +51,9 @@ class PostServiceTest {
     @DisplayName("특정 userId의 모든 Post를 찾을 수 있어야 한다.")
     public void getAllPostByUserId() {
         // Given
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "jst0951");
-        parameterMap.put(POST_TITLE, "글1");
-        parameterMap.put(POST_CONTENT, "글내용1");
-        Post post1 = PostService.addPost(parameterMap);
-
-        parameterMap.put(POST_WRITER, "jst0082");
-        parameterMap.put(POST_TITLE, "글2");
-        parameterMap.put(POST_CONTENT, "글내용2");
-        Post post2 = PostService.addPost(parameterMap);
-
-        parameterMap.put(POST_WRITER, "jst0951");
-        parameterMap.put(POST_TITLE, "글3");
-        parameterMap.put(POST_CONTENT, "글내용3");
-        Post post3 = PostService.addPost(parameterMap);
+        Post post1 = PostService.addPost("jst0951", "글1", "글내용1");
+        Post post2 = PostService.addPost("jst0082", "글2", "글내용2");
+        Post post3 = PostService.addPost("jst0951", "글3", "글내용3");
 
         // When
         Collection<Post> posts = PostService.getAllPostByUserId("jst0951");
@@ -92,16 +70,8 @@ class PostServiceTest {
     @DisplayName("모든 추가된 Post를 반환해야 한다.")
     public void getAllPost() {
         // Given
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "jst0951");
-        parameterMap.put(POST_TITLE, "글1");
-        parameterMap.put(POST_CONTENT, "글내용1");
-        Post post1 = PostService.addPost(parameterMap);
-
-        parameterMap.put(POST_WRITER, "jst0082");
-        parameterMap.put(POST_TITLE, "글2");
-        parameterMap.put(POST_CONTENT, "글내용2");
-        Post post2 = PostService.addPost(parameterMap);
+        Post post1 = PostService.addPost("jst0951", "글1", "글내용1");
+        Post post2 = PostService.addPost("jst0082", "글2", "글내용2");
 
         // When
         Collection<Post> posts = PostService.getAllPost();
@@ -118,11 +88,7 @@ class PostServiceTest {
     @DisplayName("Post 갱신 후에 최신의 값이 반환되어야 한다.")
     public void updatePost() {
         // Given
-        Map<String, String> parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "jst0951");
-        parameterMap.put(POST_TITLE, "글1");
-        parameterMap.put(POST_CONTENT, "글내용1");
-        Post post = PostService.addPost(parameterMap);
+        Post post = PostService.addPost("jst0951", "글1", "글내용1");
 
         // When
         PostService.updatePost(post.getPostId(), new Post("jst0082", "글2", "글내용2"));

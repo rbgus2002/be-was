@@ -12,8 +12,8 @@ public class PostService {
     public static final String POST_TITLE = "title";
     public static final String POST_CONTENT = "contents";
 
-    public static Post addPost(Map<String, String> parameterMap) {
-        Post post = new Post(parameterMap.get(POST_WRITER), parameterMap.get(POST_TITLE), parameterMap.get(POST_CONTENT));
+    public static Post addPost(String postWriter, String postTitle, String postContent) {
+        Post post = new Post(postWriter, postTitle, postContent);
         Database.addPost(post);
         return post;
     }

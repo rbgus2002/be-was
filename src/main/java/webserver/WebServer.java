@@ -42,21 +42,20 @@ public class WebServer {
     }
 
     private static void testSetup() {
-        Map<String, String> parameterMap;
-        parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "침착맨");
-        parameterMap.put(POST_TITLE, "추천 웹툰: 이말년 서유기");
-        parameterMap.put(POST_CONTENT, "");
-        PostService.addPost(parameterMap);
-        parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "예언자");
-        parameterMap.put(POST_TITLE, "내일 MS가 블리자드를 합병할 것입니다!");
-        parameterMap.put(POST_CONTENT, "");
-        PostService.addPost(parameterMap);
-        parameterMap = new HashMap<>();
-        parameterMap.put(POST_WRITER, "호눅스");
-        parameterMap.put(POST_TITLE, "안녕하세요~ 크롱입니다.");
-        parameterMap.put(POST_CONTENT, "");
-        PostService.addPost(parameterMap);
+        PostService.addPost(
+                "침착맨",
+                "추천 웹툰: 이말년 서유기",
+                ""
+        );
+        PostService.addPost(
+                "예언자",
+                "내일 MS가 블리자드를 합병할 것입니다!",
+                ""
+        );
+        PostService.addPost(
+                "호눅스",
+                "안녕하세요~ 크롱입니다.",
+                ""
+        );
     }
 }
