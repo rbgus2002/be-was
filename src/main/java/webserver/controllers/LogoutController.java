@@ -23,8 +23,7 @@ public class LogoutController implements Controller {
 
         if (isValidCookie(request.cookie())) {
             Session session = getSession(request.cookie().getSessionId());
-            // todo: Max-Age = 0으로 설정해도 쿠키가 사라지지 않는다... 왤까?
-            builder.sessionId("deleted;Max-Age=0");
+            builder.sessionId(session.getSessionId()+";Max-Age=0");
             removeSession(session);
         }
 

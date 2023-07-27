@@ -14,7 +14,7 @@ public class HttpResponse {
     private Map<String, String> attributes;
 
     private HttpResponse(String version, HttpResponseStatus status, String fileName,
-                         String redirect, String sessionId, Map<String, String> attributes) {
+                         String sessionId, String redirect, Map<String, String> attributes) {
         this.version = version;
         this.status = status;
         this.fileName = fileName;

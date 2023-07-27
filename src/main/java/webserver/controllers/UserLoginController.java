@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import static db.Users.findUserById;
 import static service.SessionService.addSession;
-import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
 import static webserver.http.enums.HttpResponseStatus.FOUND;
 

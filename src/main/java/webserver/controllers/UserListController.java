@@ -1,6 +1,5 @@
 package webserver.controllers;
 
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controllers.annotations.RequestMethod;
@@ -8,14 +7,9 @@ import webserver.controllers.annotations.RequestPath;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static db.Users.findAll;
 import static webserver.http.Cookie.isValidCookie;
-import static webserver.http.enums.ContentType.HTML;
-import static webserver.http.enums.HttpResponseStatus.*;
+import static webserver.http.enums.HttpResponseStatus.FOUND;
+import static webserver.http.enums.HttpResponseStatus.OK;
 
 @RequestPath(path = "/user/list.html")
 public class UserListController implements Controller {
@@ -53,7 +47,7 @@ public class UserListController implements Controller {
 
         return builder.version(request.version())
                 .status(OK)
-                .fileName("/user/list.html")
+                .fileName("src/main/resources/templates/user/list.html")
                 .build();
     }
 }

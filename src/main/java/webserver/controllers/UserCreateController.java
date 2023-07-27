@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static service.UserService.addUser;
-import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
 import static webserver.http.enums.HttpResponseStatus.FOUND;
 
