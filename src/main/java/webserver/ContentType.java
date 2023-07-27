@@ -11,6 +11,8 @@ public enum ContentType {
     ICO("ico", "/static", "image/x-icon"),
     PNG("png", "/static", "image/png"),
     JPG("jpg", "/static", "image/jpeg"),
+    WOFF("woff", "/static", "font/woff"),
+    TTF("ttf", "/static", "font/ttf"),
     NONE("", "", "INVALID"),
     ;
 
