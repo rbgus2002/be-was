@@ -58,8 +58,13 @@ public class HttpHeaders {
 
     public static HttpHeaders createStaticStatusHeaders(int bodyLength, String requestUri) {
         Map<String, String> responseHeaders = new HashMap<>();
-        MIME mime = MIME.findMIME(requestUri);
-        responseHeaders.put(CONTENT_TYPE, createStaticContentType(mime));
+        if (!requestUri.contains(".")) {
+            responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
+        }
+        else {
+            MIME mime = MIME.findMIME(requestUri);
+            responseHeaders.put(CONTENT_TYPE, createStaticContentType(mime));
+        }
         responseHeaders.put(CONTENT_LENGTH, String.valueOf(bodyLength));
         return new HttpHeaders(responseHeaders);
     }
