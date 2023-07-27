@@ -17,4 +17,8 @@ public class Session {
     public static Object get(String key) {
         return sessionStorage.get(key);
     }
+
+    public static void removeSession(String sid) {
+        sessionStorage.remove(sid);
+    }
 }
