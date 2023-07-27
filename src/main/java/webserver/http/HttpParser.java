@@ -21,6 +21,10 @@ public class HttpParser {
             throw new InternalServerErrorException();
         }
 
+        if(line == null) {
+            return "";
+        }
+
         return URLDecoder.decode(line, StandardCharsets.UTF_8);
     }
 
