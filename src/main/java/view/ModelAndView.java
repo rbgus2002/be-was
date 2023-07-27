@@ -17,10 +17,6 @@ public class ModelAndView {
 
     private static final Logger logger = LoggerFactory.getLogger(ModelAndView.class);
 
-    private final String errorView = "src/main/resources/templates/404.html";
-    private final String DYNAMIC_PATH = "src/main/resources/templates";
-
-
     private String view;
 
     private Map<String, Object> modelMap;
@@ -32,7 +28,7 @@ public class ModelAndView {
     public ModelAndView() {
         this.modelMap = new HashMap<>();
         this.status = HttpStatus.NOT_FOUND;
-        this.view = errorView;
+        this.view = null;
     }
 
     public String getView() {
@@ -63,24 +59,8 @@ public class ModelAndView {
         modelMap.put(name, value);
     }
 
-
-    public void setResponse(HttpRequest request, HttpResponse response) {
-        try {
-            if(contentType != null) {
-                response.setContentType(contentType);
-            }
-            response.setStatus(status);
-            //3xx Response일 때
-            if(status.getValue() / 100 == 3) {
-                response.setHeader("Location", view.substring(DYNAMIC_PATH.length()));
-                return;
-            }
-            response.setBody(Files.readAllBytes(Paths.get(view)));
-
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.setContentType(model.ContentType.TEXT_PLAIN);
-            logger.error(e.getMessage());
-        }
+    public HttpStatus getStatus() {
+        return this.status;
     }
+
 }

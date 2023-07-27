@@ -3,7 +3,6 @@ package model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,8 +35,8 @@ public class HttpResponse {
     public String getHeader(String name) {
         return headers.get(name);
     }
-    public String body() {
-        return body.toString();
+    public byte[] getBody() {
+        return body;
     }
 
     public int getStatus() {
@@ -65,13 +64,12 @@ public class HttpResponse {
 
     //TODO: sendError 구현
 
-    public void write(DataOutputStream dos) throws IOException {
+    public String makeResponseHeader() throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append(responseStatusLine()).append(responseHeaderLine()).append("\r\n");
 
-        dos.write(stringBuilder.toString().getBytes());
-        dos.write(body);
+        return stringBuilder.toString();
     }
 
     private StringBuilder responseStatusLine() {
@@ -84,7 +82,10 @@ public class HttpResponse {
 
     private StringBuilder responseHeaderLine() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Content-Type:").append(contentType.getContentType()).append("\r\n");
+
+        if(contentType != null) {
+            stringBuilder.append("Content-Type:").append(contentType.getContentType()).append("\r\n");
+        }
 
         if(body != null) {
             int lengthOfBodyContent = body.length;

@@ -20,15 +20,6 @@ public enum HttpMethod {
         this.name = name;
     }
 
-//    public static HttpMethod valueOf(String name) {
-//        for(HttpMethod method : values) {
-//            if(method.name.equals(name)) {
-//                return method;
-//            }
-//        }
-//        return null;
-//    }
-
     public String getName() {
         return this.name;
     }

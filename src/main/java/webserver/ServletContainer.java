@@ -26,13 +26,18 @@ public class ServletContainer implements Runnable {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(request);
 
-            DispatcherServlet dispatcherServlet = new DispatcherServlet(request, response);
+            DispatcherServlet dispatcherServlet = new DispatcherServlet();
             dispatcherServlet.doService(request, response);
             DataOutputStream dos = new DataOutputStream(out);
-            response.write(dos);
+            dos.write(response.makeResponseHeader().getBytes());
+
+            if(response.getBody() != null) {
+                dos.write(response.getBody());
+            }
             dos.flush();
         } catch (Exception e) {
             logger.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

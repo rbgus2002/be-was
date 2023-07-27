@@ -2,6 +2,7 @@ package model;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import parser.BodyParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,10 +24,14 @@ public class HttpRequest {
 
     private final String VERSION;
 
+    private ContentType contentType;
+
+    //TODO: 일급 컬렉션 사용하기
     private Map<String, String> headers;
     private Map<String, String> parameters;
 
-    //TODO: ReadLine() 하지마라
+    private Object body;
+
     public HttpRequest(InputStream in) throws IOException {
         headers = new HashMap<>();
 
@@ -39,6 +44,8 @@ public class HttpRequest {
         URI = startLine[1];
         VERSION = startLine[2];
 
+
+        //헤더 저장
         //TODO: 일급 컬렉션으로 헤더 별도 저장하기
         while (!(input = bufferedReader.readLine()).isBlank()) {
             StringTokenizer tokenizer = new StringTokenizer(input, ":");
@@ -50,6 +57,24 @@ public class HttpRequest {
             }
             value.deleteCharAt(value.length() - 1);
             headers.put(key, value.toString().trim());
+        }
+
+
+        if(headers.containsKey("Content-Type")) {
+            contentType = ContentType.of(headers.get("Content-Type"));
+
+            //바디 저장
+        }
+        if(contentType != null) {
+            int contentLength = Integer.parseInt(headers.get("Content-Length"));
+            char[] inputBody = new char[contentLength];
+            bufferedReader.read(inputBody);
+
+            try {
+                body = BodyParser.parseBody(String.valueOf(inputBody), contentType);
+            } catch (RuntimeException e) {
+                body = String.valueOf(inputBody);
+            }
         }
 
         if(URI.indexOf('?') != -1) {
@@ -71,7 +96,6 @@ public class HttpRequest {
                 parameters.put(key, value);
             }
         }
-
     }
 
     public String getRequestURL() {
@@ -124,6 +148,10 @@ public class HttpRequest {
 
     public String getContentType() {
         return headers.get("Content-Type");
+    }
+
+    public Object getBody() {
+        return body;
     }
 
 }
