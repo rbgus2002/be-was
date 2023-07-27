@@ -113,3 +113,27 @@ Java Web Application Server 2023
 ### 고민
 - Session과 Cookie 클래스를 생성하였는데 필요한 필드를 모두 가지고 있는지 확신이 서지 않는다..
 - 테스트케이스를 잘 짠 것인지 고민....
+
+<br/>
+
+## Mission 6. 동적인 HTML
+
+### 기능요구사항
+- 동적인 HTML 구현
+  - 로그인 상태일 경우 사용자의 이름 표시
+  - 로그인 상태가 아닐 경우 로그인 버튼 표시
+  - user/list 또한 로그인 상태에 따라 다른 화면을 표시
+
+### 프로그래밍 요구사항
+- 쿠키와 세션 활용
+
+### 구현에 대한 설명
+1. 사용자의 요청이 왔을 때 헤더에서 Cookie 필드가 있다면 파싱하여 쿠키를 HttpRequest 객체 내에 저장한다.
+2. 각 Controller에서 HttpRequest의 Cookie가 유효한지를 확인하고 유효할 경우 해당 로직을 수행한다.
+3. 동적 HTML의 경우 HttpResponse를 Model처럼 활용하여 렌더링에 필요한 정보들을 넣어 HttpResponseRenderer에서 렌더링 하도록 하였다.
+4. .html 파일에 수정이 필요한 부분에 ${key}를 넣어 수정해 둔 뒤, HttpResponse의 attribute entry들에 따라 해당 부분을 replace 하는 식으로 구현하였다.
+
+### 고민
+- Controller에서 html tag를 String 으로 생성하는 것이 효율적인가?
+- 여러 방법으로 테스트를 해보는 것이 필요해 보임
+- html 파일 내용 수정 시 String replace의 연쇄적인 호출로 인해 할당 반복...
