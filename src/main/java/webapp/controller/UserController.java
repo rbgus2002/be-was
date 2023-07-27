@@ -24,4 +24,22 @@ public class UserController {
 			.redirection("/index")
 			.build();
 	}
+
+	@RequestMapping(method = HttpMethod.POST, path = "/user/login")
+	public HttpResponse login(@RequestBody(name = "userId") String userId,
+		@RequestBody(name = "password") String password) {
+		User user = Database.findUserById(userId);
+		if (user == null || !Database.verifyPassword(user, password)) {
+			return HttpResponse.builder()
+				.status(HttpStatus.UNAUTHORIZED)
+				.view("/user/login_failed")
+				.build();
+		}
+		// 세션 생성
+		// 쿠키 저장
+		return HttpResponse.builder()
+			.status(HttpStatus.SEE_OTHER)
+			.redirection("/index")
+			.build();
+	}
 }
