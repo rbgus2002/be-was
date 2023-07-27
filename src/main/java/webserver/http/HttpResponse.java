@@ -61,8 +61,8 @@ public class HttpResponse {
             return this;
         }
 
-        public HttpResponse.Builder setAttribute(String key, String value) {
-            this.attributes.put(key, value);
+        public HttpResponse.Builder setAttribute(Map<String, String> attributes) {
+            this.attributes = attributes;
             return this;
         }
 

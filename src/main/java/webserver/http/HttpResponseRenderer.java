@@ -8,7 +8,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Map;
 
+import static webserver.http.enums.ContentType.HTML;
 import static webserver.http.enums.ContentType.getContentTypeOfFile;
 import static webserver.utils.StringUtils.NEW_LINE;
 
@@ -62,8 +64,7 @@ public class HttpResponseRenderer {
         byte[] body = new byte[0];
 
         if (!"".equals(response.fileName())) {
-            body = Files.readAllBytes(Paths.get(response.fileName()));
-            // todo: 동적 HTML 수정
+            body = reviseContentWithAttrs(response, contentType);
             contentLength = body.length;
         }
 
@@ -77,6 +78,19 @@ public class HttpResponseRenderer {
 //        logger.debug(contentLengthHeader);
 
         dos.write(body, 0, body.length);
+    }
+
+    private static byte[] reviseContentWithAttrs(HttpResponse response, ContentType contentType) throws IOException {
+        byte[] body = Files.readAllBytes(Paths.get(response.fileName()));
+        if (contentType != HTML)
+            return body;
+
+        String fileContent = new String(body);
+        for (Map.Entry<String, String> entry : response.attributes().entrySet()) {
+            fileContent = fileContent.replace(entry.getKey(), entry.getValue());
+        }
+
+        return fileContent.getBytes();
     }
 
 
