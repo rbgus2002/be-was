@@ -1,5 +1,6 @@
 package view;
 
+import annotation.View;
 import db.ContentDatabase;
 import db.SessionManager;
 import model.Content;
@@ -9,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 
 import java.util.*;
-
+@View(path = "/index.html")
 public class MainView {
     private static final Logger logger = LoggerFactory.getLogger(MainView.class);
 
