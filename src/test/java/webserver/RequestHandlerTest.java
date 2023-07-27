@@ -8,8 +8,7 @@ import org.junit.jupiter.api.*;
 import support.instance.DefaultInstanceManager;
 import support.web.HttpMethod;
 import support.web.handler.ControllerMethodReturnValueHandlerComposite;
-import support.web.view.ErrorView;
-import support.web.view.ViewContainer;
+import support.web.view.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -68,8 +67,9 @@ class RequestHandlerTest {
         instance.setAccessible(true);
         instance.set(null, defaultInstanceManager);
         defaultInstanceManager.addInstance("UserController", new UserController());
-        defaultInstanceManager.addInstance("ViewContainer", new ViewContainer());
-        defaultInstanceManager.addInstance("ErrorView", new ErrorView());
+        defaultInstanceManager.addInstance("ViewContainer", new ViewContainer(
+                new ErrorView(), new IndexView(), new PostShowView(), new UserListView()
+        ));
         defaultInstanceManager.addInstance("HttpHandler", new HttpHandler());
         defaultInstanceManager.addInstance("ControllerMethodReturnValueHandlerComposite", new ControllerMethodReturnValueHandlerComposite());
     }

@@ -1,10 +1,12 @@
 package support.web.view;
 
+import support.annotation.Component;
 import support.web.Model;
 import utils.StringBuilderExpansion;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
+@Component
 public class ErrorView implements View {
 
     @Override

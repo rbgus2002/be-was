@@ -1,5 +1,6 @@
 package support.web.view;
 
+import support.annotation.AutoInject;
 import support.annotation.Component;
 
 import java.util.ArrayList;
@@ -11,7 +12,10 @@ public class ViewContainer {
 
     private final List<View> viewContainer = new ArrayList<>();
 
-    public ViewContainer() {
+    public ViewContainer(@AutoInject ErrorView errorView,
+                         @AutoInject IndexView indexView,
+                         @AutoInject PostShowView postShowView,
+                         @AutoInject UserListView userListView) {
         viewContainer.add(new ErrorView());
         viewContainer.add(new IndexView());
         viewContainer.add(new PostShowView());
