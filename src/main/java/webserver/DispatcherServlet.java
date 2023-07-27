@@ -37,10 +37,9 @@ public class DispatcherServlet {
         }
 
         byte[] bytes = DYNAMIC_VIEW_RENDER.render(modelAndView);
-        String body = new String(bytes);
 
         httpResponse.set(HttpField.CONTENT_TYPE, ContentTypeResolver.getContentType(modelAndView.getViewName()));
-        httpResponse.set(HttpField.CONTENT_LENGTH, body.length());
+        httpResponse.set(HttpField.CONTENT_LENGTH, bytes.length);
         httpResponse.setBody(bytes);
     }
 
