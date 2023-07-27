@@ -89,12 +89,14 @@ Java Web Application Server 2023
 > HTTP Cookie<br>
 > HTTP Session
 
-- [ ] 로그인 기능 구현
-    - [ ] 로그인 실패
-        1. `/user/login_failed.html`로 이동
-    - [ ] 로그인 성공
-        1. `/index.html`로 이동
-        2. 세션 생성 및 저장
-        3. 세션 아이디를 쿠키에 담아 클라이언트에게 응답
-            - `Set-Cookie`, `Path`
-    - [ ] 세션을 이용해 로그인 상태 유지
+**로그인 기능 구현**
+- [x] 로그인 실패
+    1. `/user/login_failed.html`를 응답 (`401 Unauthorized`)
+- [x] 로그인 성공
+    1. 세션 생성 및 저장
+        - `Session`: 세션은 세션 아이디(`UUID` 타입)와 유저 정보(`userId`)를 저장
+        - `SessionStorage`: 세션을 생성하고 저장
+    2. 세션 아이디를 쿠키에 담아 클라이언트에게 응답
+        - `Cookie` 클래스에 쿠키의 키와 밸류, 디렉티브를 저장
+        - 응답 헤더에 `Set-Cookie` 필드를 추가
+    3. `/index.html`로 이동
