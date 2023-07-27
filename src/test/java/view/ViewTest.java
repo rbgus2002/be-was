@@ -14,14 +14,14 @@ import static exception.ExceptionList.INVALID_SESSION_ID;
 import static http.HttpMethod.GET;
 import static org.junit.jupiter.api.Assertions.*;
 
-class PageTest {
+class ViewTest {
     private SoftAssertions softAssertions;
-    private Page page;
+    private View view;
 
     @BeforeEach
     void setup() {
         softAssertions = new SoftAssertions();
-        page = new Page();
+        view = new View();
     }
 
     @AfterEach
@@ -42,7 +42,7 @@ class PageTest {
 
         // When
         Exception exception = assertThrows(Exception.class, () -> {
-            page.getDynamicPage(httpRequest, uri);
+            view.getDynamicView(httpRequest, uri);
         });
 
         // Then
@@ -64,7 +64,7 @@ class PageTest {
 
         // When
         Exception exception = assertThrows(Exception.class, () -> {
-            page.getDynamicPage(httpRequest, uri);
+            view.getDynamicView(httpRequest, uri);
         });
 
         // Then
@@ -86,7 +86,7 @@ class PageTest {
 
         // When
         Exception exception = assertThrows(Exception.class, () -> {
-            page.getDynamicPage(httpRequest, uri);
+            view.getDynamicView(httpRequest, uri);
         });
 
         // Then
@@ -108,7 +108,7 @@ class PageTest {
 
         // When
         Exception exception = assertThrows(Exception.class, () -> {
-            page.getDynamicPage(httpRequest, uri);
+            view.getDynamicView(httpRequest, uri);
         });
 
         // Then

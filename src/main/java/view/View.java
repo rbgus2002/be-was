@@ -17,22 +17,22 @@ import static exception.ExceptionList.*;
 import static http.FilePath.*;
 import static utils.FileUtils.TEMPLATES_DIRECTORY;
 
-public class Page {
+public class View {
 
-    public String getDynamicPage(HttpRequest httpRequest, String filePath) {
+    public String getDynamicView(HttpRequest httpRequest, String filePath) {
         switch (filePath) {
             case INDEX:
-                return getIndexPage(httpRequest);
+                return getIndexView(httpRequest);
             case LIST:
-                return getListPage(httpRequest);
+                return getListView(httpRequest);
             case PROFILE:
-                return getProfilePage(httpRequest);
+                return getProfileView(httpRequest);
             default:
                 throw new BadRequestException(INVALID_URI);
         }
     }
 
-    public String getErrorPage(String errorMessage) {
+    public String getErrorView(String errorMessage) {
         return "<!DOCTYPE html>" +
                 "<html>" +
                 "<head>" +
@@ -44,7 +44,7 @@ public class Page {
                 "</html>";
     }
 
-    private String getProfilePage(HttpRequest httpRequest) {
+    private String getProfileView(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
         if (!isSessionValid(sessionId)) {
             throw new SessionIdException(INVALID_SESSION_ID);
@@ -73,7 +73,7 @@ public class Page {
         return profileBuilder.toString();
     }
 
-    private String getListPage(HttpRequest httpRequest) {
+    private String getListView(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
         if (!isSessionValid(sessionId)) {
             throw new SessionIdException(INVALID_SESSION_ID);
@@ -117,7 +117,7 @@ public class Page {
         return listBuilder.toString();
     }
 
-    private String getIndexPage(HttpRequest httpRequest) {
+    private String getIndexView(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
 
         StringBuilder indexBuilder = new StringBuilder();
