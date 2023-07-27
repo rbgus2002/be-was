@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static utils.StringUtils.AMPERSAND;
-import static utils.StringUtils.EQUAL;
+import static utils.StringUtils.*;
 
 public class RequestBody {
     private Map<String, String> params;
@@ -30,8 +29,8 @@ public class RequestBody {
 
     private static String readBody(BufferedReader bufferedReader, int contentLength) throws IOException {
         char[] buffer = new char[contentLength];
-        bufferedReader.read(buffer, 0, contentLength);
-        return new String(buffer);
+        bufferedReader.read(buffer);
+        return decode(String.valueOf(buffer));
     }
 
     public Map<String, String> getParams() {
