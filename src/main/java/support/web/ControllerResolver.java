@@ -62,6 +62,10 @@ public class ControllerResolver {
         // 요청 url에 해당하는 controller method를 찾는다.
         ControllerMethod controllerMethodStruct = controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url));
         if (controllerMethodStruct == null) {
+            if (Arrays.stream(HttpMethod.values())
+                    .anyMatch(httpMethod -> controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url)) != null)) {
+                return new HttpEntity(HttpStatus.METHOD_NOT_ALLOWED);
+            }
             return null;
         }
 
