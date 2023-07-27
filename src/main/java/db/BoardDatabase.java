@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 import model.Board;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class BoardDatabase {
     private static Map<Long, Board> boards = Maps.newConcurrentMap();
@@ -18,7 +20,9 @@ public class BoardDatabase {
     }
 
     public static Collection<Board> findAllBoards() {
-        return boards.values();
+        Map<Long, Board> treeMap = new TreeMap<>(Collections.reverseOrder());
+        treeMap.putAll(boards);
+        return treeMap.values();
     }
 
     public static int getBoardSize() {
