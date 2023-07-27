@@ -35,14 +35,10 @@ public class HttpRequest {
     }
     public String getSessionId() {
         String requestCookie = httpHeaders.getRequestCookie();
+        if (requestCookie == null) {
+            return null;
+        }
         return Parser.parseCookie(requestCookie);
-    }
-
-    public String show() {
-        StringBuilder sb = new StringBuilder();
-        httpRequestLine.show(sb);
-        httpHeaders.show(sb);
-        return sb.toString();
     }
 
     public static HttpRequest create(InputStream in) throws IOException {
