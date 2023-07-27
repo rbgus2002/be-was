@@ -34,18 +34,16 @@ public class UserLoginController implements Controller {
 
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
-        String path = "http://".concat(request.getHeader("Host").concat("/user/login_failed.html"));
+        String path = "/user/login_failed.html";
         if(loginUser.getPassword().equals(parameters.get("password"))) {
-            path = "http://".concat(request.getHeader("Host").concat("/index.html"));
+            path = "/index.html";
             Session session = createUserSession(loginUser);
-            builder.setHeader("Set-Cookie", "sid=" + session.getSessionId() + "; Path=/" );
+            builder.sessionId(session.getSessionId());
         }
-
 
         return builder.version(request.version())
                 .status(FOUND)
-                .contentType(HTML)
-                .setHeader("Location", path)
+                .redirect(path)
                 .build();
 
     }
