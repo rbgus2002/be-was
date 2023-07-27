@@ -18,8 +18,8 @@ public class ContentDatabase {
        contents.put(index++, content);
     }
 
-    public static Content findUserById(String writer) {
-        return contents.get(writer);
+    public static Content findById(int id) {
+        return contents.get(id);
     }
 
     public static Set<Map.Entry<Integer, Content>> findAllWithId() {
