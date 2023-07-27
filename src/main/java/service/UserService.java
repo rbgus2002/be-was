@@ -17,17 +17,14 @@ public class UserService {
         return Database.findAllUser();
     }
 
-    public static void userSignUp(Map<String, String> parameterMap) {
+    public static void userSignup(String userId, String password, String name, String email) {
         // 이미 존재하는 User인지 확인
-        User user = Database.findUserById(parameterMap.get(USERID));
+        User user = Database.findUserById(userId);
         if(user != null) {
             return;
         }
         // User 객체 생성
-        user = new User(parameterMap.get(USERID),
-                parameterMap.get(PASSWORD),
-                parameterMap.get(NAME),
-                parameterMap.get(EMAIL));
+        user = new User(userId, password, name, email);
         // DB 저장
         Database.addUser(user);
     }

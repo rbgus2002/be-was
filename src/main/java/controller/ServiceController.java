@@ -11,10 +11,9 @@ import webserver.http.model.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static model.User.*;
 import static webserver.http.HttpUtil.*;
 import static webserver.http.HttpParser.*;
-import static model.User.PASSWORD;
-import static model.User.USERID;
 
 public class ServiceController extends Controller {
 
@@ -22,7 +21,10 @@ public class ServiceController extends Controller {
     public Response userCreate(Request request) {
         Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
 
-        UserService.userSignUp(bodyParameterMap);
+        UserService.userSignup(
+                bodyParameterMap.get(USERID), bodyParameterMap.get(PASSWORD),
+                bodyParameterMap.get(NAME), bodyParameterMap.get(EMAIL)
+        );
 
         return generate303Response(INDEX_URL);
     }
