@@ -19,17 +19,19 @@ public class Request {
     private final Method method;
     private final String version;
     private final String targetUri;
+    private final String path;
     private final Map<String, String> queryParameterMap;
     private final Map<String, String> headerMap;
     private final String sid;
     private final String body;
 
-    public Request(Method method, String version, String targetUri,
+    public Request(Method method, String version, String targetUri, String path,
                    Map<String, String> queryParameterMap, Map<String, String> headerMap,
                    String sid, String body) {
         this.method = method;
         this.version = version;
         this.targetUri = targetUri;
+        this.path = path;
         this.queryParameterMap = queryParameterMap;
         this.headerMap = headerMap;
         this.sid = sid;
@@ -46,6 +48,10 @@ public class Request {
 
     public String getTargetUri() {
         return targetUri;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public Map<String, String> getQueryParameterMap() {

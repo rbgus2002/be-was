@@ -34,19 +34,22 @@ public class RequestHandler implements Runnable {
 
         try(connection) {
             // Request
-            Request request = parseRequest(connection);
+            InputStream in = connection.getInputStream();
+            Request request = parseRequest(in);
 
             // Response
             Response response = generateResponse(request);
-            sendResponse(response, connection);
+
+            // Send Response
+            OutputStream out = connection.getOutputStream();
+            sendResponse(response, out);
 
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
 
-    private Request parseRequest(Socket connection) throws IOException, IllegalArgumentException {
-        InputStream in = connection.getInputStream();
+    public static Request parseRequest(InputStream in) throws IOException, IllegalArgumentException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
         // Status Line
@@ -54,6 +57,7 @@ public class RequestHandler implements Runnable {
 
         Method method = Method.getMethodByName(tokens[0]);
         String targetUri = tokens[1];
+        String path = tokens[1].split("\\?")[0];
         String version = tokens[2].split("/")[1];
 
         Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
@@ -84,15 +88,14 @@ public class RequestHandler implements Runnable {
             body = URLDecoder.decode(String.valueOf(bodyCharacters), StandardCharsets.UTF_8);
         }
 
-        return new Request(method, version, targetUri, queryParameterMap, headerMap, sid, body);
+        return new Request(method, version, targetUri, path, queryParameterMap, headerMap, sid, body);
     }
 
-    private Response generateResponse(Request request) {
+    public static Response generateResponse(Request request) {
         return Router.generateResponse(request);
     }
 
-    private void sendResponse(Response response, Socket connection) throws IOException {
-        OutputStream out = connection.getOutputStream();
+    public static void sendResponse(Response response, OutputStream out) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
 
         // StatusLine
