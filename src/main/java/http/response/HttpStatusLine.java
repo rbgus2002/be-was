@@ -21,4 +21,9 @@ public class HttpStatusLine {
     public static HttpStatusLine createRedirectStatusLine() {
         return new HttpStatusLine("HTTP/1.1", FOUND.getValue(), FOUND.getDescription());
     }
+
+    public String writeHttpStatusLine() {
+        return version + " " + statusCode + " " + statusText + "\r\n";
+    }
+
 }

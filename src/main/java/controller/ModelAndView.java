@@ -2,6 +2,8 @@ package controller;
 
 import model.Model;
 
+import java.util.Optional;
+
 public class ModelAndView {
     private final String viewPath;
     private final Model model;
@@ -19,7 +21,7 @@ public class ModelAndView {
     public String getViewPath() {
         return viewPath;
     }
-    public Model getModel() {
-        return model;
+    public Optional<Model> getModel() {
+        return Optional.ofNullable(model);
     }
 }
