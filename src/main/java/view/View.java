@@ -87,8 +87,8 @@ public class View {
                     .append("</th> <td>").append(user.getUserId())
                     .append("</td> <td>").append(user.getName())
                     .append("</td> <td>").append(user.getEmail())
-                    .append("</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n" +
-                            "</tr>\n");
+                    .append("</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n")
+                    .append("</tr>\n");
         }
         userList.append("</tbody>\n");
 
@@ -120,19 +120,43 @@ public class View {
     private String getIndexView(HttpRequest httpRequest) {
         String sessionId = httpRequest.getSessionId();
 
+        StringBuilder boardList = new StringBuilder("<ul class=\"list\">\n");
+        for (Board board : findAllBoards()) {
+            boardList.append("<li>\n").append("<div class=\"wrap\">\n").append("<div class=\"main\">\n")
+                    .append("<strong class=\"subject\">")
+                    .append("<a href=\"./qna/show.html\">").append(board.getTitle()).append("</a>")
+                    .append("</strong>\n").append("<div class=\"auth-info\">\n").append("<i class=\"icon-add-comment\"></i>\n")
+                    .append("<span class=\"time\">").append(board.getTime()).append("&nbsp;</span>")
+                    .append("<a href=\"./user/profile.html\" class=\"author\">").append(board.getWriter()).append("</a>")
+                    .append("</div>\n").append("<div class=\"reply\" title=\"댓글\">\n").append("<i class=\"icon-reply\"></i>")
+                    .append("<span class=\"point\">").append(board.getIndex()).append("</span>")
+                    .append("</div>\n").append("</div>\n").append("</div>\n").append("</li>");
+        }
+        boardList.append("</ul>\n");
+
         StringBuilder indexBuilder = new StringBuilder();
         File indexFile = new File(TEMPLATES_DIRECTORY + INDEX);
         String line;
+        boolean listFlag = true;
         try {
             BufferedReader index = new BufferedReader(new FileReader(indexFile));
             while ((line = index.readLine()) != null) {
+                if (line.contains("<ul class=\"list\">")) {
+                    listFlag = false;
+                }
+                if (listFlag) {
+                    indexBuilder.append(line);
+                }
+                if (line.contains("<!-- list finish -->")) {
+                    listFlag = true;
+                    indexBuilder.append(boardList);
+                }
                 if (line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>") || line.contains("<li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>")) {
                     if (isSessionValid(sessionId)) continue;
                 }
                 if (line.contains("<li><a href=\"user/logout.html\" role=\"button\">로그아웃</a></li>") || line.contains("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>")) {
                     if (!isSessionValid(sessionId)) continue;
                 }
-                indexBuilder.append(line);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
