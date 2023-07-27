@@ -19,7 +19,7 @@ public class WriteController implements Controller{
     private static final Logger logger = LoggerFactory.getLogger(WriteController.class);
     @Override
     public String process(HTTPServletRequest request, HTTPServletResponse response) {
-        if (request.getMethod().equals("POST")) {
+        if (isPost(request)) {
             Map<String, String> query = request.getQuery();
             logger.debug("query의 생성 ={}", query.toString());
             Content content = new Content(query.get("writer"), query.get("title"), query.get("contents"));
@@ -35,5 +35,9 @@ public class WriteController implements Controller{
 
     private boolean isLogInStatus(HTTPServletRequest request) {
         return SessionManager.getSession(request) != null;
+    }
+
+    private boolean isPost(HTTPServletRequest request) {
+        return request.getMethod().equals("POST");
     }
 }
