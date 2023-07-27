@@ -24,9 +24,9 @@ public class ArticleService {
     }
 
     public void add(ArticleSaveDto dto) {
-        String userName = userService.findNameById(dto.getUserId());
+        String username = userService.findNameById(dto.getUserId());
 
-        Article article = new Article(dto.getUserId(), userName, dto.getTitle(), dto.getContents());
+        Article article = new Article(dto.getUserId(), username, dto.getTitle(), dto.getContents());
 
         ArticleDatabase.save(article);
     }

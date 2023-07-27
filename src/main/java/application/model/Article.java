@@ -8,7 +8,7 @@ public class Article {
     private final int articleId;
     private final String userId;
     private final String username;
-    private final LocalDate createDate;
+    private final String createDate;
     private String title;
     private String contents;
 
@@ -18,7 +18,7 @@ public class Article {
         this.username = username;
         this.title = title;
         this.contents = contents;
-        this.createDate = LocalDate.now();
+        this.createDate = LocalDate.now().toString();
     }
 
     public int getArticleId() {
@@ -41,7 +41,7 @@ public class Article {
         return contents;
     }
 
-    public LocalDate getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 }

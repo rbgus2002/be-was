@@ -1,21 +1,19 @@
 package application.dto.article;
 
-import java.time.LocalDate;
-
 public class ArticleListDto {
-    private final LocalDate createDate;
+    private final String createDate;
     private final String username;
     private final int articleId;
     private final String title;
 
-    public ArticleListDto(LocalDate createDate, String username, int articleId, String title) {
+    public ArticleListDto(String createDate, String username, int articleId, String title) {
         this.createDate = createDate;
         this.username = username;
         this.articleId = articleId;
         this.title = title;
     }
 
-    public LocalDate getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 

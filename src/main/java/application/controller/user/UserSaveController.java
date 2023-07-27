@@ -3,6 +3,7 @@ package application.controller.user;
 import application.controller.Controller;
 import application.dto.user.UserSaveDto;
 import application.service.UserService;
+import view.ModelAndView;
 import webserver.exceptions.BadRequestException;
 import webserver.exceptions.ConflictException;
 import webserver.http.HttpRequest;
@@ -16,7 +17,7 @@ public class UserSaveController implements Controller {
     private final UserService userService = UserService.getInstance();
 
     @Override
-    public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    public ModelAndView process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
             UserSaveDto userSaveDto = new UserSaveDto(
                     httpRequest.getParameter("userId"),
@@ -33,5 +34,6 @@ public class UserSaveController implements Controller {
         } catch (ConflictException e) {
             httpResponse.setStatus(HttpStatus.CONFLICT);
         }
+        return null;
     }
 }

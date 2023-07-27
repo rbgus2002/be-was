@@ -33,14 +33,14 @@ public class UserService {
         UserDatabase.addUser(new User(
                 dto.getUserId(),
                 dto.getPassword(),
-                dto.getName(),
+                dto.getUsername(),
                 dto.getEmail()));
     }
 
     private void verifySaveDto(UserSaveDto dto) throws BadRequestException {
         checkNullOrBlank(dto.getUserId());
         checkNullOrBlank(dto.getPassword());
-        checkNullOrBlank(dto.getName());
+        checkNullOrBlank(dto.getUsername());
         checkNullOrBlank(dto.getEmail());
     }
 
@@ -54,7 +54,7 @@ public class UserService {
         ArrayList<UserListDto> userList = new ArrayList<>();
 
         for (User user : UserDatabase.findAll()) {
-            userList.add(new UserListDto(user.getUserId(), user.getName(), user.getEmail()));
+            userList.add(new UserListDto(user.getUserId(), user.getUsername(), user.getEmail()));
         }
 
         return userList;
@@ -77,7 +77,7 @@ public class UserService {
     }
 
     public String findNameById(String userId) {
-        return UserDatabase.findById(userId).getName();
+        return UserDatabase.findById(userId).getUsername();
     }
 
     private void checkNullOrBlank(String parameter) throws BadRequestException {

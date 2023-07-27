@@ -2,6 +2,7 @@ package application.controller.article;
 
 import application.controller.Controller;
 import application.service.SessionService;
+import view.ModelAndView;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.utils.CookieConstants;
@@ -13,13 +14,14 @@ public class ArticleWriteController implements Controller {
     private final SessionService sessionService = SessionService.getInstance();
 
     @Override
-    public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    public ModelAndView process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         String sessionId = httpRequest.getCookie(CookieConstants.SESSION_ID);
 
         if (sessionService.verifySessionId(sessionId)) {
             httpResponse.sendRedirect(Location.ARTICLE_WRITE_PAGE);
-            return;
+        } else {
+            httpResponse.sendRedirect(Location.LOGIN_PAGE);
         }
-        httpResponse.sendRedirect(Location.LOGIN_PAGE);
+        return null;
     }
 }

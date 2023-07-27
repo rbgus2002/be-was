@@ -4,6 +4,7 @@ import application.controller.Controller;
 import application.dto.article.ArticleSaveDto;
 import application.service.ArticleService;
 import application.service.SessionService;
+import view.ModelAndView;
 import webserver.exceptions.UnauthorizedException;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
@@ -17,7 +18,7 @@ public class ArticleSaveController implements Controller {
     private final SessionService sessionService = SessionService.getInstance();
 
     @Override
-    public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    public ModelAndView process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         try {
             String sessionId = httpRequest.getSessionId();
             String userId = sessionService.findUserId(sessionId);
@@ -35,6 +36,8 @@ public class ArticleSaveController implements Controller {
         } catch (UnauthorizedException e) {
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED);
         }
+
+        return null;
     }
 
     private void checkLoginStatus(String sessionId) throws UnauthorizedException {

@@ -2,12 +2,12 @@ package application.dto.user;
 
 public class UserListDto {
     private final String userId;
-    private final String name;
+    private final String username;
     private final String email;
 
-    public UserListDto(String userId, String name, String email) {
+    public UserListDto(String userId, String username, String email) {
         this.userId = userId;
-        this.name = name;
+        this.username = username;
         this.email = email;
     }
 
@@ -15,8 +15,8 @@ public class UserListDto {
         return userId;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {

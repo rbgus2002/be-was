@@ -3,13 +3,13 @@ package application.dto.user;
 public class UserSaveDto {
     private final String userId;
     private final String password;
-    private final String name;
+    private final String username;
     private final String email;
 
-    public UserSaveDto(String userId, String password, String name, String email) {
+    public UserSaveDto(String userId, String password, String username, String email) {
         this.userId = userId;
         this.password = password;
-        this.name = name;
+        this.username = username;
         this.email = email;
     }
 
@@ -21,8 +21,8 @@ public class UserSaveDto {
         return password;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {

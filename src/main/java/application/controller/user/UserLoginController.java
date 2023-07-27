@@ -4,6 +4,7 @@ import application.controller.Controller;
 import application.dto.user.UserLoginDto;
 import application.service.SessionService;
 import application.service.UserService;
+import view.ModelAndView;
 import webserver.exceptions.LoginFailException;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
@@ -15,7 +16,7 @@ public class UserLoginController implements Controller {
     private final SessionService sessionService = SessionService.getInstance();
 
     @Override
-    public void process(HttpRequest httpRequest, HttpResponse httpResponse) {
+    public ModelAndView process(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
             UserLoginDto userLoginDto = new UserLoginDto(
                     httpRequest.getParameter("userId"),
@@ -27,6 +28,7 @@ public class UserLoginController implements Controller {
         } catch (LoginFailException e) {
             httpResponse.sendRedirect(Location.LOGIN_FAIL_PAGE);
         }
+        return null;
     }
 
     private void processLoginResponse(HttpResponse httpResponse, String userId) throws LoginFailException {

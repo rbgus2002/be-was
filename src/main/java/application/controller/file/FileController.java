@@ -1,38 +1,29 @@
 package application.controller.file;
 
 import application.controller.Controller;
+import application.service.SessionService;
+import view.ModelAndView;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.HttpStatus;
-import webserver.utils.ContentTypeResolver;
-import webserver.utils.FileUtils;
-import webserver.utils.HttpField;
 
 import java.io.IOException;
 
 public class FileController implements Controller {
+    private final SessionService sessionService = SessionService.getInstance();
+
     @Override
-    public void process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    public ModelAndView process(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        String sessionId = httpRequest.getSessionId();
         String filePath = httpRequest.getPath();
-        String responsePage = FileUtils.checkFilePath(filePath);
-        setResponseWithFileData(httpResponse, responsePage);
-    }
 
-    private void setResponseWithFileData(HttpResponse httpResponse, String filePath) throws IOException {
-        byte[] fileData = FileUtils.readFileBytes(filePath);
-        HttpStatus status = resolveHttpStatus(filePath);
-        String contentType = ContentTypeResolver.getContentType(filePath);
+        ModelAndView modelAndView = new ModelAndView(filePath);
 
-        httpResponse.setStatus(status);
-        httpResponse.set(HttpField.CONTENT_TYPE, contentType);
-        httpResponse.set(HttpField.CONTENT_LENGTH, fileData.length);
-        httpResponse.setBody(fileData);
-    }
-
-    private HttpStatus resolveHttpStatus(String path) {
-        if (path.equals(FileUtils.NOT_FOUND_PAGE_PATH)) {
-            return HttpStatus.NOT_FOUND;
+        if(sessionService.verifySessionId(sessionId)) {
+            modelAndView.setLogin(sessionService.findUserId(sessionId));
         }
-        return HttpStatus.OK;
+
+        httpResponse.setStatus(HttpStatus.OK);
+        return modelAndView;
     }
 }

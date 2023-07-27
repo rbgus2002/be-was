@@ -52,7 +52,7 @@ class UserSaveControllerTest {
         softAssertions.assertThat(user).isNotEqualTo(null);
         softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
         softAssertions.assertThat(user.getPassword()).isEqualTo("password");
-        softAssertions.assertThat(user.getName()).isEqualTo("박재성");
+        softAssertions.assertThat(user.getUsername()).isEqualTo("박재성");
         softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi@slipp.net");
         softAssertions.assertAll();
     }
