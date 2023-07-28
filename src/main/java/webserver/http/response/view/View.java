@@ -19,40 +19,33 @@ public class View {
         }
         if(url.contains(".html")) {
             String stringBody = parseBody(user, byteBody);
-            body = stringBody.getBytes();
+            if(stringBody != null) {
+                body = stringBody.getBytes();
+                return;
+            }
+            body = null;
             return;
         }
         body = byteBody;
     }
 
     private static String parseBody(User user, byte[] byteBody) {
+        if(byteBody == null) {
+             return null;
+        }
         String stringBody = new String(byteBody);
-        StringBuilder stringBuilder = new StringBuilder();
-        UserService userService = UserService.of();
+        stringBody = getUserList(stringBody);
         if (user != null) {
             stringBody = stringBody.replaceAll("not_login::", "<!--");
             stringBody = stringBody.replaceAll("::not_login", "-->");
             stringBody = stringBody.replaceAll("login::", "");
             stringBody = stringBody.replaceAll("::login", "");
-            if(stringBody.contains("for::")) {
-                Collection<User> users = userService.findAll();
-                int i = 1;
-                String subString = stringBody.substring(stringBody.indexOf("for::"), stringBody.indexOf("::for"));
-                for (User u : users) {
-                    String repeatPart = subString;
-                    repeatPart = repeatPart.replace(":i:", i + "");
-                    repeatPart = repeatPart.replace(":model.userId:", u.getUserId());
-                    repeatPart = repeatPart.replace(":model.name:", u.getName());
-                    repeatPart = repeatPart.replace(":model.email:", u.getEmail());
 
-                    stringBuilder.append(repeatPart);
-                    i++;
-                }
-                System.out.println(stringBuilder);
-                stringBody = stringBody.replace(subString, stringBuilder.toString());
-                stringBody = stringBody.replaceAll("for::", "");
-                stringBody = stringBody.replaceAll("::for", "");
-            }
+
+            stringBody = stringBody.replaceAll(":model.userId:", user.getUserId());
+            stringBody = stringBody.replaceAll(":model.name:", user.getName());
+            stringBody = stringBody.replaceAll(":model.email:", user.getEmail());
+
             return stringBody;
         }
         stringBody = stringBody.replaceAll("not_login::", "");
@@ -60,6 +53,38 @@ public class View {
         stringBody = stringBody.replaceAll("login::", "<!--");
         stringBody = stringBody.replaceAll("::login", "-->");
         return stringBody;
+    }
+
+    private static String getUserList(String stringBody) {
+        StringBuilder stringBuilder = new StringBuilder();
+        UserService userService = UserService.of();
+        if(stringBody.contains("for::")) {
+            Collection<User> users = userService.findAll();
+            int i = 1;
+            String subString = stringBody.substring(stringBody.indexOf("for::"), stringBody.indexOf("::for"));
+            for (User u : users) {
+                String repeatPart = subString;
+                repeatPart = existReplace(repeatPart, ":i:", i + "");
+                repeatPart = existReplace(repeatPart,":model.userId:", u.getUserId());
+                repeatPart = existReplace(repeatPart,":model.name:", u.getName());
+                repeatPart = existReplace(repeatPart,":model.email:", u.getEmail());
+
+                stringBuilder.append(repeatPart);
+                i++;
+            }
+            System.out.println(stringBuilder);
+            stringBody = stringBody.replace(subString, stringBuilder.toString());
+            stringBody = stringBody.replaceAll("for::", "");
+            stringBody = stringBody.replaceAll("::for", "");
+        }
+        return stringBody;
+    }
+
+    private static String existReplace(String repeatPart, String regex, String replacement) {
+        if(!repeatPart.contains(regex)) {
+            return repeatPart;
+        }
+        return repeatPart.replace(regex, replacement);
     }
 
     public int getLength() {

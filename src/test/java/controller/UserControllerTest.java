@@ -27,6 +27,7 @@ class UserControllerTest {
     @Test
     @DisplayName("멀티 쓰레드 환경에서도 데이터 혼용이 없어야 한다.")
     void multi() throws InterruptedException {
+        Database.clear();
         // given
         final int THREADS = 100;
         ExecutorService service = Executors.newFixedThreadPool(THREADS);
