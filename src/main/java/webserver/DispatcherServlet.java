@@ -2,7 +2,6 @@ package webserver;
 
 import controller.Controller;
 import exception.NotSupportedContentTypeException;
-import http.HttpStatus;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,35 +31,21 @@ public class DispatcherServlet {
     }
 
     public void doService(HttpRequest request, OutputStream out) throws Throwable {
-        logger.debug("REQUEST START :: \n{}", request);
-        checkUserSession(request);
+        logger.debug("Request Start\n{}", request);
         doDispatch(request, out);
-    }
-
-    private void checkUserSession(HttpRequest request) {
-        User user = request.getUserInSession();
-        if(user != null){
-            logger.debug("세션 인증 성공! good >> {}", user);
-        }
     }
 
     public void doDispatch(HttpRequest request, OutputStream out) throws Throwable {
         Method method = HandlerMapping.getMethodMapped(request);
-        HttpResponse response = handle(request, method);
+        HttpResponse response = handle(request, method, request.getUserInSession());
         processDispatchResult(response, out);
-        logger.debug("RESPONSE END :: \n{}", response);
+        logger.debug("Response End\n{}", response);
     }
 
-    private HttpResponse handle(HttpRequest request, Method method) throws Throwable {
+    private HttpResponse handle(HttpRequest request, Method method, User user) throws Throwable {
         String path = request.getPath();
-
-        HttpResponse response;
-        if (hasRequestPathMapped(method)) {
-            response = executeRequest(request, method);
-        } else {
-            response = HttpResponse.init(path);
-        }
-        processResources(response);
+        HttpResponse response = hasRequestPathMapped(method) ? executeRequest(request, method) : HttpResponse.init(path);
+        processResources(response, user);
         return response;
     }
 
@@ -80,19 +65,19 @@ public class DispatcherServlet {
         return response;
     }
 
-    private void processResources(HttpResponse response) throws IOException {
+    private void processResources(HttpResponse response, User user) throws IOException {
         try {
             ContentType type = ContentType.findBy(response.getFilePath());
             response.mapResourcePath(type);
-            response.doResponse();
+            response.setResponse(user);
         } catch (NotSupportedContentTypeException e) {
             logger.debug("NotSupportedContentTypeException >> {}", response);
             logger.error(e.getMessage());
-            response.doResponse(FOUND);
+            response.setResponse(FOUND);
         } catch (IOException e) {
             logger.debug("IOException (readAllBytes ERROR) >> {}", response);
             logger.error(Arrays.toString(e.getStackTrace()));
-            response.doResponse(NOT_FOUND);
+            response.setResponse(NOT_FOUND);
         }
     }
 

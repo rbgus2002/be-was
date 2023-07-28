@@ -17,8 +17,17 @@ class SessionTest {
         final long lastAccessTime = session.getLastAccessTime();
         
         // then
-        assertThat(lastAccessTime).isLessThan(System.currentTimeMillis());
+        assertThat(lastAccessTime).isLessThanOrEqualTo(System.currentTimeMillis());
     }
 
+    @Test
+    @DisplayName("세션은 최근 접근 시간 기준으로 30분 이내에 접근하는 경우 유효하다")
+    void validateExpiration(){
+        // given
+        // when
+        Session session = Session.of("sid", new Object());
 
+        // then
+        assertTrue(session.validateExpiration());
+    }
 }

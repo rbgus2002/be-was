@@ -34,9 +34,22 @@ public class HttpRequest {
 
     private List<Cookie> parseCookies() {
         String cookieString = header.getCookieString();
-        return Cookie.parse(cookieString);
+        List<Cookie> cookies = Cookie.parse(cookieString);
+        appendQuery(cookies);
+        return cookies;
     }
 
+    private void appendQuery(List<Cookie> cookies) {
+        Map<String, String> query = requestLine.getUri().getQuery();
+        for(Cookie cookie : cookies){
+            query.put(cookie.getName(), cookie.getValue());
+        }
+    }
+
+    /**
+     * 세션에 쿠키 값으로 넘어온 sid가 존재하면 User 객체 반환,
+     * sid가 존재하지 않으면 null 객체 반환
+     */
     public User getUserInSession(){
         String sid = cookies.stream()
                 .filter(Cookie::isSid)

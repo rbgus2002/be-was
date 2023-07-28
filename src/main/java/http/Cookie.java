@@ -25,10 +25,12 @@ public class Cookie {
     }
 
     private static void processCookieString(List<Cookie> cookies, String cookieString) {
-        String[] cookieStringArray = cookieString.split("; ");
-        for(String nowCookieString : cookieStringArray){
-            String[] keyAndValue = nowCookieString.split("=");
-            cookies.add(Cookie.from(keyAndValue[0], keyAndValue[1]));
+        if(!"".equals(cookieString)){
+            String[] cookieStringArray = cookieString.split("; ");
+            for(String nowCookieString : cookieStringArray){
+                String[] keyAndValue = nowCookieString.split("=");
+                cookies.add(Cookie.from(keyAndValue[0], keyAndValue[1]));
+            }
         }
     }
 

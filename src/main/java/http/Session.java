@@ -7,7 +7,7 @@ import java.util.Map;
 public class Session {
     private final Map<String, Object> attributes = Maps.newHashMap();
     private long lastAccessTime;
-//    private static final long SESSION_TIMEOUT = 30 * 60 * 1000; // 30분
+    private static final long SESSION_TIMEOUT = 30 * 60 * 1000; // 30분
 
 
     private Session(String key, Object value) {
@@ -19,7 +19,7 @@ public class Session {
         return new Session(key, value);
     }
 
-    public Object getValue(String key){
+    public Object getValue(String key) {
         return attributes.get(key);
     }
 
@@ -27,8 +27,27 @@ public class Session {
         return lastAccessTime;
     }
 
-    public void updateLastAccessTime(){
+    public void updateLastAccessTime() {
         this.lastAccessTime = System.currentTimeMillis();
     }
 
+    /**
+     * 테스트용 메소드
+     */
+    public void updateLastAccessTimeToZero(){
+        this.lastAccessTime = 0;
+    }
+
+    public boolean validateExpiration() {
+        return this.lastAccessTime + SESSION_TIMEOUT > System.currentTimeMillis();
+
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "attributes=" + attributes +
+                ", lastAccessTime=" + lastAccessTime +
+                '}';
+    }
 }

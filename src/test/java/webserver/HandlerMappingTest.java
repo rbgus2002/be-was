@@ -28,7 +28,7 @@ class HandlerMappingTest {
                 appendNewLine("Host: localhost:8080") +
                 appendNewLine("Connection: keep-alive") +
                 appendNewLine("Cache-Control: max-age=0") +
-                "";
+                appendNewLine("");
         in = new ByteArrayInputStream(requestStr.getBytes());
     }
 

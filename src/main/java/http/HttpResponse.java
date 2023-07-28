@@ -1,8 +1,10 @@
 package http;
 
 import exception.NotSupportedContentTypeException;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import view.MainPageView;
 import webserver.ContentType;
 
 import java.io.*;
@@ -16,9 +18,9 @@ import static webserver.ContentType.NONE;
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private static final String ROOT_PATH = "src/main/resources";
+    private static final String INDEX = "/index.html";
     private static final String NOT_SUPPORT_ERROR_PAGE = "src/main/resources/templates/not_support_error.html";
     private static final String NOT_FOUND_ERROR_PAGE = "src/main/resources/templates/not_found_error.html";
-    private static final String INDEX = "/index.html";
     private static final String MAIN_PAGE = "src/main/resources/templates" + INDEX;
 
     private byte[] body;
@@ -52,16 +54,15 @@ public class HttpResponse {
         if (type == NONE) {
             throw new NotSupportedContentTypeException();
         }
-
         this.filePath = ROOT_PATH + type.getPath() + this.filePath;
     }
 
-    public void doResponse() throws IOException {
-        byte[] body = convertFilePathToBody();
+    public void setResponse(User user) throws IOException {
+        byte[] body = convertFilePathToBody(user);
         this.body = body;
     }
 
-    public void doResponse(HttpStatus status) throws IOException {
+    public void setResponse(HttpStatus status) throws IOException {
         this.status = status;
         byte[] body = convertFilePathToBody();
         this.body = body;
@@ -70,6 +71,19 @@ public class HttpResponse {
     private byte[] convertFilePathToBody() throws IOException {
         handlePathByHttpStatus();
         return Files.readAllBytes(new File(filePath).toPath());
+    }
+
+    private byte[] convertFilePathToBody(User user) throws IOException {
+        handlePathByHttpStatus();
+        if(isMainPage()){
+            MainPageView page = MainPageView.from(user);
+            return page.getByteArray();
+        }
+        return Files.readAllBytes(new File(filePath).toPath());
+    }
+
+    private boolean isMainPage() {
+        return MAIN_PAGE.equals(filePath);
     }
 
     private void handlePathByHttpStatus() {
@@ -141,9 +155,8 @@ public class HttpResponse {
         cookies.add(Cookie.from(name, value));
     }
 
-    /**
-     * 테스트용 메소드
-     */
+
+    // for test
     public int getCookieSize() {
         return cookies.size();
     }
