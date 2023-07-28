@@ -10,15 +10,15 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static constant.Uri.INDEX_HTML_URI;
-import static constant.Uri.USER_LIST_URI;
+import static constant.Uri.*;
 
 public class Authorization {
     private static final ConcurrentMap<String, HttpSession> session = new ConcurrentHashMap<>();
 
     public static Set<String> NEEDED_AUTHORIZATION = Set.of(
             INDEX_HTML_URI,
-            USER_LIST_URI
+            USER_LIST_URI,
+            QNA_FORM_URI
     );
 
     private Authorization() {

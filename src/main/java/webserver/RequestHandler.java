@@ -33,7 +33,6 @@ public class RequestHandler implements Runnable {
             String responseHeader = httpResponse.getHttpHeaderFormat();
 
             DataOutputStream dos = new DataOutputStream(out);
-
             dos.writeBytes(responseHeader);
             dos.write(httpResponse.getByteArrayOfBody());
         } catch (Exception e) {
