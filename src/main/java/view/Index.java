@@ -27,11 +27,14 @@ public class Index {
         String line;
 
         while ((line = br.readLine()) != null) {
-            if (line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>") && user != null) {
+            if (line.contains("로그인") && user != null) {
                 sb.append("                <li><a href=\"user/form.html\" role=\"button\">").append(user.getName()).append("님 </a></li>\n");
                 continue;
             }
-            if (line.contains("<li><a href=\"user/form.html\" role=\"button\">회원가입</a></li>") && user != null) {
+            if (line.contains("로그아웃") && user == null) {
+                continue;
+            }
+            if (line.contains("회원가입") && user != null) {
                 continue;
             }
 
