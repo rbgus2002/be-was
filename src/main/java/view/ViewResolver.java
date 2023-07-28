@@ -1,8 +1,5 @@
 package view;
 
-import container.Controller;
-import db.SessionManager;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
@@ -15,7 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
 
-import static util.PathList.*;
+import static util.PathList.STATIC_PATH;
+import static util.PathList.TEMPLATE_PATH;
 
 public class ViewResolver {
 

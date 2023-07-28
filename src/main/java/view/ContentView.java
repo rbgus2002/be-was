@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.HTTPServletRequest;
 
-import java.awt.*;
-
 @View(path = "/qna/show.html")
 public class ContentView implements ViewBase{
 
