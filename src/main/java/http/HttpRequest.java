@@ -7,22 +7,20 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import static util.Parser.*;
 import static util.StringUtil.*;
 
 public class HttpRequest {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
-    private String method;
-    private String path;
-    private MIME mime;
-    private Map<String, String> params;
-    private Map<String, String> headers;
+    private final String method;
+    private final String path;
+    private final MIME mime;
+    private final Map<String, String> params;
+    private final Map<String, String> headers;
     private String body;
-    private String httpVersion;
+    private final String httpVersion;
 
     public HttpRequest(InputStream in) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
@@ -111,6 +109,9 @@ public class HttpRequest {
     }
 
     public HttpSession getSession() {
+        if(this.headers.get("Cookie") == null) {
+            return null;
+        }
         Map<String, String> cookies = parseCookies(this.headers.get("Cookie"));
         String sessionId = cookies.get("sid");
         return SessionDatabase.getSession(sessionId);

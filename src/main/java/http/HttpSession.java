@@ -12,12 +12,8 @@ public class HttpSession {
         this.attributes = new HashMap<>();
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public Map<String, Object> getAttributes() {
-        return attributes;
+    public Object getAttributes(String key) {
+        return attributes.get(key);
     }
 
     public void setAttributes(String key, Object value) {

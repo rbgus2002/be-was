@@ -11,49 +11,45 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Parser;
+import webserver.FrontController;
 
-import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    private static final UserController instance = new UserController();
+    private static UserController instance;
 
     private UserController() {
     }
 
     public static UserController getInstance() {
+        if (instance == null) {
+            instance = new UserController();
+        }
         return instance;
     }
 
-    @RequestMapping(path = "/user/create", method = HttpMethod.GET)
-    public String createUserByGET(HttpRequest request, HttpResponse response) throws IOException {
-        Map<String, String> params = request.getParams();
-
-        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        UserDatabase.addUser(user);
-
-        return "/index.html";
-    }
-
     @RequestMapping(path = "/user/create", method = HttpMethod.POST)
-    public String createUserByPOST(HttpRequest request, HttpResponse response) throws IOException {
+    public String createUser(HttpRequest request, HttpResponse response) {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
 
         // TODO: 예외처리 및 에러페이지로 이동
-        if (UserDatabase.findUserById(params.get("userId")) != null) {
-            return "redirect:/index.html";
+        if (validateDuplicatedUser(params)) {
+            User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+            UserDatabase.addUser(user);
         }
-
-        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-        UserDatabase.addUser(user);
 
         return "redirect:/index.html";
     }
 
+    private static boolean validateDuplicatedUser(Map<String, String> params) {
+        return UserDatabase.findUserById(params.get("userId")) == null;
+    }
+
     @RequestMapping(path = "/user/login", method = HttpMethod.POST)
-    public String login(HttpRequest request, HttpResponse response) throws IOException {
+    public String login(HttpRequest request, HttpResponse response) {
         Map<String, String> params = Parser.parseParamsFromBody(request.getBody());
         String userId = params.get("userId");
         String password = params.get("password");
@@ -64,7 +60,7 @@ public class UserController {
         if (validateUser(user, password)) {
             // Set-Cookie
             String sessionId = UUID.randomUUID().toString();
-            response.setCookie(sessionId);
+            response.setCookie("sid=" + sessionId + "; Path=/");
 
             HttpSession session = new HttpSession(sessionId);
             SessionDatabase.addSession(sessionId, session);
@@ -76,7 +72,25 @@ public class UserController {
         return "redirect:/user/login_failed.html";
     }
 
+    @RequestMapping(path = "/user/logout", method = HttpMethod.POST)
+    public String logout(HttpRequest request, HttpResponse response) {
+        String cookie = request.getCookie();
+        StringBuilder cookieBuilder = new StringBuilder(cookie);
+        cookieBuilder.append("Expires=Thu, 01 Jan 1970 00:00:00 GMT" + "; Path=/");
+        response.setCookie(cookieBuilder.toString());
+        return "redirect:/index.html";
+    }
+
     private boolean validateUser(User user, String password) {
         return !(user == null || !user.getPassword().equals(password));
+    }
+
+    @RequestMapping(path = "/user/list", method = HttpMethod.GET)
+    public String userList(HttpRequest request, HttpResponse response) {
+        if(request.getSession() == null) {
+            return "redirect:/index.html";
+        }
+
+        return "redirect:/user/list.html";
     }
 }
