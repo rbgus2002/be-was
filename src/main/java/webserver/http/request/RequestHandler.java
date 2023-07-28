@@ -10,7 +10,6 @@ import webserver.http.response.ResponseHandler;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -23,8 +22,8 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = HttpRequest.from(in);
-            logger.debug("{}", request);
-            ResponseHandler.response(out, request);
+            logger.debug("Http Request: {}", request);
+            ResponseHandler.doResponse(out, request);
         } catch (IOException e) {
             logger.error(e.getMessage());
         } catch (InvocationTargetException | IllegalAccessException e) {
