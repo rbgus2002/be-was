@@ -3,7 +3,11 @@ package global.handler;
 import controller.Controller;
 import exception.BadRequestException;
 import global.constant.HttpMethod;
+import global.request.RequestBody;
+import global.request.RequestHeader;
 import global.request.RequestLine;
+import global.util.SessionUtil;
+import model.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +21,17 @@ public class GetHandlerTest {
 
     @BeforeEach
     public void setup() {
-        getHandler = new GetHandler();
+        RequestHeader header = new RequestHeader("ost: localhost:8080\n" +
+                "Connection: keep-alive\n" +
+                "Origin: http://localhost:8080\n" +
+                "Accept: */*\n" +
+                "Referer: http://localhost:8080/css/bootstrap.min.css\n" +
+                "Accept-Encoding: gzip, deflate, br\n" +
+                "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
+                "Cookie: sid=123456");
+        RequestBody body = new RequestBody("\nuserId=non_existent_user&password=invalid_password");
+        SessionUtil sessionUtil = new SessionUtil();
+        getHandler = new GetHandler(header, body, sessionUtil);
         controller = new Controller();
     }
 
@@ -34,7 +48,7 @@ public class GetHandlerTest {
     @Test
     public void testStartControllerWithMatchingMapping() throws Exception {
         //given
-        RequestLine requestLine = new RequestLine("GET / HTTP/1.1 ");
+        RequestLine requestLine = new RequestLine("GET /index.html HTTP/1.1 ");
 
         //when
         byte[] result = getHandler.startController(requestLine, controller);

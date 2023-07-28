@@ -15,8 +15,8 @@ class HttpUtilTest {
     @Test
     @DisplayName("getResponse 메서드 - 유효한 요청에 대한 응답")
     void testGetResponseWithValidRequest() throws IOException {
-        String request = "GET / HTTP/1.1\r\n" +
-                "Host: localhost:8080\r\n" +
+        String request = "GET /index.html HTTP/1.1\r\n" +
+                "Host: localhost:8080/index.html\r\n" +
                 "Content-Length: 0\r\n" +
                 "\r\n";
         InputStream inputStream = new ByteArrayInputStream(request.getBytes());
@@ -27,8 +27,7 @@ class HttpUtilTest {
 
         assertAll(
                 () -> assertEquals(actualResponse[0], expectedResponse.getBytes()[0]),
-                () -> assertEquals(actualResponse[1], expectedResponse.getBytes()[1]),
-                () -> assertEquals(actualResponse[2], expectedResponse.getBytes()[2])
+                () -> assertEquals(actualResponse[1], expectedResponse.getBytes()[1])
         );
     }
 

@@ -1,83 +1,71 @@
 package global.util;
 
-import exception.UnauthorizedException;
+import exception.BadRequestException;
 import global.constant.Headers;
-import model.User;
+import model.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("SessionUtil 테스트")
-class SessionUtilTest {
+@DisplayName("세션 테스트")
+public class SessionUtilTest {
 
-    private SessionUtil sessionUtil = new SessionUtil();
+    private SessionUtil sessionUtil;
 
     @BeforeEach
-    void setup() {
+    public void setUp() {
+        sessionUtil = new SessionUtil();
         sessionUtil.clearSession();
     }
 
     @Test
-    @DisplayName("setSession 및 getSession 메서드 테스트")
-    void testSetAndGetSession() {
-        // given
-        User user = new User("testUserId", "testPassword", "testName", "testEmail");
-
-        // when
-        String sessionId = "random_session_id";
-        sessionUtil.setSession(Headers.SESSION_ID.getKey() + "=" + sessionId, user);
-        User retrievedUser = sessionUtil.getSession(Headers.SESSION_ID.getKey() + "=" + sessionId);
-
-        // then
-        assertEquals(user, retrievedUser);
+    @DisplayName("세션을 생성한다.")
+    public void testCreateSession() {
+        String sessionId = sessionUtil.createSession();
+        assertNotNull(sessionId);
+        assertTrue(sessionUtil.getAllSessions().containsKey(sessionId));
     }
 
     @Test
-    @DisplayName("getSessionByUser 메서드 - 존재하는 사용자에 대한 세션 조회")
-    void testGetSessionByUserWithExistingUser() {
-        // given
-        User user = new User("testUserId", "testPassword", "testName", "testEmail");
-        String sessionId = "random_session_id";
-        sessionUtil.setSession(Headers.SESSION_ID.getKey() + "=" + sessionId, user);
-
-        // when
-        String retrievedSessionId = sessionUtil.getSessionByUser(user);
-
-        // then
-        assertEquals(sessionId, retrievedSessionId);
+    @DisplayName("세션을 조회한다.")
+    public void testGetSession() {
+        String sessionId = sessionUtil.createSession();
+        Session session = sessionUtil.getSession("Cookie: " + Headers.SESSION_ID.getKey() + "=" + sessionId + ";");
+        assertNotNull(session);
     }
 
     @Test
-    @DisplayName("getSessionByUser 메서드 - 존재하지 않는 사용자로 세션 조회")
-    void testGetSessionByUserWithNonExistentUser() {
-        // given
-        User user = new User("testUserId", "testPassword", "testName", "testEmail");
-
-        // when & then
-        assertThrows(UnauthorizedException.class, () -> sessionUtil.getSessionByUser(user));
+    @DisplayName("적절하지 않는 세션은 BasRequest 에러가 발생한다.")
+    public void testInvalidHeader() {
+        assertThrows(BadRequestException.class, () -> sessionUtil.getSession("Invalid Header"));
     }
 
     @Test
-    @DisplayName("getAllSessions 메서드 테스트")
-    void testGetAllSessions() {
-        // given
-        User user1 = new User("testUserId1", "testPassword1", "testName1", "testEmail1");
-        User user2 = new User("testUserId2", "testPassword2", "testName2", "testEmail2");
-        String sessionId1 = "session_id_1";
-        String sessionId2 = "session_id_2";
+    @DisplayName("세션을 여러 개 생성한다.")
+    public void testGetAllSessions() {
+        String sid1 = sessionUtil.createSession();
+        String sid2 = sessionUtil.createSession();
+        String sid3 = sessionUtil.createSession();
 
-        sessionUtil.setSession(Headers.SESSION_ID.getKey() + "=" + sessionId1, user1);
-        sessionUtil.setSession(Headers.SESSION_ID.getKey() + "=" + sessionId2, user2);
-
-        // when
-        var allSessions = sessionUtil.getAllSessions();
-
-        // then
-        assertEquals(2, allSessions.size());
-        assertEquals(user1, allSessions.get(sessionId1));
-        assertEquals(user2, allSessions.get(sessionId2));
+        assertEquals(3, sessionUtil.getAllSessions().size());
+        assertTrue(sessionUtil.getAllSessions().containsKey(sid1));
+        assertTrue(sessionUtil.getAllSessions().containsKey(sid2));
+        assertTrue(sessionUtil.getAllSessions().containsKey(sid3));
     }
 
+    @Test
+    @DisplayName("세션의 세부 설정에 성공한다.")
+    public void testSetSession() {
+        String sessionId = sessionUtil.createSession();
+        Session session = new Session();
+        session.setAttribute("userId", "user123");
+
+        sessionUtil.setSession(sessionId, session);
+
+        Session retrievedSession = sessionUtil.getSession("Cookie: " + Headers.SESSION_ID.getKey() + "=" + sessionId + ";");
+        assertNotNull(retrievedSession);
+        assertEquals("user123", retrievedSession.getAttribute("userId"));
+    }
 }

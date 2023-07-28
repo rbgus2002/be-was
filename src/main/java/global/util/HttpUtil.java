@@ -25,12 +25,14 @@ public class HttpUtil {
     private final RequestLine requestLine;
     private final RequestHeader headers;
     private final RequestBody requestBody;
+    private final SessionUtil sessionUtil;
 
     public HttpUtil(InputStream inputStream) throws IOException {
         this.reader = new BufferedReader(new InputStreamReader(inputStream));
         this.requestLine = new RequestLine(extractRequestLine());
         this.headers = new RequestHeader(extractHeaders());
         this.requestBody = new RequestBody(extractRequestBody());
+        this.sessionUtil = new SessionUtil();
     }
 
     private String extractRequestLine() throws IOException {
@@ -64,7 +66,7 @@ public class HttpUtil {
     }
 
     public byte[] getResponse() throws IOException {
-        final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.headers, this.requestBody);
+        final RequestMapper mappingHandler = new RequestMapper(this.requestLine, this.headers, this.requestBody, this.sessionUtil);
         try {
             return mappingHandler.response();
         } catch (BadRequestException e) {

@@ -1,6 +1,9 @@
 package global.request;
 
 import exception.BadRequestException;
+import exception.NotFoundExtensionException;
+import global.util.SessionUtil;
+import model.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +15,7 @@ class RequestMapperTest {
     @Test
     @DisplayName("response 메서드 - GET 요청에 대한 응답")
     void testResponseWithGetRequest() throws Exception {
-        RequestLine requestLine = new RequestLine("GET / HTTP/1.1");
+        RequestLine requestLine = new RequestLine("GET /index.html HTTP/1.1");
         RequestHeader requestHeader = new RequestHeader("ost: localhost:8080\n" +
                 "Connection: keep-alive\n" +
                 "Origin: http://localhost:8080\n" +
@@ -22,7 +25,8 @@ class RequestMapperTest {
                 "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
                 "Cookie: sid=123456");
         RequestBody requestBody = new RequestBody("");
-        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody);
+        SessionUtil sessionUtil = new SessionUtil();
+        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody, sessionUtil);
 
         String expectedResponse = "HTTP/1.1 200 OK";
         byte[] actualResponse = requestMapper.response();
@@ -38,7 +42,7 @@ class RequestMapperTest {
     @DisplayName("response 메서드 - 잘못된 요청 메서드일 경우 BadRequestException 발생")
     void testResponseWithInvalidRequestMethod() {
         RequestLine requestLine = new RequestLine("POST / HTTP/1.1");
-        RequestHeader requestHeader = new RequestHeader("ost: localhost:8080\n" +
+        RequestHeader requestHeader = new RequestHeader("ost: localhost:8080/index.html\n" +
                 "Connection: keep-alive\n" +
                 "Origin: http://localhost:8080\n" +
                 "Accept: */*\n" +
@@ -47,8 +51,9 @@ class RequestMapperTest {
                 "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\n" +
                 "Cookie: sid=123456");
         RequestBody requestBody = new RequestBody("");
-        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody);
+        SessionUtil sessionUtil = new SessionUtil();
+        RequestMapper requestMapper = new RequestMapper(requestLine, requestHeader, requestBody, sessionUtil);
 
-        assertThrows(BadRequestException.class, requestMapper::response);
+        assertThrows(NotFoundExtensionException.class, requestMapper::response);
     }
 }
