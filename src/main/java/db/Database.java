@@ -1,6 +1,7 @@
 package db;
 
 import com.google.common.collect.Maps;
+import model.Post;
 import model.Session;
 import model.User;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 public class Database {
     private static final Map<String, User> users = Maps.newConcurrentMap();
     private static final Map<String, Session> sessions = Maps.newConcurrentMap();
+    private static final Map<Integer, Post> posts = Maps.newConcurrentMap();
 
     // User
     public static void addUser(User user) {
@@ -40,7 +42,29 @@ public class Database {
     public static Collection<Session> findAllSession() {
         return sessions.values();
     }
+    public static void deleteSession(String userId) {
+        sessions.remove(userId);
+    }
     public static void deleteAllSession() {
         sessions.clear();
+    }
+
+    // Post
+    public static Post addPost(Post post) {
+        posts.put(post.getPostId(), post);
+        return post;
+    }
+    public static Post findPostByPostId(Integer postId) {
+        return posts.get(postId);
+    }
+    public static Collection<Post> findAllPost() {
+        return posts.values();
+    }
+    public static void updatePost(Integer postId, Post post) {
+        post.setPostId(postId);
+        posts.put(postId, post);
+    }
+    public static void deleteAllPost() {
+        posts.clear();
     }
 }

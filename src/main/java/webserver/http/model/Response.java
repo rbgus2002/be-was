@@ -1,8 +1,8 @@
-package webserver.model;
+package webserver.http.model;
 
 import java.util.Map;
 
-import static http.HttpUtil.*;
+import static webserver.http.HttpUtil.*;
 
 public class Response {
     private final STATUS status;

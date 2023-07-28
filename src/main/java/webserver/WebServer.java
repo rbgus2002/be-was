@@ -2,11 +2,16 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.PostService;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static service.PostService.*;
 
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
@@ -20,6 +25,9 @@ public class WebServer {
             port = Integer.parseInt(args[0]);
         }
 
+        // 테스트용 게시글 세팅
+        testSetup();
+
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {
             logger.info("Web Application Server started {} port.", port);
@@ -31,5 +39,24 @@ public class WebServer {
                 executor.submit(new RequestHandler(connection));
             }
         }
+    }
+
+    private static void testSetup() {
+        Map<String, String> parameterMap;
+        parameterMap = new HashMap<>();
+        parameterMap.put(POST_WRITER, "침착맨");
+        parameterMap.put(POST_TITLE, "추천 웹툰: 이말년 서유기");
+        parameterMap.put(POST_CONTENT, "");
+        PostService.addPost(parameterMap);
+        parameterMap = new HashMap<>();
+        parameterMap.put(POST_WRITER, "예언자");
+        parameterMap.put(POST_TITLE, "내일 MS가 블리자드를 합병할 것입니다!");
+        parameterMap.put(POST_CONTENT, "");
+        PostService.addPost(parameterMap);
+        parameterMap = new HashMap<>();
+        parameterMap.put(POST_WRITER, "호눅스");
+        parameterMap.put(POST_TITLE, "안녕하세요~ 크롱입니다.");
+        parameterMap.put(POST_CONTENT, "");
+        PostService.addPost(parameterMap);
     }
 }

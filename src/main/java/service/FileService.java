@@ -1,16 +1,19 @@
 package service;
 
-import webserver.model.Request;
+import exception.InternalServerErrorException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import static http.HttpUtil.*;
-import static service.SessionService.getUserIdBySid;
 
 public class FileService {
 
-    public static byte[] readStaticFile(String route) throws IOException {
-        return Files.readAllBytes(new File(route).toPath());
+    public static byte[] readStaticFile(String route) {
+        try {
+            return Files.readAllBytes(new File(route).toPath());
+        }
+        catch (IOException e) {
+            throw new InternalServerErrorException();
+        }
     }
 }

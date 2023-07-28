@@ -1,4 +1,4 @@
-package http;
+package webserver.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,7 +45,8 @@ public class HttpUtil {
         PERMANENT_REDIRECT(308, "Permanent Redirect"),
         BAD_REQUEST(400, "Bad Request"),
         UNAUTHORIZED(401, "Unauthorized"),
-        NOT_FOUND(404, "Not Found");
+        NOT_FOUND(404, "Not Found"),
+        INTERNAL_SERVER_ERROR(500, "Internal Server Error");
 
         private final int statusCode;
         private final String statusMessage;
@@ -62,6 +63,8 @@ public class HttpUtil {
         }
     }
 
+    public static final String STATIC_FILEPATH = "./src/main/resources/static";
+    public static final String TEMPLATE_FILEPATH = "./src/main/resources/templates";
     public static final String HEADER_HTTP = "HTTP/";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_CHARSET = ";charset=utf-8";
@@ -72,7 +75,6 @@ public class HttpUtil {
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
     public static final String HEADER_SESSION_ID = "sid=";
     public static final String HEADER_COOKIE_PATH = "; Path=/";
+    public static final String HEADER_COOKIE_RESET = "; max-age = 0";
     public static final String INDEX_URL = "/index.html";
-    public static final String LOGIN_FAILED_URL = "/user/login_failed.html";
-    public static final String USER_LIST_URL = "/user/list.html";
 }

@@ -1,12 +1,11 @@
 package webserver;
 
-import controller.FileController;
-import controller.ServiceController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.model.Request;
-import webserver.model.Request.Method;
-import webserver.model.Response;
+import router.Router;
+import webserver.http.model.Request;
+import webserver.http.model.Request.Method;
+import webserver.http.model.Response;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static http.HttpUtil.*;
-import static http.HttpParser.*;
+import static webserver.http.HttpUtil.*;
+import static webserver.http.HttpParser.*;
 import static service.SessionService.isSessionValid;
 
 public class RequestHandler implements Runnable {
@@ -88,20 +87,8 @@ public class RequestHandler implements Runnable {
         return new Request(method, version, targetUri, queryParameterMap, headerMap, sid, body);
     }
 
-    private Response generateResponse(Request request) throws Exception {
-        Response response;
-
-        response = FileController.genereateResponse(request);
-        if(response != null) {
-            return response;
-        }
-
-        response = ServiceController.generateResponse(request);
-        if(response != null) {
-            return response;
-        }
-
-        return new Response(STATUS.NOT_FOUND, null, null);
+    private Response generateResponse(Request request) {
+        return Router.generateResponse(request);
     }
 
     private void sendResponse(Response response, Socket connection) throws IOException {
