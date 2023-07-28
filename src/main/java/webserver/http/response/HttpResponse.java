@@ -7,11 +7,8 @@ import webserver.http.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +19,12 @@ public class HttpResponse {
     private static final String STATIC_PATH = "src/main/resources/static";
     private static final String NEW_LINE = "\r\n";
     private final HttpStatus status;
-    private final Map<String, String> header;
+    private Map<String, String> header;
     private final byte[] body;
 
     public static class HttpResponseBuilder {
         private final Map<String, String> header;
+        private Map<String, String> attribute;
         private byte[] body;
         private HttpStatus status = HttpStatus.OK;
         private String path = "/index.html";
@@ -64,6 +62,8 @@ public class HttpResponse {
         }
 
         public HttpResponseBuilder setAttribute(Map<String, String> attribute) throws IOException {
+            this.attribute = attribute;
+
             byte[] body = getBody(this.path, this.mime);
 
             if (this.mime != HttpMime.HTML) {
@@ -71,9 +71,17 @@ public class HttpResponse {
                 return this;
             }
 
+
             String bodyContent = new String(body);
-            for (String key : attribute.keySet()) {
-                bodyContent = bodyContent.replace(key, attribute.get(key));
+            for (String key : this.attribute.keySet()) {
+                if(bodyContent.contains(key)) {
+                    bodyContent = bodyContent.replace(key, this.attribute.get(key));
+                    if(bodyContent.contains(this.attribute.get(key))) {
+                        System.out.println("success");
+                    } else {
+                        System.out.println("fail");
+                    }
+                }
             }
             this.body = bodyContent.getBytes();
             this.header.put("Content-Length", String.valueOf(this.body.length));
@@ -105,6 +113,7 @@ public class HttpResponse {
 
             if (mime.getExtension().equals("html")) {
                 body = Files.readAllBytes(new File(HTML_PATH + path).toPath());
+
             } else {
                 body = Files.readAllBytes(new File(STATIC_PATH + path).toPath());
             }

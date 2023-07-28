@@ -3,8 +3,6 @@ package controller;
 import controller.annotaion.GetMapping;
 import controller.annotaion.PostMapping;
 import model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import service.UserService;
 import webserver.SessionManager;
 import webserver.http.HttpStatus;
@@ -18,18 +16,54 @@ import java.util.Map;
 
 public class Controller {
 
-    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
-
     private final UserService userService = new UserService();
     private final SessionManager sessionManager = new SessionManager();
 
-    @GetMapping(path = "/")
-    public HttpResponse home() throws IOException {
+    @GetMapping(path = "/index.html")
+    public HttpResponse home(HttpRequest request) throws IOException {
+        String sessionId = request.getCookie();
+
+        Map<String, String> attribute = new HashMap<>();
+        attribute.put("${userName}", "");
+        attribute.put("${login}", "");
+        attribute.put("${logout}", "style=\"display:none;\"");
+
+        if (sessionId != null) {
+            User user = (User) sessionManager.getObject(sessionId.split("=")[1]);
+            attribute.put("${userName}", "<li style=\"pointer-events: none;\" ><a>" + user.getName() + "님</a></li>");
+            attribute.put("${login}", "style=\"display:none;\"");
+            attribute.put("${logout}", "");
+        }
+
         return new HttpResponse
                 .HttpResponseBuilder()
-                .status(HttpStatus.FOUND)
-                .addHeaderParam("Location", "/index.html")
+                .status(HttpStatus.OK)
                 .path("/index.html")
+                .setAttribute(attribute)
+                .build();
+    }
+
+    @GetMapping(path = "/user/form.html")
+    public HttpResponse form(HttpRequest request) throws IOException {
+        String sessionId = request.getCookie();
+
+        Map<String, String> attribute = new HashMap<>();
+        attribute.put("${userName}", "");
+        attribute.put("${login}", "");
+        attribute.put("${logout}", "style=\"display:none;\"");
+
+        if (sessionId != null) {
+            User user = (User) sessionManager.getObject(sessionId.split("=")[1]);
+            attribute.put("${userName}", "<li style=\"pointer-events: none;\" ><a>" + user.getName() + "님</a></li>");
+            attribute.put("${login}", "style=\"display:none;\"");
+            attribute.put("${logout}", "");
+        }
+
+        return new HttpResponse
+                .HttpResponseBuilder()
+                .status(HttpStatus.OK)
+                .path("/user/form.html")
+                .setAttribute(attribute)
                 .build();
     }
 
@@ -43,6 +77,30 @@ public class Controller {
                 .status(HttpStatus.FOUND)
                 .path("/index.html")
                 .addHeaderParam("Location", "/index.html")
+                .build();
+    }
+
+    @GetMapping(path = "/user/login.html")
+    public HttpResponse signInForm(HttpRequest request) throws IOException {
+        String sessionId = request.getCookie();
+
+        Map<String, String> attribute = new HashMap<>();
+        attribute.put("${userName}", "");
+        attribute.put("${login}", "");
+        attribute.put("${logout}", "style=\"display:none;\"");
+
+        if (sessionId != null) {
+            User user = (User) sessionManager.getObject(sessionId.split("=")[1]);
+            attribute.put("${userName}", "<li style=\"pointer-events: none;\" ><a>" + user.getName() + "님</a></li>");
+            attribute.put("${login}", "style=\"display:none;\"");
+            attribute.put("${logout}", "");
+        }
+
+        return new HttpResponse
+                .HttpResponseBuilder()
+                .status(HttpStatus.OK)
+                .path("/user/login.html")
+                .setAttribute(attribute)
                 .build();
     }
 
@@ -63,12 +121,22 @@ public class Controller {
         }
 
         String sessionId = userService.signIn(userId);
+
+        Map<String, String> attribute = new HashMap<>();
+        attribute.put("${userName", "");
+
+        User user = (User) sessionManager.getObject(sessionId);
+
+        attribute.put("${userName}", "<li style=\"pointer-events: none;\" ><a>" + user.getName() + "님</a></li>");
+
+
         return new HttpResponse
                 .HttpResponseBuilder()
                 .status(HttpStatus.FOUND)
                 .path("/index.html")
                 .setCookie(sessionId, "/")
                 .addHeaderParam("Location", "/index.html")
+                .setAttribute(attribute)
                 .build();
     }
 
@@ -93,7 +161,7 @@ public class Controller {
             userListString.append("<tr>");
             userListString.append(String.format("<th scope=\"row\">%s</th>", userIdx + 1));
             userListString.append(String.format("<td>%s</td>", now.getUserId()));
-            userListString.append(String.format("<td>%s</td>", now.getName()));
+            userListString.append(String.format("<td>%s</td>", now.getName() + "님"));
             userListString.append(String.format("<td>%s</td>", now.getEmail()));
             userListString.append("<td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>");
             userListString.append("</tr>");
