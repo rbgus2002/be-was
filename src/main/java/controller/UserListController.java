@@ -1,18 +1,24 @@
 package controller;
 
 import annotation.RequestMapping;
-import db.Database;
+import db.UserRepository;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.HttpSession;
-import http.HttpSessionManager;
 import model.User;
 
-@RequestMapping(path = "/user/list")
+@RequestMapping(values = {"/user/list", "/user/list.html"})
 public class UserListController implements HttpController {
 
     @Override
     public String process(HttpRequest request, HttpResponse response) {
+        if ("GET".equals(request.getMethod())) {
+            return doGet(request, response);
+        }
+        response.setMethodNotAllowed();
+        return "/error/405.html";
+    }
+
+    private static String doGet(HttpRequest request, HttpResponse response) {
         if (!request.hasValidSession()) {
             return "redirect:/user/login";
         }
@@ -84,7 +90,7 @@ public class UserListController implements HttpController {
         htmlBuilder.append("        <div class=\"collapse navbar-collapse\" id=\"navbar-collapse2\">\n");
         htmlBuilder.append("            <ul class=\"nav navbar-nav navbar-right\">\n");
         htmlBuilder.append("                <li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
-        htmlBuilder.append("                <li><a href=\"#\" role=\"button\">로그아웃</a></li>\n");
+        htmlBuilder.append("                <li><a href=\"./logout\" role=\"button\">로그아웃</a></li>\n");
         htmlBuilder.append("                <li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         htmlBuilder.append("            </ul>\n");
         htmlBuilder.append("        </div>\n");
@@ -101,10 +107,10 @@ public class UserListController implements HttpController {
         htmlBuilder.append("                </tr>\n");
         htmlBuilder.append("              </thead>\n");
         htmlBuilder.append("              <tbody>\n");
-        int i = 0;
-        for (User user : Database.findAll()) {
+        int i = 1;
+        for (User user : UserRepository.findAll()) {
             htmlBuilder.append("                <tr>\n");
-            htmlBuilder.append("                    <th scope=\"row\">" + i + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
+            htmlBuilder.append("                    <th scope=\"row\">" + i++ + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
             htmlBuilder.append("                </tr>\n");
 
         }

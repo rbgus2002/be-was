@@ -1,12 +1,15 @@
 package http;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 public class HttpResponse {
     public static final String OK = "200";
     public static final String FOUND = "302";
+    public static final String BAD_REQUEST = "400";
     public static final String NOT_FOUND = "404";
+    public static final String METHOD_NOT_ALLOWED = "405";
 
     public static final String OK_MESSAGE = "OK";
     public static final String FOUND_MESSAGE = "Found";
@@ -57,6 +60,21 @@ public class HttpResponse {
         setHeader("Location", url);
     }
 
+    public void setNotFound() {
+        setMethod(NOT_FOUND);
+        setStatusMessage("Not Found");
+    }
+
+    public void setMethodNotAllowed() {
+        setMethod(METHOD_NOT_ALLOWED);
+        setStatusMessage("Method Not Allowed");
+    }
+
+    public void setBadRequest() {
+        setMethod(BAD_REQUEST);
+        setStatusMessage("Bad Request");
+    }
+
     public String getMethod() {
         return method;
     }
@@ -80,6 +98,6 @@ public class HttpResponse {
     public void setSession(HttpSession session) {
         String sid = session.getSid();
         HttpSessionManager.setSession(sid, session);
-        headers.put("Set-Cookie", "sid=" + sid + "; Path=/");
+        headers.put("Set-Cookie", "sid=" + sid + "; Path=/;");
     }
 }

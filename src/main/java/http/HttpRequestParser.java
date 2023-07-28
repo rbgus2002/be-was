@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +45,8 @@ public class HttpRequestParser {
             char[] buffer = new char[length];
             int bytesRead = br.read(buffer, 0, length);
             input = String.valueOf(buffer, 0, bytesRead);
-            parseParam(input, params);
+            String decoded = URLDecoder.decode(input, StandardCharsets.UTF_8);
+            parseParam(decoded, params);
         }
 
         return new HttpRequest(method, url, version, headers, params, cookies);

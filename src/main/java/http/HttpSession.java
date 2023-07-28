@@ -29,4 +29,7 @@ public class HttpSession {
         return attributes.get(key);
     }
 
+    public void invalidate() {
+        HttpSessionManager.invalidate(sid);
+    }
 }
