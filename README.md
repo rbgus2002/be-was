@@ -40,3 +40,11 @@ Java Web Application Server 2023
   - [X] 쿠키값을 보고 index.html에 사용자 이름 표시하기
   - [X] 로그인을 하고 있을 경우 로그인 버튼 없애기
   - [X] 사용자 목록 출력하기 
+### Step-7
+- [X] FrontController 알아서 어노테이션기반으로 인스턴스 생성하도록 변경
+  - [X] FrontController에서 View는 다른곳에서 관리하도록 변경
+- [X] 게시판 기능 구현
+  - [X] /index 요청에 대해서 게시글도 DB에서 가져오도록 변경
+  - [X] 글쓰기 기능 구현 및 DB에 저장
+- [X] 로그아웃기능으로 쿠키만료시키고 Session삭제 하는기능 제작
+- [X] 에러페이지 작성 구현
