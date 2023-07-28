@@ -29,8 +29,4 @@ public class MIME {
         return MIME;
     }
 
-    public static Set<Map.Entry<String, String>> getExtension() {
-        return MIME.entrySet();
-    }
-
 }

@@ -2,12 +2,14 @@ package handler;
 
 import controller.BasicController;
 import controller.Controller;
+import controller.BoardController;
 import controller.UserController;
 import http.HttpRequest;
 
 public class ControllerMappingHandler {
 
     UserController userController = UserController.getInstance();
+    BoardController boardController = BoardController.getInstance();
     BasicController basicController = BasicController.getInstance();
 
     private ControllerMappingHandler() {
@@ -25,6 +27,9 @@ public class ControllerMappingHandler {
         String uri = httpRequest.getUri();
         if (uri.startsWith("/user")) {
             return userController;
+        }
+        if (uri.startsWith("/qna")) {
+            return boardController;
         }
         return basicController;
     }

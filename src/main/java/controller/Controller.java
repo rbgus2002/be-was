@@ -6,17 +6,16 @@ import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
 import http.MIME;
-import view.Page;
+import view.View;
 
-import static exception.ExceptionList.INVALID_URI;
+import static db.SessionStorage.isSessionValid;
 import static http.Extension.HTML;
 import static http.FilePath.*;
 import static http.HttpMethod.POST;
-import static http.MIME.getExtension;
-import static utils.FileIOUtils.*;
+import static utils.FileUtils.*;
 
 public abstract class Controller {
-    private final Page page = new Page();
+    private final View view = new View();
 
     public HttpResponse.ResponseBuilder loadFileByRequest(HttpRequest httpRequest) {
         try {
@@ -25,30 +24,31 @@ public abstract class Controller {
             }
             String uri = httpRequest.getUri();
             if (uri.contains("?")) {
-                return doGet(uri);
+                return doGet(httpRequest);
+            }
+            if (uri.equals(FORM) && !isSessionValid(httpRequest.getSessionId())) {
+                uri = LOGIN;
+            }
+            if (uri.equals(INDEX) || uri.equals(PROFILE) || uri.equals(LIST) || uri.equals(SHOW)) {
+                return loadFileFromString(HttpStatus.OK, view.getDynamicView(httpRequest, uri), uri);
             }
             String[] uris = uri.split("\\.");
             String extension = uris[uris.length - 1];
-            if (getExtension().stream().noneMatch(entry -> entry.getKey().equals(extension))) {
-                throw new BadRequestException(INVALID_URI);
-            }
-            if (uri.endsWith(INDEX) || uri.endsWith(PROFILE) || uri.endsWith(LIST)) {
-                return loadFileFromString(HttpStatus.OK, page.getDynamicPage(httpRequest, uri), uri);
-            }
             return loadFromPath(HttpStatus.OK, uri)
                     .setContentType(MIME.getMIME().get(extension));
         } catch (CustomException e) {
             return loadFromPath(e.getHttpStatus(), e.getFilePath())
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (BadRequestException e) {
-            return loadFileFromString(HttpStatus.NOT_FOUND, page.getErrorPage(e.getMessage()), ERROR)
+            return loadFromPath(HttpStatus.NOT_FOUND, NOT_FOUND_ERROR)
                     .setContentType(MIME.getMIME().get(HTML));
         } catch (Exception e) {
-            return null;
+            return loadFileFromString(HttpStatus.INTERNAL_SERVER_ERROR, view.getErrorView(e.getMessage()), ERROR)
+                    .setContentType(MIME.getMIME().get(HTML));
         }
     }
 
-    public abstract HttpResponse.ResponseBuilder doGet(String uri);
+    public abstract HttpResponse.ResponseBuilder doGet(HttpRequest httpRequest);
 
     public abstract HttpResponse.ResponseBuilder doPost(HttpRequest httpRequest);
 }

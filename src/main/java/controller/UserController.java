@@ -4,13 +4,11 @@ import exception.BadRequestException;
 import http.*;
 import service.UserService;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static exception.ExceptionList.INVALID_URI;
 import static http.FilePath.INDEX;
-import static utils.FileIOUtils.loadFromPath;
-import static utils.StringUtils.decodeBody;
+import static utils.FileUtils.loadFromPath;
 
 public class UserController extends Controller {
     private final UserService userService = new UserService();
@@ -26,38 +24,28 @@ public class UserController extends Controller {
         return UserController.Holder.INSTANCE;
     }
 
-    public HttpResponse.ResponseBuilder doGet(String uri) {
-        String[] apis = uri.split("\\?");
-        if (apis[0].equals("/user/create") && apis.length == 2) {
-            return createUser(parseParams(apis[1]));
+    @Override
+    public HttpResponse.ResponseBuilder doGet(HttpRequest httpRequest) {
+        String uri = httpRequest.getUri();
+        if (uri.equals("/user/create") && httpRequest.getQueryString() != null) {
+            return createUser(httpRequest.getQueryString());
         }
         throw new BadRequestException(INVALID_URI);
     }
 
+    @Override
     public HttpResponse.ResponseBuilder doPost(HttpRequest httpRequest) {
         String uri = httpRequest.getUri();
         if (uri.equals("/user/create")) {
-            return createUser(parseParams(httpRequest.getBody()));
+            return createUser(httpRequest.getBody());
         }
         if (uri.equals("/user/login")) {
-            return loginUser(parseParams(httpRequest.getBody()));
+            return loginUser(httpRequest.getBody());
         }
         if (uri.equals("/user/logout")) {
             return logoutUser(httpRequest.getSessionId());
         }
         throw new BadRequestException(INVALID_URI);
-    }
-
-    private Map<String, String> parseParams(String parameter) {
-        String[] params = parameter.split("&");
-        Map<String, String> information = new HashMap<>();
-        for (String param : params) {
-            String[] info = param.split("=");
-            if (info.length != 2)
-                throw new BadRequestException(INVALID_URI);
-            information.put(info[0], decodeBody(info[1]));
-        }
-        return information;
     }
 
     private HttpResponse.ResponseBuilder createUser(Map<String, String> parameters) {

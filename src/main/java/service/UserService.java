@@ -47,7 +47,7 @@ public class UserService {
     }
 
     private void checkSessionIdExist(String sessionId) {
-        if (findAllSessionIds().stream().noneMatch(id -> id.equals(sessionId)))
-            throw new SessionIdException(NOT_EXIST_SESSION_ID);
+        if (!isSessionValid(sessionId))
+            throw new SessionIdException(INVALID_SESSION_ID);
     }
 }

@@ -20,7 +20,7 @@ public class BasicController extends Controller {
     }
 
     @Override
-    public HttpResponse.ResponseBuilder doGet(String uri) {
+    public HttpResponse.ResponseBuilder doGet(HttpRequest httpRequest) {
         throw new BadRequestException(INVALID_URI);
     }
 
