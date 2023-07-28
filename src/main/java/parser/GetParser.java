@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GetParser implements Parser {
-    
+
     private final Map<String, String> query = new HashMap<>();
     private final Map<String, String> headers = new HashMap<>();
 
@@ -55,6 +55,7 @@ public class GetParser implements Parser {
             String key = token.substring(0, token.indexOf("="));
             String value = token.substring(token.indexOf("=") + 1);
             value = URLDecoder.decode(value, StandardCharsets.UTF_8);
+            logger.debug("key = {}, value = {}", key, value);
             query.put(key, value);
         }
     }

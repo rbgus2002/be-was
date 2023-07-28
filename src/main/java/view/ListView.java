@@ -1,19 +1,19 @@
 package view;
 
+import annotation.View;
 import db.Database;
 import model.User;
-import util.PathList;
+import webserver.HTTPServletRequest;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
 
-import static util.PathList.*;
-
-public class ListView {
-    public static String changeToDynamic() throws IOException {
+import static util.PathList.TEMPLATE_PATH;
+@View(path = "/user/list.html")
+public class ListView implements ViewBase {
+    public String changeToDynamic(HTTPServletRequest request) throws IOException {
         Collection<User> all = Database.findAll();
         StringBuilder sb = new StringBuilder();
         StringBuilder addString = new StringBuilder();

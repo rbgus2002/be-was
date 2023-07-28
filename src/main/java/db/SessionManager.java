@@ -25,21 +25,28 @@ public class SessionManager {
 
     public static User getSession(HTTPServletRequest request) {
         logger.debug("Cookie = {}", request.getHeader("Cookie"));
-        String cookie = null;
+        String cookie;
         cookie = request.getHeader("Cookie");
         if (cookie == null) {
-            throw new IllegalArgumentException("Cookie 정보가 없습니다.");
+            return null;
         }
         String[] tokens = cookie.split("SID=");
-
         for (String token : tokens) {
-            String id = token.substring(0, token.indexOf(';') == token.length() ? token.length() - 1 : token.length());
+            if (token.isEmpty()) {
+                continue;
+            }
+            String id = token.trim();
+            logger.debug("id는 = {}", id);
             if (store.containsKey(id)) {
                 return store.get(id);
             }
         }
 
         return null;
+    }
+
+    public static void invalidateSession(String sid) {
+        store.remove(sid);
     }
 
 }
