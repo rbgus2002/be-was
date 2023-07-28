@@ -8,7 +8,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import webserver.http.controller.FrontController;
+import webserver.controller.FrontController;
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.utils.HttpMessageParser;

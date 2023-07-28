@@ -1,8 +1,10 @@
-package webserver.http.controller;
+package webserver.controller;
 
 import webserver.http.message.HttpRequest;
 import webserver.http.message.HttpResponse;
 import webserver.http.message.HttpStatus;
+import webserver.resolver.ControllerResolver;
+import webserver.resolver.StaticFileResolver;
 
 public class FrontController {
 

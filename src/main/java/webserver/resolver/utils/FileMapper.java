@@ -1,4 +1,4 @@
-package webserver.http.utils;
+package webserver.resolver.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
