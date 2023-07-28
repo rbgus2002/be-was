@@ -27,7 +27,7 @@ public class HttpRequest {
     public static HttpRequest from(InputStream inputStream) {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         try {
-            RequestLine requestLine = RequestLine.from(bufferedReader.readLine());
+            RequestLine requestLine = RequestLine.from(decode(bufferedReader.readLine()));
             Headers headers = Headers.from(bufferedReader);
             RequestBody body = RequestBody.from(bufferedReader, headers.getContentLength());
             return new HttpRequest(requestLine, headers, body);
@@ -64,5 +64,9 @@ public class HttpRequest {
 
     public Map<String, String> getParams() {
         return this.body.getParams();
+    }
+
+    public String getSid() {
+        return headers.getSid();
     }
 }

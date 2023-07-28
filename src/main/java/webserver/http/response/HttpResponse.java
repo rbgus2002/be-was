@@ -35,21 +35,18 @@ public class HttpResponse {
         return new HttpResponse(version, HttpStatusCode.FOUND, ResponseBody.emptyBody(), Headers.redirectHeaders(path));
     }
 
-    public void response(OutputStream out) throws IOException {
+    public void write(OutputStream out) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
-        dos.writeBytes(appendNewLine(version + " " + statusCode.toString()));
-        headers.write(dos);
-        dos.writeBytes(CRLF);
-        body.write(dos);
+        dos.writeBytes(toStringExceptBody());
+        dos.write(body.getContent(), 0, body.getLength());
+        dos.flush();
     }
 
-    @Override
-    public String toString() {
+    public String toStringExceptBody() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(appendNewLine(version + " " + statusCode.toString()));
         stringBuilder.append(headers.toString());
         stringBuilder.append(CRLF);
-        stringBuilder.append(body.toString());
         return stringBuilder.toString();
     }
 
