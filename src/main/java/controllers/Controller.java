@@ -19,7 +19,7 @@ import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import model.User;
 import webserver.http.statusline.StatusCode;
-import webserver.session.Session;
+import webserver.session.SessionDatabase;
 import webserver.session.SessionConst;
 import webserver.view.ModelView;
 
@@ -106,7 +106,7 @@ public class Controller {
 		}
 		// 회원가입 성공
 		httpResponse.addCookie(SessionConst.sessionId,
-			Session.getInstance().createSession(httpRequest.getParameter().getParameter("userId")));
+			SessionDatabase.getInstance().createSession(httpRequest.getParameter().getParameter("userId")));
 
 		return modelView.setPath("redirect:/");
 	}
@@ -118,23 +118,11 @@ public class Controller {
 		String password = httpRequest.getParameter().getParameter("password");
 		if (LoginService.login(userId, password)) {
 			// 로그인 성공
-			httpResponse.addCookie(SessionConst.sessionId, Session.getInstance().createSession(userId));
+			httpResponse.addCookie(SessionConst.sessionId, SessionDatabase.getInstance().createSession(userId));
 			return modelView.setPath("redirect:/");
 		}
 		// 로그인 실패
 		return modelView.setPath("user/login_failed.html");
-	}
-
-	@GetMapping(path = "/user/login.html")
-	public ModelView loginPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		reflectLogin(httpRequest, modelView);
-		return modelView.setPath("user/login.html");
-	}
-
-	@GetMapping(path = "/user/logout")
-	public ModelView logout(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
-		logoutSession(httpRequest);
-		return modelView.setPath("redirect:/");
 	}
 
 	@GetMapping(path = "/user/list.html")
@@ -154,6 +142,18 @@ public class Controller {
 			return modelView.setPath("user/list.html");
 		}
 		return modelView.setPath("redirect:/user/login.html");
+	}
+
+	@GetMapping(path = "/user/login.html")
+	public ModelView loginPage(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		reflectLogin(httpRequest, modelView);
+		return modelView.setPath("user/login.html");
+	}
+
+	@GetMapping(path = "/user/logout")
+	public ModelView logout(final HttpRequest httpRequest, HttpResponse httpResponse, ModelView modelView) {
+		logoutSession(httpRequest);
+		return modelView.setPath("redirect:/");
 	}
 
 	@GetMapping(path = "/user/profile.html")
@@ -180,21 +180,18 @@ public class Controller {
 	}
 
 	private ModelView reflectLogin(final HttpRequest httpRequest, ModelView modelView) {
-		try {
-			if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
-				String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
-				// 인증 성공
-				modelView.addAttribute("name", UserDatabase.findUserById(userId).getName());
-				modelView.addAttribute("login", "true");
-			}
-		} catch (Exception e) {
+		if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
+			String userId = LoginService.getUserIdFrom(httpRequest.getCookieValue(SessionConst.sessionId));
+			// 인증 성공
+			modelView.addAttribute("name", UserDatabase.findUserById(userId).getName());
+			modelView.addAttribute("login", "true");
 		}
 		return modelView;
 	}
 
 	private void logoutSession(final HttpRequest httpRequest) {
 		if (LoginService.checkSession(httpRequest.getCookieValue(SessionConst.sessionId))) {
-			Session.getInstance().removeSession(httpRequest.getCookieValue(SessionConst.sessionId));
+			SessionDatabase.getInstance().removeSession(httpRequest.getCookieValue(SessionConst.sessionId));
 		}
 	}
 
