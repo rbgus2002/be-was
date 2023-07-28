@@ -4,6 +4,7 @@ import static webserver.http.statusline.ResponseLine.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.NoSuchElementException;
 
 import webserver.http.header.Header;
@@ -82,7 +83,7 @@ public class HttpRequest {
 		for (String line : path.split("\\&")) {
 			if (line.contains("=") && !line.endsWith("=")) {
 				String[] values = line.split("=");
-				httpParameter.put(values[KEY], values[VALUE]);
+				httpParameter.put(values[KEY], URLDecoder.decode(values[VALUE]));
 			}
 		}
 	}
