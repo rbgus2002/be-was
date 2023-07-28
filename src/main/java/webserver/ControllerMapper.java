@@ -2,7 +2,8 @@ package webserver;
 
 import annotation.RequestMapping;
 import common.enums.RequestMethod;
-import exception.NoSuchControllerMethodException;
+import exception.NotFoundException;
+import exception.MethodNotAllowedException;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -12,14 +13,11 @@ import static webserver.ServerConfig.CONTROLLER_CLASS;
 
 public class ControllerMapper {
     private static final ControllerMapper INSTANCE = new ControllerMapper();
-    private final Map<RequestMethod, Map<String, Method>> map;
+    private final Map<String, Map<RequestMethod, Method>> map;
+
 
     private ControllerMapper() {
         map = new HashMap<>();
-        map.put(RequestMethod.GET, new HashMap<>());
-        map.put(RequestMethod.POST, new HashMap<>());
-        map.put(RequestMethod.PUT, new HashMap<>());
-        map.put(RequestMethod.DELETE, new HashMap<>());
     }
 
     public static ControllerMapper getInstance() {
@@ -27,24 +25,45 @@ public class ControllerMapper {
     }
 
     public void initialize() {
-        Method[] methods = CONTROLLER_CLASS.getMethods();
+        registerControllerMethod(CONTROLLER_CLASS);
+    }
+
+    public Method getControllerMethod(String path, RequestMethod requestMethod) {
+        if (notAllowMethod(path, requestMethod)) {
+            throw new MethodNotAllowedException("잘못된 메소드 요청");
+        }
+
+        if (notFoundPath(path)) {
+            throw new NotFoundException("처리할 컨트롤러 없음");
+        }
+
+        return map.get(path).get(requestMethod);
+    }
+
+    private boolean notAllowMethod(String path, RequestMethod requestMethod) {
+        return map.containsKey(path) && !map.get(path).containsKey(requestMethod);
+    }
+
+    private boolean notFoundPath(String path) {
+        return !map.containsKey(path);
+    }
+
+    private void registerControllerMethod(Class<?> clazz) {
+        Method[] methods = clazz.getMethods();
 
         for (Method method : methods) {
             if (method.isAnnotationPresent(RequestMapping.class)) {
                 RequestMapping annotation = method.getAnnotation(RequestMapping.class);
 
-                RequestMethod requestMethod = annotation.method();
                 String path = annotation.path();
+                RequestMethod requestMethod = annotation.method();
 
-                map.get(requestMethod).put(path, method);
+                if (!map.containsKey(path)) {
+                    map.put(path, new HashMap<>());
+                }
+                map.get(path).put(requestMethod, method);
             }
         }
     }
 
-    public Method getControllerMethod(RequestMethod requestMethod, String path) {
-        if (map.containsKey(requestMethod) && map.get(requestMethod).containsKey(path)) {
-            return map.get(requestMethod).get(path);
-        }
-        throw new NoSuchControllerMethodException("처리할 컨트롤러 없음");
-    }
 }

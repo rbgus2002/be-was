@@ -1,12 +1,11 @@
-package domain.user;
+package repository;
 
 import com.google.common.collect.Maps;
-
-import domain.user.User;
+import domain.User;
 
 import java.util.*;
 
-public class Database {
+public class UserRepository {
     private static Map<String, User> users = Maps.newHashMap();
 
     public static void addUser(User user) {

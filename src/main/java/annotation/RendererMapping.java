@@ -1,6 +1,6 @@
 package annotation;
 
-import template.DynamicTemplate;
+import view.renderer.HtmlRenderer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TemplateMapping {
-    Class<? extends DynamicTemplate> name();
+public @interface RendererMapping {
+    Class<? extends HtmlRenderer> name();
 }

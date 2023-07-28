@@ -4,7 +4,7 @@ import common.http.Cookie;
 import common.http.HttpRequest;
 import common.http.HttpResponse;
 import common.wrapper.Cookies;
-import domain.user.User;
+import domain.User;
 
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +21,13 @@ public class UserSessionManager {
 
         Cookie cookie = Cookie.of(SESSION_COOKIE_KEY, sessionId, pathRange);
         response.addCookie(cookie);
+    }
+
+    public static void destroySession(HttpRequest request) {
+        Cookies cookies = request.getCookies();
+        String key = cookies.getValue(SESSION_COOKIE_KEY);
+
+        sessionStorage.remove(key);
     }
 
     public static User getSession(HttpRequest request) {

@@ -26,40 +26,26 @@ public class Uri {
     }
 
     public ContentType getContentType() {
-        if (requestPath.endsWith(".html")) {
-            return HTML;
+        if (!requestPath.contains(".")) {
+            return NONE;
         }
-        if (requestPath.endsWith(".css")) {
-            return CSS;
+
+        String extension = extractExtensionFromRequestPath();
+
+        try {
+            return ContentType.valueOf(extension.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return NONE;
         }
-        if (requestPath.endsWith(".js")) {
-            return JS;
+    }
+
+    private String extractExtensionFromRequestPath() {
+        for (int i = requestPath.length() - 1; i >= 0; i--) {
+            if (requestPath.charAt(i) == '.') {
+                return requestPath.substring(i + 1);
+            }
         }
-        if (requestPath.endsWith(".ico")) {
-            return ICO;
-        }
-        if (requestPath.endsWith(".png")) {
-            return PNG;
-        }
-        if (requestPath.endsWith(".jpg")) {
-            return JPG;
-        }
-        if (requestPath.endsWith(".eot")) {
-            return EOT;
-        }
-        if (requestPath.endsWith(".svg")) {
-            return SVG;
-        }
-        if (requestPath.endsWith(".ttf")) {
-            return TTF;
-        }
-        if (requestPath.endsWith(".woff")) {
-            return WOFF;
-        }
-        if (requestPath.endsWith(".woff2")) {
-            return WOFF2;
-        }
-        return NONE;
+        return "";
     }
 
 }

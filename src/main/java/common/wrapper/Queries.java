@@ -9,6 +9,11 @@ public class Queries extends KeyValuePair {
         super(queryString, "&", "=");
     }
 
+    public Queries append(Queries other) {
+        this.map.putAll(other.map);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
