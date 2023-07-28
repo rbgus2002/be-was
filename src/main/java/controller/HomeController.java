@@ -11,6 +11,12 @@ import static http.request.RequestMethod.GET;
 
 @Controller
 public class HomeController {
+
+    @RequestMapping(method = GET, value = "/")
+    public ModelAndView showHomeRootPath(HttpRequest httpRequest) {
+        return showHome(httpRequest);
+    }
+
     @RequestMapping(method = GET, value = "/index.html")
     public ModelAndView showHome(HttpRequest httpRequest) {
         if (httpRequest.getSessionId() == null) {
