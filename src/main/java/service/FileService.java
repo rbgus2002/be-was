@@ -1,7 +1,7 @@
 package service;
 
 import model.User;
-import service.html.*;
+import view.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,12 +23,12 @@ public class FileService {
         PATH_LIST.add("src/main/resources/templates");
         PATH_LIST.add("src/main/resources/static");
 
-        AUTH_PATH_MAP.put("/index.html", IndexHtmlService.class);
-        AUTH_PATH_MAP.put("/user/form.html", UserFormHtmlService.class);
-        AUTH_PATH_MAP.put("/user/list.html", UserListHtmlService.class);
-        AUTH_PATH_MAP.put("/user/login.html", UserLoginHtmlService.class);
-        AUTH_PATH_MAP.put("/user/login_failed.html", UserLoginFailedHtmlService.class);
-        AUTH_PATH_MAP.put("/user/profile.html", UserProfileHtmlService.class);
+        AUTH_PATH_MAP.put("/index.html", IndexHtmlRenderer.class);
+        AUTH_PATH_MAP.put("/user/form.html", UserFormHtmlRenderer.class);
+        AUTH_PATH_MAP.put("/user/list.html", UserListHtmlRenderer.class);
+        AUTH_PATH_MAP.put("/user/login.html", UserLoginHtmlRenderer.class);
+        AUTH_PATH_MAP.put("/user/login_failed.html", UserLoginFailedHtmlRenderer.class);
+        AUTH_PATH_MAP.put("/user/profile.html", UserProfileHtmlRenderer.class);
     }
 
     public static byte[] getTargetResource(String path, User sessionUser) throws IOException, InstantiationException, IllegalAccessException {
@@ -36,8 +36,8 @@ public class FileService {
             File file = new File(rootPath + path);
             if (file.exists() && file.isFile()) {
                 if (AUTH_PATH_MAP.containsKey(path)) {
-                    HtmlService htmlService = (HtmlService) AUTH_PATH_MAP.get(path).newInstance();
-                    return htmlService.render(sessionUser);
+                    HtmlRenderer htmlRenderer = (HtmlRenderer) AUTH_PATH_MAP.get(path).newInstance();
+                    return htmlRenderer.render(sessionUser);
                 }
                 return Files.readAllBytes(file.toPath());
             }

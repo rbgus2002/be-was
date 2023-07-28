@@ -1,21 +1,21 @@
-package service.html;
+package view;
 
 import model.User;
 
-public abstract class HtmlService {
+public abstract class HtmlRenderer {
     private final StringBuilder htmlBuilder;
 
-    public HtmlService() {
+    public HtmlRenderer() {
         this.htmlBuilder = new StringBuilder();
     }
 
     public byte[] render(User sessionUser) {
         renderNavigationBar(sessionUser);
-        renderContent(sessionUser, htmlBuilder);
+        renderMainContent(sessionUser, htmlBuilder);
         return htmlBuilder.toString().getBytes();
     }
 
-    public abstract void renderContent(User sessionUser, StringBuilder htmlBuilder);
+    public abstract void renderMainContent(User sessionUser, StringBuilder htmlBuilder);
 
     private void renderNavigationBar(User user) {
         htmlBuilder.append("<!DOCTYPE html>\n");
@@ -91,7 +91,7 @@ public abstract class HtmlService {
                     .append(user.getName())
                     .append("</a></li>\n");
             htmlBuilder.append("<li class=\"active\"><a href=\"../index.html\">Posts</a></li>\n");
-            htmlBuilder.append("<li><a href=\"user/logout\" role=\"button\">로그아웃</a></li>\n");
+            htmlBuilder.append("<li><a href=\"/user/logout\" role=\"button\">로그아웃</a></li>\n");
             htmlBuilder.append("<li><a href=\"#\" role=\"button\">개인정보수정</a></li>\n");
         }
         htmlBuilder.append("</ul>\n");

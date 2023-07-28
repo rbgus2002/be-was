@@ -1,13 +1,13 @@
-package service.html;
+package view;
 
 import db.Database;
 import model.User;
 
 import java.util.Collection;
 
-public class UserListHtmlService extends HtmlService {
+public class UserListHtmlRenderer extends HtmlRenderer {
     @Override
-    public void renderContent(User sessionUser, StringBuilder htmlBuilder) {
+    public void renderMainContent(User sessionUser, StringBuilder htmlBuilder) {
         Collection<User> users = Database.findAll();
 
         htmlBuilder.append("<div class=\"container\" id=\"main\">\n");

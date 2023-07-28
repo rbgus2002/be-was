@@ -1,10 +1,10 @@
-package service.html;
+package view;
 
 import model.User;
 
-public class UserFormHtmlService extends HtmlService {
+public class UserFormHtmlRenderer extends HtmlRenderer {
     @Override
-    public void renderContent(User sessionUser, StringBuilder htmlBuilder) {
+    public void renderMainContent(User sessionUser, StringBuilder htmlBuilder) {
         htmlBuilder.append("<div class=\"container\" id=\"main\">");
         htmlBuilder.append("<div class=\"col-md-6 col-md-offset-3\">");
         htmlBuilder.append("<div class=\"panel panel-default content-main\">");

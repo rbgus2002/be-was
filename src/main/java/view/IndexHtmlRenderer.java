@@ -1,10 +1,10 @@
-package service.html;
+package view;
 
 import model.User;
 
-public class IndexHtmlService extends HtmlService {
+public class IndexHtmlRenderer extends HtmlRenderer {
     @Override
-    public void renderContent(User sessionUser, StringBuilder htmlBuilder) {
+    public void renderMainContent(User sessionUser, StringBuilder htmlBuilder) {
         htmlBuilder.append("<div class=\"container\" id=\"main\">\n");
         htmlBuilder.append("<div class=\"col-md-12 col-sm-12 col-lg-10 col-lg-offset-1\">\n");
         htmlBuilder.append("<div class=\"panel panel-default qna-list\">\n");
