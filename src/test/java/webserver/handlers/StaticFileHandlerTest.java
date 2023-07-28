@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.http.message.*;
+import webserver.model.Model;
 import webserver.session.Session;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +48,7 @@ class StaticFileHandlerTest {
     private void verifyContentTypeWithAccept(String path, String contentType) {
         HttpRequest staticRequest = getStaticRequest(path, contentType);
         Session session = new Session("1");
+        Model model = new Model();
 
         HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session);
         HttpHeaders headers = httpResponse.getHttpHeaders();
@@ -57,6 +59,7 @@ class StaticFileHandlerTest {
     private void verifyContentTypeWithOutAccept(String path, String contentType) {
         HttpRequest staticRequest = getStaticRequestWithOutAccept(path);
         Session session = new Session("1");
+        Model model = new Model();
 
         HttpResponse httpResponse = staticFileHandler.handle(staticRequest, session);
         HttpHeaders headers = httpResponse.getHttpHeaders();

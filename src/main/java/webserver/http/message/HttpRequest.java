@@ -2,6 +2,8 @@ package webserver.http.message;
 
 import java.util.Arrays;
 
+import static webserver.http.message.HttpHeaders.COOKIE;
+
 public class HttpRequest {
     private final HttpMethod httpMethod;
     private final URL url;
@@ -31,6 +33,14 @@ public class HttpRequest {
 
     public HttpHeaders getHttpHeaders() {
         return httpHeaders;
+    }
+
+    public Cookie getCookie() {
+        if (httpHeaders.contains(COOKIE)) {
+            String cookieString = httpHeaders.getSingleValue(COOKIE);
+            return Cookie.from(cookieString);
+        }
+        return Cookie.empty();
     }
 
     public char[] getBody() {
