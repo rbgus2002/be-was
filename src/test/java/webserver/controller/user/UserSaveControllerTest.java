@@ -1,7 +1,8 @@
 package webserver.controller.user;
 
+import application.controller.user.UserSaveController;
 import db.UserDatabase;
-import model.User;
+import application.model.User;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +44,7 @@ class UserSaveControllerTest {
 
         //when
         userSaveController.process(httpRequest, httpResponse);
-        User user = UserDatabase.findUserById("javajigi");
+        User user = UserDatabase.findById("javajigi");
 
         //then
         SoftAssertions softAssertions = new SoftAssertions();
@@ -51,7 +52,7 @@ class UserSaveControllerTest {
         softAssertions.assertThat(user).isNotEqualTo(null);
         softAssertions.assertThat(user.getUserId()).isEqualTo("javajigi");
         softAssertions.assertThat(user.getPassword()).isEqualTo("password");
-        softAssertions.assertThat(user.getName()).isEqualTo("박재성");
+        softAssertions.assertThat(user.getUsername()).isEqualTo("박재성");
         softAssertions.assertThat(user.getEmail()).isEqualTo("javajigi@slipp.net");
         softAssertions.assertAll();
     }

@@ -15,7 +15,7 @@ public class HttpHeaders {
         if (headers.containsKey(name)) {
             return new String(headers.get(name));
         }
-        return null;
+        return "";
     }
 
     public void put(String name, String value) {

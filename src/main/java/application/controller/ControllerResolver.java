@@ -1,13 +1,14 @@
-package webserver.controller;
+package application.controller;
 
-import webserver.controller.article.ArticleSaveController;
-import webserver.controller.article.ArticleViewController;
-import webserver.controller.article.ArticleWriteController;
-import webserver.controller.file.FileController;
-import webserver.controller.index.IndexPageController;
-import webserver.controller.user.UserListController;
-import webserver.controller.user.UserLoginController;
-import webserver.controller.user.UserSaveController;
+import application.controller.article.ArticleSaveController;
+import application.controller.article.ArticleViewController;
+import application.controller.article.ArticleWriteController;
+import application.controller.file.FileController;
+import application.controller.user.UserListController;
+import application.controller.user.UserLoginController;
+import application.controller.user.UserLogoutController;
+import application.controller.user.UserSaveController;
+import application.controller.index.IndexPageController;
 import webserver.utils.HttpMethod;
 
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class ControllerResolver {
         controllers.put(new ControllerSignature("/user/create", HttpMethod.POST), new UserSaveController());
         controllers.put(new ControllerSignature("/user/login", HttpMethod.POST), new UserLoginController());
         controllers.put(new ControllerSignature("/user/list", HttpMethod.GET), new UserListController());
+        controllers.put(new ControllerSignature("/user/logout", HttpMethod.GET), new UserLogoutController());
         controllers.put(new ControllerSignature("/article/write", HttpMethod.GET), new ArticleWriteController());
         controllers.put(new ControllerSignature("/article/save", HttpMethod.POST), new ArticleSaveController());
         controllers.put(new ControllerSignature("/article/view", HttpMethod.GET), new ArticleViewController());

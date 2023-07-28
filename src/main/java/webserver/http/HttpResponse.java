@@ -1,6 +1,7 @@
 package webserver.http;
 
 import webserver.utils.HttpConstants;
+import webserver.utils.HttpField;
 
 public class HttpResponse {
     private HttpStatus status;
@@ -41,6 +42,18 @@ public class HttpResponse {
         cookie.add(directive);
     }
 
+    public void setCookie(String name, String value) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String directive = stringBuilder
+                .append(name)
+                .append("=")
+                .append(value)
+                .toString();
+
+        cookie.add(directive);
+    }
+
     public void setBody(byte[] body) {
         this.body = body;
     }
@@ -71,7 +84,7 @@ public class HttpResponse {
     }
 
     private void addCookieField(StringBuilder stringBuilder) {
-        if(!cookie.isEmpty()) {
+        if (!cookie.isEmpty()) {
             stringBuilder.append("Set-Cookie: ");
             stringBuilder.append(cookie.getMessage());
             stringBuilder.append(HttpConstants.CRLF);
@@ -84,5 +97,10 @@ public class HttpResponse {
 
     public byte[] getBodyBytes() {
         return body;
+    }
+
+    public void sendRedirect(String location) {
+        status = HttpStatus.FOUND;
+        headers.put(HttpField.LOCATION, location);
     }
 }

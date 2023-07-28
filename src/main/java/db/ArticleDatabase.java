@@ -1,26 +1,25 @@
 package db;
 
-import model.Article;
+import application.model.Article;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ArticleDatabase {
-    private static final CopyOnWriteArrayList<Article> articles = new CopyOnWriteArrayList<>();
+    private static final ConcurrentHashMap<Integer, Article> articles = new ConcurrentHashMap<>();
 
     public static void save(Article article) {
-        articles.add(article);
+        articles.put(article.getArticleId(), article);
     }
 
-    public static Article findByArticleId(int articleId) {
-        return articles.stream()
-                .filter(article -> article.getArticleId() == articleId)
-                .findFirst()
-                .orElse(null);
+    public static Article findById(int articleId) {
+        return articles.get(articleId);
     }
 
     public static List<Article> findAll() {
-        return Collections.unmodifiableList(articles);
+        ArrayList<Article> articleList = new ArrayList<>(articles.values());
+        return Collections.unmodifiableList(articleList);
     }
 }

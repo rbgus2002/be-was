@@ -1,7 +1,7 @@
 package webserver.http;
 
+import webserver.utils.CookieConstants;
 import webserver.utils.HttpField;
-import webserver.utils.HttpParametersParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,15 +13,15 @@ import java.nio.charset.StandardCharsets;
 public class HttpRequest {
     private final BufferedReader bufferedReader;
 
+    private String method;
+    private String path;
     private final HttpHeaders httpHeaders;
-    private HttpParameters httpParameters;
-    private Cookie cookie;
+    private final HttpParameters httpParameters;
+    private final Cookie cookie;
     private String body = "";
-
 
     public HttpRequest(InputStream in) throws IOException {
         bufferedReader = new BufferedReader(new InputStreamReader(in));
-
         httpHeaders = new HttpHeaders();
         httpParameters = new HttpParameters();
         cookie = new Cookie();
@@ -32,6 +32,8 @@ public class HttpRequest {
     private void parseRequestMessage() throws IOException {
         parseHeader();
         parseBody();
+        parsePath();
+        parseUrlEncodedParameters();
     }
 
     private void parseHeader() throws IOException {
@@ -42,27 +44,52 @@ public class HttpRequest {
 
     private void parseRequestLine() throws IOException {
         String[] requestLineTokens = bufferedReader.readLine().split(" ");
-
-        httpHeaders.put(HttpField.METHOD, requestLineTokens[0]);
+        method = requestLineTokens[0];
         httpHeaders.put(HttpField.URI, URLDecoder.decode(requestLineTokens[1], StandardCharsets.UTF_8));
         httpHeaders.put(HttpField.VERSION, requestLineTokens[2]);
-
-        parsePathAndParameters(httpHeaders.get(HttpField.URI));
     }
 
-    private void parsePathAndParameters(String URI) {
+    private void parsePath() {
+        String URI = httpHeaders.get(HttpField.URI);
+        path = URI.split("\\?")[0];
+    }
+
+    private void parseUrlEncodedParameters() {
+        parseURIParameters();
+        parseBodyParameters();
+    }
+
+    private void parseURIParameters() {
+        String URI = httpHeaders.get(HttpField.URI);
         String[] uriTokens = URI.split("\\?");
-        parsePath(uriTokens);
-        parseParameters(uriTokens);
-    }
-
-    private void parsePath(String[] uriTokens) {
-        httpHeaders.put(HttpField.PATH, uriTokens[0]);
-    }
-
-    private void parseParameters(String[] uriTokens) {
         if (uriTokens.length == 2) {
-            httpParameters = HttpParametersParser.parse(uriTokens[1]);
+            parseParameters(uriTokens[1]);
+        }
+    }
+
+    private void parseBodyParameters() {
+        if (checkContentType()) {
+            parseParameters(body);
+        }
+    }
+
+    private boolean checkContentType() {
+        return httpHeaders.get(HttpField.CONTENT_TYPE)
+                    .equals("application/x-www-form-urlencoded");
+    }
+
+    private void parseParameters(String parameters) {
+        String parameterSeparator = "&";
+
+        for (String parameter : parameters.split(parameterSeparator)) {
+            addParameter(parameter);
+        }
+    }
+
+    private void addParameter(String parameter) {
+        String[] tokens = parameter.split("=");
+        if (tokens.length == 2) {
+            httpParameters.put(tokens[0], tokens[1]);
         }
     }
 
@@ -85,7 +112,7 @@ public class HttpRequest {
     }
 
     private void parseBody() throws IOException {
-        if(httpHeaders.contains(HttpField.CONTENT_LENGTH)) {
+        if (httpHeaders.contains(HttpField.CONTENT_LENGTH)) {
             int bodyLength = Integer.parseInt(httpHeaders.get(HttpField.CONTENT_LENGTH));
             char[] requestBody = new char[bodyLength];
 
@@ -94,19 +121,31 @@ public class HttpRequest {
         }
     }
 
-    public String getField(String name) {
-        return httpHeaders.get(name);
+    public String getHeader(String field) {
+        return httpHeaders.get(field);
     }
 
-    public HttpParameters getParameters() {
-        return httpParameters;
+    public String getParameter(String name) {
+        return httpParameters.get(name);
     }
 
-    public Cookie getCookie() {
-        return cookie;
+    public String getCookie(String name) {
+        return cookie.get(name);
+    }
+
+    public String getSessionId() {
+        return cookie.get(CookieConstants.SESSION_ID);
     }
 
     public String getBody() {
         return body;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

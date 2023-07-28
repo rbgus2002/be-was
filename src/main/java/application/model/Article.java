@@ -1,4 +1,4 @@
-package model;
+package application.model;
 
 import java.time.LocalDate;
 
@@ -8,17 +8,17 @@ public class Article {
     private final int articleId;
     private final String userId;
     private final String username;
-    private final LocalDate createDate;
+    private final String createDate;
     private String title;
     private String contents;
 
-    public Article(String userId, String username, String title, String contents, LocalDate createDate) {
+    public Article(String userId, String username, String title, String contents) {
         this.articleId = articleIndex++;
         this.userId = userId;
         this.username = username;
         this.title = title;
         this.contents = contents;
-        this.createDate = createDate;
+        this.createDate = LocalDate.now().toString();
     }
 
     public int getArticleId() {
@@ -41,7 +41,7 @@ public class Article {
         return contents;
     }
 
-    public LocalDate getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 }

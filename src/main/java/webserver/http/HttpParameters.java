@@ -11,7 +11,7 @@ public class HttpParameters {
     }
 
     public String get(String name) {
-        if(parameters.containsKey(name)) {
+        if (parameters.containsKey(name)) {
             return new String(parameters.get(name));
         }
         return null;
