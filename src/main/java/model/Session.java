@@ -1,6 +1,4 @@
-package webserver.http;
-
-import model.User;
+package model;
 
 public class Session {
     private String sessionId;

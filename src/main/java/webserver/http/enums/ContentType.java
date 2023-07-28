@@ -9,9 +9,9 @@ public enum ContentType {
     CSS("text/css"),
     JS("text/javascript"),
     ICON("image/x-icon"),
-    TTF("application/x-font-ttf"),
-    WOFF("application/x-font-woff"),
-    WOFF2("application/font-woff2"),
+    TTF("font/ttf"),
+    WOFF("font/woff"),
+    WOFF2("font/woff2"),
     PNG("image/png"),
     JPEG("image/jpeg"),
     SVG("image/svg+xml"),
@@ -38,12 +38,18 @@ public enum ContentType {
         this.contentType = contentType;
     }
 
-    public String getTypeString() {
+    public String getMIMEString() {
+        if (this == HTML)
+            return contentType + ";charset=utf-8";
         return contentType;
     }
 
-    public static ContentType getContentTypeByExtension(String extension) {
-        if(extension == null) return contentTypeMap.get("default");
-        return contentTypeMap.getOrDefault(extension, contentTypeMap.get("default"));
+    public static ContentType getContentTypeOfFile(String fileName) {
+        if ("".equals(fileName) || !fileName.contains("."))
+            return PLAIN;
+
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+
+        return contentTypeMap.getOrDefault(extension, PLAIN);
     }
 }

@@ -8,6 +8,9 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Users {
     private static ConcurrentMap<String, User> users = new ConcurrentHashMap<>();
+    static {
+        users.put("user", new User("user", "pass", "test", "test@gmail.com"));
+    }
 
     public static void addUser(User user) {
         users.put(user.getUserId(), user);

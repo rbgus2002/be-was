@@ -88,7 +88,7 @@ public class ControllerContainer {
         }
     }
 
-    public HttpResponse getController(HttpRequest request) throws InvocationTargetException, IllegalAccessException {
+    public HttpResponse handleRequest(HttpRequest request) throws InvocationTargetException, IllegalAccessException {
         EndPoint endPoint = new EndPoint(request.uri().getPath(), request.method());
 
         Controller controller = controllerMap.getOrDefault(endPoint.path, staticFileController);

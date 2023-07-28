@@ -51,7 +51,7 @@ class UserLoginControllerTest {
 
         HttpResponse response = userLoginController.handlePost(testRequest);
 
-        softly.assertThat(response.getHeader("Set-Cookie")).isNotEqualTo(null);
+        softly.assertThat(response.attributes().get("Set-Cookie")).isNotEqualTo(null);
     }
 
     @Test
@@ -82,8 +82,10 @@ class UserLoginControllerTest {
         HttpResponse response = userLoginController.handlePost(testRequest);
         HttpResponse response2 = userLoginController.handlePost(testRequest2);
 
-        softly.assertThat(response.getHeader("Set-Cookie")).isEqualTo(null);
-        softly.assertThat(response2.getHeader("Set-Cookie")).isEqualTo(null);
+        softly.assertThat(response.attributes().get("Set-Cookie")).isEqualTo(null);
+        softly.assertThat(response.redirect()).isEqualTo("/login_failed.html");
+        softly.assertThat(response2.attributes().get("Set-Cookie")).isEqualTo(null);
+        softly.assertThat(response2.redirect()).isEqualTo("/login_failed.html");
     }
 
 

@@ -12,17 +12,15 @@ public class HttpRequest {
     private String method;
     private HttpUri uri;
     private String version;
-    private String contentType = "text/plain";
     private HttpHeaders headers;
     private Map<String, String> body;
     private Cookie cookie;
 
-    private HttpRequest(String method, HttpUri uri, String version, String contentType,
-                        HttpHeaders headers, Map<String, String> body, Cookie cookie) {
+    private HttpRequest(String method, HttpUri uri, String version, HttpHeaders headers,
+                        Map<String, String> body, Cookie cookie) {
         this.method = method;
         this.uri = uri;
         this.version = version;
-        this.contentType = contentType;
         this.headers = headers;
         this.body = body;
         this.cookie = cookie;
@@ -32,7 +30,6 @@ public class HttpRequest {
         private String method;
         private HttpUri uri;
         private String version;
-        private String contentType = "text/plain";
         private HttpHeaders headers;
         private Map<String, String> body;
         private Cookie cookie;
@@ -88,7 +85,7 @@ public class HttpRequest {
         }
 
         public HttpRequest build() {
-            return new HttpRequest(method, uri, version, contentType, headers, body, cookie);
+            return new HttpRequest(method, uri, version, headers, body, cookie);
         }
     }
 
@@ -106,10 +103,6 @@ public class HttpRequest {
 
     public String version() {
         return version;
-    }
-
-    public String contentType() {
-        return contentType;
     }
 
     public HttpHeaders headers() {

@@ -7,15 +7,14 @@ import webserver.controllers.annotations.RequestMethod;
 import webserver.controllers.annotations.RequestPath;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.Session;
+import model.Session;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static db.Sessions.addSession;
 import static db.Users.findUserById;
-import static webserver.http.enums.ContentType.HTML;
+import static service.SessionService.addSession;
 import static webserver.http.enums.HttpResponseStatus.BAD_REQUEST;
 import static webserver.http.enums.HttpResponseStatus.FOUND;
 
@@ -34,18 +33,16 @@ public class UserLoginController implements Controller {
 
         HttpResponse.Builder builder = HttpResponse.newBuilder();
 
-        String path = "http://".concat(request.getHeader("Host").concat("/user/login_failed.html"));
+        String path = "/user/login_failed.html";
         if(loginUser.getPassword().equals(parameters.get("password"))) {
-            path = "http://".concat(request.getHeader("Host").concat("/index.html"));
+            path = "/index.html";
             Session session = createUserSession(loginUser);
-            builder.setHeader("Set-Cookie", "sid=" + session.getSessionId() + "; Path=/" );
+            builder.sessionId(session.getSessionId());
         }
-
 
         return builder.version(request.version())
                 .status(FOUND)
-                .contentType(HTML)
-                .setHeader("Location", path)
+                .redirect(path)
                 .build();
 
     }

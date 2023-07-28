@@ -1,64 +1,67 @@
 package webserver.controllers;
 
-import model.User;
+import model.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.controllers.annotations.RequestMethod;
 import webserver.controllers.annotations.RequestPath;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
-import webserver.http.Session;
 import webserver.http.enums.ContentType;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
-import static db.Sessions.getSession;
+import static service.SessionService.getSession;
+import static webserver.http.Cookie.isValidCookie;
 import static webserver.http.enums.ContentType.HTML;
-import static webserver.http.enums.ContentType.getContentTypeByExtension;
+import static webserver.http.enums.ContentType.getContentTypeOfFile;
 import static webserver.http.enums.HttpResponseStatus.NOT_FOUND;
-import static webserver.http.enums.HttpResponseStatus.OK;
 
 @RequestPath(path = "/")
 public class StaticFileController implements Controller {
     private static final Logger logger = LoggerFactory.getLogger(StaticFileController.class);
+    private static final Map<String, String> requestAttribute = new HashMap<>() {{
+        put("${logout}", "style=\"display:none;\"");
+        put("${login}", "");
+        put("${user}", "");
+    }};
 
     @RequestMethod(method = "GET")
     public HttpResponse handleGet(HttpRequest request) {
-        if(request.cookie() != null) {
-            Session session = getSession(request.cookie().getSessionId());
-            logger.debug("session Id: {}", session.getSessionId());
-            User user = session.getUser();
-            logger.debug("session User: userId = {}, email = {}", user.getUserId(), user.getEmail());
-        }
-        String extension = request.uri().getExtension();
-        ContentType contentType = getContentTypeByExtension(extension);
-        String path = getPathString(request, contentType);
+        String fileName = request.uri().getPath();
+        ContentType contentType = getContentTypeOfFile(fileName);
+        String filePath = getPathString(fileName, contentType);
 
-        HttpResponse.Builder builder = HttpResponse.newBuilder();
-
-        byte[] body;
-        try {
-            body = Files.readAllBytes(Paths.get(path));
-        } catch (IOException e) {
+        if (!Files.exists(Paths.get(filePath)))
             return createErrorResponse(request, NOT_FOUND);
-        }
 
-        builder.version(request.version())
-                .status(OK)
-                .contentType(contentType)
-                .body(body);
+        Map<String, String> attributes = setRequestAttribute(request);
 
-        return builder.build();
+        return createOkResponse(request, filePath, attributes);
     }
 
-    private String getPathString(HttpRequest request, ContentType contentType) {
-        String fileName = request.uri().getPath();
-
-        if (contentType == HTML) {
-            return System.getProperty("user.dir").concat("/src/main/resources/templates").concat(fileName);
+    private Map<String, String> setRequestAttribute(HttpRequest request) {
+        if (!isValidCookie(request.cookie())) {
+            return requestAttribute;
         }
-        return System.getProperty("user.dir").concat("/src/main/resources/static").concat(fileName);
+
+        Session session = getSession(request.cookie().getSessionId());
+        Map<String, String> userAttribute = new HashMap<>();
+
+        userAttribute.put("${logout}", "");
+        userAttribute.put("${login}", "style=\"display:none;\"");
+        userAttribute.put("${user}", "<li style=\"pointer-events: none;\" ><a>" + session.getUser().getName() + " 님</a></li>");
+
+        return userAttribute;
+    }
+
+    private String getPathString(String fileName, ContentType contentType) {
+        if (contentType == HTML) {
+            return "src/main/resources/templates".concat(fileName);
+        }
+        return "src/main/resources/static".concat(fileName);
     }
 }
