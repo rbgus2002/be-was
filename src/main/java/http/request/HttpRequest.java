@@ -1,8 +1,9 @@
-package webserver.http.request;
+package http.request;
 
+import http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.HttpHeaders;
+import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,12 +33,12 @@ public class HttpRequest {
     public String getHttpRequestBody() {
         return httpRequestBody;
     }
-
-    public String show() {
-        StringBuilder sb = new StringBuilder();
-        httpRequestLine.show(sb);
-        httpHeaders.show(sb);
-        return sb.toString();
+    public String getSessionId() {
+        String requestCookie = httpHeaders.getRequestCookie();
+        if (requestCookie == null || requestCookie.equals("SID=")) {
+            return null;
+        }
+        return Parser.parseCookie(requestCookie);
     }
 
     public static HttpRequest create(InputStream in) throws IOException {

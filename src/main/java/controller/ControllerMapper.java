@@ -1,9 +1,9 @@
-package webserver.controller;
+package controller;
 
 import annotation.Controller;
 import annotation.RequestMapping;
-import webserver.http.request.HttpRequest;
-import webserver.http.request.RequestMethod;
+import http.request.HttpRequest;
+import http.request.RequestMethod;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class HandlerMapper {
+public class ControllerMapper {
     private static final Map<ValueAndMethod, Method> handlerMapper = new ConcurrentHashMap<>();
 
     static {
@@ -47,7 +47,7 @@ public class HandlerMapper {
     }
 
     private static List<Class<?>> getHandlers() throws IOException, ClassNotFoundException {
-        return findAllControllerClasses("webserver.controller");
+        return findAllControllerClasses("controller");
     }
 
     private static List<Class<?>> findAllControllerClasses(String packageName) throws IOException, ClassNotFoundException {

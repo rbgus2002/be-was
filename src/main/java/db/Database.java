@@ -7,7 +7,8 @@ import java.util.Collection;
 import java.util.Map;
 
 public class Database {
-    private static Map<String, User> users = Maps.newConcurrentMap();
+    private Database() {}
+    private static final Map<String, User> users = Maps.newConcurrentMap();
 
     public static void addUser(User user) {
         users.put(user.getUserId(), user);
@@ -20,10 +21,4 @@ public class Database {
     public static Collection<User> findAll() {
         return users.values();
     }
-
-    public static boolean validateUser(String userId, String password) {
-        User user = users.get(userId);
-        return user.getPassword().equals(password);
-    }
-
 }

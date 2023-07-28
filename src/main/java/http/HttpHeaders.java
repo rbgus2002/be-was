@@ -1,45 +1,56 @@
-package webserver.http;
+package http;
 
+import http.response.ResponseType;
 import utils.GMTStringConverter;
 import utils.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
-import static utils.StringUtils.NEW_LINE;
 
 public class HttpHeaders {
     public static final String CONTENT_LENGTH = "Content-Length";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String LOCATION = "Location";
     public static final String SET_COOKIE = "Set-Cookie";
+    public static final String COOKIE = "Cookie";
     private final Map<String, String> headers;
+
     public HttpHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
+
     public String getContentType() {
         return headers.get(CONTENT_TYPE);
     }
+
     public String getContentLength() {
         return headers.get(CONTENT_LENGTH);
     }
-    public String getCookie() {
+
+    public String getResponseCookie() {
         return headers.get(SET_COOKIE);
     }
+
+    public String getRequestCookie() {
+        return headers.get(COOKIE);
+    }
+
     public String getLocation() {
         return headers.get(LOCATION);
     }
 
-    public void show(StringBuilder sb) {
-        headers.forEach((key, value) -> {
-            sb.append(key);
-            sb.append(" : ");
-            sb.append(value);
-            sb.append(NEW_LINE);
-        });
+    public String writeHttpHeaders(ResponseType responseType) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(CONTENT_LENGTH).append(": ").append(getContentLength()).append("\r\n");
+        sb.append(CONTENT_TYPE).append(": ").append(getContentType()).append("\r\n");
+        if (responseType == ResponseType.REDIRECT) {
+            sb.append(LOCATION).append(": ").append(getLocation()).append("\r\n");
+            sb.append(SET_COOKIE).append(": ").append(getResponseCookie()).append("\r\n");
+        }
+        return sb.toString();
     }
 
     public static HttpHeaders create(BufferedReader br) throws IOException {
@@ -48,8 +59,12 @@ public class HttpHeaders {
 
     public static HttpHeaders createStaticStatusHeaders(int bodyLength, String requestUri) {
         Map<String, String> responseHeaders = new HashMap<>();
-        MIME mime = MIME.findMIME(requestUri);
-        responseHeaders.put(CONTENT_TYPE, createStaticContentType(mime));
+        if (!requestUri.contains(".")) {
+            responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
+        } else {
+            MIME mime = MIME.findMIME(requestUri);
+            responseHeaders.put(CONTENT_TYPE, createStaticContentType(mime));
+        }
         responseHeaders.put(CONTENT_LENGTH, String.valueOf(bodyLength));
         return new HttpHeaders(responseHeaders);
     }
@@ -58,14 +73,25 @@ public class HttpHeaders {
         Map<String, String> responseHeaders = new HashMap<>();
         responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
         responseHeaders.put(CONTENT_LENGTH, "0");
-        responseHeaders.put(LOCATION, viewPath);
+        responseHeaders.put(LOCATION, Parser.parseRedirectViewPath(viewPath));
         if (cookie != null) {
-            System.out.println(cookie.getExpires().atZone(ZoneId.of("GMT")));
             responseHeaders.put(SET_COOKIE, cookie.getName() + "=" + cookie.getValue() + ";"
                     + " Path=/;"
                     + "Expires=" + GMTStringConverter.convertToGMTString(cookie.getExpires()) + ";"
                     + " HttpOnly");
         }
+        return new HttpHeaders(responseHeaders);
+    }
+
+    public static HttpHeaders createRedirectLogoutHeaders(String viewPath, String sessionId) {
+        Map<String, String> responseHeaders = new HashMap<>();
+        responseHeaders.put(CONTENT_TYPE, "text/html;charset=utf-8");
+        responseHeaders.put(CONTENT_LENGTH, "0");
+        responseHeaders.put(LOCATION, Parser.parseRedirectViewPath(viewPath));
+        responseHeaders.put(SET_COOKIE, "SID" + "=" + sessionId + ";"
+                + " Path=/;"
+                + "Expires=" + GMTStringConverter.convertToGMTString(LocalDateTime.now().minusMinutes(1)) + ";"
+                + " HttpOnly");
         return new HttpHeaders(responseHeaders);
     }
 

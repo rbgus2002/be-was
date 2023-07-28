@@ -1,7 +1,7 @@
-package webserver.http.response;
+package http.response;
 
-import static webserver.http.StatusCode.FOUND;
-import static webserver.http.StatusCode.OK;
+import static http.StatusCode.FOUND;
+import static http.StatusCode.OK;
 
 public class HttpStatusLine {
     private final String version;
@@ -21,4 +21,9 @@ public class HttpStatusLine {
     public static HttpStatusLine createRedirectStatusLine() {
         return new HttpStatusLine("HTTP/1.1", FOUND.getValue(), FOUND.getDescription());
     }
+
+    public String writeHttpStatusLine() {
+        return version + " " + statusCode + " " + statusText + "\r\n";
+    }
+
 }

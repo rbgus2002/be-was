@@ -1,4 +1,4 @@
-package webserver.http;
+package http;
 
 import java.time.LocalDateTime;
 
@@ -8,9 +8,10 @@ public class Cookie {
     private final String value;
     private LocalDateTime expires;
 
-    private Cookie(String name, String value) {
-        this.name = name;
+    private Cookie(String value, LocalDateTime expires) {
+        this.name = SESSIONID;
         this.value = value;
+        this.expires = expires;
     }
 
     public String getName() {
@@ -23,11 +24,12 @@ public class Cookie {
         return expires;
     }
 
-    public void setExpires() {
-        expires = LocalDateTime.now().plusMinutes(10);
+    public static Cookie create(String value, LocalDateTime expires) {
+        return new Cookie(value, expires);
     }
 
-    public static Cookie create(String value) {
-        return new Cookie(SESSIONID, value);
+    public void setExpiresToLogout() {
+        expires = LocalDateTime.now().minusMinutes(1);
     }
+
 }

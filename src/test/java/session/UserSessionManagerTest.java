@@ -3,7 +3,7 @@ package session;
 import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.http.Cookie;
+import http.Cookie;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -20,8 +20,8 @@ class UserSessionManagerTest {
         User user = new User(userId, password, name, email);
 
         //when
-        Cookie cookie = UserSessionManager.addUser(user);
-        User expectUser = UserSessionManager.getUser(cookie.getValue());
+        String sessionId = SessionManager.addSession(user);
+        User expectUser = SessionManager.getUser(sessionId);
 
         //then
         assertSoftly(softAssertions -> {
