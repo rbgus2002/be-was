@@ -1,14 +1,13 @@
-package webserver.request;
+package webserver.http.request;
 
 import exception.badRequest.MissingParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.utils.StringUtils;
-import webserver.Constants.ContentType;
-import webserver.Constants.HttpMethod;
-import webserver.Constants.HttpVersion;
+import webserver.http.Constants.ContentType;
+import webserver.http.Constants.HttpMethod;
+import webserver.http.Constants.HttpVersion;
 import webserver.RequestHandler;
-import webserver.Header;
+import webserver.http.Header;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,10 +15,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static support.utils.StringUtils.*;
 
 public class HttpRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final int Content_Length_Index = 16;
 
     private final HttpMethod httpMethod;
     private final HttpVersion version;
@@ -30,7 +31,7 @@ public class HttpRequest {
 
     private HttpRequest(String requestLine, String header, String body) {
 
-        String[] tokens = requestLine.split(" ");
+        String[] tokens = requestLine.split(SPACE);
 
         String[] pathAndQueries = tokens[1].split("\\?");
 
@@ -40,6 +41,8 @@ public class HttpRequest {
         this.requestQuery = parseRequestQuery(pathAndQueries);
         this.header = Header.of(header);
         this.requestBody = parseRequestBody(body);
+
+        this.header.setCookie();
     }
 
     public static HttpRequest of(final InputStream in) throws IOException {
@@ -54,9 +57,9 @@ public class HttpRequest {
         while (!line.equals("")) {
             line = br.readLine();
 
-            if(line.startsWith("Content-Length")) contentLength = Integer.parseInt(line.substring(16));
+            if(line.startsWith("Content-Length")) contentLength = Integer.parseInt(line.substring(Content_Length_Index));
             logger.debug("header: {}", line);
-            header.append(line).append(StringUtils.NEWLINE);
+            header.append(line).append(NEWLINE);
         }
 
         String body = null;
@@ -73,7 +76,6 @@ public class HttpRequest {
         if(pathAndQueries.length < 2) return null;
         return RequestQuery.of(pathAndQueries[1]);
     }
-
 
     private RequestBody parseRequestBody(final String body) {
         if(body == null) return null;
@@ -108,5 +110,9 @@ public class HttpRequest {
     public RequestBody getRequestBody() {
         if(requestBody == null) throw new MissingParameterException();
         return requestBody;
+    }
+
+    public String getHeaderOption(final String key) {
+        return header.getCookieOption(key);
     }
 }

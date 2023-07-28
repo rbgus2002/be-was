@@ -1,10 +1,10 @@
 package webserver.view.view;
 
 import exception.internalServerError.FileRenderException;
-import webserver.Constants.HeaderField;
-import webserver.request.HttpRequest;
-import webserver.response.HttpResponse;
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HeaderOption;
+import webserver.http.request.HttpRequest;
+import webserver.http.response.HttpResponse;
+import webserver.http.Constants.HttpStatus;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class StaticView implements View {
             byte[] body = Files.readAllBytes(Paths.get(filePath));
 
             response.setHttpStatus(HttpStatus.OK);
-            response.addHeaderElement(HeaderField.contentType, request.getContentType().getDescription());
+            response.addHeaderElement(HeaderOption.CONTENT_TYPE, request.getContentType().getDescription());
             response.setBody(body);
             response.sendResponse(dos);
         } catch (IOException e) {

@@ -1,10 +1,10 @@
-package webserver.response;
+package webserver.http.response;
 
 import exception.internalServerError.HttpResponseSendException;
-import webserver.Constants.HeaderField;
-import webserver.Constants.HttpStatus;
-import webserver.Constants.HttpVersion;
-import webserver.Header;
+import webserver.http.Constants.HeaderOption;
+import webserver.http.Constants.HttpStatus;
+import webserver.http.Constants.HttpVersion;
+import webserver.http.Header;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -40,6 +40,10 @@ public class HttpResponse {
         header.addElement(key, value);
     }
 
+    public void addCookieOption(final String key, final String value) {
+        header.addCookieOption(key, value);
+    }
+
     public void setHttpVersion(final HttpVersion httpVersion) {
         this.httpVersion = httpVersion;
     }
@@ -50,7 +54,7 @@ public class HttpResponse {
 
     public void setBody(final byte[] body) {
         this.body = body;
-        addHeaderElement(HeaderField.contentLength, String.valueOf(body.length));
+        addHeaderElement(HeaderOption.CONTENT_LENGTH, String.valueOf(body.length));
     }
 
     public void sendResponse(final DataOutputStream dos) throws HttpResponseSendException {

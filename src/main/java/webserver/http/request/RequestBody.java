@@ -1,4 +1,4 @@
-package webserver.request;
+package webserver.http.request;
 
 import exception.badRequest.MissingParameterException;
 
@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class RequestQuery {
+public class RequestBody {
 
-    private final Map<String, String> queries;
+    private final Map<String, String> parameters;
 
-    private RequestQuery(Map<String, String> queries) {
-        this.queries = queries;
+    private RequestBody(Map<String, String> parameters) {
+        this.parameters = parameters;
     }
 
-    public static RequestQuery of(String string) {
+    public static RequestBody of(String string) {
 
         String[] array = string.split("&");
 
@@ -24,13 +24,13 @@ public class RequestQuery {
                         s -> s.split("=")[1]
                 ));
 
-        return new RequestQuery(queries);
+        return new RequestBody(queries);
     }
 
     public String getValue(final String key) {
-        String value = queries.get(key);
+        String value = parameters.get(key);
         if (value == null) throw new MissingParameterException();
 
-        return queries.get(key);
+        return parameters.get(key);
     }
 }

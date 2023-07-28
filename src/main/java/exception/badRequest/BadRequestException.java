@@ -1,7 +1,7 @@
 package exception.badRequest;
 
 import exception.CustomException;
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HttpStatus;
 
 public abstract class BadRequestException extends CustomException {
     protected static final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;

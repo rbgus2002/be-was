@@ -1,6 +1,6 @@
 package exception;
 
-import webserver.Constants.HttpStatus;
+import webserver.http.Constants.HttpStatus;
 
 public abstract class CustomException extends RuntimeException {
     public CustomException(String message) {
