@@ -51,7 +51,6 @@ public class Controller {
         return HttpResponse.redirectResponse(request.getVersion(), "/index.html");
     }
 
-
     @RequestMapping(method = HttpMethod.GET, path = "/user/list.html")
     public HttpResponse userList(HttpRequest request) {
         return getResourceOrLogin(request);

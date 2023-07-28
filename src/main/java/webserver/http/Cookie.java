@@ -17,7 +17,7 @@ public class Cookie {
 
     public static Cookie from(String cookies) {
         Map<String, String> cookieMap = new LinkedHashMap<>();
-        if (!cookies.isEmpty()) {
+        if (cookies != null && !cookies.isEmpty()) {
             Arrays.asList(cookies.split(";")).forEach(cookie -> {
                 String[] keyValue = cookie.split(EQUAL);
                 cookieMap.put(keyValue[0], keyValue[1]);

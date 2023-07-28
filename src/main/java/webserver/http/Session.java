@@ -15,6 +15,9 @@ public class Session {
     }
 
     public static Object get(String key) {
+        if (key == null) {
+            return null;
+        }
         return sessionStorage.get(key);
     }
 
