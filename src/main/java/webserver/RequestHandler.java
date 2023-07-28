@@ -2,19 +2,20 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import support.instance.DefaultInstanceManager;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import static utils.MathUtils.parseIntOrDefault;
 
-public class RequestHandler extends HttpHandler implements Runnable {
+public class RequestHandler implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private final HttpHandler httpHandler = DefaultInstanceManager.getInstanceManager().getInstance("HttpHandler", HttpHandler.class);
     private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
@@ -30,19 +31,12 @@ public class RequestHandler extends HttpHandler implements Runnable {
 
             // 요청 해석
             HttpRequest request = buildHttpRequest(in);
-            logger.debug("Request Line & Headers: \n{}", request.toString());
+            logger.debug("Request Line & Headers: \n{}", request);
 
             // 요청 수립
             HttpResponse response = new HttpResponse();
 
-            switch (request.getRequestMethod()) {
-                case GET:
-                    doGet(request, response);
-                    break;
-                case POST:
-                    doPost(request, response);
-                    break;
-            }
+            httpHandler.doService(request, response);
 
             String responseString = response.buildResponseHeader();
             logger.debug("Response... : \n{}", responseString);
@@ -52,7 +46,7 @@ public class RequestHandler extends HttpHandler implements Runnable {
                 dos.write(response.getBody(), 0, response.getBody().length);
             }
             dos.flush();
-        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
@@ -70,7 +64,7 @@ public class RequestHandler extends HttpHandler implements Runnable {
         }
 
         HttpRequest httpRequest = requestHeaderBuilder.build();
-        int contentLength = parseIntOrDefault(httpRequest.getHeaderValue("Content-Length"), 0);
+        int contentLength = parseIntOrDefault(httpRequest.getHeaderValue(Header.CONTENT_LENGTH), 0);
 
 
         // body 읽기

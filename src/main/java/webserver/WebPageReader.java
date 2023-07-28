@@ -1,6 +1,6 @@
 package webserver;
 
-import exception.ExceptionName;
+import support.web.exception.NotFoundException;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,24 +21,24 @@ public class WebPageReader {
 
     }
 
-    public static byte[] readByPath(String url) throws IOException {
+    public static byte[] readByPath(String url) throws NotFoundException, IOException {
         for (String path : WEB_PATH) {
             File file = new File(path + url);
             if (file.exists() && file.isFile()) {
                 return Files.readAllBytes(file.toPath());
             }
         }
-        throw new IOException(ExceptionName.FILE_NOT_FOUND);
+        throw new NotFoundException();
     }
 
-    public static List<String> readStringLineByPath(String url) throws IOException {
+    public static List<String> readStringLineByPath(String url) throws NotFoundException, IOException {
         for (String path : WEB_PATH) {
             File file = new File(path + url);
             if (file.exists() && file.isFile()) {
                 return Files.readAllLines(file.toPath());
             }
         }
-        throw new IOException(ExceptionName.FILE_NOT_FOUND);
+        throw new NotFoundException();
     }
 
 }

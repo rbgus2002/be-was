@@ -1,8 +1,8 @@
 package webserver;
 
-import exception.ExceptionName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import support.web.exception.NotFoundException;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ class WebPageReaderTest {
 
     @Test
     @DisplayName("Html 파일을 읽어야 한다.")
-    void read() throws IOException {
+    void read() throws NotFoundException, IOException {
         //given
         String url = "/index.html";
 
@@ -28,7 +28,7 @@ class WebPageReaderTest {
 
     @Test
     @DisplayName("css 파일을 읽어야 한다.")
-    void readCss() throws IOException {
+    void readCss() throws NotFoundException, IOException {
         //given
         String url = "/css/bootstrap.min.css";
 
@@ -42,7 +42,7 @@ class WebPageReaderTest {
 
     @Test
     @DisplayName("javascript 파일을 읽어야 한다.")
-    void readJs() throws IOException {
+    void readJs() throws NotFoundException, IOException {
         //given
         String url = "/js/scripts.js";
 
@@ -62,12 +62,11 @@ class WebPageReaderTest {
 
         //when
         Throwable exception = assertThrows(
-                IOException.class,
+                NotFoundException.class,
                 () -> WebPageReader.readByPath(url)
         );
 
         //then
-        assertEquals(ExceptionName.FILE_NOT_FOUND, exception.getMessage());
     }
 
 }

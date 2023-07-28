@@ -1,10 +1,13 @@
 package support.web.view;
 
+import support.web.Model;
 import webserver.request.HttpRequest;
 import webserver.response.HttpResponse;
 
 public interface View {
 
-    String view(HttpRequest request, HttpResponse response);
+    String getName();
+
+    String render(HttpRequest request, HttpResponse response, Model model);
 
 }

@@ -17,7 +17,7 @@
  	<div class="col-md-12">
         <div class="navbar-header">
 
-            <a href="index.html" class="navbar-brand">SLiPP</a>
+            <a href="index" class="navbar-brand">SLiPP</a>
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse1">
           <i class="glyphicon glyphicon-search"></i>
           </button>
@@ -65,7 +65,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <% SESSION.IS_PRESENT <li><a><% SESSION.GET_USERNAME %></a></li> %>
-                <li class="active"><a href="index.html">Posts</a></li>
+                <li class="active"><a href="index">Posts</a></li>
                 <% SESSION.IS_EMPTY <li><a href="user/login.html" role="button">로그인</a></li> %>
                 <li><a href="user/form.html" role="button">회원가입</a></li>
                 <!--
@@ -87,7 +87,7 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="./qna/show.html">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
+                              <a href="post/show">국내에서 Ruby on Rails와 Play가 활성화되기 힘든 이유는 뭘까?</a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
@@ -105,7 +105,7 @@
                   <div class="wrap">
                       <div class="main">
                           <strong class="subject">
-                              <a href="./qna/show.html">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
+                              <a href="post/show">runtime 에 reflect 발동 주체 객체가 뭔지 알 방법이 있을까요?</a>
                           </strong>
                           <div class="auth-info">
                               <i class="icon-add-comment"></i>
@@ -134,7 +134,7 @@
                 </ul>
               </div>
               <div class="col-md-3 qna-write">
-                  <a href="./qna/form.html" class="btn btn-primary pull-right" role="button">질문하기</a>
+                  <a href="post/form" class="btn btn-primary pull-right" role="button">질문하기</a>
               </div>
           </div>
         </div>

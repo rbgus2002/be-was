@@ -1,103 +1,85 @@
 package support.web;
 
-import exception.ExceptionName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import support.annotation.Controller;
-import support.annotation.RequestMapping;
-import support.annotation.RequestParam;
-import support.exception.*;
+import support.annotation.*;
+import support.instance.DefaultInstanceManager;
+import support.web.exception.BadRequestException;
+import support.web.handler.ControllerMethodReturnValueHandlerComposite;
 import utils.ClassListener;
+import utils.InstanceNameConverter;
 import webserver.request.HttpRequest;
-import webserver.request.KeyValue;
+import webserver.request.QueryParameter;
 import webserver.response.HttpResponse;
+import webserver.response.HttpStatus;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
-import static support.instance.DefaultInstanceManager.getInstanceMagager;
+@Component
+public class ControllerResolver {
 
-public abstract class ControllerResolver {
-
-    private static final Map<String, ControllerMethod> controllers = new HashMap<>();
+    private final Map<HttpMethodAndPath, ControllerMethod> controllers = new HashMap<>();
+    private ControllerMethodReturnValueHandlerComposite handlers;
     private static final Logger logger = LoggerFactory.getLogger(ControllerResolver.class);
 
-    static {
+    public ControllerResolver() {
         List<Class<?>> controllerClasses = ClassListener.scanClass("controller");
 
-        controllerClasses.forEach(clazz -> {
-            Controller annotation = clazz.getAnnotation(Controller.class);
-            if (annotation != null) {
-                String path = annotation.value();
-
-                Map<String, ControllerMethodStruct> controllerMethod = Arrays.stream(clazz.getDeclaredMethods())
+        controllerClasses.forEach(controllerClass -> {
+            Controller controller = controllerClass.getAnnotation(Controller.class);
+            if (controller != null) {
+                Arrays.stream(controllerClass.getDeclaredMethods())
                         .filter(method -> method.isAnnotationPresent(RequestMapping.class))
-                        .collect(Collectors.toUnmodifiableMap(
-                                method -> method.getAnnotation(RequestMapping.class).value(),
-                                method -> new ControllerMethodStruct(method.getAnnotation(RequestMapping.class).method(), method)
-                        ));
-
-
-                controllers.put(path, new ControllerMethod(clazz, controllerMethod));
+                        .forEach(
+                                method -> {
+                                    RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
+                                    controllers.put(new HttpMethodAndPath(requestMapping.method(), controller.value() + requestMapping.value()),
+                                            new ControllerMethod(controllerClass, InstanceNameConverter.convert(controllerClass.getName()), method));
+                                }
+                        );
             }
         });
+    }
+
+    private ControllerMethodReturnValueHandlerComposite getHandlers() {
+        if (handlers == null) {
+            handlers = DefaultInstanceManager.getInstanceManager().getInstance("ControllerMethodReturnValueHandlerComposite", ControllerMethodReturnValueHandlerComposite.class);
+        }
+        return handlers;
     }
 
     /**
      * {@link Controller}의 {@link RequestMapping}된 메소드를 실행한다.
      *
-     * @return 성공시 반환할 View 이름
-     * @throws HttpException         컨트롤러 처리 대상이거나 연관된 경우 상황에 따라 Http Status를 반환하기 위한 각종 예외를 발생한다.
-     * @throws NotSupportedException 컨트롤러 처리 대상이 아닐 경우 발생한다.
+     * @return HttpEntity 클라이언트에 반환할 http response Status & header 값 <br/>
+     * 만약 처리할 수 없는 경우 null을 반환한다.
      */
-    public static String invoke(String url, HttpRequest request, HttpResponse response) throws HttpException, NotSupportedException {
+    public HttpEntity invoke(String url, HttpRequest request, HttpResponse response) throws Exception {
         // 요청 url에 해당하는 controller method를 찾는다.
-        AtomicReference<Class<?>> clazz = new AtomicReference<>(null);
-        AtomicReference<Method> methodAtomicReference = new AtomicReference<>(null);
-        AtomicBoolean hasMethod = new AtomicBoolean(false);
-
-        controllers.forEach((s, controllerMethods) -> {
-            if (url.startsWith(s)) {
-                ControllerMethodStruct methodStruct = controllerMethods.find(url.substring(s.length()));
-                if (methodStruct != null) {
-                    hasMethod.set(true);
-                    if (methodStruct.getHttpMethod() == request.getRequestMethod()) {
-                        hasMethod.set(true);
-                        clazz.set(controllerMethods.getControllerClass());
-                        methodAtomicReference.set(methodStruct.getMethod());
-                    }
-                }
+        ControllerMethod controllerMethodStruct = controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url));
+        if (controllerMethodStruct == null) {
+            if (Arrays.stream(HttpMethod.values())
+                    .anyMatch(httpMethod -> controllers.get(new HttpMethodAndPath(request.getRequestMethod(), url)) != null)) {
+                return new HttpEntity(HttpStatus.METHOD_NOT_ALLOWED);
             }
-        });
-
-        Class<?> controllerClass = clazz.get();
-        Method method = methodAtomicReference.get();
-        verifyControllerTrigger(hasMethod.get(), controllerClass, method);
-
-        logger.debug(method.getName() +  " : go");
+            return null;
+        }
 
         // 헤더 처리
-        Object[] args = transformQuery(request, response, method);
-        logger.debug(method.getName() +  " : go1");
+        Object[] args;
+        try {
+            args = transformQuery(request, response, controllerMethodStruct.getParameters());
+        } catch (BadRequestException e) {
+            return new HttpEntity(HttpStatus.BAD_REQUEST);
+        }
 
         // 메소드 실행
-        Object instance = getInstanceMagager().getInstance(controllerClass);
-        try {
-            return (String) method.invoke(instance, args);
-        } catch (InvocationTargetException e) {
-            Throwable throwable = e.getTargetException();
-            throw throwable instanceof HttpException ? (HttpException) throwable : new ServerErrorException();
-        } catch (IllegalAccessException e) {
-            throw new ServerErrorException();
-        }
+        HttpEntity httpEntity = getHandlers().handleReturnValue(controllerMethodStruct.invoke(args), controllerMethodStruct.getReturnType(), request, response);
+        return httpEntity != null ? httpEntity : new HttpEntity(HttpStatus.OK);
     }
 
     /**
@@ -105,15 +87,16 @@ public abstract class ControllerResolver {
      *
      * @throws BadRequestException 요구하는 쿼리 값을 모두 충족하지 않을 경우 발생한다.
      */
-    private static Object[] transformQuery(HttpRequest request, HttpResponse response, Method method) throws BadRequestException {
-        KeyValue requestQuery = request.getPathQueryOrParameter()
-                .orElseThrow(() -> new BadRequestException(ExceptionName.WRONG_ARGUMENT));
-        Parameter[] parameters = method.getParameters();
+    private Object[] transformQuery(HttpRequest request, HttpResponse response, Parameter[] parameters) throws BadRequestException {
+        QueryParameter body = request.getBody();
+        QueryParameter query = request.getQuery();
 
         Object[] args = Arrays.stream(parameters)
                 .map(parameter -> {
                     if (parameter.isAnnotationPresent(RequestParam.class)) {
-                        return requestQuery.getValue(parameter.getAnnotation(RequestParam.class).value());
+                        return body.getValue(parameter.getAnnotation(RequestParam.class).value());
+                    } else if (parameter.isAnnotationPresent(PathVariable.class)) {
+                        return query.getValue(parameter.getAnnotation(PathVariable.class).value());
                     } else if (parameter.getType() == HttpRequest.class) {
                         return request;
                     } else if (parameter.getType() == HttpResponse.class) {
@@ -126,27 +109,10 @@ public abstract class ControllerResolver {
         logger.debug("요청 인자 크기 : {}", args.length);
 
         if (Arrays.asList(args).contains(null)) {
-            logger.debug("BadRequest 발생");
-            throw new BadRequestException(ExceptionName.WRONG_ARGUMENT);
+            throw new BadRequestException();
         }
 
         return args;
-    }
-
-    /**
-     * 컨트롤러 처리 대상인지 검증한다. <br />
-     * Note: 만약 처리 컨트롤러 메소드가 없을 경우 예외가 발생한다.
-     *
-     * @throws MethodNotAllowedException 같은 URL을 공유하는 다른 컨트롤러 메소드가 있을 경우 발생한다.
-     * @throws NotSupportedException     다른 조건 없이 단순히 처리 메소드가 없을 경우 발생한다.
-     */
-    private static void verifyControllerTrigger(boolean hasMethod, Class<?> controllerClass, Method method) throws MethodNotAllowedException, NotSupportedException {
-        if (controllerClass == null || method == null) {
-            if (hasMethod) {
-                throw new MethodNotAllowedException();
-            }
-            throw new NotSupportedException();
-        }
     }
 
 }

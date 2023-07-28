@@ -2,7 +2,6 @@ package webserver.response;
 
 import utils.StringUtils;
 import webserver.Header;
-import webserver.response.strategy.ResponseHeaderStrategy;
 
 public class HttpResponse {
 
@@ -18,12 +17,11 @@ public class HttpResponse {
         stringBuilder.append(HTTP_VERSION)
                 .append(" ")
                 .append(status.getMessage())
-                .append(StringUtils.NEW_LINE);
+                .append(StringUtils.CRLF);
 
         // Build Response-Header
         stringBuilder.append(header.buildHeader())
-                .append(StringUtils.NEW_LINE)
-                .append(StringUtils.NEW_LINE);
+                .append(StringUtils.CRLF);
 
         return stringBuilder.toString();
     }
@@ -40,11 +38,12 @@ public class HttpResponse {
         header.appendHeader(key, value);
     }
 
-    public void buildHeader(ResponseHeaderStrategy message) {
-        message.buildHeader(header);
+    public void appendHeader(Header header) {
+        this.header.appendHeader(header);
     }
 
     public void setBody(byte[] body) {
         this.body = body;
     }
+
 }

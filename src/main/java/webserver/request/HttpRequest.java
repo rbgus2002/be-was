@@ -1,22 +1,22 @@
 package webserver.request;
 
 import support.web.HttpMethod;
+import utils.StringUtils;
 import webserver.Header;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static utils.StringUtils.NEW_LINE;
+import static utils.StringUtils.CRLF;
 
 public class HttpRequest {
 
     private final HttpMethod method;
     private final String path;
-    private final Query query;
-    private final Header header = new Header();
+    private QueryParameter query;
     private final String version;
-    private Parameter body;
+    private final Header header = new Header();
+    private QueryParameter body;
 
     public static class RequestHeaderBuilder {
         private String requestLine;
@@ -46,7 +46,9 @@ public class HttpRequest {
         // url 파싱
         String[] pathAndQuery = tokens[1].split("\\?");
         this.path = pathAndQuery[0];
-        query = pathAndQuery.length > 1 ? new Query(pathAndQuery[1]) : null;
+        if (pathAndQuery.length > 1) {
+            query = new QueryParameter(pathAndQuery[1]);
+        }
 
 
         this.version = tokens[2];
@@ -73,15 +75,22 @@ public class HttpRequest {
         return path;
     }
 
-    public Optional<KeyValue> getPathQueryOrParameter() {
-        if (body == null && query == null) {
-            return Optional.of(new Parameter());
+    public QueryParameter getQuery() {
+        if (query == null) {
+            query = new QueryParameter();
         }
-        return body != null ? Optional.of(body) : Optional.of(query);
+        return query;
+    }
+
+    public QueryParameter getBody() {
+        if (body == null) {
+            body = new QueryParameter();
+        }
+        return body;
     }
 
     public void setBody(String body) {
-        this.body = new Parameter(body);
+        this.body = new QueryParameter(body);
     }
 
     @Override
@@ -90,12 +99,12 @@ public class HttpRequest {
         return stringBuilder.append(method)
                 .append(" ")
                 .append(path)
-                .append(query != null ? query : "")
+                .append(getQuery().size() != 0 ? "?" + getQuery() : "")
                 .append(" ")
                 .append(version)
-                .append(NEW_LINE)
+                .append(CRLF)
                 .append(header.buildHeader())
-                .append(body != null ? body : "")
+                .append(getBody().size() != 0 ? StringUtils.CRLF + "Body : " + getBody() : "")
                 .toString();
     }
 

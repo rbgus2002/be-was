@@ -9,11 +9,14 @@ public class Cookie {
     private final String value;
     private final Map<String, String> options = new HashMap<>();
 
-    private Cookie(String key, String value, String path) {
+    private Cookie(String key, String value, String path, String expires) {
         this.key = key;
         this.value = value;
         if (path != null) {
-            this.options.put("PATH", path);
+            this.options.put("path", path);
+        }
+        if (expires != null) {
+            this.options.put("expires", expires);
         }
     }
 
@@ -22,6 +25,7 @@ public class Cookie {
         private String key;
         private String value;
         private String path;
+        private String expires;
 
         public CookieBuilder key(String key) {
             this.key = key;
@@ -38,8 +42,13 @@ public class Cookie {
             return this;
         }
 
+        public CookieBuilder expires(String expires) {
+            this.expires = expires;
+            return this;
+        }
+
         public Cookie build() {
-            return new Cookie(key, value, path);
+            return new Cookie(key, value, path, expires);
         }
 
     }
@@ -47,26 +56,20 @@ public class Cookie {
     public String buildCookie() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(key);
-        stringBuilder.append("=");
-        stringBuilder.append(value);
-        stringBuilder.append("; ");
+        stringBuilder.append(key)
+                .append("=")
+                .append(value)
+                .append("; ");
 
         options.forEach(
                 (key, value) -> {
-                    stringBuilder.append(key);
-                    stringBuilder.append("=");
-                    stringBuilder.append(value);
-                    stringBuilder.append("; ");
+                    stringBuilder.append(key)
+                            .append("=")
+                            .append(value)
+                            .append("; ");
                 }
         );
-
-        int length = stringBuilder.length();
-        if (length != 0) {
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
-        return stringBuilder.toString();
+        return stringBuilder.toString().replaceAll(".$", "");
     }
 
 }
