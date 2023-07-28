@@ -64,7 +64,7 @@ public class ViewPolicy {
 		StringBuilder result = new StringBuilder();
 		int currentIter = 1;
 		for (Map<String, String> attribute : attributes) {
-			String newLine = line.replaceAll("\\$\\{iter\\}", String.valueOf(currentIter));
+			String newLine = line.replaceAll("\\$\\{iter\\}", String.valueOf(currentIter++));
 			for (String value : attribute.keySet()) {
 				newLine = newLine.replaceAll("\\$\\{" + value + "\\}", attribute.get(value));
 			}
