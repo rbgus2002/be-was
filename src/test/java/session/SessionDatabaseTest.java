@@ -9,14 +9,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import model.User;
-import webserver.session.Session;
+import webserver.session.SessionDatabase;
 
-class SessionTest {
-	Session session;
+class SessionDatabaseTest {
+	SessionDatabase sessionDatabase;
 
 	@BeforeEach
 	void setUp() {
-		session = Session.getInstance();
+		sessionDatabase = SessionDatabase.getInstance();
 	}
 
 	@Test
@@ -24,9 +24,9 @@ class SessionTest {
 	void createNewSession() {
 		User user = User.of("testId", "testPw", "testName", "test@email.com");
 
-		String sessionId = session.createSession(user.getUserId());
+		String sessionId = sessionDatabase.createSession(user.getUserId());
 
-		assertThat(session.getUserId(sessionId)).isEqualTo(user.getUserId());
+		assertThat(sessionDatabase.getUserId(sessionId)).isEqualTo(user.getUserId());
 	}
 
 	@Test
@@ -35,7 +35,7 @@ class SessionTest {
 		String sessionId = UUID.randomUUID().toString();
 
 		assertThatThrownBy(() -> {
-			session.getUserId(sessionId);
+			sessionDatabase.getUserId(sessionId);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("등록되지 않은 세션 ID가 입력되었습니다.");
 	}
 
@@ -43,12 +43,12 @@ class SessionTest {
 	@DisplayName("추가된 세션을 삭제할 수 있어야 한다")
 	void removeSession() {
 		User user = User.of("testId", "testPw", "testName", "test@email.com");
-		String sessionId = session.createSession(user.getUserId());
+		String sessionId = sessionDatabase.createSession(user.getUserId());
 
-		session.removeSession(sessionId);
+		sessionDatabase.removeSession(sessionId);
 
 		assertThatThrownBy(() -> {
-			session.getUserId(sessionId);
+			sessionDatabase.getUserId(sessionId);
 		}).isInstanceOf(IllegalArgumentException.class).hasMessage("등록되지 않은 세션 ID가 입력되었습니다.");
 	}
 }
