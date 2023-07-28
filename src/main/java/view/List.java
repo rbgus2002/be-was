@@ -27,17 +27,16 @@ public class List {
     public String getRenderingView(User currentUser) throws IOException {
         Collection<User> users = Database.findAll();
         StringBuilder sb = new StringBuilder();
-        StringBuilder addString = new StringBuilder();
-        int index = 1;
+        StringBuilder userBuilder = new StringBuilder();
+        int userCount = users.size();
         for (User user : users) {
-            addString.append("                <tr>\n");
-            addString.append("                    <th scope=\"row\">" + (index++) + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
-            addString.append("                </tr>\n");
+            userBuilder.append("<tr>\n");
+            userBuilder.append("    <th scope=\"row\">" + (userCount--) + "</th> <td>" + user.getUserId() + "</td> <td>" + user.getName() + "</td> <td>" + user.getEmail() + "</td><td><a href=\"#\" class=\"btn btn-success\" role=\"button\">수정</a></td>\n");
+            userBuilder.append("</tr>\n");
         }
 
         BufferedReader br = new BufferedReader(new FileReader(Path.TEMPLATES.getPath() + "/user/list.html"));
         String line = "";
-        boolean flag = true;
         while ((line = br.readLine()) != null) {
             if (line.contains("<li><a href=\"user/login.html\" role=\"button\">로그인</a></li>") && currentUser != null) {
                 sb.append("                <li><a href=\"user/form.html\" role=\"button\">").append(currentUser.getName()).append("님 </a></li>\n");
@@ -49,16 +48,11 @@ public class List {
 
             if (line.contains("<tbody>")) {
                 sb.append(line);
-                flag = false;
+                sb.append(userBuilder);
+                continue;
             }
-            if (flag) {
-                sb.append(line);
-            }
-            if (line.contains("</tbody>")) {
-                flag = true;
-                sb.append(addString);
-                sb.append(line);
-            }
+
+            sb.append(line);
         }
 
         return sb.toString();
