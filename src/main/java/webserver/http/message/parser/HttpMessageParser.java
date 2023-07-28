@@ -1,24 +1,38 @@
 package webserver.http.message.parser;
 
-import application.model.Cookie;
 import webserver.http.message.*;
-import webserver.utils.StringUtils;
 import webserver.http.message.parser.body.RequestBodyParserManager;
+import webserver.http.session.Cookie;
+import webserver.utils.StringUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static webserver.http.message.URI.*;
+import static java.net.URLDecoder.decode;
 import static webserver.http.message.HttpHeaderUtils.*;
+import static webserver.http.message.URI.*;
 
 public class HttpMessageParser {
 
+    private RequestBodyParserManager requestBodyParserManager;
+    private HttpMessageParser() {
+        requestBodyParserManager = RequestBodyParserManager.getInstance();
+    }
 
-    public static ByteArrayOutputStream parseHttpResponse(HttpResponse httpResponse) throws IOException {
+    private static class SingletonHelper {
+        private static final HttpMessageParser HTTP_MESSAGE_PARSER = new HttpMessageParser();
+    }
+
+    public static HttpMessageParser getInstance() {
+        return SingletonHelper.HTTP_MESSAGE_PARSER;
+    }
+
+    public ByteArrayOutputStream parseHttpResponse(HttpResponse httpResponse) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         fillStatusLine(httpResponse, outputStream);
@@ -68,9 +82,9 @@ public class HttpMessageParser {
         outputStream.write(statusLine.getBytes());
     }
 
-    public static HttpRequest parseHttpRequest(InputStream inputStream) throws Exception {
+    public HttpRequest parseHttpRequest(InputStream inputStream) throws Exception {
         HttpRequest.Builder httpRequestBuilder = new HttpRequest.Builder();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         List<String> requestLine = parseRequestLine(bufferedReader);
@@ -90,7 +104,7 @@ public class HttpMessageParser {
                 .build();
     }
 
-    private static Map<String, String> readBody(BufferedReader bufferedReader,
+    private Map<String, String> readBody(BufferedReader bufferedReader,
                                                 HttpMessageHeader headers) throws Exception {
         if (!headers.containsKey(CONTENT_LENGTH_HEADER) || !headers.containsKey(CONTENT_TYPE_HEADER)) {
             return Map.of();
@@ -100,14 +114,14 @@ public class HttpMessageParser {
         String contentType = headers.getValue(CONTENT_TYPE_HEADER);
         String body = readBody(bufferedReader, contentLength);
 
-        return RequestBodyParserManager.parse(body, contentType);
+        return requestBodyParserManager.parse(body, contentType);
     }
 
     private static String readBody(BufferedReader bufferedReader, int contentLength) throws IOException {
         char[] buffer = new char[contentLength];
         bufferedReader.read(buffer, 0, contentLength);
 
-        return new String(buffer);
+        return decode(new String(buffer));
     }
 
     private static URI parseURI(String stringURI) {
@@ -171,17 +185,19 @@ public class HttpMessageParser {
     }
 
     private static HttpMessageHeader parseHeaders(BufferedReader bufferedReader) throws IOException {
-        String line = bufferedReader.readLine();
+        String line = decode(bufferedReader.readLine());
         HttpMessageHeader.Builder headerBuilder = new HttpMessageHeader.Builder();
 
         while (isHeaderLeft(line)) {
+            line = decode(line);
             String[] field = line.split(HEADER_SEPARATOR + QUERY_SEPARATOR, 2);
-            line = bufferedReader.readLine();
             if (REQUEST_COOKIE_HEADER.equals(field[0])) {
                 addCookies(headerBuilder, field[1]);
-                continue;
             }
-            headerBuilder.addHeader(field[0], field[1]);
+            else {
+                headerBuilder.addHeader(field[0], field[1]);
+            }
+            line = bufferedReader.readLine();
         }
 
         return headerBuilder.build();
@@ -193,7 +209,7 @@ public class HttpMessageParser {
 
     private static void addCookies(HttpMessageHeader.Builder headerBuilder, String cookies) {
         Arrays.stream(cookies.split("; "))
-                .map((cookie) -> cookies.split("="))
+                .map((cookie) -> cookie.split("="))
                 .forEach((cookieEntry) -> headerBuilder.addCookie(new Cookie(cookieEntry[0], cookieEntry[1])));
     }
 }

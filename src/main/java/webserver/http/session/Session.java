@@ -1,4 +1,4 @@
-package application.model;
+package webserver.http.session;
 
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +15,10 @@ public class Session {
 
     public String getId() {
         return id;
+    }
+
+    public Object getAttribute(String key) {
+        return attributes.get(key);
     }
 
     public void addAttribute(String key, Object value) {
