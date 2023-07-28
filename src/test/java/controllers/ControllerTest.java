@@ -15,6 +15,8 @@ import webserver.http.HttpParameter;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import model.User;
+import webserver.view.Model;
+import webserver.view.ModelView;
 
 class ControllerTest {
 
@@ -39,7 +41,7 @@ class ControllerTest {
 		void registerUser() {
 			final HttpParameter httpParameter = newParameter("testID", "testPassword", "testName", "test@email.com");
 
-			controller.createUser(new HttpRequest(httpParameter), new HttpResponse());
+			controller.createUser(new HttpRequest(httpParameter), new HttpResponse(),  ModelView.from(null));
 
 			verifyRegister(httpParameter);
 		}
@@ -56,7 +58,7 @@ class ControllerTest {
 
 			SoftAssertions softAssertions = new SoftAssertions();
 			softAssertions.assertThatThrownBy(() -> {
-				controller.createUser(new HttpRequest(httpParameter), new HttpResponse());
+				controller.createUser(new HttpRequest(httpParameter), new HttpResponse(), ModelView.from(null));
 			}).isInstanceOf(Exception.class).hasMessage(Database.USERID_ALREADY_EXISTS_MESSAGE);
 
 			softAssertions.assertThat(Database.findUserById(existingUser.getUserId()).getPassword())
@@ -101,8 +103,8 @@ class ControllerTest {
 		@DisplayName("회원가입 성공 이후 메인 페이지로 리다이렉트 되어야 한다")
 		void sendRedirect() {
 			final HttpParameter httpParameter = newParameter("testID", "testPassword", "testName", "test@email.com");
-			String page = controller.createUser(new HttpRequest(httpParameter), new HttpResponse());
-			assertThat(page).isEqualTo("redirect:/");
+			ModelView modelView = controller.createUser(new HttpRequest(httpParameter), new HttpResponse(), ModelView.from(null));
+			assertThat(modelView.getPath()).isEqualTo("redirect:/");
 		}
 
 	}

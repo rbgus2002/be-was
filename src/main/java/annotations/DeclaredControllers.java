@@ -13,20 +13,17 @@ import controllers.Controller;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.statusline.HttpMethod;
+import webserver.view.ModelView;
 
-public class AnnotationMap {
+public class DeclaredControllers {
 
 	private static Object instance;
 	private static Map<HttpMethod, Map<String, Method>> methodMaps = new HashMap<>();
 	private static Map<String, Method> getMethods = new HashMap<>();
 	private static Map<String, Method> postMethods = new HashMap<>();
-	private static final Logger logger = LoggerFactory.getLogger(AnnotationMap.class);
+	private static final Logger logger = LoggerFactory.getLogger(DeclaredControllers.class);
 
-	private AnnotationMap() {
-	}
-
-	public static String run(HttpMethod type, String path, HttpRequest httpRequest, HttpResponse httpResponse) throws InvocationTargetException, IllegalAccessException {
-		return (String)methodMaps.get(type).get(path).invoke(instance, httpRequest, httpResponse);
+	private DeclaredControllers() {
 	}
 
 	public static void initialize() {
@@ -34,8 +31,13 @@ public class AnnotationMap {
 			scanMethods();
 			initInstance();
 		} catch (ReflectiveOperationException e) {
-			logger.debug("Annotation을 불러올 수 없습니다. message : {}", e.getMessage());
+			logger.debug("Controller를 불러올 수 없습니다. message : {}", e.getMessage());
 		}
+	}
+
+	public static ModelView runController(HttpMethod type, String path, HttpRequest httpRequest, HttpResponse httpResponse,
+		ModelView modelView) throws InvocationTargetException, IllegalAccessException {
+		return (ModelView)methodMaps.get(type).get(path).invoke(instance, httpRequest, httpResponse, modelView);
 	}
 
 	private static void scanMethods() throws ReflectiveOperationException {
@@ -53,8 +55,8 @@ public class AnnotationMap {
 	}
 
 	private static void initInstance() throws ReflectiveOperationException {
-		Constructor<Controller> constructor = Controller.class.getDeclaredConstructor();
-		instance = constructor.newInstance();
+		Constructor<Controller> controllerConstructor = Controller.class.getDeclaredConstructor();
+		instance = controllerConstructor.newInstance();
 	}
 
 	public static boolean exists(HttpMethod methodType, String path) {

@@ -8,7 +8,8 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import annotations.AnnotationMap;
+import annotations.DeclaredControllers;
+import annotations.DeclaredViewPolicies;
 
 public class WebServer {
 	private static final ExecutorService executorService = Executors.newWorkStealingPool();
@@ -21,7 +22,9 @@ public class WebServer {
 
 		try (ServerSocket listenSocket = new ServerSocket(port)) {
 			logger.info("Web Application Server started {} port.", port);
-			AnnotationMap.initialize();
+
+			DeclaredControllers.initialize();
+			DeclaredViewPolicies.initialize();
 
 			// 클라이언트가 연결될때까지 대기한다.
 			Socket connection;

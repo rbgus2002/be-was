@@ -24,6 +24,10 @@ public class Session {
 		return sessionId;
 	}
 
+	public boolean containsSession(String sessionId) {
+		return sessionToUserStore.containsKey(sessionId);
+	}
+
 	public String getUserId(String sessionId) throws IllegalArgumentException {
 		if (sessionToUserStore.containsKey(sessionId)) {
 			return sessionToUserStore.get(sessionId);

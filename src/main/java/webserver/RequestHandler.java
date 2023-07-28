@@ -14,10 +14,13 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import annotations.AnnotationMap;
+import annotations.DeclaredControllers;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
+import webserver.http.header.MimeType;
 import webserver.http.statusline.StatusCode;
+import webserver.view.ModelView;
+import webserver.view.ViewResolver;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -40,11 +43,8 @@ public class RequestHandler implements Runnable {
 
 			// BufferedReader 파싱해 HttpRequest를 생성
 			HttpRequest httpRequest = new HttpRequest(reader);
-			logger.debug("{} httpRequest created : {}", httpRequest.getMethod(), httpRequest.getPath());
-
 			HttpResponse httpResponse = handleRequest(httpRequest);
 			httpResponse.response(out);
-
 		} catch (IOException | ReflectiveOperationException | IllegalArgumentException e) {
 			logger.error(e.getMessage());
 		}
@@ -54,16 +54,38 @@ public class RequestHandler implements Runnable {
 		ReflectiveOperationException,
 		IOException,
 		IllegalArgumentException {
-		HttpResponse httpResponse = new HttpResponse();
-		String path = runController(httpRequest, httpResponse);
 
-		// 컨트롤러의 반환에 redirect:가 추가되어 있으면 리다이렉트 응답
-		if (path.contains(REDIRECT)) {
-			return redirectHttpResponse(httpResponse, path);
+		HttpResponse httpResponse = new HttpResponse();
+		String path = path = httpRequest.getPath();
+		ModelView modelView = ModelView.from(path);
+
+		if (controllerExist(httpRequest)) {
+			modelView = runController(httpRequest, httpResponse, modelView);
 		}
 
+		// 컨트롤러의 반환에 redirect:가 추가되어 있으면 리다이렉트 응답
+		if (modelView.getPath().contains(REDIRECT)) {
+			return redirectHttpResponse(httpResponse, modelView.getPath());
+		}
+
+		// path로부터 body를 읽어온다
+		byte[] body = Files.readAllBytes(getValidPath(modelView.getPath()));
+
+		if (controllerExist(httpRequest)) {
+			// body에 viewResolver를 적용시킨다
+			body = ViewResolver.resolve(body, modelView);
+		}
+
+		// Response에 body를 추가한다
+		httpResponse.addBody(body);
+
+		// path로부터 MimeType을 구하고 Response에 적용한다
+		String fileName = getValidPath(modelView.getPath()).getFileName().toString();
+		String extension = fileName.substring(fileName.lastIndexOf("."));
+		httpResponse.addMimeType(MimeType.typeOf(extension));
+
 		// 컨트롤러의 반환에 대한 파일 추가
-		return addFile(httpResponse, path);
+		return httpResponse;
 	}
 
 	private HttpResponse redirectHttpResponse(final HttpResponse httpResponse, final String path) {
@@ -71,28 +93,22 @@ public class RequestHandler implements Runnable {
 		return httpResponse;
 	}
 
-	private String runController(final HttpRequest httpRequest, final HttpResponse httpResponse) throws
-		InvocationTargetException,
-		IllegalAccessException {
-		String path = httpRequest.getPath();
-		if (AnnotationMap.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			path = AnnotationMap.run(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest, httpResponse);
-		}
-		return path;
+	private boolean controllerExist(final HttpRequest httpRequest) {
+		return DeclaredControllers.exists(httpRequest.getMethod(), httpRequest.getEndpoint());
 	}
 
-	private HttpResponse addFile(final HttpResponse httpResponse, final String path) throws
-		IOException,
-		IllegalArgumentException {
-		httpResponse.addFile(getValidPath(path));
-		logger.debug("{} added", path);
-		return httpResponse;
+	private ModelView runController(final HttpRequest httpRequest, final HttpResponse httpResponse,
+		ModelView modelView) throws InvocationTargetException, IllegalAccessException {
+		if (DeclaredControllers.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
+			modelView = DeclaredControllers.runController(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest,
+				httpResponse, modelView);
+		}
+		return modelView;
 	}
 
 	private Path getValidPath(final String path) throws IllegalArgumentException {
 		Path templatePath = new File(TEMPLATES_PATH + path).toPath();
 		Path staticPath = new File(STATIC_PATH + path).toPath();
-		logger.debug("{} path created", path);
 
 		if (Files.exists(templatePath)) {
 			return templatePath;
