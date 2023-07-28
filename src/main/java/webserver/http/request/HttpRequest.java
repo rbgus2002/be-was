@@ -33,7 +33,6 @@ public class HttpRequest {
         this.startLine = new HttpRequestStartLine(readStartLine());
         this.headers = new HttpRequestHeaders(readHeaderString());
         this.body = new HttpRequestBody(readBodyString());
-        logger.debug("body : {}", body);
     }
 
     private String readStartLine() throws IOException {
@@ -80,6 +79,10 @@ public class HttpRequest {
 
     public Map<String, String> getParamMap() {
         return startLine.getParams();
+    }
+
+    public Map<String, String> getHeadersMap() {
+        return headers.getHeader();
     }
 
     public Map<String, String> getBodyMap() {
