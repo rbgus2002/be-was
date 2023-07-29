@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("유저가 생성되고 DB에 등록되는 것을 확인한다.")
-    void registerUser() {
+    void registerUser() throws UnsupportedEncodingException {
         // given
         Map<String, String> parameters = new HashMap<>();
         parameters.put("userId", "test123");

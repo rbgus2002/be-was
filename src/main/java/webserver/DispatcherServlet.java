@@ -39,7 +39,7 @@ public class DispatcherServlet {
                     .mime(mime)
                     .build();
             byte[] buffer = httpResponse.response();
-            dos.write(buffer);
+                dos.write(buffer);
             dos.flush();
             return;
         }

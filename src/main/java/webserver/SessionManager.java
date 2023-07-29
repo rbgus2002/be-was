@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager {
 
-    private final Map<String, Object> sessionStorage = new ConcurrentHashMap<>();
+    private static final Map<String, Object> sessionStorage = new ConcurrentHashMap<>();
 
     public void createSession(Object object) {
         String sessionId = createSessionId();
@@ -26,5 +26,9 @@ public class SessionManager {
         }
 
         throw new IllegalArgumentException("존재하지 않습니다.");
+    }
+
+    public Object getObject(String sessionId) {
+        return sessionStorage.get(sessionId);
     }
 }

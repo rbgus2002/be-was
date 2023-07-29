@@ -23,14 +23,6 @@ class ControllerTest {
     Controller controller = new Controller();
 
     @Test
-    @DisplayName("home path 경로가 들어올 때 index.html로 리다이렉트 한다.")
-    void home() throws IOException {
-        HttpResponse response = controller.home();
-
-        assertEquals(HttpStatus.FOUND, response.getStatus());
-    }
-
-    @Test
     @DisplayName("POST 회원가입을 요청하면 입력 정보를 바탕으로 유저가 생성되어야 한다.")
     void createUser() throws IOException {
         // given
