@@ -25,11 +25,8 @@ Java Web Application Server 2023
     - HTTP response 메세지 작성 후 클라이언트에게 응답
 - [x] 프로젝트 구조 개선
     1. 코드의 의미가 명확해지도록 별도의 클래스에 데이터를 감싸서 저장하였다.
-
         - `HttpRequest`, `HttpResponse`, `HttpMethod`, `HttpHeaderFields`, `URL`, `HttpStatus` 클래스를 만들어 HTTP 메세지 정보를 담았다.
-
     2. 유지보수에 좋은 구조로 개선하기 위해 요청을 처리하는 과정의 역할을 쪼개 클래스를 분리하였다.
-
         - `FrontController`가 중심이 되어 각 과정을 수행하는 클래스와 통신한다.
         - 관련 클래스에 대한 설명
             - `RequestHandler`: 클라이언트로부터 HTTP 요청을 받고 FrontController가 작성한 response를 바탕으로 HTTP 응답으로 보낸다.
@@ -85,3 +82,21 @@ Java Web Application Server 2023
 - [x] 회원가입 후 리다이렉트 (POST-Redirect-GET 패턴)
     1. 응답 메세지 헤더에 `Location` 필드 추가
     2. 응답 메세지 상태 코드 `303 See Other`로 설정
+
+## step-5 쿠키를 이용한 로그인
+
+> **키워드**<br>
+> HTTP Cookie<br>
+> HTTP Session
+
+**로그인 기능 구현**
+- [x] 로그인 실패
+    1. `/user/login_failed.html`를 응답 (`401 Unauthorized`)
+- [x] 로그인 성공
+    1. 세션 생성 및 저장
+        - `Session`: 세션은 세션 아이디(`UUID` 타입)와 유저 정보(`userId`)를 저장
+        - `SessionStorage`: 세션을 생성하고 저장
+    2. 세션 아이디를 쿠키에 담아 클라이언트에게 응답
+        - `Cookie` 클래스에 쿠키의 키와 밸류, 디렉티브를 저장
+        - 응답 헤더에 `Set-Cookie` 필드를 추가
+    3. `/index.html`로 이동

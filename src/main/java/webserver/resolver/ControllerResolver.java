@@ -51,8 +51,7 @@ public class ControllerResolver {
 			return getRequestParams(request, parameters);
 		}
 		if (request.isMethodPost()) {
-			List<String> requestBody = getRequestBody(request, parameters);
-			return requestBody;
+			return getRequestBody(request, parameters);
 		}
 		return Collections.emptyList();
 	}
