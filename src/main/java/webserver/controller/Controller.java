@@ -16,7 +16,6 @@ import service.UserService;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
-import java.util.UUID;
 
 public class Controller {
     private static final Controller controller = new Controller();
@@ -39,21 +38,46 @@ public class Controller {
         Optional<User> user = UserService.login(new LoginRequestDto(request.getParams()));
         if (user.isPresent()) {
             HttpResponse response = HttpResponse.redirectResponse(request.getVersion(), "/index.html");
-            String sessionKey = UUID.randomUUID().toString();
-            Session.put(sessionKey, user.get());
-            response.setCookie(sessionKey, "/");
+            String sid = Session.addSession(user.get());
+            response.setCookie(sid, "/");
             return response;
         }
         return HttpResponse.redirectResponse(request.getVersion(), "/user/login_failed.html");
     }
 
-    public HttpResponse getStaticResource(HttpRequest request) {
+    @RequestMapping(method = HttpMethod.GET, path = "/user/logout")
+    public HttpResponse logout(HttpRequest request) {
+        Session.removeSession(request.getSid());
+        return HttpResponse.redirectResponse(request.getVersion(), "/index.html");
+    }
+
+    @RequestMapping(method = HttpMethod.GET, path = "/user/list.html")
+    public HttpResponse userList(HttpRequest request) {
+        return getResourceOrLogin(request);
+    }
+
+    @RequestMapping(method = HttpMethod.GET, path = "/user/profile.html")
+    public HttpResponse userProfile(HttpRequest request) {
+        return getResourceOrLogin(request);
+    }
+
+    private HttpResponse getResourceOrLogin(HttpRequest request) {
+        Object sessionUser = Session.get(request.getSid());
+        if (sessionUser == null) {
+            return HttpResponse.redirectResponse(request.getVersion(), "/user/login.html");
+        }
+        return getTargetResource(request);
+    }
+
+    public HttpResponse getTargetResource(HttpRequest request) {
         try {
-            ResponseBody body = ResponseBody.from(FileService.getStaticResource(request.getPath()), request.getMime());
+            Object sessionUser = Session.get(request.getSid());
+            byte[] content = FileService.getTargetResource(request.getPath(), (User) sessionUser);
+            ResponseBody body = ResponseBody.from(content, request.getMime());
             return HttpResponse.of(request.getVersion(), HttpStatusCode.OK, body);
         } catch (NoSuchFileException exception) {
             return HttpResponse.of(request.getVersion(), HttpStatusCode.NOT_FOUND);
-        } catch (IOException e) {
+        } catch (IOException | InstantiationException | IllegalAccessException e) {
             return HttpResponse.of(request.getVersion(), HttpStatusCode.INTERNAL_SERVER_ERROR);
         }
     }

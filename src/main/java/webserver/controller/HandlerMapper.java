@@ -15,7 +15,7 @@ public class HandlerMapper {
     static {
         try {
             methods = Controller.class.getMethods();
-            getStaticResource = Controller.class.getMethod("getStaticResource", HttpRequest.class);
+            getStaticResource = Controller.class.getMethod("getTargetResource", HttpRequest.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
