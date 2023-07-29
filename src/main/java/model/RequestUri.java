@@ -1,7 +1,5 @@
 package model;
 
-import dto.UserFormRequestDto;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +20,9 @@ public class RequestUri {
         this.uri = uri;
         this.params = params;
     }
+
     private RequestUri(String uri) {
-        this.uri= uri;
+        this.uri = uri;
         this.params = new HashMap<>();
     }
 
@@ -68,7 +67,7 @@ public class RequestUri {
     public String toString() {
         String s = "path uri = " + uri + "\n";
         for (var entry : params.entrySet()) {
-            s += "[key = " + entry.getKey() + " / value = " + entry.getValue()+"]\n";
+            s += "[key = " + entry.getKey() + " / value = " + entry.getValue() + "]\n";
         }
         return s;
     }

@@ -1,6 +1,5 @@
 package webserver;
 
-import controller.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +11,10 @@ import java.util.concurrent.Executors;
 public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
 
+    private WebServer() {
+    }
+
     public static void on(int port) {
-        RestController restController = new RestController();
         // 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
         try (ServerSocket listenSocket = new ServerSocket(port)) {
             logger.info("Web Application Server started {} port.", port);
@@ -22,10 +23,10 @@ public class WebServer {
             Socket connection;
             ExecutorService executor = Executors.newFixedThreadPool(10);
             while ((connection = listenSocket.accept()) != null) {
-                executor.submit(new RequestHandler(connection, restController));
+                executor.submit(new RequestHandler(connection));
             }
             executor.shutdown();
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.debug(e.getMessage());
         }
     }

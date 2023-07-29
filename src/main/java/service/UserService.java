@@ -13,9 +13,11 @@ public class UserService {
         Database.addUser(userEntity);
     }
 
-    public boolean login(LoginRequestDto dto) {
+    public Optional<User> login(LoginRequestDto dto) {
         Optional<User> result = Database.findUserById(dto.getUserId());
-        return result.isPresent()
-                && result.get().matchPassword(dto.getPassword());
+        if(result.isPresent() && result.get().matchPassword(dto.getPassword())){
+            return result;
+        }
+        return Optional.empty();
     }
 }
