@@ -2,7 +2,7 @@ package webserver.http.response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.http.response.body.ResponseBody;
+import webserver.http.response.view.View;
 import webserver.http.response.header.MimeType;
 import webserver.util.Parser;
 
@@ -26,10 +26,9 @@ public class ResponseWriter {
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
         try {
             writeHeader(responseMessageHeader.response302Header(redirectUrl, httpResponse.getCookie()));
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
-
         logger.info("HttpResponse redirect end");
     }
 
@@ -38,26 +37,36 @@ public class ResponseWriter {
         String extension = Parser.getUrlExtension(url);
         String contentType = mimeType.getContentType(extension);
         ResponseMessageHeader responseMessageHeader = httpResponse.getHeader();
-        ResponseBody responseBody = httpResponse.getBody();
+        View view = httpResponse.getBody();
         try {
-            if (responseBody.readBody() != null) {
-                write200Response(contentType, responseMessageHeader, responseBody);
+            if (view.readBody() != null) {
+                write200Response(contentType, responseMessageHeader, view);
                 dos.flush();
                 return;
             }
-            writeHeader(responseMessageHeader.response404Header(httpResponse.getCookie()));
+            writeHeader(responseMessageHeader.response404Header());
             dos.flush();
-        } catch(IOException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage());
         }
 
         logger.info("HttpResponse forward end");
     }
 
-    private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, ResponseBody responseBody) throws IOException {
-        writeHeader(responseMessageHeader.response200Header(responseBody.getLength(), contentType, httpResponse.getCookie()));
-        writeBody(responseBody);
+    public void sendBadRequest() {
+        try {
+            writeHeader(new ResponseMessageHeader().response404Header());
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
 
+        logger.info("HttpResponse BadRequest end");
+    }
+
+    private void write200Response(String contentType, ResponseMessageHeader responseMessageHeader, View view) throws IOException {
+        logger.debug("ContentType : " + contentType + ", ResponseMessageHeader : " + view.getLength());
+        writeHeader(responseMessageHeader.response200Header(contentType, httpResponse.getCookie()));
+        writeBody(view);
     }
 
     private void writeHeader(String responseMessageHeader) throws IOException {
@@ -65,7 +74,9 @@ public class ResponseWriter {
     }
 
 
-    private void writeBody(ResponseBody body) throws IOException {
-            dos.write(body.readBody(), 0, body.getLength());
+    private void writeBody(View view) throws IOException {
+        dos.write(view.readBody(), 0, view.getLength());
     }
+
+
 }

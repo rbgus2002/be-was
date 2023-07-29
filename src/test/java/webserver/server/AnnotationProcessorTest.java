@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,9 +17,9 @@ class AnnotationProcessorTest {
         Class<AnnotationProcessor> clazz = AnnotationProcessor.class;
         Field field = clazz.getDeclaredField("requestMapper");
         field.setAccessible(true);
-        Map<String, Method> map = (Map<String, Method>) field.get(annotationProcessor);
+        Map<String, ControllerConfig> map = (Map<String, ControllerConfig>) field.get(annotationProcessor);
         for(String key : map.keySet()) {
-           assertEquals(map.get(key), annotationProcessor.getHandler(key).getMethod());
+           assertEquals(map.get(key).getMethod(), annotationProcessor.getHandler(key).getMethod());
         }
     }
 

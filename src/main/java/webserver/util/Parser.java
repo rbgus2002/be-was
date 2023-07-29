@@ -1,5 +1,9 @@
 package webserver.util;
 
+import webserver.http.response.header.ResponseHeader;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -52,5 +56,22 @@ public class Parser {
         }
         return parseData(requestBody);
 
+    }
+
+    public static String[] parseRequestHeader(BufferedReader bufferedReader) throws IOException {
+        String contentLength = "0";
+        String cookie = null;
+        String requestHeader;
+        while ((requestHeader = bufferedReader.readLine()) != null && (requestHeader.length() != 0)) {
+            System.out.println(requestHeader);
+            if (requestHeader.startsWith(ResponseHeader.CONTENT_LENGTH.getConstant())) {
+                contentLength = requestHeader.substring(ResponseHeader.CONTENT_LENGTH.getConstant().length() + 1).trim();
+            }
+            if (requestHeader.startsWith("Cookie")) {
+                cookie = requestHeader;
+            }
+        }
+
+        return new String[] {contentLength, cookie};
     }
 }
