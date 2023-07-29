@@ -64,6 +64,7 @@ public class HttpHandler {
                         String userId = SessionStorage.getSession(keyValue[1]);
                         matchedData.put("userId", userId);
                         matchedData.put("href", "/index.html");
+                        matchedData.put("hrefIndex", "/user/list.html");
                         matchedData.put("username", Database.findUserById(userId).getName());
                         matchedData.put("useremail", Database.findUserById(userId).getEmail());
                     }
