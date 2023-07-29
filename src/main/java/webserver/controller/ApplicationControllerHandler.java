@@ -1,11 +1,11 @@
 package webserver.controller;
 
-import webserver.HttpMethod;
 import webserver.annotation.Cookies;
 import webserver.annotation.HttpResponse;
 import webserver.annotation.RequestParameter;
-import webserver.request.HttpRequestMessage;
-import webserver.response.HttpResponseMessage;
+import webserver.http.constant.HttpMethod;
+import webserver.http.request.HttpRequestMessage;
+import webserver.http.response.HttpResponseMessage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

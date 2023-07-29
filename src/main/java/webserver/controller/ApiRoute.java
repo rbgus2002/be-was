@@ -1,6 +1,6 @@
 package webserver.controller;
 
-import webserver.HttpMethod;
+import webserver.http.constant.HttpMethod;
 
 import java.util.Objects;
 

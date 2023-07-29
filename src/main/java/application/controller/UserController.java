@@ -2,10 +2,10 @@ package application.controller;
 
 import application.model.User;
 import db.Database;
-import webserver.HttpMethod;
 import webserver.annotation.*;
 import webserver.controller.CookieController;
-import webserver.response.HttpResponseMessage;
+import webserver.http.constant.HttpMethod;
+import webserver.http.response.HttpResponseMessage;
 import webserver.view.ViewData;
 
 import java.util.ArrayList;

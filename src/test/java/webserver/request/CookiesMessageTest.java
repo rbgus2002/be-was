@@ -2,7 +2,9 @@ package webserver.request;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.HttpMethod;
+import webserver.http.constant.HttpMethod;
+import webserver.http.request.HttpRequestMessage;
+import webserver.http.request.HttpRequestParser;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.StringUtils.NEW_LINE;
-import static webserver.request.HttpRequestParser.parseRequest;
+import static webserver.http.request.HttpRequestParser.parseRequest;
 
 @DisplayName("요청 메시지 클래스 테스트")
 class CookiesMessageTest {

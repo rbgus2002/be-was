@@ -1,6 +1,6 @@
-package webserver.request;
+package webserver.http.request;
 
-import webserver.HttpMethod;
+import webserver.http.constant.HttpMethod;
 
 import java.util.Collections;
 import java.util.Map;

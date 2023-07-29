@@ -2,6 +2,8 @@ package webserver.response;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.constant.HttpStatus;
+import webserver.http.response.HttpResponseMessage;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

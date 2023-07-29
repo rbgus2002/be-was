@@ -4,13 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import webserver.exception.BadRequestException;
-import webserver.request.HttpRequestMessage;
-import webserver.response.HttpResponseMessage;
+import webserver.http.request.HttpRequestMessage;
+import webserver.http.response.HttpResponseMessage;
 
 import java.io.ByteArrayInputStream;
 
 import static utils.StringUtils.NEW_LINE;
-import static webserver.request.HttpRequestParser.parseRequest;
+import static webserver.http.request.HttpRequestParser.parseRequest;
 
 @DisplayName("사용자 컨트롤러 핸들러 테스트")
 class ApplicationControllerHandlerTest {

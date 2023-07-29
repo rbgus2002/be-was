@@ -1,4 +1,6 @@
-package webserver.response;
+package webserver.http.response;
+
+import webserver.http.constant.HttpStatus;
 
 import java.io.IOException;
 import java.nio.file.Files;
