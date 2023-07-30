@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import annotations.DeclaredControllers;
+import controllers.ErrorHandler;
 import webserver.http.HttpRequest;
 import webserver.http.HttpResponse;
 import webserver.http.header.MimeType;
@@ -24,10 +25,9 @@ import webserver.view.ViewResolver;
 
 public class RequestHandler implements Runnable {
 	private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-	private final String REDIRECT = "redirect:";
+	private static final String REDIRECT = "redirect:";
 	private static final String TEMPLATES_PATH = "src/main/resources/templates/";
 	private static final String STATIC_PATH = "src/main/resources/static";
-
 	private final Socket connection;
 
 	public RequestHandler(Socket connectionSocket) {
@@ -56,7 +56,7 @@ public class RequestHandler implements Runnable {
 		IllegalArgumentException {
 
 		HttpResponse httpResponse = new HttpResponse();
-		String path = path = httpRequest.getPath();
+		String path = httpRequest.getPath();
 		ModelView modelView = ModelView.from(path);
 
 		if (controllerExist(httpRequest)) {
@@ -68,11 +68,19 @@ public class RequestHandler implements Runnable {
 			return redirectHttpResponse(httpResponse, modelView.getPath());
 		}
 
-		// path로부터 body를 읽어온다
-		byte[] body = Files.readAllBytes(getValidPath(modelView.getPath()));
+		byte[] body;
+		try {
+			// path로부터 body를 읽어온다
+			body = Files.readAllBytes(getValidPath(modelView.getPath()));
+		} catch (IllegalArgumentException e) {
+			// path에 파일이 존재하지 않는 경우, 404 NOT FOUND 에러 페이지 출력
+			modelView = ErrorHandler.buildErrorPage(httpRequest, httpResponse, modelView);
+			body = Files.readAllBytes(getValidPath(modelView.getPath()));
+			body = ViewResolver.resolve(body, modelView);
+		}
 
+		// body에 viewResolver를 적용시킨다
 		if (controllerExist(httpRequest)) {
-			// body에 viewResolver를 적용시킨다
 			body = ViewResolver.resolve(body, modelView);
 		}
 
@@ -100,8 +108,8 @@ public class RequestHandler implements Runnable {
 	private ModelView runController(final HttpRequest httpRequest, final HttpResponse httpResponse,
 		ModelView modelView) throws InvocationTargetException, IllegalAccessException {
 		if (DeclaredControllers.exists(httpRequest.getMethod(), httpRequest.getEndpoint())) {
-			modelView = DeclaredControllers.runController(httpRequest.getMethod(), httpRequest.getEndpoint(), httpRequest,
-				httpResponse, modelView);
+			modelView = DeclaredControllers.runController(httpRequest.getMethod(), httpRequest.getEndpoint(),
+				httpRequest, httpResponse, modelView);
 		}
 		return modelView;
 	}

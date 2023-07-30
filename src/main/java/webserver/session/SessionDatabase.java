@@ -5,16 +5,16 @@ import java.util.UUID;
 
 import com.google.common.collect.Maps;
 
-public class Session {
-	private static Session SESSION = new Session();
+public class SessionDatabase {
+	private static SessionDatabase SESSION_DATABASE = new SessionDatabase();
 	private Map<String, String> sessionToUserStore = Maps.newConcurrentMap();
 	private Map<String, String> userToSessionStore = Maps.newConcurrentMap();
 
-	private Session() {
+	private SessionDatabase() {
 	}
 
-	public static Session getInstance() {
-		return SESSION;
+	public static SessionDatabase getInstance() {
+		return SESSION_DATABASE;
 	}
 
 	public String createSession(String userId) {

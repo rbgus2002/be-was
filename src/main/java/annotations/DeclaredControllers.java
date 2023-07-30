@@ -35,8 +35,8 @@ public class DeclaredControllers {
 		}
 	}
 
-	public static ModelView runController(HttpMethod type, String path, HttpRequest httpRequest, HttpResponse httpResponse,
-		ModelView modelView) throws InvocationTargetException, IllegalAccessException {
+	public static ModelView runController(HttpMethod type, String path, HttpRequest httpRequest,
+		HttpResponse httpResponse, ModelView modelView) throws InvocationTargetException, IllegalAccessException {
 		return (ModelView)methodMaps.get(type).get(path).invoke(instance, httpRequest, httpResponse, modelView);
 	}
 

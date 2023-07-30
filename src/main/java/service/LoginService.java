@@ -1,13 +1,13 @@
 package service;
 
-import db.Database;
-import webserver.session.Session;
+import db.UserDatabase;
+import webserver.session.SessionDatabase;
 
 public class LoginService {
 
 	public static boolean login(String userId, String password) {
 		try {
-			Database.verifyUser(userId, password);
+			UserDatabase.verifyUser(userId, password);
 			return true;
 		} catch (IllegalArgumentException e) {
 			return false;
@@ -15,12 +15,12 @@ public class LoginService {
 	}
 
 	public static boolean checkSession(String sessionId) throws IllegalArgumentException {
-		Session session = Session.getInstance();
-		return session.containsSession(sessionId);
+		SessionDatabase sessionDatabase = SessionDatabase.getInstance();
+		return sessionDatabase.containsSession(sessionId);
 	}
 
 	public static String getUserIdFrom(String sessionId) throws IllegalArgumentException {
-		Session session = Session.getInstance();
-		return session.getUserId(sessionId);
+		SessionDatabase sessionDatabase = SessionDatabase.getInstance();
+		return sessionDatabase.getUserId(sessionId);
 	}
 }
