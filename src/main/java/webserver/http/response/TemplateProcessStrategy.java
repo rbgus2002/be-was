@@ -113,6 +113,13 @@ public class TemplateProcessStrategy implements ContentProcessStrategy {
                 return;
             }
             String resource_text = new String(resource);
+            if (invoke != null && invoke.getClass().equals(String[].class)) {
+                for (String text : (String[]) invoke) {
+                    if (resource_text.contains(TEMPLATE_REPLACE_TEXT)) {
+                        resource_text = resource_text.replaceFirst(TEMPLATE_REPLACE_TEXT, text);
+                    }
+                }
+            }
             if (invoke != null && invoke.getClass().equals(String.class)) {
                 if (resource_text.contains(TEMPLATE_REPLACE_TEXT)) {
                     resource_text = resource_text.replace(TEMPLATE_REPLACE_TEXT, (String) invoke);
