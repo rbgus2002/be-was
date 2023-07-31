@@ -20,10 +20,6 @@ public class Header {
 		header.put(key, value);
 	}
 
-	public boolean containsCookie() {
-		return header.containsKey(HeaderConst.COOKIE);
-	}
-
 	public String getCookieValue(String cookieName) throws NoSuchElementException {
 		if (!header.containsKey(HeaderConst.COOKIE)) {
 			throw new NoSuchElementException("쿠키가 존재하지 않습니다.");

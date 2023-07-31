@@ -17,8 +17,8 @@ public class WebServer {
 	private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
 
 	public static void main(String[] args) throws Exception {
-		int port = getPort(args);
 		// 서버소켓을 생성한다. 웹서버는 기본적으로 8080번 포트를 사용한다.
+		int port = getPort(args);
 
 		try (ServerSocket listenSocket = new ServerSocket(port)) {
 			logger.info("Web Application Server started {} port.", port);

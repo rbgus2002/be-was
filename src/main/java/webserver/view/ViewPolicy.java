@@ -44,10 +44,10 @@ public class ViewPolicy {
 		if (modelView.getAttribute(variableName) == null) {
 			return "";
 		}
-		return (String)modelView.getAttribute(variableName);
+		return String.valueOf(modelView.getAttribute(variableName));
 	}
 
-	@annotations.ViewPolicy(regex = "<tr repeat=\".*\">(.|\\s)*?<\\/tr>")
+	@annotations.ViewPolicy(regex = "<(\\w+) repeat=\\\".*\\\">*(.|\\s)*?<\\/\\1>")
 	public String repeatForAttributes(String line, ModelView modelView) {
 		Pattern pattern = Pattern.compile("repeat=\"(.*?)\"");
 		Matcher matcher = pattern.matcher(line);
@@ -55,18 +55,21 @@ public class ViewPolicy {
 		while (matcher.find()) {
 			attributeName = matcher.group(1);
 		}
+		if (!modelView.containsAttribute(attributeName)) {
+			return "";
+		}
+
 		List<Map<String, String>> attributes = (List<Map<String, String>>)modelView.getAttribute(attributeName);
 
 		StringBuilder result = new StringBuilder();
 		int currentIter = 1;
 		for (Map<String, String> attribute : attributes) {
-			String newLine = line.replaceAll("\\$\\{iter\\}", String.valueOf(currentIter));
+			String newLine = line.replaceAll("\\$\\{iter\\}", String.valueOf(currentIter++));
 			for (String value : attribute.keySet()) {
 				newLine = newLine.replaceAll("\\$\\{" + value + "\\}", attribute.get(value));
 			}
 			result.append(newLine);
 		}
-
 		return result.toString();
 	}
 }

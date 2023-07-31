@@ -20,6 +20,7 @@ public class DeclaredViewPolicies {
 
 	private DeclaredViewPolicies() {
 	}
+
 	public static void initialize() {
 		try {
 			scanPolicies();

@@ -2,6 +2,7 @@ package db;
 
 import com.google.common.collect.Maps;
 
+import model.Article;
 import model.User;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class Database {
+public class UserDatabase {
 	public static final String USERID_ALREADY_EXISTS_MESSAGE = "이미 동일한 사용자 아이디가 존재합니다.";
 	private static Map<String, User> users = Maps.newConcurrentMap();
 
@@ -47,6 +48,6 @@ public class Database {
 	}
 
 	public static List<User> getUserList() {
-		return new ArrayList<>(Database.users.values());
+		return new ArrayList<>(UserDatabase.users.values());
 	}
 }

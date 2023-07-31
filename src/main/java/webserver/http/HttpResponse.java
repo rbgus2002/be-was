@@ -42,6 +42,10 @@ public class HttpResponse {
 		header.addHeader(LOCATION, redirectPath);
 	}
 
+	public void setStatus(final StatusCode statusCode) {
+		responseLine.setStatusCode(statusCode);
+	}
+
 	public void addCookie(String cookieName, String sessionId) {
 		Cookie cookie = Cookie.newCookie();
 		cookie.add(cookieName, sessionId);

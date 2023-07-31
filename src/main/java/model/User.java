@@ -6,11 +6,18 @@ public class User {
 	private String name;
 	private String email;
 
-	public User(String userId, String password, String name, String email) {
+	private User() {
+	}
+
+	private User(String userId, String password, String name, String email) {
 		this.userId = userId;
 		this.password = password;
 		this.name = name;
 		this.email = email;
+	}
+
+	public static User of(final String userId, final String password, final String name, final String email) {
+		return new User(userId, password, name, email);
 	}
 
 	public String getUserId() {
