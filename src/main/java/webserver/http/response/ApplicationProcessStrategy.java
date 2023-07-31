@@ -134,7 +134,14 @@ public class ApplicationProcessStrategy implements ContentProcessStrategy {
         setRequestBody(httpRequest, parameters, result);
         setQueryParam(httpRequest, parameters, result);
         setHttpResponse(httpResponse, parameters, result);
+        setHttpRequest(httpRequest, parameters, result);
         return result;
+    }
+
+    private void setHttpRequest(final HttpRequest httpRequest, final Parameter[] parameters, final Object[] result) {
+        IntStream.range(0, parameters.length)
+                .filter(i -> parameters[i].isAnnotationPresent(common.annotation.HttpRequest.class))
+                .forEach(i -> result[i] = httpRequest);
     }
 
     private void setHttpResponse(final HttpResponse httpResponse, final Parameter[] parameters, final Object[] result) {

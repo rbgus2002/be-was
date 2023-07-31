@@ -9,11 +9,13 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import webserver.http.Headers;
 import webserver.http.Http;
 import webserver.http.Http.MIME;
 import webserver.http.Http.Method;
 import webserver.http.Http.Version;
+import webserver.http.Session;
 
 public class HttpRequest implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -67,6 +69,24 @@ public class HttpRequest implements Serializable {
         char[] chars = new char[contentLength];
         bufferedReader.read(chars, 0, contentLength);
         return String.valueOf(chars);
+    }
+
+    public Optional<String> getAuthorizationUserId() {
+        if (!this.headers.containsKey(Http.Headers.COOKIE.getName())) {
+            return Optional.empty();
+        }
+        String text = this.headers.get(Http.Headers.COOKIE);
+        for (String str : text.split(";")) {
+            if (str.contains(Session.SESSION_PREFIX)) {
+                String sessionKey = str.trim().replace(Session.SESSION_PREFIX, "").replace(";", "");
+                String userId = (String) Session.DEFAULT.get(sessionKey);
+                if(userId == null) {
+                    return Optional.empty();
+                }
+                return Optional.of(userId);
+            }
+        }
+        return Optional.empty();
     }
 
     public String getPath() {

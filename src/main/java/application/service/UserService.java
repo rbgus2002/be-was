@@ -5,6 +5,8 @@ import application.infrastructure.UserRepository;
 import application.model.User;
 import application.service.dto.LoginRequest;
 import application.service.dto.UserRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserService {
@@ -27,5 +29,13 @@ public class UserService {
             return false;
         }
         return findUser.get().getPassword().equals(loginRequest.getPassword());
+    }
+
+    public Optional<User> findBy(final String userId) {
+        return userRepository.findUserById(userId);
+    }
+
+    public List<User> getAll() {
+        return new ArrayList<>(userRepository.findAll());
     }
 }
