@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static model.User.*;
 import static webserver.http.HttpParser.*;
-import static model.User.PASSWORD;
 
 class UserServiceTest {
     @BeforeEach
@@ -26,7 +26,10 @@ class UserServiceTest {
         Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
 
         // When
-        UserService.userSignUp(queryParameterMap);
+        UserService.userSignup(
+                queryParameterMap.get(USERID), queryParameterMap.get(PASSWORD),
+                queryParameterMap.get(NAME), queryParameterMap.get(EMAIL)
+        );
 
         // Then
         SoftAssertions assertions = new SoftAssertions();
@@ -41,11 +44,17 @@ class UserServiceTest {
         // Given
         String targetUri = "/user/create?userId=jst0951&password=password&name=정성태&email=jst0951@naver.com";
         Map<String, String> queryParameterMap = parseQueryParameter(targetUri);
-        UserService.userSignUp(queryParameterMap);
+        UserService.userSignup(
+                queryParameterMap.get(USERID), queryParameterMap.get(PASSWORD),
+                queryParameterMap.get(NAME), queryParameterMap.get(EMAIL)
+        );
 
         // When
         queryParameterMap.put(PASSWORD, "newPassword");
-        UserService.userSignUp(queryParameterMap);
+        UserService.userSignup(
+                queryParameterMap.get(USERID), queryParameterMap.get(PASSWORD),
+                queryParameterMap.get(NAME), queryParameterMap.get(EMAIL)
+        );
 
         // Then
         SoftAssertions assertions = new SoftAssertions();

@@ -12,6 +12,7 @@ import webserver.http.model.Response;
 import java.util.Collection;
 import java.util.Map;
 
+import static service.PostService.*;
 import static webserver.http.HttpUtil.*;
 import static webserver.http.HttpParser.*;
 import static webserver.http.model.Request.Method;
@@ -85,8 +86,11 @@ public class DynamicFileController extends FileController{
 
     @RequestMapping(value="/qna/form.html", method=Method.POST)
     public Response createQna(Request request) {
-        Map<String, String> bodyParameterMap = parseBodyParameter(request.getBody());
-        PostService.addPost(bodyParameterMap);
+        PostService.addPost(
+                request.getParameter(POST_WRITER),
+                request.getParameter(POST_TITLE),
+                request.getParameter(POST_CONTENT)
+        );
 
         return generate303Response(INDEX_URL);
     }
