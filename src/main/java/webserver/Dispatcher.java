@@ -2,8 +2,8 @@ package webserver;
 
 import webserver.exception.BadRequestException;
 import webserver.handler.HttpHandler;
-import webserver.request.HttpRequestMessage;
-import webserver.response.HttpResponseMessage;
+import webserver.http.request.HttpRequestMessage;
+import webserver.http.response.HttpResponseMessage;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.net.Socket;
 
 import static utils.StringUtils.NEW_LINE;
 import static webserver.WebServer.logger;
-import static webserver.request.HttpRequestParser.parseRequest;
+import static webserver.http.request.HttpRequestParser.parseRequest;
 
 public class Dispatcher implements Runnable {
     private final Socket connection;

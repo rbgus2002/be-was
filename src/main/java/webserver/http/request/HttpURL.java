@@ -1,4 +1,4 @@
-package webserver.request;
+package webserver.http.request;
 
 import java.util.Collections;
 import java.util.Map;

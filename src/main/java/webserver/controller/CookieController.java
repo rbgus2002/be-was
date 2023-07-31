@@ -1,7 +1,7 @@
 package webserver.controller;
 
-import webserver.response.HttpResponseMessage;
-import webserver.response.HttpStatus;
+import webserver.http.constant.HttpStatus;
+import webserver.http.response.HttpResponseMessage;
 import webserver.session.SessionStorage;
 
 import java.util.Map;

@@ -2,6 +2,8 @@ package webserver.request;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.http.request.HttpRequestParser;
+import webserver.http.request.HttpURL;
 
 import static org.junit.jupiter.api.Assertions.*;
 

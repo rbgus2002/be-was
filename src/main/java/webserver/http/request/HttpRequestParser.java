@@ -1,7 +1,7 @@
-package webserver.request;
+package webserver.http.request;
 
-import webserver.HttpMethod;
 import webserver.exception.BadRequestException;
+import webserver.http.constant.HttpMethod;
 
 import java.io.BufferedReader;
 import java.io.IOException;

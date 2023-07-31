@@ -1,6 +1,6 @@
-package webserver.request;
+package webserver.http.request;
 
-import webserver.HttpMethod;
+import webserver.http.constant.HttpMethod;
 
 import java.util.Collections;
 import java.util.Map;
@@ -34,6 +34,10 @@ public class HttpRequestMessage {
 
     public String getHeader(String key) {
         return Collections.unmodifiableMap(headers).get(key);
+    }
+
+    public boolean hasHeader(String key) {
+        return Collections.unmodifiableMap(headers).containsKey(key);
     }
 
     public String getBody() {

@@ -1,4 +1,6 @@
-package webserver.response;
+package webserver.http.response;
+
+import webserver.http.constant.HttpStatus;
 
 import java.util.Arrays;
 import java.util.HashMap;
